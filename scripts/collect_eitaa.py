@@ -71,12 +71,18 @@ def fetch_eitaa_channels(token: str) -> list[dict]:
 def extract_posts(html: str, channel_id: int) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     posts = []
+    seen_ids = set()
     for wrap in soup.select(".js-widget_message_wrap"):
         wrap_html = str(wrap)
         post_id_m = POST_ID_RE.search(wrap_html)
         if not post_id_m:
             continue
         post_id = post_id_m.group(1)
+        if post_id in seen_ids:
+            # پیوندهای فوروارد/پیش‌نمایش گاهی همون data-post رو توی یک بلوک تودرتو
+            # تکرار می‌کنن — بدون این فیلتر، upsert روی دو ردیف هم‌آیدی خطا می‌ده.
+            continue
+        seen_ids.add(post_id)
         text_m = TEXT_RE.search(wrap_html)
         text = strip_tags(text_m.group(1)) if text_m else ""
         posts.append(
