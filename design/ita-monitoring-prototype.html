@@ -164,25 +164,28 @@
   .btn:hover{ border-color: var(--primary); color: var(--text); }
 
   /* ---------- LOGIN VIEW ---------- */
-  /* split-screen login: brand/visual panel (right, RTL-first) + form panel (left) */
-  #view-login{ min-height:100vh; display:grid; grid-template-columns: 1.1fr 1fr; }
-  @media (max-width:820px){ #view-login{ grid-template-columns:1fr; } .login-visual{ display:none; } }
-
-  .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:56px;
+  /* unified dark canvas; the form sits in a floating card (left), brand content floats directly on the canvas (right, RTL-first) */
+  #view-login{
+    min-height:100vh; box-sizing:border-box; padding:40px 24px; display:flex; align-items:center; justify-content:center;
     background:
-      radial-gradient(120% 90% at 30% 0%, rgba(234,179,147,0.16), transparent 60%),
-      radial-gradient(100% 80% at 100% 100%, rgba(142,163,184,0.16), transparent 60%),
-      var(--bg);
+      radial-gradient(120% 90% at 25% 0%, rgba(234,179,147,0.08), transparent 55%),
+      radial-gradient(90% 70% at 100% 100%, rgba(142,163,184,0.11), transparent 55%),
+      radial-gradient(140% 110% at 50% 45%, transparent 45%, rgba(0,0,0,0.22) 100%),
+      linear-gradient(160deg, var(--primary), var(--primary-2));
   }
-  .login-visual .lv-wave{ position:absolute; inset-inline-start:-60px; bottom:-60px; opacity:.6; z-index:0; }
+  .login-inner{ width:100%; max-width:1120px; display:grid; grid-template-columns: 1.1fr 1fr; align-items:stretch; gap:36px; }
+  @media (max-width:820px){ #view-login{ padding:24px 16px; } .login-inner{ grid-template-columns:1fr; } .login-visual{ display:none; } }
+
+  .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:24px; color:#fff; }
+  .login-visual .lv-wave{ position:absolute; inset-inline-start:-40px; bottom:-40px; opacity:.9; z-index:0; }
   .lv-content{ position:relative; z-index:2; max-width:380px; }
-  .lv-content h1{ font-size:clamp(26px,3vw,34px); font-weight:500; color: var(--text); margin-top:16px; }
-  .lv-content p{ color: var(--text-dim); font-size:14.5px; line-height:1.7; margin-top:12px; }
+  .lv-content h1{ font-size:clamp(26px,3vw,34px); font-weight:500; color:#fff; margin-top:16px; }
+  .lv-content p{ color: rgba(255,255,255,0.62); font-size:14.5px; line-height:1.7; margin-top:12px; }
   .lv-features{ margin-top:30px; display:flex; flex-direction:column; gap:12px; }
   .lv-features div{ display:flex; align-items:center; gap:10px; font-size:12.5px; color: var(--text-dim); }
   .lv-features .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent); flex-shrink:0; }
 
-  .login-panel{ display:flex; align-items:center; justify-content:center; padding:32px; background: var(--bg); }
+  .login-panel{ display:flex; align-items:center; justify-content:center; padding:40px 36px; background: var(--surface); border-radius: var(--radius-card); box-shadow: 0 30px 70px -24px rgba(0,0,0,0.5); }
   .login-form-wrap{ width:100%; max-width:340px; }
   .login-form-wrap .back{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color: var(--text-faint); background:none; border:none; cursor:pointer; padding:0; margin-bottom:28px; }
   .login-form-wrap .back:hover{ color: var(--primary-strong); }
@@ -525,63 +528,30 @@
   </div>
 </div>
 
-<!-- =================== LOGIN (split-screen, dark data panel) =================== -->
-<style>
-  .login-visual.dataauth{
-    background:
-      radial-gradient(120% 90% at 25% 0%, rgba(234,179,147,0.08), transparent 55%),
-      radial-gradient(90% 70% at 100% 100%, rgba(142,163,184,0.11), transparent 55%),
-      radial-gradient(140% 110% at 50% 45%, transparent 45%, rgba(0,0,0,0.22) 100%),
-      linear-gradient(160deg, var(--primary), var(--primary-2));
-    color:#fff;
-  }
-  .login-visual.dataauth .lv-content h1{ color:#fff; }
-  .login-visual.dataauth .lv-content p{ color:rgba(255,255,255,0.62); }
-  .login-visual.dataauth .badge{ color: var(--accent)!important; border-color:rgba(234,179,147,0.32)!important; background:rgba(234,179,147,0.08)!important; }
-  .da-ticker{ display:flex; align-items:center; gap:18px; margin-top:34px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.14); flex-wrap:wrap; }
-  .da-ticker div{ display:flex; flex-direction:column; gap:2px; }
-  .da-ticker b{ font-family: ui-monospace,'JetBrains Mono',monospace; font-size:18px; font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.92); }
-  .da-ticker div.hl b{ color: var(--accent); }
-  .da-ticker span{ font-size:10.5px; color:rgba(255,255,255,0.5); }
-</style>
+<!-- =================== LOGIN (unified dark canvas, floating form card) =================== -->
 <div id="view-login" class="view">
-  <div class="login-visual dataauth">
-    <svg class="lv-wave" width="360" height="360" viewBox="0 0 360 360" fill="none" style="opacity:0.9;">
-      <line x1="60" y1="300" x2="150" y2="230" stroke="#EAB393" stroke-opacity="0.4" stroke-width="1.2"/>
-      <line x1="150" y1="230" x2="120" y2="120" stroke="#8ea3b8" stroke-opacity="0.28" stroke-width="1.2"/>
-      <line x1="150" y1="230" x2="260" y2="260" stroke="#8ea3b8" stroke-opacity="0.28" stroke-width="1.2"/>
-      <line x1="120" y1="120" x2="220" y2="70" stroke="#8ea3b8" stroke-opacity="0.22" stroke-width="1.2"/>
-      <circle cx="60" cy="300" r="5" fill="#EAB393"/>
-      <circle cx="150" cy="230" r="4" fill="#8ea3b8" fill-opacity="0.85"/>
-      <circle cx="120" cy="120" r="3.5" fill="#8ea3b8" fill-opacity="0.7"/>
-      <circle cx="260" cy="260" r="3.5" fill="#8ea3b8" fill-opacity="0.7"/>
-      <circle cx="220" cy="70" r="3" fill="#8ea3b8" fill-opacity="0.55"/>
-    </svg>
-    <div class="lv-content">
-      <span class="badge" style="margin-bottom:14px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;">ویرایش ۴.۰</span>
-      <h1>سامانه هوشمند جریان</h1>
-      <p>رصد و تحلیل فضای سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان.</p>
-      <div class="da-ticker">
-        <div><b>۲۲</b><span>کانال زیرنظر</span></div>
-        <div class="hl"><b>۲۴/۷</b><span>رصد پیوسته</span></div>
-        <div><b>۲</b><span>ساعت، بازه‌ی به‌روزرسانی</span></div>
+  <div class="login-inner">
+    <div class="login-visual">
+      <div class="lv-content">
+        <h1>سامانه هوشمند جریان</h1>
+        <p>رصد و تحلیل فضای سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان.</p>
+        <span class="badge" style="margin-top:16px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;color:var(--accent);border-color:rgba(234,179,147,0.32);background:rgba(234,179,147,0.08);">ویرایش ۴.۰</span>
       </div>
     </div>
-  </div>
-  <div class="login-panel" style="background: radial-gradient(560px 300px at 0% 100%, rgba(234,179,147,0.09), transparent 60%), var(--bg);">
-    <div class="login-form-wrap">
-      <div class="field">
-        <label for="login-password">رمز عبور</label>
-        <div style="position:relative;">
-          <input type="password" id="login-password" placeholder="••••••••" style="padding-left:40px;" onkeydown="if(event.key==='Enter') handleLogin()" />
-          <button type="button" id="login-pw-toggle" aria-label="نمایش رمز عبور" onclick="togglePasswordVisibility()" style="position:absolute; left:6px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-faint); padding:6px; display:flex;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+    <div class="login-panel">
+      <div class="login-form-wrap">
+        <div class="field">
+          <label for="login-password">رمز عبور</label>
+          <div style="position:relative;">
+            <input type="password" id="login-password" placeholder="••••••••" style="padding-left:40px;" onkeydown="if(event.key==='Enter') handleLogin()" />
+            <button type="button" id="login-pw-toggle" aria-label="نمایش رمز عبور" onclick="togglePasswordVisibility()" style="position:absolute; left:6px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-faint); padding:6px; display:flex;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
+        <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
+        <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
       </div>
-      <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
-      <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
-      <p class="login-note">با رمز عبور مدیر یا بیننده وارد شوید</p>
     </div>
   </div>
 </div>
