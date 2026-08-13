@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>پایش پیام‌رسان ایتا | جریان — نقشه‌ی بخش‌های سایت</title>
+<title>سامانه هوشمند جریان | رصد و تحلیل فضای سیاسی‌اجتماعی</title>
 </head>
 <body>
 <style>
@@ -481,7 +481,7 @@
     <div class="topnav-inner">
       <div class="brand" onclick="goMap()">
         <span class="brand-badge" id="icon-brand-top"></span>
-        <span class="brand-text"><b>جریان</b><small>پایش پیام‌رسان ایتا</small></span>
+        <span class="brand-text"><b>سامانه هوشمند جریان</b><small>رصد و تحلیل فضای سیاسی‌اجتماعی</small></span>
       </div>
       <div class="topnav-right">
         <div class="search-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>جست‌وجو در پست‌ها…</div>
@@ -525,31 +525,51 @@
   </div>
 </div>
 
-<!-- =================== LOGIN (split-screen) =================== -->
+<!-- =================== LOGIN (split-screen, dark data panel) =================== -->
+<style>
+  .login-visual.dataauth{
+    background:
+      radial-gradient(120% 90% at 25% 0%, rgba(234,179,147,0.08), transparent 55%),
+      radial-gradient(90% 70% at 100% 100%, rgba(142,163,184,0.11), transparent 55%),
+      radial-gradient(140% 110% at 50% 45%, transparent 45%, rgba(0,0,0,0.22) 100%),
+      linear-gradient(160deg, var(--primary), var(--primary-2));
+    color:#fff;
+  }
+  .login-visual.dataauth .lv-content h1{ color:#fff; }
+  .login-visual.dataauth .lv-content p{ color:rgba(255,255,255,0.62); }
+  .login-visual.dataauth .badge{ color: var(--accent)!important; border-color:rgba(234,179,147,0.32)!important; background:rgba(234,179,147,0.08)!important; }
+  .da-ticker{ display:flex; align-items:center; gap:18px; margin-top:34px; padding-top:22px; border-top:1px solid rgba(255,255,255,0.14); flex-wrap:wrap; }
+  .da-ticker div{ display:flex; flex-direction:column; gap:2px; }
+  .da-ticker b{ font-family: ui-monospace,'JetBrains Mono',monospace; font-size:18px; font-variant-numeric: tabular-nums; color: rgba(255,255,255,0.92); }
+  .da-ticker div.hl b{ color: var(--accent); }
+  .da-ticker span{ font-size:10.5px; color:rgba(255,255,255,0.5); }
+</style>
 <div id="view-login" class="view">
-  <div class="login-visual">
-    <svg class="lv-wave" width="360" height="360" viewBox="0 0 360 360" fill="none">
-      <circle cx="60" cy="300" r="40" stroke="#EAB393" stroke-opacity="0.5" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="90" stroke="#8ea3b8" stroke-opacity="0.4" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="140" stroke="#8ea3b8" stroke-opacity="0.22" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="6" fill="#EAB393"/>
+  <div class="login-visual dataauth">
+    <svg class="lv-wave" width="360" height="360" viewBox="0 0 360 360" fill="none" style="opacity:0.9;">
+      <line x1="60" y1="300" x2="150" y2="230" stroke="#EAB393" stroke-opacity="0.4" stroke-width="1.2"/>
+      <line x1="150" y1="230" x2="120" y2="120" stroke="#8ea3b8" stroke-opacity="0.28" stroke-width="1.2"/>
+      <line x1="150" y1="230" x2="260" y2="260" stroke="#8ea3b8" stroke-opacity="0.28" stroke-width="1.2"/>
+      <line x1="120" y1="120" x2="220" y2="70" stroke="#8ea3b8" stroke-opacity="0.22" stroke-width="1.2"/>
+      <circle cx="60" cy="300" r="5" fill="#EAB393"/>
+      <circle cx="150" cy="230" r="4" fill="#8ea3b8" fill-opacity="0.85"/>
+      <circle cx="120" cy="120" r="3.5" fill="#8ea3b8" fill-opacity="0.7"/>
+      <circle cx="260" cy="260" r="3.5" fill="#8ea3b8" fill-opacity="0.7"/>
+      <circle cx="220" cy="70" r="3" fill="#8ea3b8" fill-opacity="0.55"/>
     </svg>
     <div class="lv-content">
-      <span class="live-chip"><span class="dot"></span>ورود دوسطحی — بدون حساب کاربری</span>
-      <h1>پایش پیام‌رسان ایتا</h1>
-      <p>پایش زنده‌ی ۲۲ کانال عمومی ایتا با فید، آنالیز و تحلیل هوش مصنوعی — با یک رمز عبور مشترک بر اساس نقش.</p>
-      <div class="lv-features">
-        <div><span class="dot"></span>دو سطح دسترسی: مدیر و بیننده، هرکدام با رمز عبور خودش</div>
-        <div><span class="dot"></span>احراز هویت با pgcrypto + pgjwt روی Postgres</div>
-        <div><span class="dot"></span>خروجی‌گیری و مدیریت کانال‌ها فقط برای مدیر</div>
+      <span class="badge" style="margin-bottom:14px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;">ویرایش ۴.۰</span>
+      <h1>سامانه هوشمند جریان</h1>
+      <p>رصد و تحلیل فضای سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان.</p>
+      <div class="da-ticker">
+        <div><b>۲۲</b><span>کانال زیرنظر</span></div>
+        <div class="hl"><b>۲۴/۷</b><span>رصد پیوسته</span></div>
+        <div><b>۲</b><span>ساعت، بازه‌ی به‌روزرسانی</span></div>
       </div>
     </div>
   </div>
-  <div class="login-panel">
+  <div class="login-panel" style="background: radial-gradient(560px 300px at 0% 100%, rgba(234,179,147,0.09), transparent 60%), var(--bg);">
     <div class="login-form-wrap">
-      <button class="back" onclick="goMap()">← بازگشت به نقشه‌ی سایت</button>
-      <h2>ورود</h2>
-      <p class="lede">با رمز عبور مدیر یا بیننده وارد شوید</p>
       <div class="field">
         <label for="login-password">رمز عبور</label>
         <div style="position:relative;">
@@ -561,7 +581,7 @@
       </div>
       <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
       <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
-      <p class="login-note">دو نوع رمز عبور — یکی برای مدیر و یکی برای بیننده — بدون نیاز به نام کاربری.</p>
+      <p class="login-note">با رمز عبور مدیر یا بیننده وارد شوید</p>
     </div>
   </div>
 </div>
@@ -792,9 +812,9 @@
     <footer class="app-footer">
       <div class="app-footer-top">
         <div class="app-footer-brand">
-          <b class="app-footer-title">پروژه جریان</b>
-          <span class="app-footer-tagline">کاوشی عمیق در رویدادهای روز با نگاه سیاسی اجتماعی</span>
-          <small>پایش پیام‌رسان ایتا</small>
+          <b class="app-footer-title">سامانه هوشمند جریان</b>
+          <span class="app-footer-tagline">رصد و تحلیل فضای سیاسی‌اجتماعی</span>
+          <small>پایش پیام‌رسان ایتا — ویرایش ۴.۰</small>
         </div>
         <div class="app-footer-org">
           <div class="afo-item">
