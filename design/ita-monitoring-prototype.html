@@ -194,36 +194,27 @@
   .dash-panel .panel-head{ flex-shrink:0; }
   .dash-half{ margin-top:32px; padding-top:32px; border-top:1px solid var(--border); }
 
-  /* quick-nav: posts + analytics side by side on top, channels centered below — only the qn-banner-cta button is clickable, not the whole card */
-  .dash-hero{ text-align:center; padding: 8px 24px 32px; }
-  .dash-hero-title{ font-size: clamp(19px,2.6vw,26px); font-weight:700; color:#fff; line-height:1.6; max-width:720px; margin:0 auto; text-wrap:balance; }
-  .dash-hero-title .hl{ color: var(--accent); font-size:1.15em; }
-  .dash-hero-sub{ font-size:14px; color: rgba(255,255,255,0.62); line-height:1.85; max-width:600px; margin:14px auto 0; }
-  .quick-nav{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:24px; }
-  .quick-nav-card.channels{ grid-column: 1 / -1; width: calc(50% - 7px); margin:0 auto; }
-  @media (max-width:700px){ .quick-nav{ grid-template-columns: 1fr; } .quick-nav-card.channels{ width:100%; } }
-  .quick-nav-card{
-    display:flex; align-items:center; gap:16px;
-    background: transparent; border-radius: var(--radius); padding:14px 20px;
-  }
-  /* full-bleed image banner variant — image fills the whole card, the overlaid pill is the only clickable option */
-  .quick-nav-card.banner{ padding:0; overflow:hidden; position:relative; aspect-ratio: 1713 / 918; height:auto; }
-  .quick-nav-card.banner .qn-banner-img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .qn-banner-cta{
-    position:absolute; left:18px; bottom:18px; z-index:2;
-    display:inline-flex; align-items:center; gap:6px;
-    background: var(--primary); color:#fff; font-size:12.5px; font-weight:700; font-family:inherit;
-    padding:9px 20px; border-radius: var(--radius-pill); border:none; cursor:pointer;
-    transition: transform .15s ease, background .15s ease;
-  }
-  .qn-banner-cta:hover{ background: var(--primary-2); transform: translateY(-1px); }
-  .qn-banner-placeholder{ display:flex; align-items:center; justify-content:center; color:#fff;
-    background: linear-gradient(135deg, var(--primary), var(--primary-2));
-  }
-  .qn-banner-placeholder svg{ width:25%; height:25%; opacity:.85; }
-  .qn-banner-placeholder.posts{ background: linear-gradient(135deg, var(--accent-strong), var(--primary)); }
-  .qn-banner-placeholder.analytics{ background: linear-gradient(135deg, var(--primary), var(--primary-2)); }
-  .qn-banner-placeholder.channels{ background: linear-gradient(135deg, var(--primary-2), var(--accent-strong)); }
+  /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
+  .dash-hero-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 24px 44px; }
+  @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
+  .dash-hero-text{ text-align:right; }
+  .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; }
+  .dash-hero-text h2 .hl{ color: var(--accent); }
+  .dash-hero-text p{ font-size:14.5px; color: rgba(255,255,255,0.62); line-height:1.85; margin-top:14px; max-width:440px; }
+  .dash-hero-cta{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
+  .dash-hero-cta .btn.ghost{ background:none; border:1px solid rgba(255,255,255,0.24); color:#fff; }
+  .dash-hero-cta .btn.ghost:hover{ background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.4); color:#fff; }
+
+  .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
+
+  .feature-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
+  @media (max-width:760px){ .feature-grid{ grid-template-columns:1fr; } }
+  .feature-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card); padding:26px 22px; text-align:right; cursor:pointer; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
+  .feature-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+  .feature-icon{ width:46px; height:46px; border-radius:12px; border:1.5px solid var(--accent); color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .feature-icon svg{ width:22px; height:22px; }
+  .feature-card h3{ font-size:15.5px; font-weight:700; color: var(--text); }
+  .feature-card p{ font-size:12.5px; color: var(--text-dim); margin-top:7px; line-height:1.75; }
 
 
   .avatar{ width:32px; height:32px; border-radius:50%; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; flex-shrink:0; }
@@ -464,24 +455,34 @@
       </div>
     </div>
 
-    <!-- DASHBOARD: three static shortcut cards — posts / analytics / channels & people -->
+    <!-- DASHBOARD: hero (pitch + illustration) + three feature cards to posts / analytics / channels & people -->
     <section class="section active" id="sec-dashboard">
-      <div class="dash-hero">
-        <h2 class="dash-hero-title">نبض <span class="hl">فضای اجتماعی و سیاسی</span> حوزه‌ی علمیه‌ی خراسان را دنبال کنید</h2>
-        <p class="dash-hero-sub">رصد زنده‌ی کانال‌های عمومی ایتا، با دسته‌بندی و تحلیل آماری.</p>
+      <div class="dash-hero-grid">
+        <div class="dash-hero-text">
+          <h2>نبض <span class="hl">فضای اجتماعی و سیاسی</span> حوزه‌ی علمیه‌ی خراسان را دنبال کنید</h2>
+          <p>رصد زنده‌ی کانال‌های عمومی ایتا و تلگرام، با دسته‌بندی و تحلیل آماری.</p>
+          <div class="dash-hero-cta">
+            <button class="btn primary" onclick="switchSection('posts')">مشاهده‌ی پست‌های امروز</button>
+            <button class="btn ghost" onclick="switchSection('analytics')">مشاهده‌ی آنالیز</button>
+          </div>
+        </div>
+        <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
-      <div class="quick-nav">
-        <div class="quick-nav-card banner posts">
-          <div class="qn-banner-img qn-banner-placeholder posts" role="img" aria-label="پست‌ها — پست‌های نمایش داده‌شده در ایتا را بعد از ورود ببینید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('posts')">مشاهده‌ی پست‌ها</button>
+      <div class="feature-grid">
+        <div class="feature-card" onclick="switchSection('posts')">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
+          <h3>پست‌ها</h3>
+          <p>فهرست کامل پست‌های عمومی، با فیلتر کانال، دسته و جست‌وجو.</p>
         </div>
-        <div class="quick-nav-card banner analytics">
-          <div class="qn-banner-img qn-banner-placeholder analytics" role="img" aria-label="تحلیل و بررسی — آمار و تحلیل فعالیت کاربران را اینجا ببینید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('analytics')">مشاهده‌ی آنالیز</button>
+        <div class="feature-card" onclick="switchSection('analytics')">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
+          <h3>آنالیز</h3>
+          <p>آمار و نمودارها، به‌همراه تحلیل هوش مصنوعی به‌عنوان زیربخش.</p>
         </div>
-        <div class="quick-nav-card banner channels">
-          <div class="qn-banner-img qn-banner-placeholder channels" role="img" aria-label="انسان رسانه‌ها — افراد و منابع انتشار پیام‌های سیاسی اجتماعی را بشناسید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6M14.5 14c2.5 0 4.5 2 4.5 5"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('channels')">مشاهده‌ی کانال‌ها و افراد</button>
+        <div class="feature-card" onclick="switchSection('channels')">
+          <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6M14.5 14c2.5 0 4.5 2 4.5 5"/></svg></div>
+          <h3>کانال‌ها و افراد</h3>
+          <p>فهرست کامل کانال‌های پایش‌شونده به‌همراه مدیر هرکدام.</p>
         </div>
       </div>
     </section>
