@@ -152,14 +152,23 @@
   .afo-item span{ color: rgba(255,255,255,0.62); line-height:1.7; }
   .topbar{
     display:flex; align-items:center; justify-content:space-between; gap:16px;
-    margin-bottom:28px; padding:20px 24px; flex-wrap:wrap;
-    background: var(--surface); border-radius: var(--radius); box-shadow: var(--shadow);
+    margin-bottom:28px; padding:0 0 18px; flex-wrap:wrap;
+    background:none; border-bottom:1px solid rgba(255,255,255,0.12);
   }
-  .topbar h2{ font-size:21px; font-weight:700; color: var(--text); }
-  .topbar .sub{ font-size:12.5px; color: var(--text-dim); margin-top:4px; }
+  .topbar-brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .topbar-badge{ width:30px; height:30px; border-radius:9px; background: rgba(234,179,147,0.14); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .topbar-badge svg{ width:15px; height:15px; }
+  .topbar-brand-text{ display:flex; align-items:baseline; gap:7px; line-height:1.4; font-size:15px; }
+  .topbar-brand-text b{ font-weight:600; color: rgba(255,255,255,0.55); }
+  .topbar-brand-text .sep{ color: rgba(255,255,255,0.3); }
+  .topbar-brand-text #sec-title{ font-weight:700; color:#fff; }
   .topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  .ticker{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:#fff; background: linear-gradient(90deg,var(--primary),var(--primary-2)); padding:7px 14px; border-radius: var(--radius-pill); }
-  .ticker .dot2{ width:6px; height:6px; border-radius:50%; background:#fff; animation: pulse 1.8s infinite; }
+  .topbar-status{ display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color: rgba(255,255,255,0.5); }
+  .topbar-status .dot2{ width:6px; height:6px; border-radius:50%; background: var(--ok); animation: pulse 1.8s infinite; flex-shrink:0; }
+  #role-badge{ border-color: rgba(255,255,255,0.24); color: rgba(255,255,255,0.7); }
+  #role-badge.admin{ border-color:transparent; background: rgba(234,179,147,0.16); color: var(--accent); }
+  .topbar .chip-btn.ghost{ color: rgba(255,255,255,0.6); }
+  .topbar .chip-btn.ghost:hover{ color:#fff; background: rgba(255,255,255,0.1); }
 
   /* admin-only shortcuts (export / settings), top-left of every page */
   .admin-links{ display:flex; align-items:center; gap:8px; }
@@ -443,12 +452,18 @@
 <div id="view-dash" class="view">
   <main class="main">
     <div class="topbar">
-      <div>
-        <h2 id="sec-title">داشبورد</h2>
-        <div class="sub" id="sec-sub">نمای کلی امروز — میانبر به پست‌ها، آنالیز و کانال‌ها و افراد</div>
+      <div class="topbar-brand" onclick="switchSection('dashboard')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') switchSection('dashboard')">
+        <span class="topbar-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+        </span>
+        <div class="topbar-brand-text">
+          <b>سامانه هوشمند جریان</b>
+          <span class="sep">/</span>
+          <span id="sec-title">صفحه نخست</span>
+        </div>
       </div>
       <div class="topbar-right">
-        <div class="ticker"><span class="dot2"></span>زنده — به‌روزرسانی بعدی تا ۴۰ دقیقه‌ی دیگر</div>
+        <div class="topbar-status"><span class="dot2"></span>به‌روزرسانی خودکار هر ۲ ساعت</div>
         <div class="admin-links" id="admin-links">
           <button class="chip-btn" onclick="switchSection('export')">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
@@ -510,7 +525,7 @@
     <section class="section" id="sec-channels">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="panel-head"><span class="panel-pill">همه‌ی کانال‌ها و مدیران آن‌ها</span></div>
       <div class="channel-cards" id="channel-cards"></div>
@@ -520,7 +535,7 @@
     <section class="section" id="sec-posts">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="toolbar">
         <select id="posts-filter-channel"><option value="">همه‌ی کانال‌ها</option></select>
@@ -541,7 +556,7 @@
     <section class="section" id="sec-analytics">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="seg" id="analytics-seg">
         <button class="active" data-tab="stats">آمار و نمودارها</button>
@@ -584,7 +599,7 @@
     <section class="section" id="sec-export">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="panel">
         <div class="panel-head"><span class="panel-pill">خروجی پست‌ها</span></div>
@@ -628,7 +643,7 @@
     <section class="section" id="sec-settings">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="settings-grid">
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -841,19 +856,18 @@
   }
 
   const TITLES = {
-    dashboard:['داشبورد','نمای کلی امروز — میانبر به پست‌ها، آنالیز و کانال‌ها و افراد'],
-    posts:['پست‌ها','فهرست کامل پست‌های عمومی از ۲۲ کانال، برای خواندن با فیلتر و جست‌وجو'],
-    analytics:['آنالیز','آمار و نمودارها، به‌همراه تحلیل هوش مصنوعی به‌عنوان زیربخش'],
-    channels:['کانال‌ها و افراد','فهرست کامل کانال‌های پایش‌شونده به‌همراه مدیر هرکدام'],
-    export:['خروجی‌گیری','دانلود داده‌ها با فیلتر دلخواه'],
-    settings:['کاربران و تنظیمات','مدیریت کانال‌ها، کاربران و اتصال داده'],
+    dashboard: 'صفحه نخست',
+    posts: 'پست‌ها',
+    analytics: 'آنالیز',
+    channels: 'کانال‌ها و افراد',
+    export: 'خروجی‌گیری',
+    settings: 'کاربران و تنظیمات',
   };
 
   function switchSection(key){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+key).classList.add('active');
-    document.getElementById('sec-title').textContent = TITLES[key][0];
-    document.getElementById('sec-sub').textContent = TITLES[key][1];
+    document.getElementById('sec-title').textContent = TITLES[key];
   }
 
   document.getElementById('analytics-seg').addEventListener('click', e=>{
