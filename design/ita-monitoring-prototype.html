@@ -433,11 +433,31 @@
   .mag-reorder button:disabled{ opacity:.35; cursor:default; }
   .mag-reorder svg{ width:11px; height:11px; }
 
-  /* magazine viewer — bigger modal, view-only (no direct download link) */
-  .viewer-card{ max-width:900px; width:95%; height:85vh; display:flex; flex-direction:column; padding:20px; }
+  /* magazine viewer — near-fullscreen modal, view-only (no direct download link) */
+  .viewer-card{ max-width:1200px; width:96vw; height:94vh; display:flex; flex-direction:column; padding:20px; }
   .viewer-card #viewer-body{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:auto; background: var(--surface-2); border-radius: var(--radius-control); margin-top:8px; }
   .viewer-card #viewer-body iframe{ width:100%; height:100%; border:none; }
   .viewer-card #viewer-body img{ max-width:100%; max-height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none; }
+
+  /* magazine carousel widget — home page, rectangular front-page tiles */
+  .mag-widget{ margin: 4px 0 40px; }
+  .mag-widget-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:16px; padding:0 2px; }
+  .mag-widget-head .panel-pill{ background:none; border:1px solid rgba(255,255,255,0.22); }
+  .mag-widget-head .btn.ghost{ background:none; border:1px solid rgba(255,255,255,0.24); color:#fff; padding:7px 15px; font-size:12px; }
+  .mag-widget-head .btn.ghost:hover{ background:rgba(255,255,255,0.1); }
+  .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; }
+  .mag-carousel{ display:flex; gap:14px; overflow-x:auto; scroll-behavior:smooth; padding:4px 2px 6px; scrollbar-width:none; flex:1; min-width:0; }
+  .mag-carousel::-webkit-scrollbar{ display:none; }
+  .mag-arrow{ flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1px solid rgba(255,255,255,0.24); background:rgba(255,255,255,0.06); color:#fff; cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .15s ease; }
+  .mag-arrow:hover{ background:rgba(255,255,255,0.18); }
+  .mag-arrow svg{ width:16px; height:16px; }
+  .mag-tile{ flex-shrink:0; width:150px; cursor:pointer; display:flex; flex-direction:column; gap:9px; }
+  .mag-tile-cover{ width:150px; height:210px; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); transition: transform .15s ease, box-shadow .15s ease; }
+  .mag-tile:hover .mag-tile-cover{ transform:translateY(-4px); box-shadow: var(--shadow-hover); }
+  .mag-tile-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
+  .mag-tile-title{ font-size:12px; font-weight:600; color:#fff; text-align:center; line-height:1.5; }
+  .mag-empty-hint{ font-size:12.5px; color: rgba(255,255,255,0.5); padding:6px 4px; }
 </style>
 
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -579,7 +599,23 @@
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
           </div>
           <h3>بخش تحلیلی</h3>
-          <p>کتابخانه‌ی مجلات چاپی حوزه — برای مطالعه و دانلود.</p>
+          <p>کتابخانه‌ی مجلات چاپی حوزه — برای مطالعه.</p>
+        </div>
+      </div>
+
+      <div class="mag-widget">
+        <div class="mag-widget-head">
+          <span class="panel-pill">کتابخانه‌ی مجلات</span>
+          <button class="btn ghost" onclick="switchSection('reports')">مشاهده‌ی همه</button>
+        </div>
+        <div class="mag-carousel-wrap">
+          <button class="mag-arrow" onclick="scrollMagCarousel(1)" aria-label="بعدی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+          <div class="mag-carousel" id="mag-carousel-home"></div>
+          <button class="mag-arrow" onclick="scrollMagCarousel(-1)" aria-label="قبلی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
         </div>
       </div>
     </section>
@@ -639,6 +675,10 @@
         <div class="field">
           <label>فایل(ها)</label>
           <input type="file" id="mag-files" multiple accept=".pdf,image/*" />
+        </div>
+        <div class="field">
+          <label>تصویر جلد (اختیاری — برای نمایش در ردیف کاروسل صفحه‌ی نخست)</label>
+          <input type="file" id="mag-cover" accept="image/*" />
         </div>
         <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
       </div>
@@ -1374,6 +1414,31 @@
       }
       grid.appendChild(el);
     });
+    renderMagazineCarousel();
+  }
+
+  // ویجت کاروسل صفحه‌ی نخست — جلدهای مجله در یک ردیف افقی
+  function renderMagazineCarousel(){
+    const wrap = document.getElementById('mag-carousel-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!MAGAZINES.length){
+      wrap.innerHTML = '<div class="mag-empty-hint">هنوز مجله‌ای بارگذاری نشده.</div>';
+      return;
+    }
+    MAGAZINES.forEach(m=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const tile = document.createElement('div'); tile.className = 'mag-tile';
+      tile.innerHTML = `<div class="mag-tile-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
+        <div class="mag-tile-title">${m.title}</div>`;
+      tile.addEventListener('click', () => { if(files.length) openMagazineFile(m, files[0]); });
+      wrap.appendChild(tile);
+    });
+  }
+
+  function scrollMagCarousel(dir){
+    const wrap = document.getElementById('mag-carousel-home');
+    if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
   }
 
   // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر داخل خودِ صفحه نمایش داده می‌شن
@@ -1436,6 +1501,14 @@
           body: JSON.stringify({ prefixes: files }),
         });
       }
+      if(m.cover_url && m.cover_url.includes('/magazine-covers/')){
+        const coverPath = m.cover_url.split('/magazine-covers/')[1];
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/magazine-covers', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [coverPath] }),
+        });
+      }
       await api('/magazines?id=eq.'+m.id, {method:'DELETE'});
       await loadMagazines(); renderMagazines();
       showToast('مجله حذف شد');
@@ -1456,6 +1529,20 @@
     return path;
   }
 
+  // جلدها توی یه bucket عمومی جداگانه‌ن (magazine-covers) تا بدون signed URL مستقیم نمایش داده بشن —
+  // خودِ فایل کامل مجله همچنان توی bucket خصوصی می‌مونه
+  async function uploadCoverFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/magazine-covers/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('cover upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/magazine-covers/' + path;
+  }
+
   document.getElementById('mag-upload-btn').addEventListener('click', async () => {
     const btn = document.getElementById('mag-upload-btn');
     const titleEl = document.getElementById('mag-title');
@@ -1463,6 +1550,7 @@
     const dateEl = document.getElementById('mag-date');
     const typeEl = document.getElementById('mag-file-type');
     const filesEl = document.getElementById('mag-files');
+    const coverEl = document.getElementById('mag-cover');
     const title = titleEl.value.trim();
     const files = Array.from(filesEl.files || []);
     if(!title || !files.length){ showToast('عنوان و حداقل یک فایل لازم است'); return; }
@@ -1470,11 +1558,14 @@
     try{
       const paths = [];
       for(const f of files){ paths.push(await uploadMagazineFile(f)); }
+      let coverUrl = null;
+      const coverFile = coverEl.files[0];
+      if(coverFile) coverUrl = await uploadCoverFile(coverFile);
       const nextOrder = MAGAZINES.length ? Math.max(...MAGAZINES.map(m=>m.sort_order||0)) + 1 : 0;
-      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths, sort_order: nextOrder };
+      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths, cover_url: coverUrl, sort_order: nextOrder };
       const r = await api('/magazines', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
       if(!r.ok) throw new Error('insert failed');
-      titleEl.value=''; issueEl.value=''; dateEl.value=''; filesEl.value='';
+      titleEl.value=''; issueEl.value=''; dateEl.value=''; filesEl.value=''; coverEl.value='';
       await loadMagazines(); renderMagazines();
       showToast('مجله بارگذاری شد');
     }catch(e){
