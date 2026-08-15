@@ -426,7 +426,18 @@
   .mag-icon svg{ width:19px; height:19px; }
   .mag-title{ font-size:13.5px; font-weight:700; color: var(--text); }
   .mag-meta{ font-size:11px; color: var(--text-faint); }
-  .mag-actions{ margin-top:auto; padding-top:6px; display:flex; gap:8px; flex-wrap:wrap; }
+  .mag-actions{ margin-top:auto; padding-top:6px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .mag-reorder{ display:flex; flex-direction:column; gap:2px; }
+  .mag-reorder button{ background:none; border:1px solid var(--border-strong); color: var(--text-faint); width:22px; height:18px; border-radius:5px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .mag-reorder button:hover{ color: var(--text); border-color: var(--primary); }
+  .mag-reorder button:disabled{ opacity:.35; cursor:default; }
+  .mag-reorder svg{ width:11px; height:11px; }
+
+  /* magazine viewer — bigger modal, view-only (no direct download link) */
+  .viewer-card{ max-width:900px; width:95%; height:85vh; display:flex; flex-direction:column; padding:20px; }
+  .viewer-card #viewer-body{ flex:1; min-height:0; display:flex; align-items:center; justify-content:center; overflow:auto; background: var(--surface-2); border-radius: var(--radius-control); margin-top:8px; }
+  .viewer-card #viewer-body iframe{ width:100%; height:100%; border:none; }
+  .viewer-card #viewer-body img{ max-width:100%; max-height:100%; object-fit:contain; user-select:none; -webkit-user-drag:none; }
 </style>
 
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -499,6 +510,16 @@
         <p>سامانه هوشمند جریان، ابزار رصد و تحلیل فضای رسانه‌ای اداره‌ی رصد و راهبری سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان است.</p>
         <p>این سامانه به‌صورت زنده کانال‌های عمومی ایتا و تلگرام — اعم از خبرگزاری‌های رسمی و شخصیت‌های حوزوی — را پایش می‌کند، پست‌ها را بر اساس دسته‌بندی موضوعی سازمان‌دهی می‌کند و با تحلیل آماری، تصویری دقیق و به‌روز از گفتمان سیاسی‌اجتماعی روز ارائه می‌دهد.</p>
         <p>دسترسی به بخش‌های سامانه دوسطحی است: مدیر و بیننده، هرکدام با رمز عبور اختصاصی خود.</p>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="magazine-viewer" onclick="if(event.target===this) closeMagazineViewer()">
+      <div class="modal-card viewer-card">
+        <button class="modal-close" onclick="closeMagazineViewer()" aria-label="بستن">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <h3 id="viewer-title"></h3>
+        <div id="viewer-body"></div>
       </div>
     </div>
 
@@ -1018,7 +1039,7 @@
     POSTS_CACHE = r.ok ? await r.json() : [];
   }
   async function loadMagazines(){
-    const r = await api('/magazines?select=*&order=uploaded_at.desc');
+    const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
     MAGAZINES = r.ok ? await r.json() : [];
   }
 
@@ -1313,9 +1334,10 @@
   function renderMagazines(){
     const grid = document.getElementById('magazine-grid');
     const empty = document.getElementById('magazines-empty');
+    const isAdmin = currentRole === 'app_admin';
     grid.innerHTML = '';
     empty.style.display = MAGAZINES.length ? 'none' : 'block';
-    MAGAZINES.forEach(m=>{
+    MAGAZINES.forEach((m, i)=>{
       const files = Array.isArray(m.files) ? m.files : [];
       const meta = [
         m.issue_no ? ('شماره ' + m.issue_no) : '',
@@ -1330,16 +1352,33 @@
       const actions = el.querySelector('.mag-actions');
       files.forEach((path, idx) => {
         const btn = document.createElement('button');
-        btn.className = 'btn'; btn.textContent = files.length > 1 ? ('مشاهده ' + (idx+1)) : 'مشاهده / دانلود';
-        btn.addEventListener('click', () => openMagazineFile(path));
+        btn.className = 'btn'; btn.textContent = files.length > 1 ? ('مشاهده ' + (idx+1)) : 'مشاهده';
+        btn.addEventListener('click', () => openMagazineFile(m, path));
         actions.appendChild(btn);
       });
+      if(isAdmin){
+        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
+        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
+        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
+        up.addEventListener('click', () => moveMagazine(m, -1));
+        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===MAGAZINES.length-1;
+        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+        down.addEventListener('click', () => moveMagazine(m, 1));
+        reorder.appendChild(up); reorder.appendChild(down);
+        actions.appendChild(reorder);
+
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف مجله'; del.setAttribute('aria-label', 'حذف مجله‌ی ' + m.title);
+        del.addEventListener('click', () => deleteMagazine(m));
+        actions.appendChild(del);
+      }
       grid.appendChild(el);
     });
   }
 
-  // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر باز می‌شن
-  async function openMagazineFile(path){
+  // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر داخل خودِ صفحه نمایش داده می‌شن
+  // (نه لینک مستقیم/دانلود — این جلوی دانلود عادی رو می‌گیره، ولی جلوی اسکرین‌شات یا کاربر فنی مصمم رو نه)
+  async function openMagazineFile(magazine, path){
     try{
       const r = await fetch(SUPABASE_URL + '/storage/v1/object/sign/magazines/' + path, {
         method: 'POST',
@@ -1348,9 +1387,60 @@
       });
       if(!r.ok) throw new Error('sign failed');
       const data = await r.json();
-      window.open(SUPABASE_URL + '/storage/v1' + data.signedURL, '_blank');
+      const url = SUPABASE_URL + '/storage/v1' + data.signedURL;
+      document.getElementById('viewer-title').textContent = magazine.title;
+      const body = document.getElementById('viewer-body');
+      body.innerHTML = '';
+      if(magazine.file_type === 'pdf'){
+        const frame = document.createElement('iframe');
+        frame.src = url + '#toolbar=0&navpanes=0';
+        body.appendChild(frame);
+      }else{
+        const img = document.createElement('img');
+        img.src = url; img.alt = magazine.title; img.draggable = false;
+        img.oncontextmenu = () => false;
+        body.appendChild(img);
+      }
+      document.getElementById('magazine-viewer').classList.add('active');
     }catch(e){
       showToast('باز کردن فایل ممکن نشد — احتمالاً دسترسی Storage هنوز تنظیم نشده');
+    }
+  }
+
+  function closeMagazineViewer(){
+    document.getElementById('magazine-viewer').classList.remove('active');
+    document.getElementById('viewer-body').innerHTML = '';
+  }
+
+  async function moveMagazine(m, direction){
+    const idx = MAGAZINES.findIndex(x=>x.id===m.id);
+    const swapIdx = idx + direction;
+    if(swapIdx < 0 || swapIdx >= MAGAZINES.length) return;
+    const other = MAGAZINES[swapIdx];
+    const aOrder = m.sort_order || 0, bOrder = other.sort_order || 0;
+    await Promise.all([
+      api('/magazines?id=eq.'+m.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
+      api('/magazines?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
+    ]);
+    await loadMagazines(); renderMagazines();
+  }
+
+  async function deleteMagazine(m){
+    if(!confirm('مجله‌ی «' + m.title + '» حذف شود؟ فایل‌هاش هم برای همیشه پاک می‌شن.')) return;
+    try{
+      const files = Array.isArray(m.files) ? m.files : [];
+      if(files.length){
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/magazines', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: files }),
+        });
+      }
+      await api('/magazines?id=eq.'+m.id, {method:'DELETE'});
+      await loadMagazines(); renderMagazines();
+      showToast('مجله حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
     }
   }
 
@@ -1380,7 +1470,8 @@
     try{
       const paths = [];
       for(const f of files){ paths.push(await uploadMagazineFile(f)); }
-      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths };
+      const nextOrder = MAGAZINES.length ? Math.max(...MAGAZINES.map(m=>m.sort_order||0)) + 1 : 0;
+      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths, sort_order: nextOrder };
       const r = await api('/magazines', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
       if(!r.ok) throw new Error('insert failed');
       titleEl.value=''; issueEl.value=''; dateEl.value=''; filesEl.value='';
