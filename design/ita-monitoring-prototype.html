@@ -581,7 +581,7 @@
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
-      <div class="section-label">فعالیت‌های رصدی و بخش تحلیلی</div>
+      <div class="section-label">فعالیت‌های رصدی</div>
       <div class="domain-grid">
         <div class="domain-card" onclick="switchSection('overview')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
@@ -599,6 +599,7 @@
           <div class="domain-tags">
             <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('posts')">پست‌های منتشرشده</span>
             <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('channels')">افراد و کانال‌ها</span>
+            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('analytics')">آنالیز</span>
           </div>
         </div>
         <div class="domain-card" onclick="switchSection('schools')">
@@ -610,12 +611,13 @@
             <span class="domain-tag">خراسان جنوبی</span>
           </div>
         </div>
-        <div class="domain-card" onclick="switchSection('reports')">
-          <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
-          <h3>بخش تحلیلی</h3>
+        <div class="domain-card" onclick="switchSection('people')">
+          <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6M14.5 14c2.5 0 4.5 2 4.5 5"/></svg></div>
+          <h3>افراد و مجموعه‌ها <span class="badge" style="color:var(--accent);border-color:rgba(234,179,147,.35);background:rgba(234,179,147,.14);">به‌زودی</span></h3>
           <div class="domain-tags">
-            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('reports')">کتابخانه‌ی مجلات</span>
-            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('analytics')">آنالیز</span>
+            <span class="domain-tag">تشکل‌ها</span>
+            <span class="domain-tag">انسان‌رسانه‌ها</span>
+            <span class="domain-tag">فعالین</span>
           </div>
         </div>
       </div>
@@ -639,7 +641,7 @@
       </div>
     </section>
 
-    <!-- OVERVIEW / SCHOOLS — placeholders, غیرفعال به‌خواست کاربر -->
+    <!-- OVERVIEW / SCHOOLS / PEOPLE — placeholders, غیرفعال به‌خواست کاربر -->
     <section class="section" id="sec-overview">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
@@ -655,6 +657,15 @@
         بازگشت به صفحه نخست
       </button>
       <div class="panel-head"><span class="panel-pill">برنامه مدارس</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-people">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">افراد و مجموعه‌ها</span></div>
       <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
     </section>
 
@@ -1037,6 +1048,7 @@
     channels: 'کانال‌ها و افراد',
     overview: 'اخبار رسمی',
     schools: 'برنامه مدارس',
+    people: 'افراد و مجموعه‌ها',
     reports: 'بخش تحلیلی — کتابخانه‌ی مجلات',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
