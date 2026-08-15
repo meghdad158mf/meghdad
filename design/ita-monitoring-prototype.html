@@ -221,6 +221,8 @@
   .feature-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card); padding:26px 22px; text-align:right; cursor:pointer; box-shadow: var(--shadow); transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease; }
   .feature-card:hover{ transform: translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
   .feature-icon{ width:46px; height:46px; border-radius:12px; border:1.5px solid var(--accent); color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
+  .feature-card-top{ display:flex; align-items:flex-start; justify-content:space-between; margin-bottom:16px; }
+  .feature-card-top .feature-icon{ margin-bottom:0; }
   .feature-icon svg{ width:22px; height:22px; }
   .feature-card h3{ font-size:15.5px; font-weight:700; color: var(--text); }
   .feature-card p{ font-size:12.5px; color: var(--text-dim); margin-top:7px; line-height:1.75; }
@@ -518,7 +520,76 @@
           <h3>کانال‌ها و افراد</h3>
           <p>فهرست کامل کانال‌های پایش‌شونده به‌همراه مدیر هرکدام.</p>
         </div>
+        <div class="feature-card" onclick="switchSection('overview')">
+          <div class="feature-card-top">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+            <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
+          </div>
+          <h3>نگاه کلی به اخبار</h3>
+          <p>خلاصه‌ی یکجا از مهم‌ترین اخبار روز، از دل کانال‌های پایش‌شونده.</p>
+        </div>
+        <div class="feature-card" onclick="switchSection('schools')">
+          <div class="feature-card-top">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div>
+            <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
+          </div>
+          <h3>فعالیت مدارس</h3>
+          <p>رصد فعالیت و اخبار مدارس علمیه‌ی حوزه‌ی خراسان.</p>
+        </div>
+        <div class="feature-card" onclick="switchSection('reports')">
+          <div class="feature-card-top">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+            <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
+          </div>
+          <h3>بسته‌های تحلیلی</h3>
+          <p>گزارش‌های تحلیلی آماده، برای بازه‌های زمانی مشخص.</p>
+        </div>
+        <div class="feature-card" onclick="switchSection('cyberspace')">
+          <div class="feature-card-top">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg></div>
+            <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
+          </div>
+          <h3>کنش فضای مجازی</h3>
+          <p>رصد واکنش و کنش کاربران در فضای مجازی.</p>
+        </div>
       </div>
+    </section>
+
+    <!-- OVERVIEW / SCHOOLS / REPORTS / CYBERSPACE — placeholders (scope not defined yet) -->
+    <section class="section" id="sec-overview">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">نگاه کلی به اخبار</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-schools">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">فعالیت مدارس</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-reports">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">بسته‌های تحلیلی</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-cyberspace">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">کنش فضای مجازی</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
     </section>
 
     <!-- CHANNELS & PEOPLE (full monitored-channel directory) -->
@@ -860,6 +931,10 @@
     posts: 'پست‌ها',
     analytics: 'آنالیز',
     channels: 'کانال‌ها و افراد',
+    overview: 'نگاه کلی به اخبار',
+    schools: 'فعالیت مدارس',
+    reports: 'بسته‌های تحلیلی',
+    cyberspace: 'کنش فضای مجازی',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
   };
