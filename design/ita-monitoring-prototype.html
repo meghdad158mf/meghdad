@@ -204,7 +204,7 @@
   .dash-half{ margin-top:32px; padding-top:32px; border-top:1px solid var(--border); }
 
   /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
-  .dash-hero-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 24px 44px; }
+  .dash-hero-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 20px 24px 14px; }
   @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
   .dash-hero-text{ text-align:right; }
   .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; }
@@ -216,25 +216,22 @@
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
 
-  /* domain cards: floating (not var(--surface) white) so they read against the dark canvas,
-     with a visible translucent panel + shadow so each card clearly separates from the canvas
-     instead of blending into it. */
-  .section-label{ font-size:12.5px; font-weight:700; color: rgba(255,255,255,0.5); margin: 4px 2px 16px; text-align:center; }
+  /* domain cards: no card box at all — just a big icon + title + tags floating on the
+     dark canvas, separated purely by grid spacing (no border/background/shadow). */
+  .section-label{ font-size:12.5px; font-weight:700; color: rgba(255,255,255,0.5); margin: 0 2px 16px; text-align:center; }
   .domain-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom:22px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .domain-grid{ grid-template-columns: 1fr; } }
   .domain-card{
-    display:flex; flex-direction:column; align-items:center; text-align:center; padding:28px 14px 24px; cursor:pointer;
-    background: rgba(255,255,255,0.14); border:1px solid rgba(255,255,255,0.32); border-radius: var(--radius-card);
-    box-shadow: 0 18px 34px -14px rgba(0,0,0,0.55), 0 1px 0 rgba(255,255,255,0.18) inset;
-    transition: background .15s ease, border-color .15s ease, transform .15s ease, box-shadow .15s ease;
+    display:flex; flex-direction:column; align-items:center; text-align:center; padding:6px 12px; cursor:pointer;
+    background:none; border:none; box-shadow:none;
+    transition: transform .15s ease;
   }
-  .domain-card:hover{ background: rgba(255,255,255,0.19); border-color: var(--accent); transform:translateY(-4px); box-shadow: 0 24px 42px -16px rgba(0,0,0,0.6), 0 1px 0 rgba(255,255,255,0.22) inset; }
-  .domain-icon{ width:64px; height:64px; border-radius:50%; background:rgba(255,255,255,0.1); border:1px solid rgba(255,255,255,0.3); color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:16px; }
-  .domain-icon svg{ width:27px; height:27px; }
-  /* illustrated (multi-tone gradient) icons carry their own color/depth — no circle badge behind them */
-  .domain-icon.is-illustrated{ background:none; border:none; }
-  .domain-icon.is-illustrated svg{ width:56px; height:56px; }
+  .domain-card:hover{ transform:translateY(-3px); }
+  .domain-icon{ width:64px; height:64px; background:none; border:none; color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
+  .domain-icon svg{ width:72px; height:72px; stroke-width:1.05; }
+  /* illustrated (multi-tone gradient) icon is already detailed/colorful — sized a bit larger */
+  .domain-icon.is-illustrated svg{ width:92px; height:92px; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
   .domain-tags{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:14px; }
   .domain-tag{ font-size:10.5px; font-weight:600; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.13); border:1px solid rgba(255,255,255,0.26); padding:4px 11px; border-radius: var(--radius-pill); }
