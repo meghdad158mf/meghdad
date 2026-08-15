@@ -418,6 +418,15 @@
   .kv div{ display:flex; justify-content:space-between; gap:10px; padding:8px 10px; background: var(--surface-2); border-radius:7px; }
   .kv b{ color: var(--text-faint); font-weight:500; }
   .kv span{ font-family: ui-monospace,monospace; color: var(--text-dim); direction:ltr; }
+
+  /* ---------- magazines library (بخش تحلیلی) ---------- */
+  .magazine-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
+  .magazine-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:18px; display:flex; flex-direction:column; gap:8px; box-shadow: var(--shadow); }
+  .mag-icon{ width:38px; height:38px; border-radius: var(--radius-control); background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .mag-icon svg{ width:19px; height:19px; }
+  .mag-title{ font-size:13.5px; font-weight:700; color: var(--text); }
+  .mag-meta{ font-size:11px; color: var(--text-faint); }
+  .mag-actions{ margin-top:auto; padding-top:6px; display:flex; gap:8px; flex-wrap:wrap; }
 </style>
 
 <canvas id="ambient" aria-hidden="true"></canvas>
@@ -525,43 +534,42 @@
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
             <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
           </div>
-          <h3>نگاه کلی به اخبار</h3>
-          <p>خلاصه‌ی یکجا از مهم‌ترین اخبار روز، از دل کانال‌های پایش‌شونده.</p>
+          <h3>رصد اخبار</h3>
+          <p>خلاصه‌ی یکجا از مهم‌ترین اخبار روز، از وب‌سایت‌های خبری و کانال‌های خبرگزاری.</p>
         </div>
         <div class="feature-card" onclick="switchSection('schools')">
           <div class="feature-card-top">
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div>
             <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
           </div>
-          <h3>فعالیت مدارس</h3>
+          <h3>رصد فعالیت مدارس</h3>
           <p>رصد فعالیت و اخبار مدارس علمیه‌ی حوزه‌ی خراسان.</p>
-        </div>
-        <div class="feature-card" onclick="switchSection('reports')">
-          <div class="feature-card-top">
-            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
-            <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
-          </div>
-          <h3>بسته‌های تحلیلی</h3>
-          <p>گزارش‌های تحلیلی آماده، برای بازه‌های زمانی مشخص.</p>
         </div>
         <div class="feature-card" onclick="switchSection('cyberspace')">
           <div class="feature-card-top">
             <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg></div>
             <span class="badge" style="color:var(--accent-strong);border-color:transparent;background:var(--accent-soft);">به‌زودی</span>
           </div>
-          <h3>کنش فضای مجازی</h3>
-          <p>رصد واکنش و کنش کاربران در فضای مجازی.</p>
+          <h3>رصد برنامه تشکل‌ها</h3>
+          <p>رصد برنامه و فعالیت تشکل‌های طلبگی حوزه‌ی خراسان.</p>
+        </div>
+        <div class="feature-card" onclick="switchSection('reports')">
+          <div class="feature-card-top">
+            <div class="feature-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M21 8l-9-5-9 5 9 5 9-5z"/><path d="M3 8v8l9 5 9-5V8"/><path d="M12 13v8"/></svg></div>
+          </div>
+          <h3>بخش تحلیلی</h3>
+          <p>کتابخانه‌ی مجلات چاپی حوزه — برای مطالعه و دانلود.</p>
         </div>
       </div>
     </section>
 
-    <!-- OVERVIEW / SCHOOLS / REPORTS / CYBERSPACE — placeholders (scope not defined yet) -->
+    <!-- OVERVIEW / SCHOOLS / CYBERSPACE — placeholders, غیرفعال به‌خواست کاربر -->
     <section class="section" id="sec-overview">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">نگاه کلی به اخبار</span></div>
+      <div class="panel-head"><span class="panel-pill">رصد اخبار</span></div>
       <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
     </section>
 
@@ -570,16 +578,7 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">فعالیت مدارس</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
-    </section>
-
-    <section class="section" id="sec-reports">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
-      <div class="panel-head"><span class="panel-pill">بسته‌های تحلیلی</span></div>
+      <div class="panel-head"><span class="panel-pill">رصد فعالیت مدارس</span></div>
       <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
     </section>
 
@@ -588,8 +587,40 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">کنش فضای مجازی</span></div>
+      <div class="panel-head"><span class="panel-pill">رصد برنامه تشکل‌ها</span></div>
       <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
+    <section class="section" id="sec-reports">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">کتابخانه‌ی مجلات</span></div>
+      <p class="magazines-empty" id="magazines-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز مجله‌ای بارگذاری نشده.</p>
+      <div class="magazine-grid" id="magazine-grid"></div>
+
+      <div class="panel" id="magazine-upload-panel" style="display:none;">
+        <div class="panel-head"><span class="panel-pill">بارگذاری مجله‌ی جدید</span></div>
+        <div class="form-grid">
+          <div class="field"><label>عنوان</label><input type="text" id="mag-title" /></div>
+          <div class="field"><label>شماره</label><input type="text" id="mag-issue" /></div>
+          <div class="field"><label>تاریخ انتشار</label><input type="date" id="mag-date" /></div>
+          <div class="field">
+            <label>نوع فایل</label>
+            <select id="mag-file-type">
+              <option value="pdf">PDF</option>
+              <option value="images">چند عکس</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>فایل(ها)</label>
+          <input type="file" id="mag-files" multiple accept=".pdf,image/*" />
+        </div>
+        <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
+      </div>
     </section>
 
     <!-- CHANNELS & PEOPLE (full monitored-channel directory) -->
@@ -833,7 +864,8 @@
   const ICONS = {
     video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10l6-3.2v10.4l-6-3.2"/></svg>',
     photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-5.5-5-6.5 6.5-2.5-2.5-3 3"/></svg>',
-    person: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="34" r="17"/><path d="M16 96c0-24 15-40 34-40s34 16 34 40"/></svg>'
+    person: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="34" r="17"/><path d="M16 96c0-24 15-40 34-40s34 16 34 40"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'
   };
 
   // ---- auth (real Supabase/PostgREST backend) ----
@@ -876,6 +908,7 @@
   function applyRoleUI(){
     const isAdmin = currentRole === 'app_admin';
     adminLinks.style.display = isAdmin ? '' : 'none';
+    document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
     roleBadge.style.display = currentRole ? '' : 'none';
     roleBadge.textContent = isAdmin ? 'مدیر' : 'بیننده';
     roleBadge.className = 'role' + (isAdmin ? ' admin' : '');
@@ -933,7 +966,7 @@
     channels: 'کانال‌ها و افراد',
     overview: 'نگاه کلی به اخبار',
     schools: 'فعالیت مدارس',
-    reports: 'بسته‌های تحلیلی',
+    reports: 'بخش تحلیلی — کتابخانه‌ی مجلات',
     cyberspace: 'کنش فضای مجازی',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
@@ -957,6 +990,7 @@
   let CHANNELS = [];    // {id, platform, username, title, type, category_id, active}
   let CATEGORIES = [];  // {id, name, color}
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
+  let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -983,9 +1017,13 @@
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
   }
+  async function loadMagazines(){
+    const r = await api('/magazines?select=*&order=uploaded_at.desc');
+    MAGAZINES = r.ok ? await r.json() : [];
+  }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories()]);
+    await Promise.all([loadChannels(), loadCategories(), loadMagazines()]);
     await loadPosts();
     renderChannelCards();
     populatePostFilters();
@@ -995,6 +1033,7 @@
     refreshCatOptions();
     renderCatGrid();
     renderChanList();
+    renderMagazines();
   }
 
   // ---- channels & people page ----
@@ -1265,6 +1304,92 @@
       renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
+    }
+  });
+
+  // ---- magazines library (بخش تحلیلی) ----
+  const MAG_TYPE_LABEL = { pdf:'PDF', images:'چند عکس' };
+
+  function renderMagazines(){
+    const grid = document.getElementById('magazine-grid');
+    const empty = document.getElementById('magazines-empty');
+    grid.innerHTML = '';
+    empty.style.display = MAGAZINES.length ? 'none' : 'block';
+    MAGAZINES.forEach(m=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const meta = [
+        m.issue_no ? ('شماره ' + m.issue_no) : '',
+        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
+        (MAG_TYPE_LABEL[m.file_type] || m.file_type) + ' · ' + files.length + ' فایل',
+      ].filter(Boolean).join(' · ');
+      const el = document.createElement('div'); el.className = 'magazine-card';
+      el.innerHTML = `<div class="mag-icon">${m.file_type==='images' ? ICONS.photo : ICONS.doc}</div>
+        <div class="mag-title">${m.title}</div>
+        <div class="mag-meta">${meta}</div>
+        <div class="mag-actions"></div>`;
+      const actions = el.querySelector('.mag-actions');
+      files.forEach((path, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn'; btn.textContent = files.length > 1 ? ('مشاهده ' + (idx+1)) : 'مشاهده / دانلود';
+        btn.addEventListener('click', () => openMagazineFile(path));
+        actions.appendChild(btn);
+      });
+      grid.appendChild(el);
+    });
+  }
+
+  // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر باز می‌شن
+  async function openMagazineFile(path){
+    try{
+      const r = await fetch(SUPABASE_URL + '/storage/v1/object/sign/magazines/' + path, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expiresIn: 60 }),
+      });
+      if(!r.ok) throw new Error('sign failed');
+      const data = await r.json();
+      window.open(SUPABASE_URL + '/storage/v1' + data.signedURL, '_blank');
+    }catch(e){
+      showToast('باز کردن فایل ممکن نشد — احتمالاً دسترسی Storage هنوز تنظیم نشده');
+    }
+  }
+
+  async function uploadMagazineFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/magazines/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('upload failed: ' + file.name);
+    return path;
+  }
+
+  document.getElementById('mag-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('mag-upload-btn');
+    const titleEl = document.getElementById('mag-title');
+    const issueEl = document.getElementById('mag-issue');
+    const dateEl = document.getElementById('mag-date');
+    const typeEl = document.getElementById('mag-file-type');
+    const filesEl = document.getElementById('mag-files');
+    const title = titleEl.value.trim();
+    const files = Array.from(filesEl.files || []);
+    if(!title || !files.length){ showToast('عنوان و حداقل یک فایل لازم است'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      const paths = [];
+      for(const f of files){ paths.push(await uploadMagazineFile(f)); }
+      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths };
+      const r = await api('/magazines', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; issueEl.value=''; dateEl.value=''; filesEl.value='';
+      await loadMagazines(); renderMagazines();
+      showToast('مجله بارگذاری شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری مجله';
     }
   });
 
