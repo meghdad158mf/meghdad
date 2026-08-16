@@ -249,7 +249,7 @@
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
   .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 0 2px 8px; text-align:center; letter-spacing:0.01em; }
-  .domain-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom:22px; }
+  .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:28px; margin-bottom:40px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .domain-grid{ grid-template-columns: 1fr; } }
   .domain-card{
@@ -263,10 +263,6 @@
   /* illustrated (multi-tone gradient) icon is already detailed/colorful — sized a bit larger */
   .domain-icon.is-illustrated svg{ width:92px; height:92px; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
-  .domain-tags{ display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-top:14px; }
-  .domain-tag{ font-size:10.5px; font-weight:600; color: rgba(255,255,255,0.85); background: rgba(255,255,255,0.13); border:1px solid rgba(255,255,255,0.26); padding:4px 11px; border-radius: var(--radius-pill); }
-  .domain-tag.is-link{ cursor:pointer; transition: background .15s ease, border-color .15s ease, color .15s ease; }
-  .domain-tag.is-link:hover{ background: var(--accent); border-color: var(--accent); color: var(--primary); }
 
   .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
   .modal-overlay.active{ display:flex; }
@@ -621,30 +617,14 @@
         <div class="domain-card" onclick="switchSection('overview')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
           <h3>اخبار رسمی</h3>
-          <div class="domain-tags">
-            <span class="domain-tag">خبرگزاری‌های داخلی</span>
-            <span class="domain-tag">خبرگزاری‌های جهانی</span>
-            <span class="domain-tag">خبرگزاری‌های منطقه</span>
-            <span class="domain-tag">خبرگزاری‌های معاند</span>
-          </div>
         </div>
         <div class="domain-card" onclick="switchSection('posts')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg></div>
           <h3>کنشگری مجازی</h3>
-          <div class="domain-tags">
-            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('posts')">پست‌های منتشرشده</span>
-            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('channels')">افراد و کانال‌ها</span>
-            <span class="domain-tag is-link" onclick="event.stopPropagation(); switchSection('analytics')">آنالیز</span>
-          </div>
         </div>
         <div class="domain-card" onclick="switchSection('schools')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div>
           <h3>برنامه مدارس</h3>
-          <div class="domain-tags">
-            <span class="domain-tag">خراسان شمالی</span>
-            <span class="domain-tag">خراسان رضوی</span>
-            <span class="domain-tag">خراسان جنوبی</span>
-          </div>
         </div>
         <div class="domain-card" onclick="switchSection('people')">
           <div class="domain-icon is-illustrated">
@@ -706,11 +686,6 @@
             </svg>
           </div>
           <h3>افراد و مجموعه‌ها</h3>
-          <div class="domain-tags">
-            <span class="domain-tag">تشکل‌ها</span>
-            <span class="domain-tag">انسان‌رسانه‌ها</span>
-            <span class="domain-tag">فعالین</span>
-          </div>
         </div>
       </div>
 
