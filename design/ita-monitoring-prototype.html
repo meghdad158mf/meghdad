@@ -150,7 +150,8 @@
 
   /* ---------- LOGIN VIEW ---------- */
   /* split-screen login: brand/visual panel (right, RTL-first) + form panel (left) */
-  #view-login{ min-height:100vh; display:grid; grid-template-columns: 1.1fr 1fr; }
+  #view-login{ min-height:100vh; display:none; grid-template-columns: 1.1fr 1fr; }
+  #view-login.active{ display:grid; }
   @media (max-width:820px){ #view-login{ grid-template-columns:1fr; } .login-visual{ display:none; } }
 
   .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:56px;
@@ -248,6 +249,12 @@
   .dash-hero-title{ font-size: clamp(19px,2.6vw,26px); font-weight:700; color: var(--text); line-height:1.6; max-width:720px; margin:0 auto; text-wrap:balance; }
   .dash-hero-title .hl{ color: var(--accent-strong); font-size:1.15em; }
   .dash-hero-sub{ font-size:14px; color: var(--text-dim); line-height:1.85; max-width:600px; margin:14px auto 0; }
+  .dash-hero-stats{ display:flex; justify-content:center; flex-wrap:wrap; gap:0; margin:26px auto 0; padding-top:20px; border-top:1px solid var(--border); max-width:560px; }
+  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:3px; padding:0 24px; border-inline-end:1px solid var(--border); }
+  .dash-hero-stat:last-child{ border-inline-end:none; }
+  .dash-hero-stat b{ font-size:24px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent-strong); }
+  .dash-hero-stat span{ font-size:11.5px; color: var(--text-dim); }
+  @media (max-width:520px){ .dash-hero-stat{ padding:0 14px; } .dash-hero-stat b{ font-size:20px; } }
   .quick-nav{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:24px; }
   .quick-nav-card.channels{ grid-column: 1 / -1; width: calc(50% - 7px); margin:0 auto; }
   @media (max-width:700px){ .quick-nav{ grid-template-columns: 1fr; } .quick-nav-card.channels{ width:100%; } }
@@ -581,6 +588,7 @@
       <div class="dash-hero">
         <h2 class="dash-hero-title">نبض <span class="hl">فضای اجتماعی و سیاسی</span> حوزه‌ی علمیه‌ی خراسان را دنبال کنید</h2>
         <p class="dash-hero-sub">طلاب، اساتید و کنشگران این حوزه از دریچه‌ی کانال‌های عمومی پیام‌رسان ایتا، به‌صورت زنده رصد و دسته‌بندی می‌شوند و با تحلیل آماری و هوش مصنوعی، روایتی دقیق و به‌روز از گفتمان این حوزه پیش چشم شما قرار می‌گیرد.</p>
+        <div class="dash-hero-stats" id="dash-hero-stats"></div>
       </div>
       <div class="quick-nav">
         <div class="quick-nav-card banner posts">
@@ -1023,9 +1031,25 @@
     POSTS_CACHE = r.ok ? await r.json() : [];
   }
 
+  function renderDashHeroStats(){
+    const wrap = document.getElementById('dash-hero-stats');
+    if(!wrap) return;
+    const total = CHANNELS.length;
+    const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
+    const personCount = CHANNELS.filter(c=>c.type==='person').length;
+    const eitaaCount = CHANNELS.filter(c=>c.platform==='eitaa').length;
+    const telegramCount = CHANNELS.filter(c=>c.platform==='telegram').length;
+    wrap.innerHTML = `
+      <div class="dash-hero-stat"><b>${total}</b><span>کانال پایش‌شونده</span></div>
+      <div class="dash-hero-stat"><b>${newsCount}</b><span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b>${personCount}</b><span>شخصیت</span></div>
+      <div class="dash-hero-stat"><b>${eitaaCount} / ${telegramCount}</b><span>ایتا / تلگرام</span></div>`;
+  }
+
   async function loadAll(){
     await Promise.all([loadChannels(), loadCategories()]);
     await loadPosts();
+    renderDashHeroStats();
     renderChannelCards();
     populatePostFilters();
     renderPosts();
