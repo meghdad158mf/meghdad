@@ -210,18 +210,15 @@
   .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; }
   .dash-hero-text h2 .hl{ color: var(--accent); }
   .dash-hero-text p{ font-size:14.5px; color: rgba(255,255,255,0.62); line-height:1.85; margin-top:14px; max-width:440px; }
-  .dash-hero-cta{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
-  .dash-hero-cta .btn.ghost{ background:none; border:1px solid rgba(255,255,255,0.24); color:#fff; }
-  .dash-hero-cta .btn.ghost:hover{ background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.4); color:#fff; }
   .dash-hero-stats{
-    display:grid; grid-template-columns: repeat(3,1fr); margin-top:26px;
+    display:grid; grid-template-columns: repeat(3,1fr); margin-top:22px;
     background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015));
-    border:1px solid rgba(255,255,255,0.14); border-radius:16px; padding:16px 8px;
+    border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:6px 4px;
     box-shadow: 0 20px 40px -26px rgba(0,0,0,0.6);
   }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
-  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
-  .dash-hero-stat b{ font-size:22px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
+  .dash-hero-stat b{ font-size:20px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
   .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.6); }
   .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:none; }
   .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:none; }
@@ -236,7 +233,7 @@
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
-  .section-label{ font-size:12.5px; font-weight:700; color: rgba(255,255,255,0.5); margin: 0 2px 16px; text-align:center; }
+  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 0 2px 8px; text-align:center; letter-spacing:0.01em; }
   .domain-grid{ display:grid; grid-template-columns: repeat(4,1fr); gap:16px; margin-bottom:22px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .domain-grid{ grid-template-columns: 1fr; } }
@@ -592,19 +589,16 @@
     <section class="section active" id="sec-dashboard">
       <div class="dash-hero-grid">
         <div class="dash-hero-text">
-          <h2>نبض <span class="hl">فضای اجتماعی و سیاسی</span> حوزه‌ی علمیه‌ی خراسان را دنبال کنید</h2>
-          <div class="dash-hero-cta">
-            <button class="btn primary" onclick="openIntro()">معرفی جریان</button>
-          </div>
+          <h2>نبض <span class="hl">فضای سیاسی اجتماعی</span> در حوزه علمیه خراسان</h2>
           <div class="dash-hero-stats" id="dash-hero-stats"></div>
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
-      <div class="section-label">فعالیت‌های رصدی</div>
+      <div class="section-label">عرصه‌های رصد و تحلیل</div>
       <div class="domain-grid">
         <div class="domain-card" onclick="switchSection('overview')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
-          <h3>اخبار رسمی <span class="badge" style="color:var(--accent);border-color:rgba(234,179,147,.35);background:rgba(234,179,147,.14);">به‌زودی</span></h3>
+          <h3>اخبار رسمی</h3>
           <div class="domain-tags">
             <span class="domain-tag">خبرگزاری‌های داخلی</span>
             <span class="domain-tag">خبرگزاری‌های جهانی</span>
@@ -623,7 +617,7 @@
         </div>
         <div class="domain-card" onclick="switchSection('schools')">
           <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div>
-          <h3>برنامه مدارس <span class="badge" style="color:var(--accent);border-color:rgba(234,179,147,.35);background:rgba(234,179,147,.14);">به‌زودی</span></h3>
+          <h3>برنامه مدارس</h3>
           <div class="domain-tags">
             <span class="domain-tag">خراسان شمالی</span>
             <span class="domain-tag">خراسان رضوی</span>
@@ -689,7 +683,7 @@
               </g>
             </svg>
           </div>
-          <h3>افراد و مجموعه‌ها <span class="badge" style="color:var(--accent);border-color:rgba(234,179,147,.35);background:rgba(234,179,147,.14);">به‌زودی</span></h3>
+          <h3>افراد و مجموعه‌ها</h3>
           <div class="domain-tags">
             <span class="domain-tag">تشکل‌ها</span>
             <span class="domain-tag">انسان‌رسانه‌ها</span>
