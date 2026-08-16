@@ -170,12 +170,29 @@
   .topbar .chip-btn.ghost{ color: rgba(255,255,255,0.6); }
   .topbar .chip-btn.ghost:hover{ color:#fff; background: rgba(255,255,255,0.1); }
 
-  /* admin-only shortcuts (export / settings), top-left of every page */
-  .admin-links{ display:flex; align-items:center; gap:8px; }
+  /* admin-only shortcuts (export / settings), grouped under one dropdown, top-left of every page */
+  .admin-menu{ position:relative; }
   .chip-btn{ display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color: var(--text-dim); background: var(--surface); border:1px solid var(--border); padding:7px 13px; border-radius: var(--radius-pill); cursor:pointer; font-family:inherit; transition: color .15s ease, border-color .15s ease, background .15s ease; }
   .chip-btn svg{ width:14px; height:14px; flex-shrink:0; }
   .chip-btn:hover{ color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
   .chip-btn.ghost{ background:none; color: var(--text-faint); }
+  #admin-menu-btn .chev{ transition: transform .15s ease; }
+  .admin-menu.open #admin-menu-btn .chev{ transform: rotate(180deg); }
+  .admin-menu-list{
+    position:absolute; inset-inline-end:0; top: calc(100% + 8px); z-index:20; min-width:168px;
+    background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-control);
+    box-shadow: var(--shadow-hover); padding:6px; display:flex; flex-direction:column; gap:2px;
+    opacity:0; visibility:hidden; transform:translateY(-6px); transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  }
+  .admin-menu.open .admin-menu-list{ opacity:1; visibility:visible; transform:translateY(0); }
+  .admin-menu-list button{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:right; font-family:inherit;
+    font-size:12.5px; font-weight:600; color: var(--text-dim); background:none; border:none; cursor:pointer;
+    padding:9px 10px; border-radius: 6px; transition: background .15s ease, color .15s ease;
+  }
+  .admin-menu-list button:hover{ background: var(--surface-2); color: var(--text); }
+  .admin-menu-list svg{ width:14px; height:14px; flex-shrink:0; }
+  .topbar-divider{ width:1px; height:18px; background: rgba(255,255,255,0.16); }
   .seg-compact{ margin-bottom:0; }
   .seg-compact button{ padding:7px 14px; font-size:11.5px; }
 
@@ -548,17 +565,25 @@
       </div>
       <div class="topbar-right">
         <div class="topbar-status"><span class="dot2"></span>به‌روزرسانی خودکار هر ۲ ساعت</div>
-        <div class="admin-links" id="admin-links">
-          <button class="chip-btn" onclick="switchSection('export')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
-            خروجی‌گیری
-          </button>
-          <button class="chip-btn" onclick="switchSection('settings')">
+        <div class="admin-menu" id="admin-menu">
+          <button class="chip-btn" id="admin-menu-btn" onclick="toggleAdminMenu()" aria-haspopup="true" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>
-            تنظیمات
+            مدیریت
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
+          <div class="admin-menu-list" id="admin-menu-list">
+            <button onclick="switchSection('export'); closeAdminMenu();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+              خروجی‌گیری
+            </button>
+            <button onclick="switchSection('settings'); closeAdminMenu();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>
+              تنظیمات
+            </button>
+          </div>
         </div>
         <span class="role admin" id="role-badge" style="display:none;"></span>
+        <div class="topbar-divider"></div>
         <button class="chip-btn ghost" onclick="logout()">خروج</button>
       </div>
     </div>
@@ -1025,7 +1050,7 @@
 
   let authToken = sessionStorage.getItem('jarian_token') || null;
   let currentRole = sessionStorage.getItem('jarian_role') || null; // 'app_admin' | 'app_viewer'
-  const adminLinks = document.getElementById('admin-links');
+  const adminLinks = document.getElementById('admin-menu');
   const roleBadge = document.getElementById('role-badge');
 
   function api(path, opts){
@@ -1053,6 +1078,22 @@
     sessionStorage.removeItem('jarian_token'); sessionStorage.removeItem('jarian_role');
     goLogin();
   }
+
+  const adminMenuBtn = document.getElementById('admin-menu-btn');
+  function toggleAdminMenu(){
+    const open = adminLinks.classList.toggle('open');
+    adminMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeAdminMenu(){
+    adminLinks.classList.remove('open');
+    adminMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', e=>{
+    if(adminLinks.classList.contains('open') && !adminLinks.contains(e.target)) closeAdminMenu();
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape') closeAdminMenu();
+  });
 
   const ADMIN_ONLY_SECTIONS = ['export','settings'];
 
