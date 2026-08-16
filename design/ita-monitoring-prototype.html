@@ -249,7 +249,7 @@
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
   .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 0 2px 8px; text-align:center; letter-spacing:0.01em; }
-  .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:28px; margin-bottom:40px; }
+  .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:16px; margin-bottom:40px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .domain-grid{ grid-template-columns: 1fr; } }
   .domain-card{
@@ -259,7 +259,7 @@
   }
   .domain-card:hover{ transform:translateY(-3px); }
   .domain-icon{ width:64px; height:64px; background:none; border:none; color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
-  .domain-icon.is-illustrated img{ width:92px; height:92px; object-fit:contain; }
+  .domain-icon.is-illustrated img{ width:116px; height:116px; object-fit:contain; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
 
   .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
