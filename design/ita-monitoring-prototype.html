@@ -213,11 +213,24 @@
   .dash-hero-cta{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
   .dash-hero-cta .btn.ghost{ background:none; border:1px solid rgba(255,255,255,0.24); color:#fff; }
   .dash-hero-cta .btn.ghost:hover{ background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.4); color:#fff; }
-  .dash-hero-stats{ display:flex; gap:0; margin-top:26px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.14); flex-wrap:wrap; }
-  .dash-hero-stat{ display:flex; flex-direction:column; gap:3px; padding-inline-end:28px; margin-inline-end:28px; border-inline-end:1px solid rgba(255,255,255,0.14); }
-  .dash-hero-stat:last-child{ border-inline-end:none; padding-inline-end:0; margin-inline-end:0; }
-  .dash-hero-stat b{ font-size:23px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
-  .dash-hero-stat span{ font-size:11.5px; color: rgba(255,255,255,0.55); }
+  .dash-hero-stats{
+    display:grid; grid-template-columns: repeat(3,1fr); margin-top:26px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.14); border-radius:16px; padding:16px 8px;
+    box-shadow: 0 20px 40px -26px rgba(0,0,0,0.6);
+  }
+  @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
+  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:10px 6px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
+  .dash-hero-stat b{ font-size:22px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.6); }
+  .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:none; }
+  .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:none; }
+  @media (max-width:480px){
+    .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:1px solid rgba(255,255,255,0.14); }
+    .dash-hero-stats > .dash-hero-stat:nth-child(2n){ border-inline-end:none; }
+    .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:1px solid rgba(255,255,255,0.14); }
+    .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+2){ border-bottom:none; }
+  }
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
 
@@ -1172,10 +1185,16 @@
     const total = CHANNELS.length;
     const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
     const personCount = CHANNELS.filter(c=>c.type==='person').length;
+    const platformCount = new Set(CHANNELS.map(c=>c.platform)).size;
+    const schoolsCount = 56; // عدد ثابت موقت — هنوز جدول/داده‌ی واقعی مدارس وجود نداره، بعداً با داده‌ی واقعی جایگزین می‌شه
+    const magazinesCount = MAGAZINES.length;
     wrap.innerHTML = `
       <div class="dash-hero-stat"><b>${total}</b><span>کانال پایش‌شونده</span></div>
       <div class="dash-hero-stat"><b>${newsCount}</b><span>خبرگزاری</span></div>
-      <div class="dash-hero-stat"><b>${personCount}</b><span>شخصیت</span></div>`;
+      <div class="dash-hero-stat"><b>${personCount}</b><span>شخصیت</span></div>
+      <div class="dash-hero-stat"><b>${platformCount}</b><span>پلتفرم</span></div>
+      <div class="dash-hero-stat"><b>${schoolsCount}</b><span>مدرسه</span></div>
+      <div class="dash-hero-stat"><b>${magazinesCount}</b><span>بسته تحلیل</span></div>`;
   }
 
   async function loadAll(){
