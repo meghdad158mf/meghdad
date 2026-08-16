@@ -233,7 +233,7 @@
   }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
   .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 2px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
-  .dash-hero-stat b{ font-size:24px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat b{ font-size:24px; font-family: 'IRANSansX', ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
   .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.6); }
   .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:none; }
   .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:none; }
@@ -1124,6 +1124,11 @@
     MAGAZINES = r.ok ? await r.json() : [];
   }
 
+  function toFaDigits(n){
+    const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(n).replace(/[0-9]/g, d => fa[d]);
+  }
+
   function renderDashHeroStats(){
     const wrap = document.getElementById('dash-hero-stats');
     if(!wrap) return;
@@ -1134,12 +1139,12 @@
     const schoolsCount = 56; // عدد ثابت موقت — هنوز جدول/داده‌ی واقعی مدارس وجود نداره، بعداً با داده‌ی واقعی جایگزین می‌شه
     const magazinesCount = MAGAZINES.length;
     wrap.innerHTML = `
-      <div class="dash-hero-stat"><b>${total}</b><span>کانال پایش‌شونده</span></div>
-      <div class="dash-hero-stat"><b>${newsCount}</b><span>خبرگزاری</span></div>
-      <div class="dash-hero-stat"><b>${personCount}</b><span>شخصیت</span></div>
-      <div class="dash-hero-stat"><b>${platformCount}</b><span>پلتفرم</span></div>
-      <div class="dash-hero-stat"><b>${schoolsCount}</b><span>مدرسه</span></div>
-      <div class="dash-hero-stat"><b>${magazinesCount}</b><span>بسته تحلیل</span></div>`;
+      <div class="dash-hero-stat"><b>${toFaDigits(total)}</b><span>کانال پایش‌شونده</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(newsCount)}</b><span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(personCount)}</b><span>شخصیت</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(platformCount)}</b><span>پلتفرم</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(schoolsCount)}</b><span>مدرسه</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(magazinesCount)}</b><span>بسته تحلیل</span></div>`;
   }
 
   async function loadAll(){
