@@ -259,9 +259,7 @@
   }
   .domain-card:hover{ transform:translateY(-3px); }
   .domain-icon{ width:64px; height:64px; background:none; border:none; color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:20px; }
-  .domain-icon svg{ width:72px; height:72px; stroke-width:1.05; }
-  /* illustrated (multi-tone gradient) icon is already detailed/colorful — sized a bit larger */
-  .domain-icon.is-illustrated svg{ width:92px; height:92px; }
+  .domain-icon.is-illustrated img{ width:92px; height:92px; object-fit:contain; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
 
   .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
@@ -615,76 +613,19 @@
       <div class="section-label">عرصه‌های رصد و تحلیل</div>
       <div class="domain-grid">
         <div class="domain-card" onclick="switchSection('overview')">
-          <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.5 3 2.5 15 0 18M12 3c-2.5 3-2.5 15 0 18"/></svg></div>
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-news.webp" alt="" /></div>
           <h3>اخبار رسمی</h3>
         </div>
         <div class="domain-card" onclick="switchSection('posts')">
-          <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="6" r="2.5"/><circle cx="18" cy="18" r="2.5"/><path d="M8.2 10.8l7.6-3.6M8.2 13.2l7.6 3.6"/></svg></div>
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-cyberspace.webp" alt="" /></div>
           <h3>کنشگری مجازی</h3>
         </div>
         <div class="domain-card" onclick="switchSection('schools')">
-          <div class="domain-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M12 3L2 8l10 5 10-5-10-5z"/><path d="M6 10.5v5c0 1.4 2.7 3 6 3s6-1.6 6-3v-5"/></svg></div>
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-schools.webp" alt="" /></div>
           <h3>برنامه مدارس</h3>
         </div>
         <div class="domain-card" onclick="switchSection('people')">
-          <div class="domain-icon is-illustrated">
-            <svg viewBox="0 0 200 200" width="56" height="56">
-              <defs>
-                <radialGradient id="peopleIconNavy" cx="32%" cy="26%" r="80%">
-                  <stop offset="0%" stop-color="#7c8ea3"/>
-                  <stop offset="50%" stop-color="#3a4b5f"/>
-                  <stop offset="100%" stop-color="#161f29"/>
-                </radialGradient>
-                <radialGradient id="peopleIconPeach" cx="32%" cy="24%" r="82%">
-                  <stop offset="0%" stop-color="#ffe9d8"/>
-                  <stop offset="42%" stop-color="#f0b78e"/>
-                  <stop offset="100%" stop-color="#b5651d"/>
-                </radialGradient>
-                <radialGradient id="peopleIconBadgeRing" cx="32%" cy="24%" r="82%">
-                  <stop offset="0%" stop-color="#ffe9d8"/>
-                  <stop offset="45%" stop-color="#EAB393"/>
-                  <stop offset="100%" stop-color="#b5651d"/>
-                </radialGradient>
-                <radialGradient id="peopleIconBadge" cx="30%" cy="22%" r="85%">
-                  <stop offset="0%" stop-color="#3a4b5f"/>
-                  <stop offset="55%" stop-color="#1c2733"/>
-                  <stop offset="100%" stop-color="#0a0f15"/>
-                </radialGradient>
-              </defs>
-              <g>
-                <ellipse cx="55" cy="66" rx="21" ry="20" fill="url(#peopleIconNavy)"/>
-                <path d="M18 148 q0 -45 37 -45 q37 0 37 45 z" fill="url(#peopleIconNavy)"/>
-                <ellipse cx="48" cy="58" rx="7" ry="5" fill="#fff" opacity="0.18"/>
-              </g>
-              <g>
-                <ellipse cx="146" cy="68" rx="19" ry="18" fill="url(#peopleIconNavy)"/>
-                <path d="M111 148 q0 -41 35 -41 q35 0 35 41 z" fill="url(#peopleIconNavy)"/>
-                <ellipse cx="139" cy="61" rx="6" ry="4.5" fill="#fff" opacity="0.18"/>
-              </g>
-              <g>
-                <ellipse cx="100" cy="52" rx="31" ry="30" fill="url(#peopleIconPeach)"/>
-                <path d="M50 152 q0 -57 50 -57 q50 0 50 57 z" fill="url(#peopleIconPeach)"/>
-                <ellipse cx="90" cy="42" rx="10" ry="7" fill="#fff" opacity="0.28"/>
-              </g>
-              <g>
-                <circle cx="150" cy="143" r="35" fill="url(#peopleIconBadgeRing)"/>
-                <circle cx="150" cy="143" r="29" fill="url(#peopleIconBadge)"/>
-                <ellipse cx="140" cy="132" rx="9" ry="6" fill="#fff" opacity="0.12"/>
-                <g fill="url(#peopleIconPeach)">
-                  <rect x="133" y="128" width="21" height="27" rx="2"/>
-                  <rect x="123" y="140" width="10" height="15" rx="1.5"/>
-                  <rect x="155" y="136" width="10" height="19" rx="1.5"/>
-                </g>
-                <rect x="141" y="146" width="6" height="9" rx="1" fill="#1c2733"/>
-                <g fill="#1c2733">
-                  <rect x="137" y="132" width="2.6" height="2.6"/>
-                  <rect x="144" y="132" width="2.6" height="2.6"/>
-                  <rect x="137" y="138" width="2.6" height="2.6"/>
-                  <rect x="144" y="138" width="2.6" height="2.6"/>
-                </g>
-              </g>
-            </svg>
-          </div>
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-people.webp" alt="" /></div>
           <h3>افراد و مجموعه‌ها</h3>
         </div>
       </div>
