@@ -207,18 +207,18 @@
   .dash-hero-grid{ display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 20px 24px 14px; }
   @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
   .dash-hero-text{ text-align:right; }
-  .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; }
+  .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; text-align:center; }
   .dash-hero-text h2 .hl{ color: var(--accent); }
   .dash-hero-text p{ font-size:14.5px; color: rgba(255,255,255,0.62); line-height:1.85; margin-top:14px; max-width:440px; }
   .dash-hero-stats{
     display:grid; grid-template-columns: repeat(3,1fr); margin-top:22px;
     background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015));
-    border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:6px 4px;
+    border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:2px;
     box-shadow: 0 20px 40px -26px rgba(0,0,0,0.6);
   }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
-  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:8px 4px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
-  .dash-hero-stat b{ font-size:20px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 2px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
+  .dash-hero-stat b{ font-size:24px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
   .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.6); }
   .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:none; }
   .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:none; }
@@ -470,7 +470,7 @@
      legible against the dark canvas AND doesn't read as just another
      feature-card in the grid above it. */
   .mag-widget{
-    margin: 4px 0 40px; padding:26px; border-radius: var(--radius-card);
+    margin: 4px 0 40px; padding:14px; border-radius: var(--radius-card);
     background: linear-gradient(155deg, #fffaf5, #fbe9d7);
     border:1px solid rgba(181,101,29,0.3);
     box-shadow: 0 22px 46px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
@@ -478,13 +478,13 @@
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
   }
   .mag-widget:hover{ transform:translateY(-3px); border-color: rgba(181,101,29,0.45); box-shadow: 0 28px 56px -20px rgba(10,15,22,0.5), 0 1px 0 rgba(255,255,255,0.8) inset; }
-  .mag-widget-body{ display:flex; align-items:stretch; gap:26px; }
-  .mag-widget-info{ flex:0 0 208px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:14px; border-left:1px solid rgba(181,101,29,0.26); padding-left:26px; }
+  .mag-widget-body{ display:flex; align-items:stretch; gap:16px; }
+  .mag-widget-info{ flex:0 0 208px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:10px; border-left:1px solid rgba(181,101,29,0.26); padding-left:16px; }
   .mag-widget-title{ font-size:16.5px; font-weight:800; color: var(--text); line-height:1.7; }
   .mag-widget-info .btn.primary{ padding:9px 18px; font-size:12.5px; }
   @media (max-width:760px){
     .mag-widget-body{ flex-direction:column; }
-    .mag-widget-info{ flex:none; border-left:none; padding-left:0; border-bottom:1px solid rgba(181,101,29,0.26); padding-bottom:18px; }
+    .mag-widget-info{ flex:none; border-left:none; padding-left:0; border-bottom:1px solid rgba(181,101,29,0.26); padding-bottom:12px; }
   }
   .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
   .mag-carousel{ display:flex; gap:14px; overflow-x:auto; scroll-behavior:smooth; padding:4px 2px 6px; scrollbar-width:none; flex:1; min-width:0; }
