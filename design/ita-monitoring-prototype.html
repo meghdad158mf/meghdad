@@ -213,6 +213,11 @@
   .dash-hero-cta{ display:flex; gap:10px; margin-top:24px; flex-wrap:wrap; }
   .dash-hero-cta .btn.ghost{ background:none; border:1px solid rgba(255,255,255,0.24); color:#fff; }
   .dash-hero-cta .btn.ghost:hover{ background:rgba(255,255,255,0.08); border-color:rgba(255,255,255,0.4); color:#fff; }
+  .dash-hero-stats{ display:flex; gap:0; margin-top:26px; padding-top:20px; border-top:1px solid rgba(255,255,255,0.14); flex-wrap:wrap; }
+  .dash-hero-stat{ display:flex; flex-direction:column; gap:3px; padding-inline-end:28px; margin-inline-end:28px; border-inline-end:1px solid rgba(255,255,255,0.14); }
+  .dash-hero-stat:last-child{ border-inline-end:none; padding-inline-end:0; margin-inline-end:0; }
+  .dash-hero-stat b{ font-size:23px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat span{ font-size:11.5px; color: rgba(255,255,255,0.55); }
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
 
@@ -578,6 +583,7 @@
           <div class="dash-hero-cta">
             <button class="btn primary" onclick="openIntro()">معرفی جریان</button>
           </div>
+          <div class="dash-hero-stats" id="dash-hero-stats"></div>
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
@@ -1160,9 +1166,22 @@
     MAGAZINES = r.ok ? await r.json() : [];
   }
 
+  function renderDashHeroStats(){
+    const wrap = document.getElementById('dash-hero-stats');
+    if(!wrap) return;
+    const total = CHANNELS.length;
+    const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
+    const personCount = CHANNELS.filter(c=>c.type==='person').length;
+    wrap.innerHTML = `
+      <div class="dash-hero-stat"><b>${total}</b><span>کانال پایش‌شونده</span></div>
+      <div class="dash-hero-stat"><b>${newsCount}</b><span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b>${personCount}</b><span>شخصیت</span></div>`;
+  }
+
   async function loadAll(){
     await Promise.all([loadChannels(), loadCategories(), loadMagazines()]);
     await loadPosts();
+    renderDashHeroStats();
     renderChannelCards();
     populatePostFilters();
     renderPosts();
