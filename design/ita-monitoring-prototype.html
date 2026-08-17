@@ -140,8 +140,9 @@
 
   .main{ padding: 22px 28px 60px; max-width: 1180px; margin: 0 auto; }
 
-  .analysis-section{ margin:70px 0 0; }
-  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:center; margin-bottom:34px; }
+  .analysis-section{ margin:70px 0 0; padding:30px 30px 28px; border-radius:22px; background: rgba(255,255,255,0.035); border:1px solid rgba(255,255,255,0.09); }
+  @media (max-width:640px){ .analysis-section{ padding:22px 18px 20px; } }
+  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:center; margin-bottom:26px; }
   @media (max-width:860px){ .analysis-top{ grid-template-columns:1fr; gap:20px; } }
   .analysis-art{ position:relative; display:flex; align-items:center; justify-content:center; }
   .analysis-art svg, .analysis-art img{ width:100%; max-width:300px; height:auto; }
