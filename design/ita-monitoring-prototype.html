@@ -141,7 +141,7 @@
   .main{ padding: 22px 28px 60px; max-width: 1180px; margin: 0 auto; }
 
   .analysis-section{ margin:70px 0 0; }
-  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:center; margin-bottom:22px; }
+  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:start; }
   @media (max-width:860px){ .analysis-top{ grid-template-columns:1fr; gap:20px; } }
   .analysis-art{ position:relative; display:flex; align-items:center; justify-content:center; }
   .analysis-art svg, .analysis-art img{ width:100%; max-width:300px; height:auto; }
@@ -149,18 +149,17 @@
   .analysis-title{ font-size: clamp(19px,2.4vw,25px); font-weight:700; color:#fff; line-height:1.5; margin-bottom:10px; }
   .analysis-title .hl{ color: var(--accent); }
   .analysis-sub{ font-size:13.5px; color: rgba(255,255,255,0.6); line-height:1.8; max-width:440px; margin:0; }
-  .analysis-list{ display:grid; grid-template-columns: repeat(5,1fr); gap:14px; }
-  @media (max-width:900px){ .analysis-list{ grid-template-columns: repeat(3,1fr); } }
-  @media (max-width:560px){ .analysis-list{ grid-template-columns: repeat(2,1fr); } }
+  .analysis-list{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-top:18px; }
+  @media (max-width:560px){ .analysis-list{ grid-template-columns: 1fr; } }
   .analysis-item{
-    display:flex; flex-direction:column; align-items:center; text-align:center; gap:10px;
-    padding:14px 10px; background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.1);
-    border-radius:16px; transition: background .15s ease, border-color .15s ease, transform .15s ease;
+    display:flex; flex-direction:row; align-items:center; text-align:right; gap:10px;
+    padding:10px 12px; background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.1);
+    border-radius:12px; transition: background .15s ease, border-color .15s ease, transform .15s ease;
   }
   .analysis-item:hover{ background: rgba(255,255,255,0.08); border-color: rgba(234,179,147,0.35); transform:translateY(-2px); }
-  .analysis-item-icon{ width:52px; height:52px; border-radius:14px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .analysis-item-icon svg{ width:24px; height:24px; }
-  .analysis-item-body h4{ font-size:13.5px; font-weight:700; color:#fff; margin:0; line-height:1.5; }
+  .analysis-item-icon{ width:34px; height:34px; border-radius:10px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .analysis-item-icon svg{ width:16px; height:16px; }
+  .analysis-item-body h4{ font-size:12.5px; font-weight:700; color:#fff; margin:0; line-height:1.4; }
 
   .app-footer{ margin-top:56px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.14); }
   .app-footer-top{ display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; }
@@ -682,48 +681,48 @@
             <div class="analysis-label">درون بسته‌های تحلیلی</div>
             <h3 class="analysis-title">بخش‌های <span class="hl">بسته تحلیل</span> جریان</h3>
             <p class="analysis-sub">بسته جریان شامل ۱۰ بخش اصلی است که بعضی ثابت در هر شماره به آن پرداخته می‌شود و برخی نیز به‌صورت دوره‌ای بخشی از محتوا را تکمیل خواهند کرد.</p>
-          </div>
-        </div>
-        <div class="analysis-list">
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
-            <div class="analysis-item-body"><h4>خط خبری</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></div>
-            <div class="analysis-item-body"><h4>تحلیل اخبار روز</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.6 6.2.6-4.6 4.2 1.3 6.1L12 16.8 6.5 19.5l1.3-6.1L3.2 9.2l6.2-.6L12 3z"/></svg></div>
-            <div class="analysis-item-body"><h4>مهم‌ترین اخبار</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-            <div class="analysis-item-body"><h4>نگاه جامعه‌شناسی سیاسی</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
-            <div class="analysis-item-body"><h4>اصل ماجرا</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/></svg></div>
-            <div class="analysis-item-body"><h4>تحلیل سازمان‌ها</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H16l4 4v12.5a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5z"/><path d="M16 3v4h4M8 12h8M8 16h5"/></svg></div>
-            <div class="analysis-item-body"><h4>یادداشت طلاب</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.7 6.7C4.6 8.1 3 12 3 12s2.4 4.2 6.3 5.9M14 5.1c5.4.7 7 6.9 7 6.9a12.9 12.9 0 01-2.2 3"/></svg></div>
-            <div class="analysis-item-body"><h4>خارج از دید</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
-            <div class="analysis-item-body"><h4>نبض افکار</h4></div>
-          </div>
-          <div class="analysis-item">
-            <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z"/></svg></div>
-            <div class="analysis-item-body"><h4>تحلیل اندیشگده‌ها</h4></div>
+            <div class="analysis-list">
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>خط خبری</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل اخبار روز</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.6 6.2.6-4.6 4.2 1.3 6.1L12 16.8 6.5 19.5l1.3-6.1L3.2 9.2l6.2-.6L12 3z"/></svg></div>
+                <div class="analysis-item-body"><h4>مهم‌ترین اخبار</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div class="analysis-item-body"><h4>نگاه جامعه‌شناسی سیاسی</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>اصل ماجرا</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل سازمان‌ها</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H16l4 4v12.5a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5z"/><path d="M16 3v4h4M8 12h8M8 16h5"/></svg></div>
+                <div class="analysis-item-body"><h4>یادداشت طلاب</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.7 6.7C4.6 8.1 3 12 3 12s2.4 4.2 6.3 5.9M14 5.1c5.4.7 7 6.9 7 6.9a12.9 12.9 0 01-2.2 3"/></svg></div>
+                <div class="analysis-item-body"><h4>خارج از دید</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
+                <div class="analysis-item-body"><h4>نبض افکار</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل اندیشگده‌ها</h4></div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
