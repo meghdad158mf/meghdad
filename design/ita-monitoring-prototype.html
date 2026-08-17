@@ -142,11 +142,7 @@
 
   .analysis-section{ margin:70px 0 0; }
   .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:start; }
-  @media (max-width:860px){
-    .analysis-top{ grid-template-columns:1fr; gap:20px; }
-    .analysis-content{ order:1; }
-    .analysis-art{ order:2; }
-  }
+  @media (max-width:860px){ .analysis-top{ grid-template-columns:1fr; gap:20px; } }
   .analysis-art{ position:relative; display:flex; align-items:center; justify-content:flex-end; }
   @media (max-width:860px){ .analysis-art{ justify-content:center; } }
   .analysis-art svg, .analysis-art img{ width:100%; max-width:300px; height:auto; }
