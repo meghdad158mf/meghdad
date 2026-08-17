@@ -149,17 +149,17 @@
   .analysis-title{ font-size: clamp(19px,2.4vw,25px); font-weight:700; color:#fff; line-height:1.5; margin-bottom:10px; }
   .analysis-title .hl{ color: var(--accent); }
   .analysis-sub{ font-size:13.5px; color: rgba(255,255,255,0.6); line-height:1.8; max-width:440px; margin:0; }
-  .analysis-list{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-top:18px; }
-  @media (max-width:560px){ .analysis-list{ grid-template-columns: 1fr; } }
+  .analysis-list{ display:grid; grid-template-columns: repeat(4,1fr); gap:8px; margin-top:18px; }
+  @media (max-width:560px){ .analysis-list{ grid-template-columns: repeat(2,1fr); } }
   .analysis-item{
-    display:flex; flex-direction:row; align-items:center; text-align:right; gap:10px;
-    padding:10px 12px; background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.1);
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:8px;
+    padding:12px 6px; background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.1);
     border-radius:12px; transition: background .15s ease, border-color .15s ease, transform .15s ease;
   }
   .analysis-item:hover{ background: rgba(255,255,255,0.08); border-color: rgba(234,179,147,0.35); transform:translateY(-2px); }
-  .analysis-item-icon{ width:34px; height:34px; border-radius:10px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .analysis-item-icon svg{ width:16px; height:16px; }
-  .analysis-item-body h4{ font-size:12.5px; font-weight:700; color:#fff; margin:0; line-height:1.4; }
+  .analysis-item-icon{ width:30px; height:30px; border-radius:9px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .analysis-item-icon svg{ width:14px; height:14px; }
+  .analysis-item-body h4{ font-size:11.5px; font-weight:700; color:#fff; margin:0; line-height:1.4; }
 
   .app-footer{ margin-top:56px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.14); }
   .app-footer-top{ display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; }
