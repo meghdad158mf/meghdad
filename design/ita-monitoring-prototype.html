@@ -933,7 +933,17 @@
             <div class="add-row">
               <input type="text" id="new-chan-name" placeholder="نام کانال" />
               <input type="text" id="new-chan-handle" class="mono" placeholder="یوزرنیم (بدون @)" />
-              <select id="new-chan-platform"><option value="eitaa">ایتا</option><option value="telegram">تلگرام</option></select>
+              <select id="new-chan-platform">
+                <option value="eitaa">ایتا</option>
+                <option value="telegram">تلگرام</option>
+                <option value="website">وب‌سایت (RSS)</option>
+              </select>
+              <select id="new-chan-region">
+                <option value="">بدون حوزه‌ی جغرافیایی</option>
+                <option value="domestic">داخلی</option>
+                <option value="regional">منطقه‌ای</option>
+                <option value="international">بین‌المللی</option>
+              </select>
               <select id="new-chan-cat"></select>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
             </div>
@@ -1431,6 +1441,13 @@
   const catGridEl = document.getElementById('cat-grid');
   const chanListEl = document.getElementById('chan-list');
   const newChanCatEl = document.getElementById('new-chan-cat');
+  const REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+
+  const newChanPlatformEl = document.getElementById('new-chan-platform');
+  const newChanHandleEl = document.getElementById('new-chan-handle');
+  newChanPlatformEl.addEventListener('change', ()=>{
+    newChanHandleEl.placeholder = newChanPlatformEl.value === 'website' ? 'لینک فید RSS' : 'یوزرنیم (بدون @)';
+  });
 
   function refreshCatOptions(){
     newChanCatEl.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
@@ -1471,7 +1488,9 @@
       });
       row.appendChild(nameInput);
       const handleSpan=document.createElement('span'); handleSpan.className='chan mono';
-      handleSpan.textContent = '@'+ch.username+' · '+(ch.platform==='telegram'?'تلگرام':'ایتا');
+      const platformLabel = ch.platform==='telegram' ? 'تلگرام' : ch.platform==='website' ? 'RSS' : 'ایتا';
+      const handleText = ch.platform==='website' ? ch.username : '@'+ch.username;
+      handleSpan.textContent = handleText+' · '+platformLabel+(ch.region ? ' · '+REGION_LABEL[ch.region] : '');
       row.appendChild(handleSpan);
       const catSel=document.createElement('select'); catSel.className='cat-select';
       catSel.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}" ${c.id===ch.category_id?'selected':''}>${c.name}</option>`).join('');
@@ -1506,14 +1525,16 @@
     const nameEl = document.getElementById('new-chan-name');
     const handleEl = document.getElementById('new-chan-handle');
     const platformEl = document.getElementById('new-chan-platform');
+    const regionEl = document.getElementById('new-chan-region');
     const name = nameEl.value.trim();
-    const handle = handleEl.value.trim().replace(/^@/,'');
+    const rawHandle = handleEl.value.trim();
+    const handle = platformEl.value === 'website' ? rawHandle : rawHandle.replace(/^@/,'');
     if(!name || !handle) return;
     const catVal = newChanCatEl.value;
-    const body = { username: handle, title: name, platform: platformEl.value, category_id: catVal ? Number(catVal) : null };
+    const body = { username: handle, title: name, platform: platformEl.value, region: regionEl.value || null, category_id: catVal ? Number(catVal) : null };
     const r = await api('/channels', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
     if(r.ok){
-      nameEl.value=''; handleEl.value='';
+      nameEl.value=''; handleEl.value=''; regionEl.value='';
       await loadChannels();
       renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters();
     }else{
