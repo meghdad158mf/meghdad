@@ -153,6 +153,12 @@ def extract_posts(html: str, channel_id: int) -> list[dict]:
                 "link": f"https://eitaa.com/{post_id}",
                 "media_type": media_type,
                 "media_source_url": media_source_url,
+                # این سه فیلد باید روی همه‌ی پست‌ها باشن (even اگه None) وگرنه
+                # PostgREST با خطای "All object keys must match" کل batch رو رد
+                # می‌کنه، چون پست‌های همون آرایه کلید یکسان ندارن.
+                "media_path": None,
+                "media_storage_path": None,
+                "media_fetched_at": None,
             }
         )
     return posts
