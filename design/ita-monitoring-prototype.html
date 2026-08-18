@@ -543,6 +543,12 @@
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
   .add-row input, .add-row select{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); padding:8px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; }
   .add-row input{ flex:1; min-width:110px; }
+  .chan-domains{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .chan-news-toggle{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color: var(--text-dim); white-space:nowrap; cursor:pointer; }
+  .chan-news-toggle input{ cursor:pointer; }
+  .chan-row-domains{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; flex-shrink:0; }
+  .chan-row-news{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color: var(--text-faint); flex-shrink:0; cursor:pointer; white-space:nowrap; }
+  .chan-row-news input{ cursor:pointer; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-row:last-child{ border-bottom:none; }
   .chan-row input.name-edit{ flex:1; min-width:90px; background:none; border:1px solid transparent; color: var(--text); font-size:12.5px; font-weight:600; padding:5px 6px; border-radius: var(--radius-control); font-family:inherit; }
@@ -1074,6 +1080,11 @@
                 <option value="international">بین‌المللی</option>
               </select>
               <select id="new-chan-cat"></select>
+              <div class="chan-domains">
+                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-news" /> اخبار رسمی</label>
+                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-cyberspace" /> کنشگری مجازی</label>
+                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-people" /> افراد و شخصیت‌ها</label>
+              </div>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
             </div>
             <div id="chan-list"></div>
@@ -1344,7 +1355,7 @@
   };
   const newsState = { region: '', time: 'all', source: '', query: '' };
 
-  function newsChannels(){ return CHANNELS.filter(c=>c.type==='news_agency'); }
+  function newsChannels(){ return CHANNELS.filter(c=>c.show_in_news); }
 
   function newsPosts(){
     const newsChanIds = new Set(newsChannels().map(c=>c.id));
@@ -1565,7 +1576,7 @@
 
   function populatePostFilters(){
     filterChannelEl.innerHTML = '<option value="">همه‌ی کانال‌ها</option>' +
-      CHANNELS.map(c=>`<option value="${c.id}">${c.title||c.username}</option>`).join('');
+      CHANNELS.filter(c=>c.show_in_cyberspace).map(c=>`<option value="${c.id}">${c.title||c.username}</option>`).join('');
     filterCatEl.innerHTML = '<option value="">همه‌ی دسته‌بندی‌ها</option>' +
       CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   }
@@ -1586,6 +1597,8 @@
     const timeFilter = filterTimeEl.value;
     const q = searchEl.value.trim();
     return POSTS_CACHE.filter(p=>{
+      const ownerCh = chById(p.channel_id);
+      if(!ownerCh || !ownerCh.show_in_cyberspace) return false;
       if(chFilter && String(p.channel_id) !== chFilter) return false;
       if(catFilter){
         const ch = chById(p.channel_id);
@@ -1710,6 +1723,11 @@
   const chanListEl = document.getElementById('chan-list');
   const newChanCatEl = document.getElementById('new-chan-cat');
   const REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+  const CHAN_DOMAIN_FIELDS = [
+    { field: 'show_in_news', label: 'اخبار رسمی', onChange: () => renderNewsFeed() },
+    { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => renderPosts() },
+    { field: 'show_in_people', label: 'افراد و شخصیت‌ها' },
+  ];
 
   const newChanPlatformEl = document.getElementById('new-chan-platform');
   const newChanHandleEl = document.getElementById('new-chan-handle');
@@ -1768,6 +1786,20 @@
         renderCatGrid(); renderChannelCards();
       });
       row.appendChild(catSel);
+      const domainsWrap=document.createElement('div'); domainsWrap.className='chan-row-domains';
+      CHAN_DOMAIN_FIELDS.forEach(({field, label, onChange})=>{
+        const lbl=document.createElement('label'); lbl.className='chan-row-news';
+        const chk=document.createElement('input'); chk.type='checkbox'; chk.checked=!!ch[field];
+        chk.addEventListener('change', async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({[field]: chk.checked})});
+          ch[field] = chk.checked;
+          if(onChange) onChange();
+        });
+        lbl.appendChild(chk);
+        lbl.appendChild(document.createTextNode(label));
+        domainsWrap.appendChild(lbl);
+      });
+      row.appendChild(domainsWrap);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
       del.addEventListener('click', async ()=>{
         if(!confirm('این کانال حذف شود؟')) return;
@@ -1794,17 +1826,24 @@
     const handleEl = document.getElementById('new-chan-handle');
     const platformEl = document.getElementById('new-chan-platform');
     const regionEl = document.getElementById('new-chan-region');
+    const showNewsEl = document.getElementById('new-chan-show-news');
+    const showCyberspaceEl = document.getElementById('new-chan-show-cyberspace');
+    const showPeopleEl = document.getElementById('new-chan-show-people');
     const name = nameEl.value.trim();
     const rawHandle = handleEl.value.trim();
     const handle = platformEl.value === 'website' ? rawHandle : rawHandle.replace(/^@/,'');
     if(!name || !handle) return;
     const catVal = newChanCatEl.value;
-    const body = { username: handle, title: name, platform: platformEl.value, region: regionEl.value || null, category_id: catVal ? Number(catVal) : null };
+    const body = {
+      username: handle, title: name, platform: platformEl.value, region: regionEl.value || null, category_id: catVal ? Number(catVal) : null,
+      show_in_news: showNewsEl.checked, show_in_cyberspace: showCyberspaceEl.checked, show_in_people: showPeopleEl.checked,
+    };
     const r = await api('/channels', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
     if(r.ok){
       nameEl.value=''; handleEl.value=''; regionEl.value='';
+      showNewsEl.checked=false; showCyberspaceEl.checked=false; showPeopleEl.checked=false;
       await loadChannels();
-      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters();
+      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
     }
