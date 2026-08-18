@@ -410,6 +410,13 @@
   .pt-media svg{ width:18px; height:18px; }
   .pt-media b{ font-size:11px; font-weight:700; color: var(--text-dim); }
   .pt-media span{ font-size:9.5px; }
+  .pt-media.has-img{ border:none; padding:0; height:110px; position:relative; overflow:hidden; background: var(--surface-2); }
+  .pt-media.has-img img,
+  .pt-media.has-img video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pt-media-badge{ position:absolute; top:6px; inset-inline-end:6px; background:rgba(15,20,26,.6); color:#fff; border-radius:100px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; }
+  .pt-media-badge svg{ width:12px; height:12px; }
+  .pt-media-link{ position:absolute; bottom:0; inset-inline-start:0; inset-inline-end:0; display:flex; align-items:center; justify-content:center; gap:4px; padding:5px 4px; font-size:10px; font-weight:600; color:#fff; background:linear-gradient(0deg, rgba(15,20,26,.78), rgba(15,20,26,0)); text-decoration:none; }
+  .pt-media-link svg{ width:11px; height:11px; }
   .pt-text{ flex:1; font-size:12.5px; line-height:1.6; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:7; -webkit-box-orient:vertical; }
   .pt-text.compact{ -webkit-line-clamp:3; }
   .pt-foot{ margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:10px; color: var(--text-faint); }
@@ -1247,7 +1254,9 @@
     video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10l6-3.2v10.4l-6-3.2"/></svg>',
     photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-5.5-5-6.5 6.5-2.5-2.5-3 3"/></svg>',
     person: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="34" r="17"/><path d="M16 96c0-24 15-40 34-40s34 16 34 40"/></svg>',
-    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
+    download: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v13M7 11l5 5 5-5"/><path d="M4 20h16"/></svg>',
+    external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M14 4h6v6M20 4l-9 9"/><path d="M9 5H5a1 1 0 0 0-1 1v13a1 1 0 0 0 1 1h13a1 1 0 0 0 1-1v-4"/></svg>'
   };
 
   // ---- auth (real Supabase/PostgREST backend) ----
@@ -1498,10 +1507,12 @@
     feed.innerHTML = list.map(p=>{
       const ch = chById(p.channel_id) || {};
       const topic = catNameOf(p.channel_id);
-      const hasThumb = p.media_type === 'photo' && p.media_path;
+      const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
+      const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
+      const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
       return `
       <div class="news-card">
-        ${hasThumb ? `<div class="news-thumb"><img src="${p.media_path}" alt="" loading="lazy" /></div>` : ''}
+        ${hasThumb ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${p.media_path}" alt="" loading="lazy" /></div>` : ''}
         <div class="news-body">
           <div class="news-head">
             <span class="news-source">${ch.title||ch.username||'؟'}</span>
@@ -1517,7 +1528,10 @@
           </button>
           <div class="news-foot">
             <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
-            ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
+              ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+            </div>
           </div>
         </div>
       </div>`;
@@ -1718,6 +1732,29 @@
     });
   }
 
+  function postMediaBlock(p){
+    const isMedia = p.media_type && p.media_type!=='none';
+    if(!isMedia) return '';
+    const mediaIcon = p.media_type==='video' ? ICONS.video : ICONS.photo;
+    if(!p.media_path){
+      return `<div class="pt-media">${mediaIcon}<b>${p.media_type==='video'?'فیلم':'عکس'}</b><span>پیش‌نمایش موجود نیست</span></div>`;
+    }
+    const path = p.media_path;
+    if(p.media_type==='photo'){
+      return `<div class="pt-media has-img"><img src="${path}" loading="lazy" alt=""><span class="pt-media-badge">${ICONS.photo}</span></div>`;
+    }
+    if(p.media_type==='video'){
+      const isRealVideo = /\.mp4($|\?)/i.test(path);
+      if(isRealVideo){
+        return `<div class="pt-media has-img"><video src="${path}" muted preload="metadata"></video><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${path}" target="_blank" rel="noopener" download onclick="event.stopPropagation()">${ICONS.download}دانلود فیلم</a></div>`;
+      }
+      // ایتا: فقط تصویر بندانگشتی دانلود شده، نه فایل کامل — لینک به منبع اصلی
+      const srcLink = p.link || path;
+      return `<div class="pt-media has-img"><img src="${path}" loading="lazy" alt=""><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${srcLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.external}مشاهده در مبدأ</a></div>`;
+    }
+    return `<div class="pt-media">${mediaIcon}<b>رسانه</b><span>پیش‌نمایش موجود نیست</span></div>`;
+  }
+
   function renderPosts(){
     const filtered = filteredPosts();
     postsList.innerHTML = '';
@@ -1725,8 +1762,7 @@
     filtered.slice(0,150).forEach(p=>{
       const el=document.createElement('div'); el.className='post-tile';
       const isMedia = p.media_type && p.media_type!=='none';
-      const mediaIcon = p.media_type==='video' ? ICONS.video : ICONS.photo;
-      const mediaBlock = isMedia ? `<div class="pt-media">${mediaIcon}<b>${p.media_type==='video'?'فیلم':'عکس'}</b><span>پیش‌نمایش موجود نیست</span></div>` : '';
+      const mediaBlock = postMediaBlock(p);
       const time = p.posted_at || p.scraped_at;
       const timeLabel = time ? new Date(time).toLocaleString('fa-IR',{hour:'2-digit',minute:'2-digit'}) : '';
       el.innerHTML = `<div class="pt-head">${chAvatar(p.channel_id)}<div class="pt-who"><b>${chName(p.channel_id)}</b></div></div>
