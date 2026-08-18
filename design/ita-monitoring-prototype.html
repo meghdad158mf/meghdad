@@ -322,6 +322,14 @@
   .modal-card p{ font-size:14px; line-height:1.9; color: var(--text-dim); }
   .modal-card p + p{ margin-top:12px; }
 
+  .media-viewer-overlay{ background:rgba(6,9,13,0.88); padding:20px; }
+  .media-viewer-card{ max-width:min(92vw,900px); max-height:90vh; width:auto; padding:0; background:transparent; box-shadow:none; overflow:visible; display:flex; align-items:center; justify-content:center; }
+  .media-viewer-card img,
+  .media-viewer-card video{ max-width:min(92vw,900px); max-height:80vh; width:auto; height:auto; border-radius: var(--radius-card); display:block; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6); }
+  .media-viewer-card .modal-close{ top:-14px; left:-14px; background: var(--surface); color: var(--text); }
+  .media-viewer-link{ position:absolute; bottom:-42px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#fff; background:rgba(255,255,255,0.12); padding:7px 16px; border-radius:100px; text-decoration:none; white-space:nowrap; }
+  .media-viewer-link svg{ width:13px; height:13px; }
+
 
   .avatar{ width:32px; height:32px; border-radius:50%; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; flex-shrink:0; }
 
@@ -412,12 +420,12 @@
   .pt-media span{ font-size:9.5px; }
   .pt-media.has-img{ border:none; padding:0; height:110px; position:relative; overflow:hidden; background: var(--surface-2); }
   .pt-media.has-img img,
-  .pt-media.has-img video{ width:100%; height:100%; object-fit:cover; display:block; }
+  .pt-media.has-img video{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   .pt-media-badge{ position:absolute; top:6px; inset-inline-end:6px; background:rgba(15,20,26,.6); color:#fff; border-radius:100px; width:22px; height:22px; display:flex; align-items:center; justify-content:center; }
   .pt-media-badge svg{ width:12px; height:12px; }
   .pt-media-link{ position:absolute; bottom:0; inset-inline-start:0; inset-inline-end:0; display:flex; align-items:center; justify-content:center; gap:4px; padding:5px 4px; font-size:10px; font-weight:600; color:#fff; background:linear-gradient(0deg, rgba(15,20,26,.78), rgba(15,20,26,0)); text-decoration:none; }
   .pt-media-link svg{ width:11px; height:11px; }
-  .pt-text{ flex:1; font-size:12.5px; line-height:1.6; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:7; -webkit-box-orient:vertical; }
+  .pt-text{ flex:1; font-size:12.5px; line-height:1.6; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:7; -webkit-box-orient:vertical; white-space:pre-wrap; }
   .pt-text.compact{ -webkit-line-clamp:3; }
   .pt-foot{ margin-top:12px; padding-top:10px; border-top:1px solid var(--border); display:flex; align-items:center; justify-content:space-between; gap:6px; font-size:10px; color: var(--text-faint); }
   .pt-foot .cat{ color: var(--accent-strong); font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -485,7 +493,7 @@
   .news-feed.grid-view .news-card .news-body{ padding:14px; }
 
   .news-thumb{ width:112px; height:88px; border-radius:10px; overflow:hidden; flex-shrink:0; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
-  .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
   .news-feed.grid-view .news-thumb{ width:100%; height:140px; border-radius:0; }
 
@@ -496,7 +504,7 @@
   .news-time{ font-size:11px; color: var(--text-faint); margin-inline-start:auto; }
   .news-title{ font-size:15px; font-weight:700; color: var(--text); line-height:1.55; margin:0 0 6px; }
   .news-feed.grid-view .news-title{ font-size:13.5px; }
-  .news-text{ font-size:13px; line-height:1.9; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+  .news-text{ font-size:13px; line-height:1.9; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; white-space:pre-wrap; }
   .news-feed.grid-view .news-text{ font-size:12px; -webkit-line-clamp:3; }
   .news-text.expanded{ -webkit-line-clamp:unset; }
   .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
@@ -772,6 +780,16 @@
           <button class="btn" onclick="closeDeleteChannelModal()" style="flex:1;">انصراف</button>
           <button class="btn danger" id="confirm-delete-channel-btn" style="flex:1;">حذف قطعی</button>
         </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay media-viewer-overlay" id="media-viewer" onclick="if(event.target===this) closeMediaViewer()">
+      <div class="modal-card media-viewer-card">
+        <button class="modal-close" onclick="closeMediaViewer()" aria-label="بستن">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <div id="media-viewer-body"></div>
+        <a class="media-viewer-link" id="media-viewer-link" href="#" target="_blank" rel="noopener" style="display:none"></a>
       </div>
     </div>
 
@@ -1512,7 +1530,7 @@
       const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
       return `
       <div class="news-card">
-        ${hasThumb ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${p.media_path}" alt="" loading="lazy" /></div>` : ''}
+        ${hasThumb ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>` : ''}
         <div class="news-body">
           <div class="news-head">
             <span class="news-source">${ch.title||ch.username||'؟'}</span>
@@ -1536,6 +1554,7 @@
         </div>
       </div>`;
     }).join('');
+    wireMediaViewerClicks(feed);
   }
 
   function renderNewsPagination(totalPages){
@@ -1732,6 +1751,39 @@
     });
   }
 
+  function escAttr(s){
+    return String(s==null ? '' : s).replace(/&/g,'&amp;').replace(/"/g,'&quot;');
+  }
+
+  function wireMediaViewerClicks(root){
+    root.querySelectorAll('[data-viewer-kind]').forEach(node=>{
+      node.addEventListener('click', (e)=>{
+        e.stopPropagation();
+        openMediaViewer(node.dataset.viewerKind, node.dataset.viewerSrc, node.dataset.viewerLink || null);
+      });
+    });
+  }
+
+  function openMediaViewer(kind, url, linkUrl){
+    const body = document.getElementById('media-viewer-body');
+    body.innerHTML = kind==='video'
+      ? `<video src="${url}" controls autoplay playsinline></video>`
+      : `<img src="${url}" alt="">`;
+    const linkEl = document.getElementById('media-viewer-link');
+    if(linkUrl){
+      linkEl.href = linkUrl;
+      linkEl.innerHTML = `${ICONS.external}مشاهده در مبدأ`;
+      linkEl.style.display = 'flex';
+    } else {
+      linkEl.style.display = 'none';
+    }
+    document.getElementById('media-viewer').classList.add('active');
+  }
+  function closeMediaViewer(){
+    document.getElementById('media-viewer').classList.remove('active');
+    document.getElementById('media-viewer-body').innerHTML = '';
+  }
+
   function postMediaBlock(p){
     const isMedia = p.media_type && p.media_type!=='none';
     if(!isMedia) return '';
@@ -1741,16 +1793,17 @@
     }
     const path = p.media_path;
     if(p.media_type==='photo'){
-      return `<div class="pt-media has-img"><img src="${path}" loading="lazy" alt=""><span class="pt-media-badge">${ICONS.photo}</span></div>`;
+      return `<div class="pt-media has-img"><img src="${escAttr(path)}" loading="lazy" alt="" data-viewer-kind="image" data-viewer-src="${escAttr(path)}"><span class="pt-media-badge">${ICONS.photo}</span></div>`;
     }
     if(p.media_type==='video'){
       const isRealVideo = /\.mp4($|\?)/i.test(path);
       if(isRealVideo){
-        return `<div class="pt-media has-img"><video src="${path}" muted preload="metadata"></video><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${path}" target="_blank" rel="noopener" download onclick="event.stopPropagation()">${ICONS.download}دانلود فیلم</a></div>`;
+        return `<div class="pt-media has-img"><video src="${escAttr(path)}" muted preload="metadata" data-viewer-kind="video" data-viewer-src="${escAttr(path)}"></video><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${escAttr(path)}" target="_blank" rel="noopener" download onclick="event.stopPropagation()">${ICONS.download}دانلود فیلم</a></div>`;
       }
-      // ایتا: فقط تصویر بندانگشتی دانلود شده، نه فایل کامل — لینک به منبع اصلی
+      // ایتا: فقط تصویر بندانگشتی دانلود شده، نه فایل کامل — کلیک روی تصویر
+      // بزرگش می‌کنه، لینک جدا به منبع اصلی می‌ره
       const srcLink = p.link || path;
-      return `<div class="pt-media has-img"><img src="${path}" loading="lazy" alt=""><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${srcLink}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.external}مشاهده در مبدأ</a></div>`;
+      return `<div class="pt-media has-img"><img src="${escAttr(path)}" loading="lazy" alt="" data-viewer-kind="image" data-viewer-src="${escAttr(path)}" data-viewer-link="${escAttr(srcLink)}"><span class="pt-media-badge">${ICONS.video}</span><a class="pt-media-link" href="${escAttr(srcLink)}" target="_blank" rel="noopener" onclick="event.stopPropagation()">${ICONS.external}مشاهده در مبدأ</a></div>`;
     }
     return `<div class="pt-media">${mediaIcon}<b>رسانه</b><span>پیش‌نمایش موجود نیست</span></div>`;
   }
@@ -1769,6 +1822,7 @@
         ${mediaBlock}
         <div class="pt-text${isMedia?' compact':''}">${(p.text||'').slice(0,500)}</div>
         <div class="pt-foot"><span class="cat">${catNameOf(p.channel_id)}</span><span class="time mono">${timeLabel}</span></div>`;
+      wireMediaViewerClicks(el);
       postsList.appendChild(el);
     });
   }
