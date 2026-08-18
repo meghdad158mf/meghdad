@@ -169,6 +169,11 @@ async def collect_channel(client: TelegramClient, token: str, channel: dict) -> 
             "views": getattr(msg, "views", 0) or 0,
             "forwards": getattr(msg, "forwards", 0) or 0,
             "posted_at": msg.date.isoformat() if msg.date else None,
+            # این سه فیلد باید روی همه‌ی پست‌ها باشن (حتی None) وگرنه PostgREST
+            # با خطای "All object keys must match" کل batch رو رد می‌کنه.
+            "media_path": None,
+            "media_storage_path": None,
+            "media_fetched_at": None,
         }
         stored = await download_and_store_media(client, token, msg, channel_id)
         if stored:
