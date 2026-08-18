@@ -90,6 +90,10 @@ def upload_media(token: str, storage_path: str, content: bytes, content_type: st
             "apikey": SUPABASE_ANON_KEY,
             "Authorization": f"Bearer {token}",
             "Content-Type": content_type or "application/octet-stream",
+            # چون هر اجرا کل صفحه‌ی کانال رو دوباره اسکن می‌کنه (نه فقط پست‌های
+            # جدید)، ممکنه همون فایل قبلاً آپلود شده باشه — بدون این هدر، آپلود
+            # دوباره‌ی همون مسیر با خطای 400 رد می‌شه.
+            "x-upsert": "true",
         },
         data=content,
         timeout=REQUEST_TIMEOUT,

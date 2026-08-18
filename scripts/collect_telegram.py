@@ -119,6 +119,10 @@ def upload_media(token: str, storage_path: str, content: bytes, content_type: st
             "apikey": SUPABASE_ANON_KEY,
             "Authorization": f"Bearer {token}",
             "Content-Type": content_type or "application/octet-stream",
+            # اگه به هر دلیلی همون پیام قبلاً یه‌بار دانلود شده باشه ولی ذخیره‌ی
+            # دیتابیسش ناموفق بوده، بدون این هدر آپلود دوباره‌ی همون مسیر خطای
+            # 400 می‌ده.
+            "x-upsert": "true",
         },
         data=content,
         timeout=REQUEST_TIMEOUT,
