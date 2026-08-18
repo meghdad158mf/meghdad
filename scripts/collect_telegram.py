@@ -13,6 +13,7 @@
 """
 
 import asyncio
+import datetime
 import os
 import sys
 
@@ -30,6 +31,8 @@ TG_SESSION = os.environ["TG_SESSION"]
 
 REQUEST_TIMEOUT = 20
 MESSAGES_PER_CHANNEL_LIMIT = 200  # سقف ایمنی برای هر اجرا، در حالت عادی خیلی کمتره
+MEDIA_BUCKET = "post-media"
+MAX_MEDIA_BYTES = 15 * 1024 * 1024  # ۱۵ مگابایت — فایل بزرگ‌تر دانلود نمی‌شه (فضای Storage + زمان اجرا)
 
 
 def login() -> str:
@@ -100,35 +103,83 @@ def upsert_posts(token: str, posts: list[dict]) -> None:
 def media_type_of(msg) -> str | None:
     if not msg.media:
         return None
-    if isinstance(msg.media, MessageMediaPhoto):
+    if msg.photo:
         return "photo"
-    if isinstance(msg.media, MessageMediaDocument):
+    if msg.video:
+        return "video"
+    if isinstance(msg.media, (MessageMediaPhoto, MessageMediaDocument)):
         return "document"
     return "other"
 
 
-async def collect_channel(client: TelegramClient, token: str, channel: dict) -> int:
+def upload_media(token: str, storage_path: str, content: bytes, content_type: str) -> str:
+    r = requests.post(
+        f"{SUPABASE_URL}/storage/v1/object/{MEDIA_BUCKET}/{storage_path}",
+        headers={
+            "apikey": SUPABASE_ANON_KEY,
+            "Authorization": f"Bearer {token}",
+            "Content-Type": content_type or "application/octet-stream",
+        },
+        data=content,
+        timeout=REQUEST_TIMEOUT,
+    )
+    r.raise_for_status()
+    return f"{SUPABASE_URL}/storage/v1/object/public/{MEDIA_BUCKET}/{storage_path}"
+
+
+async def download_and_store_media(client: TelegramClient, token: str, msg, channel_id: int) -> dict | None:
+    # فقط عکس و ویدیو دانلود می‌شه (نه سایر انواع سند) — طبق درخواست کاربر.
+    if not (msg.photo or msg.video):
+        return None
+    try:
+        size = getattr(msg.file, "size", None) if msg.file else None
+        if size and size > MAX_MEDIA_BYTES:
+            print(f"    [!] media too big ({size} bytes), skipping download: msg {msg.id}", file=sys.stderr)
+            return None
+        content = await client.download_media(msg, file=bytes)
+        if not content:
+            return None
+        if len(content) > MAX_MEDIA_BYTES:
+            print(f"    [!] media too big ({len(content)} bytes after download), skipping: msg {msg.id}", file=sys.stderr)
+            return None
+        content_type = (msg.file.mime_type if msg.file else None) or ("image/jpeg" if msg.photo else "video/mp4")
+        ext = ".jpg" if msg.photo else ".mp4"
+        storage_path = f"telegram/{channel_id}/{msg.id}{ext}"
+        public_url = upload_media(token, storage_path, content, content_type)
+        return {"media_path": public_url, "media_storage_path": storage_path}
+    except Exception as e:
+        print(f"    [!] media download failed for msg {msg.id}: {e}", file=sys.stderr)
+        return None
+
+
+async def collect_channel(client: TelegramClient, token: str, channel: dict) -> tuple[int, int]:
     username = channel["username"]
     channel_id = channel["id"]
     last_id = fetch_last_post_id(token, channel_id)
 
     posts = []
+    media_count = 0
     async for msg in client.iter_messages(username, min_id=last_id, limit=MESSAGES_PER_CHANNEL_LIMIT):
-        posts.append(
-            {
-                "channel_id": channel_id,
-                "platform": "telegram",
-                "platform_post_id": str(msg.id),
-                "text": msg.message or "",
-                "media_type": media_type_of(msg),
-                "views": getattr(msg, "views", 0) or 0,
-                "forwards": getattr(msg, "forwards", 0) or 0,
-                "posted_at": msg.date.isoformat() if msg.date else None,
-            }
-        )
+        post = {
+            "channel_id": channel_id,
+            "platform": "telegram",
+            "platform_post_id": str(msg.id),
+            "text": msg.message or "",
+            "media_type": media_type_of(msg),
+            "views": getattr(msg, "views", 0) or 0,
+            "forwards": getattr(msg, "forwards", 0) or 0,
+            "posted_at": msg.date.isoformat() if msg.date else None,
+        }
+        stored = await download_and_store_media(client, token, msg, channel_id)
+        if stored:
+            post["media_path"] = stored["media_path"]
+            post["media_storage_path"] = stored["media_storage_path"]
+            post["media_fetched_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
+            media_count += 1
+        posts.append(post)
 
     upsert_posts(token, posts)
-    return len(posts)
+    return len(posts), media_count
 
 
 async def main() -> None:
@@ -138,15 +189,17 @@ async def main() -> None:
 
     async with TelegramClient(StringSession(TG_SESSION), TG_API_ID, TG_API_HASH) as client:
         total = 0
+        total_media = 0
         for channel in channels:
             try:
-                n = await collect_channel(client, token, channel)
+                n, m = await collect_channel(client, token, channel)
                 total += n
-                print(f"[+] @{channel['username']}: {n} new message(s)")
+                total_media += m
+                print(f"[+] @{channel['username']}: {n} new message(s), {m} media downloaded")
             except Exception as e:
                 print(f"[!] @{channel['username']}: {e}", file=sys.stderr)
 
-    print(f"[done] total new messages: {total}")
+    print(f"[done] total new messages: {total}, media downloaded: {total_media}")
 
 
 if __name__ == "__main__":
