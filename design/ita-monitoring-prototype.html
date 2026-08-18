@@ -495,7 +495,7 @@
   .news-thumb{ width:112px; height:88px; border-radius:10px; overflow:hidden; flex-shrink:0; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
   .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
-  .news-feed.grid-view .news-thumb{ width:100%; height:140px; border-radius:0; }
+  .news-feed.grid-view .news-thumb{ width:100%; height:auto; aspect-ratio:4/5; border-radius:0; }
 
   .news-body{ flex:1; min-width:0; }
   .news-head{ display:flex; align-items:center; gap:7px; margin-bottom:8px; flex-wrap:wrap; }
@@ -506,7 +506,8 @@
   .news-feed.grid-view .news-title{ font-size:13.5px; }
   .news-text{ font-size:13px; line-height:1.9; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; white-space:pre-wrap; }
   .news-feed.grid-view .news-text{ font-size:12px; -webkit-line-clamp:3; }
-  .news-text.expanded{ -webkit-line-clamp:unset; }
+  .news-text.expanded,
+  .news-feed.grid-view .news-text.expanded{ -webkit-line-clamp:unset; }
   .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
   .news-more svg{ width:11px; height:11px; transition: transform .15s ease; }
   .news-more.open svg{ transform:rotate(180deg); }
@@ -914,10 +915,10 @@
           <p class="news-page-sub">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
         </div>
         <div class="news-view-toggle">
-          <button class="active" id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
+          <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
-          <button id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
+          <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
           </button>
         </div>
@@ -954,7 +955,7 @@
         </div>
       </div>
 
-      <div class="news-feed" id="news-feed"></div>
+      <div class="news-feed grid-view" id="news-feed"></div>
       <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
       <div class="news-pagination" id="news-pagination"></div>
     </section>
