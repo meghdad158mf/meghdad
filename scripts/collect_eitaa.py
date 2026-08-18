@@ -10,13 +10,16 @@
 منطق پارس HTML عیناً از ورک‌فلوی n8n «Eitaa - Multi-channel to Data Table»
 گرفته شده.
 
-عکس/فیلم: صفحه‌ی عمومی ایتا از همون قالب ویجت تلگرام (t.me/s/...) با
-کلاس‌های etme_ تقلید می‌کنه (که استخراج متن بالا هم همینو ثابت می‌کنه)،
-پس فرض شده لینک عکس هم به همون شکل (background-image روی
-etme_widget_message_photo_wrap) در دسترسه. این فرض روی صفحه‌ی واقعی
-تست نشده — اگه کار نکرد، اولین اجرای واقعی این رو توی لاگ مشخص می‌کنه.
-برای فیلم فقط تصویر بندانگشتی (poster) قابل استخراجه، نه خودِ فایل
-پخش‌شدنی — پس برای ویدیو media_path همون بندانگشتیه، نه دانلود کامل.
+عکس: با تست روی صفحه‌ی واقعی تأیید شد — لینک عکس روی style attribute
+عنصر etme_widget_message_photo_wrap با فرمت
+"background-image: url('/download_xxx?token=...')" میاد (با فاصله بعد
+از دو‌نقطه، و لینک نسبیه — باید https://eitaa.com جلوش اضافه بشه؛ هر
+دو نکته باعث باگ نسخه‌ی اول این فایل بودن، الان فیکس شدن).
+فیلم: هنوز روی صفحه‌ی واقعی تست نشده — فرض شده همون کلاس
+etme_widget_message_video_player برای تشخیص ویدیو کافیه و فقط تصویر
+بندانگشتی (poster) قابل استخراجه، نه خودِ فایل پخش‌شدنی — پس برای
+ویدیو media_path همون بندانگشتیه، نه دانلود کامل. اگه اولین ویدیوی
+واقعی توی لاگ media_type='video' نگرفت، این فرض هم نیاز به بررسی داره.
 """
 
 import datetime
@@ -40,7 +43,7 @@ MAX_MEDIA_BYTES = 15 * 1024 * 1024  # ۱۵ مگابایت — برای اینک�
 
 POST_ID_RE = re.compile(r'data-post="([^"]+)"')
 TEXT_RE = re.compile(r'class="etme_widget_message_text js-message_text"[^>]*>(.*?)</div>', re.S)
-BG_IMAGE_RE = re.compile(r"background-image:url\('([^']+)'\)")
+BG_IMAGE_RE = re.compile(r"background-image:\s*url\('([^']+)'\)")
 TAG_RE = re.compile(r"<[^>]*>")
 
 
@@ -141,6 +144,8 @@ def extract_posts(html: str, channel_id: int) -> list[dict]:
             bg_m = BG_IMAGE_RE.search(style)
             if bg_m:
                 media_source_url = bg_m.group(1)
+                if media_source_url.startswith("/"):
+                    media_source_url = "https://eitaa.com" + media_source_url
                 is_video = wrap.find(class_="etme_widget_message_video_player") is not None
                 media_type = "video" if is_video else "photo"
 
