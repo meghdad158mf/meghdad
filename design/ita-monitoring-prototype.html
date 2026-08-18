@@ -423,6 +423,83 @@
   .post-foot{ margin-top:9px; font-size:11px; color: var(--text-faint); display:flex; gap:6px; align-items:center; }
   .post-foot .cat{ color: var(--accent-strong); font-weight:600; }
 
+  /* اخبار رسمی — بخش مطالعه (فاز ۱، بدون فیلتر/ترجمه‌ی هوشمند) */
+  .news-page-tabs{ display:flex; gap:26px; margin-bottom:22px; border-bottom:1px solid rgba(255,255,255,0.12); }
+  .news-page-tabs button{ border:none; background:none; color:rgba(255,255,255,0.5); font-size:14px; font-weight:700; padding:11px 2px; cursor:pointer; position:relative; font-family:inherit; }
+  .news-page-tabs button.active{ color:#fff; }
+  .news-page-tabs button.active::after{ content:''; position:absolute; inset-inline:0; bottom:-1px; height:2px; background:var(--accent); border-radius:2px; }
+  .news-page-tabs button:disabled{ cursor:default; opacity:.6; }
+  .news-soon{ font-size:9.5px; font-weight:600; color: var(--accent); background: rgba(234,179,147,0.14); border-radius:100px; padding:2px 7px; margin-inline-start:6px; }
+
+  .news-page-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
+  .news-page-title{ font-size:20px; font-weight:800; color:#fff; margin:0 0 4px; }
+  .news-page-sub{ font-size:13px; color:rgba(255,255,255,0.55); margin:0; }
+
+  .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; }
+  .news-view-toggle button{ border:none; background:none; color: rgba(255,255,255,0.55); padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
+  .news-view-toggle button.active{ background: var(--accent); color: var(--primary); }
+  .news-view-toggle svg{ width:16px; height:16px; }
+
+  .news-filters{ display:flex; flex-direction:column; gap:10px; margin-bottom:24px; }
+  .news-filter-row{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+
+  .news-search-box{ position:relative; flex:1; min-width:220px; }
+  .news-search-box input{ width:100%; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#fff; padding:11px 40px 11px 14px; border-radius: var(--radius-control); font-size:13px; font-family:inherit; }
+  .news-search-box input::placeholder{ color: rgba(255,255,255,0.4); }
+  .news-search-box svg{ position:absolute; inset-inline-end:13px; top:50%; transform:translateY(-50%); width:16px; height:16px; color: rgba(255,255,255,0.4); }
+
+  .news-smart-toggle{ display:inline-flex; align-items:center; gap:6px; flex-shrink:0; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color: rgba(255,255,255,0.4); padding:11px 14px; border-radius: var(--radius-control); font-size:12.5px; font-weight:700; cursor:default; }
+  .news-smart-toggle svg{ width:15px; height:15px; }
+  .news-smart-toggle .sw{ width:28px; height:16px; border-radius:9999px; background: rgba(255,255,255,0.12); position:relative; flex-shrink:0; }
+  .news-smart-toggle .sw::after{ content:''; position:absolute; top:2px; inset-inline-start:2px; width:12px; height:12px; border-radius:50%; background:#fff; opacity:.5; }
+
+  .news-seg{ display:flex; gap:6px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; width:fit-content; }
+  .news-seg button{ border:none; background:none; color: rgba(255,255,255,0.65); font-size:12px; font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-family:inherit; }
+  .news-seg button.active{ background: var(--accent); color: var(--primary); }
+
+  .news-region-chip{ font-size:11.5px; font-weight:600; padding:8px 15px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); cursor:pointer; }
+  .news-region-chip.active{ background: rgba(142,163,184,0.28); border-color: rgba(142,163,184,0.5); color:#fff; }
+
+  .news-source-select{ background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#fff; padding:9px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; cursor:pointer; }
+  .news-source-select option{ color: var(--text); }
+
+  .news-platform{ display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color: var(--text-faint); }
+  .news-platform svg{ width:12px; height:12px; }
+
+  .news-feed{ display:flex; flex-direction:column; gap:14px; max-width:800px; margin:0 auto; }
+  .news-feed.grid-view{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; max-width:100%; margin:0; align-items:start; }
+  @media (max-width:900px){ .news-feed.grid-view{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:560px){ .news-feed.grid-view{ grid-template-columns: 1fr; } }
+
+  .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
+  @media (max-width:520px){ .news-card{ flex-direction:column; } }
+  .news-feed.grid-view .news-card{ flex-direction:column; border-inline-start:1px solid var(--border); border-top:3px solid var(--accent); padding:0; overflow:hidden; }
+  .news-feed.grid-view .news-card .news-body{ padding:14px; }
+
+  .news-thumb{ width:112px; height:88px; border-radius:10px; overflow:hidden; flex-shrink:0; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+  .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; }
+  @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
+  .news-feed.grid-view .news-thumb{ width:100%; height:140px; border-radius:0; }
+
+  .news-body{ flex:1; min-width:0; }
+  .news-head{ display:flex; align-items:center; gap:7px; margin-bottom:8px; flex-wrap:wrap; }
+  .news-source{ font-size:11px; color:#fff; background: var(--navy); padding:3px 11px; border-radius:100px; font-weight:600; }
+  .news-region{ font-size:10px; font-weight:600; padding:3px 10px; border-radius:100px; background: var(--surface-2); color: var(--text-dim); border:1px solid var(--border-strong); }
+  .news-time{ font-size:11px; color: var(--text-faint); margin-inline-start:auto; }
+  .news-title{ font-size:15px; font-weight:700; color: var(--text); line-height:1.55; margin:0 0 6px; }
+  .news-feed.grid-view .news-title{ font-size:13.5px; }
+  .news-text{ font-size:13px; line-height:1.9; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; }
+  .news-feed.grid-view .news-text{ font-size:12px; -webkit-line-clamp:3; }
+  .news-text.expanded{ -webkit-line-clamp:unset; }
+  .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
+  .news-more svg{ width:11px; height:11px; transition: transform .15s ease; }
+  .news-more.open svg{ transform:rotate(180deg); }
+  .news-foot{ margin-top:11px; padding-top:10px; border-top:1px solid var(--border); display:flex; flex-wrap:wrap; gap:6px; align-items:center; justify-content:space-between; }
+  .news-topic{ font-size:11px; font-weight:600; color: var(--accent-strong); }
+  .news-link{ font-size:11px; font-weight:600; color: var(--text-faint); }
+  .news-link:hover{ color: var(--accent-strong); }
+  .news-empty{ text-align:center; color: rgba(255,255,255,0.5); font-size:13px; padding:40px 0; }
+
   /* analytics */
   .seg{ display:flex; gap:6px; background: var(--surface-2); border:1px solid var(--border); padding:4px; border-radius:9px; margin-bottom:18px; width:fit-content; }
   .seg button{ border:none; background:none; color: var(--text-dim); font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; }
@@ -744,8 +821,60 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">اخبار رسمی</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+
+      <div class="news-page-tabs">
+        <button class="active">مطالعه</button>
+        <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
+      </div>
+
+      <div class="news-page-head">
+        <div>
+          <h1 class="news-page-title">اخبار رسمی</h1>
+          <p class="news-page-sub">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
+        </div>
+        <div class="news-view-toggle">
+          <button class="active" id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <button id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="news-filters">
+        <div class="news-filter-row">
+          <div class="news-search-box" id="news-search-box">
+            <input type="text" id="news-search-input" placeholder="جستجو در عنوان و متن…" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </div>
+          <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+            جستجوی هوشمند
+            <span class="sw"></span>
+          </div>
+        </div>
+        <div class="news-filter-row">
+          <div class="news-seg" id="news-time-seg">
+            <button class="active" data-t="all">همه</button>
+            <button data-t="today">امروز</button>
+            <button data-t="yesterday">دیروز</button>
+            <button data-t="week">هفته گذشته</button>
+          </div>
+        </div>
+        <div class="news-filter-row" id="news-region-row">
+          <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
+          <span class="news-region-chip" data-r="domestic">داخلی</span>
+          <span class="news-region-chip" data-r="regional">منطقه‌ای</span>
+          <span class="news-region-chip" data-r="international">بین‌المللی</span>
+          <select class="news-source-select" id="news-source-select">
+            <option value="">انتخاب یک رسانه‌ی مشخص…</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="news-feed" id="news-feed"></div>
+      <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
     </section>
 
     <section class="section" id="sec-schools">
@@ -1205,6 +1334,143 @@
     return cat ? cat.name : '';
   }
 
+  // ---- اخبار رسمی — بخش مطالعه (فاز ۱) ----
+  const NEWS_REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+  const NEWS_PLATFORM_LABEL = { website: 'وب‌سایت', telegram: 'تلگرام', eitaa: 'ایتا' };
+  const NEWS_PLATFORM_ICON = {
+    website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 010 18 13 13 0 010-18z"/></svg>',
+    telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13"/></svg>',
+    eitaa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-3.4-.7L3 20l1-4.8A8.4 8.4 0 1121 11.5z"/></svg>',
+  };
+  const newsState = { region: '', time: 'all', source: '', query: '' };
+
+  function newsChannels(){ return CHANNELS.filter(c=>c.type==='news_agency'); }
+
+  function newsPosts(){
+    const newsChanIds = new Set(newsChannels().map(c=>c.id));
+    return POSTS_CACHE.filter(p=>newsChanIds.has(p.channel_id));
+  }
+
+  function newsRelTime(dateStr){
+    if(!dateStr) return '';
+    const d = new Date(dateStr);
+    const diffMs = Date.now() - d.getTime();
+    const mins = Math.floor(diffMs/60000);
+    if(mins < 1) return 'همین الان';
+    if(mins < 60) return toFaDigits(mins)+' دقیقه پیش';
+    const hours = Math.floor(mins/60);
+    if(hours < 24) return toFaDigits(hours)+' ساعت پیش';
+    const days = Math.floor(hours/24);
+    if(days === 1) return 'دیروز';
+    if(days < 7) return toFaDigits(days)+' روز پیش';
+    return d.toLocaleDateString('fa-IR');
+  }
+
+  function populateNewsSourceOptions(){
+    const sel = document.getElementById('news-source-select');
+    if(!sel) return;
+    const current = sel.value;
+    sel.innerHTML = '<option value="">انتخاب یک رسانه‌ی مشخص…</option>' +
+      newsChannels().map(c=>`<option value="${c.id}">${c.title||c.username}</option>`).join('');
+    sel.value = current;
+  }
+
+  function filteredNewsPosts(){
+    const now = Date.now();
+    return newsPosts().filter(p=>{
+      const ch = chById(p.channel_id);
+      if(newsState.region && ch.region !== newsState.region) return false;
+      if(newsState.source && String(p.channel_id) !== newsState.source) return false;
+      if(newsState.time !== 'all'){
+        const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
+        const diffDays = (now - posted) / 86400000;
+        if(newsState.time === 'today' && diffDays > 1) return false;
+        if(newsState.time === 'yesterday' && (diffDays < 1 || diffDays > 2)) return false;
+        if(newsState.time === 'week' && diffDays > 7) return false;
+      }
+      if(newsState.query){
+        const q = newsState.query.toLowerCase();
+        const hay = ((p.title||'')+' '+(p.text||'')).toLowerCase();
+        if(!hay.includes(q)) return false;
+      }
+      return true;
+    }).sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
+  }
+
+  function renderNewsFeed(){
+    const feed = document.getElementById('news-feed');
+    const empty = document.getElementById('news-empty');
+    if(!feed) return;
+    const list = filteredNewsPosts();
+    empty.style.display = list.length ? 'none' : 'block';
+    feed.innerHTML = list.map(p=>{
+      const ch = chById(p.channel_id) || {};
+      const topic = catNameOf(p.channel_id);
+      const hasThumb = p.media_type === 'photo' && p.media_path;
+      return `
+      <div class="news-card">
+        ${hasThumb ? `<div class="news-thumb"><img src="${p.media_path}" alt="" loading="lazy" /></div>` : ''}
+        <div class="news-body">
+          <div class="news-head">
+            <span class="news-source">${ch.title||ch.username||'؟'}</span>
+            <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+            ${ch.region ? `<span class="news-region">${NEWS_REGION_LABEL[ch.region]}</span>` : ''}
+            <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
+          </div>
+          ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
+          <p class="news-text" id="news-text-${p.id}">${p.text||''}</p>
+          <button class="news-more" onclick="toggleNewsText(${p.id})" id="news-more-${p.id}">
+            نمایش بیشتر
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="news-foot">
+            <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
+            ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+  }
+
+  function toggleNewsText(postId){
+    const t = document.getElementById('news-text-'+postId);
+    const b = document.getElementById('news-more-'+postId);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
+  }
+
+  function setNewsView(mode){
+    const feed = document.getElementById('news-feed');
+    feed.classList.toggle('grid-view', mode === 'grid');
+    document.getElementById('news-view-list-btn').classList.toggle('active', mode === 'list');
+    document.getElementById('news-view-grid-btn').classList.toggle('active', mode === 'grid');
+  }
+
+  document.getElementById('news-search-input').addEventListener('input', e=>{
+    newsState.query = e.target.value.trim();
+    renderNewsFeed();
+  });
+  document.getElementById('news-time-seg').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b) return;
+    document.querySelectorAll('#news-time-seg button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    newsState.time = b.dataset.t;
+    renderNewsFeed();
+  });
+  document.getElementById('news-region-row').addEventListener('click', e=>{
+    const chip = e.target.closest('.news-region-chip'); if(!chip) return;
+    document.querySelectorAll('.news-region-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    newsState.region = chip.dataset.r;
+    renderNewsFeed();
+  });
+  document.getElementById('news-source-select').addEventListener('change', e=>{
+    newsState.source = e.target.value;
+    renderNewsFeed();
+  });
+
   async function loadChannels(){
     const r = await api('/channels?select=*&order=added_at.desc');
     CHANNELS = r.ok ? await r.json() : [];
@@ -1258,6 +1524,8 @@
     renderCatGrid();
     renderChanList();
     renderMagazines();
+    populateNewsSourceOptions();
+    renderNewsFeed();
   }
 
   // ---- channels & people page ----
