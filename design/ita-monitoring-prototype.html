@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>پایش پیام‌رسان ایتا | جریان — نقشه‌ی بخش‌های سایت</title>
+<title>سامانه هوشمند جریان | رصد و تحلیل فضای سیاسی‌اجتماعی</title>
 </head>
 <body>
 <style>
@@ -39,6 +39,21 @@
     --shadow-hover: 0 18px 40px -18px rgba(23,35,48,0.22), 0 1px 0 rgba(255,255,255,0.8) inset;
   }
 
+  @font-face{
+    font-family: 'IRANSansX';
+    src: url('fonts/IRANSansXV.woff2') format('woff2');
+    font-weight: 100 900;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face{
+    font-family: 'IRANSansX';
+    src: url('fonts/IRANSansX-Regular.woff') format('woff');
+    font-weight: 400;
+    font-style: normal;
+    font-display: swap;
+  }
+
   *{ box-sizing:border-box; }
   html,body{ margin:0; padding:0; }
   body{
@@ -67,107 +82,40 @@
 
   @keyframes rise{ from{ opacity:0; transform:translateY(10px); } to{ opacity:1; transform:translateY(0); } }
 
-  /* ---------- shared header ---------- */
-  .topnav{ background: rgba(255,255,255,0.78); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--text); border-bottom:1px solid var(--border); }
-  .topnav-inner{ max-width: 1180px; margin:0 auto; padding: 12px 24px; display:flex; align-items:center; justify-content:space-between; gap:16px; }
-  .brand{ display:flex; align-items:center; gap:9px; font-weight:700; font-size:15px; cursor:pointer; }
-  .brand-text{ display:flex; flex-direction:column; line-height:1.35; }
-  .brand-text b{ font-weight:700; font-size:15px; }
-  .brand-text small{ font-weight:500; font-size:10.5px; color: var(--text-faint); }
-  .brand-badge{ width:32px; height:32px; border-radius:8px; background: var(--accent); display:flex; align-items:center; justify-content:center; color:#1a1206; flex-shrink:0; overflow:hidden; }
-  .brand-badge svg{ width:17px; height:17px; }
-  .brand-badge img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .topnav-right{ display:flex; align-items:center; gap:14px; }
-  .search-pill{ display:flex; align-items:center; gap:8px; background: rgba(20,27,36,0.05); border:1px solid rgba(20,27,36,0.12); border-radius:100px; padding:7px 14px; font-size:12.5px; color: rgba(20,27,36,0.55); min-width:200px; }
-  .search-pill svg{ width:14px; height:14px; flex-shrink:0; }
-  .topnav-link{ font-size:12.5px; color: rgba(20,27,36,0.75); display:flex; align-items:center; gap:6px; padding:7px 12px; border-radius:100px; border:1px solid rgba(20,27,36,0.14); cursor:pointer; }
-  .topnav-link:hover{ background: rgba(20,27,36,0.06); color: var(--text); }
-
-  /* ---------- SITEMAP VIEW ---------- */
   .view{ display:none; }
   .view.active{ display:block; }
-
-  .hero-band{
-    background:
-      radial-gradient(1100px 520px at 88% -15%, rgba(142,163,184,0.20), transparent 60%),
-      radial-gradient(900px 480px at 6% 115%, rgba(234,179,147,0.12), transparent 60%),
-      var(--bg);
-    color: var(--text); position:relative; overflow:hidden; border-bottom:1px solid var(--border);
-  }
-  .hero-inner{ max-width: 1180px; margin:0 auto; padding: 64px 24px 40px; position:relative; z-index:2; }
-  .hero-wave{ position:absolute; inset-inline-end:-40px; top:-60px; opacity:0.7; z-index:1; }
-  .live-chip{ display:inline-flex; align-items:center; gap:7px; background: var(--primary-soft); border:1px solid rgba(58,80,104,0.3); color: var(--primary-strong); font-size:12px; font-weight:600; padding:5px 12px; border-radius:var(--radius-pill); margin-bottom:20px; }
-  .live-chip .dot{ width:6px; height:6px; border-radius:50%; background: var(--primary); animation: pulse 1.8s infinite; }
   @keyframes pulse{ 0%,100%{ opacity:1;} 50%{ opacity:.3;} }
-  .hero-inner h1{ font-size: clamp(28px,4.6vw,52px); font-weight:500; line-height:1.08; max-width:680px; }
-  .hero-inner p{ color: var(--text-dim); font-size:16px; line-height:1.6; max-width: 600px; margin:16px 0 0; }
 
-  .hero-stats{ display:flex; gap:0; margin-top:28px; border-top:1px solid var(--border); padding-top:20px; flex-wrap:wrap; }
-  .hero-stat{ display:flex; flex-direction:column; gap:2px; padding-inline-end:32px; margin-inline-end:32px; border-inline-end:1px solid var(--border); }
-  .hero-stat:last-child{ border-inline-end:none; }
-  .hero-stat b{ font-size:22px; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent-strong); }
-  .hero-stat span{ font-size:12px; color: var(--text-dim); }
-
-  #view-map .body{ max-width: 1180px; margin: 0 auto; padding: 32px 24px 72px; }
-  .section-pill{ display:inline-flex; align-items:center; gap:8px; background: var(--navy); color:#fff; font-size:12.5px; font-weight:600; padding:7px 14px; border-radius:8px; margin-bottom:16px; }
-  .section-pill svg{ width:14px; height:14px; }
-
-  .grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; }
-  @media (max-width: 860px){ .grid{ grid-template-columns: repeat(2,1fr); } }
-  @media (max-width: 560px){ .grid{ grid-template-columns: 1fr; } }
-
-  .card{
-    text-align: right;
-    background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: var(--radius);
-    padding: 24px;
-    cursor: pointer;
-    display:flex; flex-direction:column; gap:10px;
-    box-shadow: var(--shadow);
-    animation: rise .4s ease both;
-    transition: border-color .15s ease, transform .15s ease, box-shadow .15s ease;
-  }
-  .card:hover{ border-color: var(--primary); transform: translateY(-3px); box-shadow: var(--shadow-hover); }
-  .card-top{ display:flex; align-items:flex-start; justify-content:space-between; gap:10px; }
-  .card-icon{ width:34px; height:34px; border-radius: var(--radius-control); background: var(--navy); display:flex; align-items:center; justify-content:center; color:#fff; flex-shrink:0; }
-  .card-icon svg{ width:17px; height:17px; }
   .badge{ font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11px; padding:3px 9px; border-radius: var(--radius-pill); border:1px solid var(--border-strong); color: var(--text-faint); white-space:nowrap; font-weight:600; }
-  .badge.live{ color: var(--ok); border-color: transparent; background: var(--ok-soft); }
-  .badge.soon{ color: var(--accent-strong); border-color: transparent; background: var(--accent-soft); }
-  .badge.solo{ color: var(--text-dim); border-color: transparent; background: var(--surface-2); }
-  .card h3{ font-size:16px; font-weight:700; }
-  .card p{ margin:0; font-size:13px; color: var(--text-dim); }
-  .card .sub-line{ font-size:11.5px; color: var(--accent-strong); font-weight:600; }
-  .card .num{ font-size:11px; color: var(--text-faint); }
 
-  .map-foot{ margin-top:36px; display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:20px; }
-  .map-foot p{ margin:0; font-size:12.5px; color: var(--text-faint); }
   .btn{ appearance:none; border:1px solid var(--border-strong); background: var(--surface-2); color: var(--text); padding:10px 20px; border-radius: var(--radius-pill); font-size:13.5px; font-weight:700; cursor:pointer; transition: all .15s ease; }
   .btn.primary{ background: var(--primary); color:#ffffff; border-color: var(--primary); }
   .btn.primary:hover{ background: var(--primary-2); }
   .btn:hover{ border-color: var(--primary); color: var(--text); }
 
   /* ---------- LOGIN VIEW ---------- */
-  /* split-screen login: brand/visual panel (right, RTL-first) + form panel (left) */
-  #view-login{ min-height:100vh; display:grid; grid-template-columns: 1.1fr 1fr; }
-  @media (max-width:820px){ #view-login{ grid-template-columns:1fr; } .login-visual{ display:none; } }
-
-  .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:56px;
+  /* unified dark canvas; the form sits in a floating card (left), brand content floats directly on the canvas (right, RTL-first) */
+  #view-login.active{
+    min-height:100vh; box-sizing:border-box; padding:40px 24px; display:flex; align-items:center; justify-content:center;
     background:
-      radial-gradient(120% 90% at 30% 0%, rgba(234,179,147,0.16), transparent 60%),
-      radial-gradient(100% 80% at 100% 100%, rgba(142,163,184,0.16), transparent 60%),
-      var(--bg);
+      radial-gradient(120% 90% at 25% 0%, rgba(234,179,147,0.08), transparent 55%),
+      radial-gradient(90% 70% at 100% 100%, rgba(142,163,184,0.11), transparent 55%),
+      radial-gradient(140% 110% at 50% 45%, transparent 45%, rgba(0,0,0,0.22) 100%),
+      linear-gradient(160deg, var(--primary), var(--primary-2));
   }
-  .login-visual .lv-wave{ position:absolute; inset-inline-start:-60px; bottom:-60px; opacity:.6; z-index:0; }
-  .lv-content{ position:relative; z-index:2; max-width:380px; }
-  .lv-content h1{ font-size:clamp(26px,3vw,34px); font-weight:500; color: var(--text); margin-top:16px; }
-  .lv-content p{ color: var(--text-dim); font-size:14.5px; line-height:1.7; margin-top:12px; }
+  .login-inner{ width:100%; max-width:1120px; display:grid; grid-template-columns: 1.1fr 1fr; align-items:stretch; gap:36px; }
+  @media (max-width:820px){ #view-login.active{ padding:24px 16px; } .login-inner{ grid-template-columns:1fr; } .login-visual{ display:none; } }
+
+  .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:24px; color:#fff; }
+  .login-visual .lv-wave{ position:absolute; inset-inline-start:-40px; bottom:-40px; opacity:.9; z-index:0; }
+  .lv-content{ position:relative; z-index:2; max-width:600px; }
+  .lv-content h1{ font-size:clamp(34px,4.6vw,56px); font-weight:600; line-height:1.1; letter-spacing:-0.01em; color:#fff; margin-top:0; }
+  .lv-content p{ color: rgba(255,255,255,0.62); font-size:16px; line-height:1.7; margin-top:18px; max-width:360px; }
   .lv-features{ margin-top:30px; display:flex; flex-direction:column; gap:12px; }
   .lv-features div{ display:flex; align-items:center; gap:10px; font-size:12.5px; color: var(--text-dim); }
   .lv-features .dot{ width:6px; height:6px; border-radius:50%; background: var(--accent); flex-shrink:0; }
 
-  .login-panel{ display:flex; align-items:center; justify-content:center; padding:32px; background: var(--bg); }
+  .login-panel{ display:flex; align-items:center; justify-content:center; padding:40px 36px; background: var(--surface); border-radius: var(--radius-card); box-shadow: 0 30px 70px -24px rgba(0,0,0,0.5); }
   .login-form-wrap{ width:100%; max-width:340px; }
   .login-form-wrap .back{ display:inline-flex; align-items:center; gap:6px; font-size:13px; color: var(--text-faint); background:none; border:none; cursor:pointer; padding:0; margin-bottom:28px; }
   .login-form-wrap .back:hover{ color: var(--primary-strong); }
@@ -180,49 +128,121 @@
   .login-form-wrap .btn.primary{ width:100%; margin-top:6px; padding:11px; }
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
-  /* ---------- DASHBOARD SHELL (no sidebar — full-width, topbar carries nav) ---------- */
-  #view-dash{ display:none; min-height:100vh; background: var(--bg); }
+  /* ---------- DASHBOARD SHELL (unified dark canvas, topbar + content float as light cards) ---------- */
+  #view-dash{
+    display:none; min-height:100vh;
+    background:
+      radial-gradient(120% 60% at 25% 0%, rgba(234,179,147,0.07), transparent 55%),
+      radial-gradient(90% 50% at 100% 0%, rgba(142,163,184,0.1), transparent 55%),
+      linear-gradient(160deg, var(--primary), var(--primary-2));
+  }
   #view-dash.active{ display:block; }
 
   .main{ padding: 22px 28px 60px; max-width: 1180px; margin: 0 auto; }
 
-  .app-footer{ margin-top:56px; padding-top:24px; border-top:1px solid var(--border); }
+  .analysis-section{ margin:70px 0 0; }
+  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:start; }
+  @media (max-width:860px){ .analysis-top{ grid-template-columns:1fr; gap:20px; } }
+  .analysis-art{ position:relative; display:flex; align-items:center; justify-content:flex-end; }
+  @media (max-width:860px){ .analysis-art{ justify-content:center; } }
+  .analysis-art svg, .analysis-art img{ width:100%; max-width:300px; height:auto; }
+  .analysis-title{ font-size: clamp(19px,2.4vw,25px); font-weight:700; color:#fff; line-height:1.5; margin-bottom:10px; }
+  .analysis-title .hl{ color: var(--accent); }
+  .analysis-sub{ font-size:13.5px; color: rgba(255,255,255,0.6); line-height:1.8; max-width:460px; margin:0; }
+  .analysis-list{ display:grid; grid-template-columns: repeat(5,1fr); gap:0; margin-top:18px; }
+  @media (max-width:560px){ .analysis-list{ grid-template-columns: repeat(2,1fr); } }
+  .analysis-item{
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px;
+    padding:14px 10px;
+    border-inline-end:1px solid rgba(255,255,255,0.12);
+    border-block-end:1px solid rgba(255,255,255,0.12);
+  }
+  .analysis-item:nth-child(5n){ border-inline-end:none; }
+  .analysis-item:nth-child(n+6){ border-block-end:none; }
+  @media (max-width:560px){
+    .analysis-item:nth-child(5n){ border-inline-end:1px solid rgba(255,255,255,0.12); }
+    .analysis-item:nth-child(2n){ border-inline-end:none; }
+    .analysis-item:nth-child(n+6){ border-block-end:1px solid rgba(255,255,255,0.12); }
+    .analysis-item:nth-child(n+9){ border-block-end:none; }
+  }
+  .analysis-item-icon{ width:28px; height:28px; border-radius:8px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .analysis-item-icon svg{ width:13px; height:13px; }
+  .analysis-item-body h4{ font-size:10.5px; font-weight:700; color:#fff; margin:0; line-height:1.35; }
+
+  .app-footer{ margin-top:56px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.14); }
   .app-footer-top{ display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; }
   .app-footer-brand{ display:flex; flex-direction:column; align-items:flex-start; gap:5px; flex-shrink:0; max-width:320px; }
-  .app-footer-title{ font-size:14px; font-weight:700; color: var(--text); }
-  .app-footer-tagline{ font-size:12.5px; font-weight:500; color: var(--text-dim); line-height:1.6; }
-  .app-footer-brand small{ font-size:11px; font-weight:600; color: var(--text-faint); }
+  .app-footer-title{ font-size:14px; font-weight:700; color:#fff; }
+  .app-footer-tagline{ font-size:12.5px; font-weight:500; color: rgba(255,255,255,0.62); line-height:1.6; }
+  .app-footer-brand small{ font-size:11px; font-weight:600; color: rgba(255,255,255,0.4); }
   .app-footer-org{ display:flex; gap:32px; flex-wrap:wrap; }
   .afo-item{ display:flex; flex-direction:column; gap:5px; font-size:12px; max-width:250px; }
-  .afo-item b{ color: var(--text-faint); font-weight:600; font-size:10.5px; }
-  .afo-item span{ color: var(--text-dim); line-height:1.7; }
+  .afo-item b{ color: rgba(255,255,255,0.45); font-weight:600; font-size:10.5px; }
+  .afo-item span{ color: rgba(255,255,255,0.62); line-height:1.7; }
   .topbar{
     display:flex; align-items:center; justify-content:space-between; gap:16px;
-    margin-bottom:28px; padding:20px 24px; flex-wrap:wrap;
-    background: var(--primary); border-radius: var(--radius);
+    margin-bottom:28px; padding:0 0 18px; flex-wrap:wrap;
+    background:none; border-bottom:1px solid rgba(255,255,255,0.12);
   }
-  .topbar h2{ font-size:21px; font-weight:700; color:#fff; }
-  .topbar .sub{ font-size:12.5px; color: rgba(255,255,255,.65); margin-top:4px; }
-  .topbar .ticker{ background: rgba(255,255,255,0.14); }
-  .topbar .chip-btn.ghost{ color: rgba(255,255,255,.7); }
-  .topbar .chip-btn.ghost:hover{ color:#fff; background: rgba(255,255,255,0.12); }
+  .topbar-brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
+  .topbar-badge{ width:30px; height:30px; border-radius:9px; background: rgba(234,179,147,0.14); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .topbar-badge svg{ width:15px; height:15px; }
+  .topbar-brand-text{ display:flex; align-items:baseline; gap:7px; line-height:1.4; font-size:15px; }
+  .topbar-brand-text b{ font-weight:600; color: rgba(255,255,255,0.55); }
+  .topbar-brand-text .sep{ color: rgba(255,255,255,0.3); }
+  .topbar-brand-text #sec-title{ font-weight:700; color:#fff; }
   .topbar-right{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
-  .ticker{ display:flex; align-items:center; gap:8px; font-size:12px; font-weight:600; color:#fff; background: linear-gradient(90deg,var(--primary),var(--primary-2)); padding:7px 14px; border-radius: var(--radius-pill); }
-  .ticker .dot2{ width:6px; height:6px; border-radius:50%; background:#fff; animation: pulse 1.8s infinite; }
+  .topbar-status{ display:flex; align-items:center; gap:7px; font-size:12px; font-weight:600; color: rgba(255,255,255,0.5); }
+  .topbar-status .dot2{ width:6px; height:6px; border-radius:50%; background: var(--ok); animation: pulse 1.8s infinite; flex-shrink:0; }
+  .topbar .chip-btn.ghost{ color: rgba(255,255,255,0.6); }
+  .topbar .chip-btn.ghost:hover{ color:#fff; background: rgba(255,255,255,0.1); }
 
-  /* admin-only shortcuts (export / settings), top-left of every page */
-  .admin-links{ display:flex; align-items:center; gap:8px; }
+  /* admin-only shortcuts (export / settings), grouped under one dropdown, top-left of every page */
+  .admin-menu{ position:relative; }
   .chip-btn{ display:flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color: var(--text-dim); background: var(--surface); border:1px solid var(--border); padding:7px 13px; border-radius: var(--radius-pill); cursor:pointer; font-family:inherit; transition: color .15s ease, border-color .15s ease, background .15s ease; }
   .chip-btn svg{ width:14px; height:14px; flex-shrink:0; }
   .chip-btn:hover{ color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
   .chip-btn.ghost{ background:none; color: var(--text-faint); }
+  #admin-menu-btn .chev{ transition: transform .15s ease; }
+  .admin-menu.open #admin-menu-btn .chev{ transform: rotate(180deg); }
+  .admin-menu-list{
+    position:absolute; inset-inline-end:0; top: calc(100% + 8px); z-index:20; min-width:168px;
+    background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-control);
+    box-shadow: var(--shadow-hover); padding:6px; display:flex; flex-direction:column; gap:2px;
+    opacity:0; visibility:hidden; transform:translateY(-6px); transition: opacity .15s ease, transform .15s ease, visibility .15s;
+  }
+  .admin-menu.open .admin-menu-list{ opacity:1; visibility:visible; transform:translateY(0); }
+  .admin-menu-list button{
+    display:flex; align-items:center; gap:8px; width:100%; text-align:right; font-family:inherit;
+    font-size:12.5px; font-weight:600; color: var(--text-dim); background:none; border:none; cursor:pointer;
+    padding:9px 10px; border-radius: 6px; transition: background .15s ease, color .15s ease;
+  }
+  .admin-menu-list button:hover{ background: var(--surface-2); color: var(--text); }
+  .admin-menu-list svg{ width:14px; height:14px; flex-shrink:0; }
+  .topbar-divider{ width:1px; height:18px; background: rgba(255,255,255,0.16); }
+  @media (max-width:640px){
+    .topbar{ flex-wrap:nowrap; gap:8px; }
+    .topbar-status{ font-size:0; gap:0; }
+    .topbar-divider{ display:none; }
+    .topbar-brand{ gap:7px; min-width:0; }
+    .topbar-badge{ width:24px; height:24px; }
+    .topbar-badge svg{ width:12px; height:12px; }
+    .topbar-brand-text{ font-size:13px; overflow:hidden; }
+    .topbar-brand-text b, .topbar-brand-text .sep{ display:none; }
+    .topbar-brand-text #sec-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+    .topbar-right{ flex-wrap:nowrap; gap:6px; flex-shrink:0; }
+    .topbar #admin-menu-btn{ padding:6px 9px; font-size:0; gap:0; }
+    .topbar #admin-menu-btn svg{ width:15px; height:15px; }
+    .topbar #admin-menu-btn .chev{ display:none; }
+    .topbar .chip-btn.ghost{ padding:6px 10px; font-size:11px; }
+  }
   .seg-compact{ margin-bottom:0; }
   .seg-compact button{ padding:7px 14px; font-size:11.5px; }
 
   /* back-to-dashboard link at the top of a dedicated page (posts / analytics) */
-  .section-back{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color: var(--text-faint); background:none; border:none; cursor:pointer; padding:0; margin-bottom:16px; font-family:inherit; }
+  .section-back{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color: rgba(255,255,255,0.55); background:none; border:none; cursor:pointer; padding:0; margin-bottom:16px; font-family:inherit; }
   .section-back svg{ width:14px; height:14px; }
-  .section-back:hover{ color: var(--text); }
+  .section-back:hover{ color:#fff; }
 
   .section{ display:none; }
   .section.active{ display:block; animation: rise .35s ease both; }
@@ -243,36 +263,63 @@
   .dash-panel .panel-head{ flex-shrink:0; }
   .dash-half{ margin-top:32px; padding-top:32px; border-top:1px solid var(--border); }
 
-  /* quick-nav: posts + analytics side by side on top, channels centered below — only the qn-banner-cta button is clickable, not the whole card */
-  .dash-hero{ text-align:center; padding: 8px 24px 32px; }
-  .dash-hero-title{ font-size: clamp(19px,2.6vw,26px); font-weight:700; color: var(--text); line-height:1.6; max-width:720px; margin:0 auto; text-wrap:balance; }
-  .dash-hero-title .hl{ color: var(--accent-strong); font-size:1.15em; }
-  .dash-hero-sub{ font-size:14px; color: var(--text-dim); line-height:1.85; max-width:600px; margin:14px auto 0; }
-  .quick-nav{ display:grid; grid-template-columns: 1fr 1fr; gap:14px; margin-bottom:24px; }
-  .quick-nav-card.channels{ grid-column: 1 / -1; width: calc(50% - 7px); margin:0 auto; }
-  @media (max-width:700px){ .quick-nav{ grid-template-columns: 1fr; } .quick-nav-card.channels{ width:100%; } }
-  .quick-nav-card{
-    display:flex; align-items:center; gap:16px;
-    background: transparent; border-radius: var(--radius); padding:14px 20px;
+  /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
+  .dash-hero-grid{
+    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 28px 24px;
+    background: linear-gradient(155deg, rgba(142,163,184,0.14), rgba(255,255,255,0.02));
+    border:1px solid rgba(142,163,184,0.22); border-radius:20px; margin-bottom:8px;
   }
-  /* full-bleed image banner variant — image fills the whole card, the overlaid pill is the only clickable option */
-  .quick-nav-card.banner{ padding:0; overflow:hidden; position:relative; aspect-ratio: 1713 / 918; height:auto; }
-  .quick-nav-card.banner .qn-banner-img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .qn-banner-cta{
-    position:absolute; left:18px; bottom:18px; z-index:2;
-    display:inline-flex; align-items:center; gap:6px;
-    background: var(--primary); color:#fff; font-size:12.5px; font-weight:700; font-family:inherit;
-    padding:9px 20px; border-radius: var(--radius-pill); border:none; cursor:pointer;
-    transition: transform .15s ease, background .15s ease;
+  @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
+  .dash-hero-text{ text-align:right; }
+  .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; text-align:center; }
+  .dash-hero-text h2 .hl{ color: var(--accent); }
+  .dash-hero-text p{ font-size:14.5px; color: rgba(255,255,255,0.62); line-height:1.85; margin-top:14px; max-width:440px; }
+  .dash-hero-stats{
+    display:grid; grid-template-columns: repeat(3,1fr); margin-top:22px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.08), rgba(255,255,255,0.015));
+    border:1px solid rgba(255,255,255,0.14); border-radius:14px; padding:2px;
+    box-shadow: 0 20px 40px -26px rgba(0,0,0,0.6);
   }
-  .qn-banner-cta:hover{ background: var(--primary-2); transform: translateY(-1px); }
-  .qn-banner-placeholder{ display:flex; align-items:center; justify-content:center; color:#fff;
-    background: linear-gradient(135deg, var(--primary), var(--primary-2));
+  @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
+  .dash-hero-stat{ display:flex; flex-direction:column; align-items:center; gap:2px; padding:6px 2px; border-inline-end:1px solid rgba(255,255,255,0.14); border-bottom:1px solid rgba(255,255,255,0.14); text-align:center; }
+  .dash-hero-stat b{ font-size:24px; font-family: 'IRANSansX', ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
+  .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.6); }
+  .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:none; }
+  .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:none; }
+  @media (max-width:480px){
+    .dash-hero-stats > .dash-hero-stat:nth-child(3n){ border-inline-end:1px solid rgba(255,255,255,0.14); }
+    .dash-hero-stats > .dash-hero-stat:nth-child(2n){ border-inline-end:none; }
+    .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+3){ border-bottom:1px solid rgba(255,255,255,0.14); }
+    .dash-hero-stats > .dash-hero-stat:nth-last-child(-n+2){ border-bottom:none; }
   }
-  .qn-banner-placeholder svg{ width:25%; height:25%; opacity:.85; }
-  .qn-banner-placeholder.posts{ background: linear-gradient(135deg, var(--accent-strong), var(--primary)); }
-  .qn-banner-placeholder.analytics{ background: linear-gradient(135deg, var(--primary), var(--primary-2)); }
-  .qn-banner-placeholder.channels{ background: linear-gradient(135deg, var(--primary-2), var(--accent-strong)); }
+
+  .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
+
+  /* domain cards: no card box at all — just a big icon + title + tags floating on the
+     dark canvas, separated purely by grid spacing (no border/background/shadow). */
+  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 56px 2px 26px; text-align:center; letter-spacing:0.01em; }
+  .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:16px; margin-bottom:26px; }
+  .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 90px; }
+  @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
+  .domain-card{
+    display:flex; flex-direction:column; align-items:center; text-align:center; padding:6px 12px; cursor:pointer;
+    background:none; border:none; box-shadow:none;
+    transition: transform .15s ease;
+  }
+  .domain-card:hover{ transform:translateY(-3px); }
+  .domain-icon{ width:64px; height:64px; background:none; border:none; color: var(--accent); display:flex; align-items:center; justify-content:center; margin-bottom:8px; }
+  .domain-icon.is-illustrated{ width:136px; height:136px; }
+  .domain-icon.is-illustrated img{ width:136px; height:136px; max-width:136px; object-fit:contain; }
+  .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
+
+  .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
+  .modal-overlay.active{ display:flex; }
+  .modal-card{ position:relative; background: var(--surface); border-radius: var(--radius-card); box-shadow: 0 30px 70px -20px rgba(0,0,0,0.5); max-width:520px; width:100%; max-height:85vh; overflow-y:auto; padding:32px; }
+  .modal-close{ position:absolute; top:16px; left:16px; background:none; border:none; cursor:pointer; color: var(--text-faint); width:32px; height:32px; display:flex; align-items:center; justify-content:center; border-radius:50%; transition: background .15s ease, color .15s ease; }
+  .modal-close:hover{ background: var(--surface-2); color: var(--text); }
+  .modal-card h3{ font-size:19px; font-weight:700; color: var(--text); margin-bottom:14px; }
+  .modal-card p{ font-size:14px; line-height:1.9; color: var(--text-dim); }
+  .modal-card p + p{ margin-top:12px; }
 
 
   .avatar{ width:32px; height:32px; border-radius:50%; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11.5px; font-weight:700; flex-shrink:0; }
@@ -337,7 +384,7 @@
   .toolbar input{ flex:1; min-width:180px; }
 
   /* posts page: mobile-tile grid of vertical (portrait) cards */
-  .posts-empty{ text-align:center; color: var(--text-faint); font-size:13px; padding:40px 0; }
+  .posts-empty{ text-align:center; color: rgba(255,255,255,0.5); font-size:13px; padding:40px 0; }
   .posts-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(200px,1fr)); gap:16px; }
   @media (max-width:520px){ .posts-grid{ grid-template-columns: repeat(2,1fr); gap:10px; } }
 
@@ -396,8 +443,8 @@
   .words{ display:flex; flex-wrap:wrap; gap:8px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
 
-  .ai-note{ display:flex; gap:10px; align-items:flex-start; background: var(--primary-soft); border:1px solid rgba(142,163,184,0.3); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: var(--text-dim); }
-  .ai-note b{ color: var(--primary-strong); }
+  .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
+  .ai-note b{ color: var(--accent); }
   .ai-post{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px; margin-bottom:10px; }
   .ai-row{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
   .sentiment{ font-size:11px; padding:3px 9px; border-radius: var(--radius-pill); font-weight:600; }
@@ -456,97 +503,84 @@
   .kv div{ display:flex; justify-content:space-between; gap:10px; padding:8px 10px; background: var(--surface-2); border-radius:7px; }
   .kv b{ color: var(--text-faint); font-weight:500; }
   .kv span{ font-family: ui-monospace,monospace; color: var(--text-dim); direction:ltr; }
+
+  /* ---------- magazines library (بخش تحلیلی) ---------- */
+  .magazine-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
+  .magazine-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:18px; display:flex; flex-direction:column; gap:8px; box-shadow: var(--shadow); }
+  .mag-icon{ width:38px; height:38px; border-radius: var(--radius-control); background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .mag-icon svg{ width:19px; height:19px; }
+  .mag-title{ font-size:13.5px; font-weight:700; color: var(--text); }
+  .mag-meta{ font-size:11px; color: var(--text-faint); }
+  .mag-actions{ margin-top:auto; padding-top:6px; display:flex; gap:8px; flex-wrap:wrap; align-items:center; }
+  .mag-reorder{ display:flex; flex-direction:column; gap:2px; }
+  .mag-reorder button{ background:none; border:1px solid var(--border-strong); color: var(--text-faint); width:22px; height:18px; border-radius:5px; cursor:pointer; display:flex; align-items:center; justify-content:center; padding:0; }
+  .mag-reorder button:hover{ color: var(--text); border-color: var(--primary); }
+  .mag-reorder button:disabled{ opacity:.35; cursor:default; }
+  .mag-reorder svg{ width:11px; height:11px; }
+
+  /* magazine carousel widget — home page, rectangular front-page tiles.
+     Warm accent-tinted card (not plain var(--surface) white) so it stays
+     legible against the dark canvas AND doesn't read as just another
+     feature-card in the grid above it. */
+  .mag-widget{
+    margin: 4px 0 40px; padding:14px; border-radius: var(--radius-card);
+    background: linear-gradient(155deg, #fffaf5, #fbe9d7);
+    border:1px solid rgba(181,101,29,0.3);
+    box-shadow: 0 22px 46px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
+    animation: rise .55s .1s ease both;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .mag-widget:hover{ transform:translateY(-3px); border-color: rgba(181,101,29,0.45); box-shadow: 0 28px 56px -20px rgba(10,15,22,0.5), 0 1px 0 rgba(255,255,255,0.8) inset; }
+  .mag-widget-body{ display:flex; align-items:stretch; gap:16px; }
+  .mag-widget-info{ flex:0 0 208px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:10px; border-left:1px solid rgba(181,101,29,0.26); padding-left:16px; }
+  .mag-widget-title{ font-size:16.5px; font-weight:800; color: var(--text); line-height:1.7; }
+  .mag-widget-info .btn.primary{ padding:9px 18px; font-size:12.5px; }
+  @media (max-width:760px){
+    .mag-widget-body{ flex-direction:column; }
+    .mag-widget-info{ flex:none; border-left:none; padding-left:0; border-bottom:1px solid rgba(181,101,29,0.26); padding-bottom:12px; }
+  }
+  .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
+  .mag-carousel{ display:flex; gap:14px; overflow-x:auto; scroll-behavior:smooth; padding:4px 2px 6px; scrollbar-width:none; flex:1; min-width:0; }
+  .mag-carousel::-webkit-scrollbar{ display:none; }
+  .mag-arrow{ flex-shrink:0; width:36px; height:36px; border-radius:50%; border:1px solid rgba(181,101,29,0.3); background:#fff; color: var(--accent-strong); cursor:pointer; display:flex; align-items:center; justify-content:center; transition: background .15s ease, transform .15s ease, border-color .15s ease, color .15s ease; }
+  .mag-arrow:hover{ background: var(--accent-strong); color:#fff; border-color: var(--accent-strong); transform:scale(1.08); }
+  .mag-arrow:active{ transform:scale(.94); }
+  .mag-arrow svg{ width:16px; height:16px; }
+  .mag-tile{ flex-shrink:0; width:150px; cursor:pointer; display:flex; flex-direction:column; gap:9px; }
+  .mag-tile-cover{ width:150px; height:210px; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); transition: transform .2s ease, box-shadow .2s ease; }
+  .mag-tile:hover .mag-tile-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
+  .mag-tile-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
+  .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
+  .mag-empty-hint{ font-size:12.5px; color: var(--text-faint); padding:6px 4px; }
 </style>
 
 <canvas id="ambient" aria-hidden="true"></canvas>
 
-<!-- =================== SITEMAP =================== -->
-<div id="view-map" class="view active">
-  <header class="topnav">
-    <div class="topnav-inner">
-      <div class="brand" onclick="goMap()">
-        <span class="brand-badge" id="icon-brand-top"></span>
-        <span class="brand-text"><b>جریان</b><small>پایش پیام‌رسان ایتا</small></span>
-      </div>
-      <div class="topnav-right">
-        <div class="search-pill"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4-4"/></svg>جست‌وجو در پست‌ها…</div>
-        <div class="topnav-link" onclick="goLogin()">ورود</div>
+<!-- =================== LOGIN (unified dark canvas, floating form card) =================== -->
+<div id="view-login" class="view active">
+  <div class="login-inner">
+    <div class="login-visual">
+      <div class="lv-content">
+        <h1>سامانه هوشمند جریان</h1>
+        <p>رصد و تحلیل فضای سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان.</p>
+        <span class="badge" style="margin-top:16px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;color:var(--accent);border-color:rgba(234,179,147,0.32);background:rgba(234,179,147,0.08);">ویرایش ۴.۰</span>
       </div>
     </div>
-  </header>
-
-  <div class="hero-band">
-    <svg class="hero-wave" width="360" height="360" viewBox="0 0 360 360" fill="none">
-      <circle cx="300" cy="60" r="40" stroke="#EAB393" stroke-opacity="0.55" stroke-width="1.5"/>
-      <circle cx="300" cy="60" r="90" stroke="#3B82F6" stroke-opacity="0.4" stroke-width="1.5"/>
-      <circle cx="300" cy="60" r="140" stroke="#3B82F6" stroke-opacity="0.22" stroke-width="1.5"/>
-      <circle cx="300" cy="60" r="190" stroke="#16202a" stroke-opacity="0.08" stroke-width="1.5"/>
-      <circle cx="300" cy="60" r="6" fill="#EAB393"/>
-    </svg>
-    <div class="hero-inner">
-      <div class="live-chip"><span class="dot"></span>پیش‌نمایش طراحی — بدون داده‌ی واقعی</div>
-      <h1>نقشه‌ی بخش‌های پایش پیام‌رسان ایتا</h1>
-      <p>الهام‌گرفته از چیدمان مجله‌ای خبرگزاری‌های فارسی: تیتر و فهرست‌های نقطه‌دار به‌جای شلوغی، نوار وضعیت زنده، و ستون‌های محتوایی متراکم بدون قاب اضافه. هفت بخش برای سایت طراحی شده.</p>
-      <div class="hero-stats">
-        <div class="hero-stat"><b>۷</b><span>بخش / صفحه</span></div>
-        <div class="hero-stat"><b>۳</b><span>میانبر سریع در داشبورد</span></div>
-        <div class="hero-stat"><b>۱</b><span>زیربخش تازه (تحلیل هوش‌مصنوعی داخل آنالیز)</span></div>
-        <div class="hero-stat"><b class="mono">22</b><span>کانال پایش‌شونده</span></div>
-      </div>
-    </div>
-  </div>
-
-  <div class="body">
-    <div class="section-pill">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l8 8-8 8-8-8 8-8z"/></svg>
-      بخش‌های سایت
-    </div>
-    <div class="grid" id="map-grid"></div>
-
-    <div class="map-foot">
-      <p>داده‌ها در این پیش‌نمایش نمونه هستند. بعد از تأیید ساختار، هر بخش به Postgres/PostgREST واقعی وصل می‌شود.</p>
-      <button class="btn primary" onclick="goLogin()">شروع از صفحه‌ی ورود ←</button>
-    </div>
-  </div>
-</div>
-
-<!-- =================== LOGIN (split-screen) =================== -->
-<div id="view-login" class="view">
-  <div class="login-visual">
-    <svg class="lv-wave" width="360" height="360" viewBox="0 0 360 360" fill="none">
-      <circle cx="60" cy="300" r="40" stroke="#EAB393" stroke-opacity="0.5" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="90" stroke="#8ea3b8" stroke-opacity="0.4" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="140" stroke="#8ea3b8" stroke-opacity="0.22" stroke-width="1.5"/>
-      <circle cx="60" cy="300" r="6" fill="#EAB393"/>
-    </svg>
-    <div class="lv-content">
-      <span class="live-chip"><span class="dot"></span>ورود دوسطحی — بدون حساب کاربری</span>
-      <h1>پایش پیام‌رسان ایتا</h1>
-      <p>پایش زنده‌ی ۲۲ کانال عمومی ایتا با فید، آنالیز و تحلیل هوش مصنوعی — با یک رمز عبور مشترک بر اساس نقش.</p>
-      <div class="lv-features">
-        <div><span class="dot"></span>دو سطح دسترسی: مدیر و بیننده، هرکدام با رمز عبور خودش</div>
-        <div><span class="dot"></span>احراز هویت با pgcrypto + pgjwt روی Postgres</div>
-        <div><span class="dot"></span>خروجی‌گیری و مدیریت کانال‌ها فقط برای مدیر</div>
-      </div>
-    </div>
-  </div>
-  <div class="login-panel">
-    <div class="login-form-wrap">
-      <button class="back" onclick="goMap()">← بازگشت به نقشه‌ی سایت</button>
-      <h2>ورود</h2>
-      <p class="lede">با رمز عبور مدیر یا بیننده وارد شوید</p>
-      <div class="field">
-        <label for="login-password">رمز عبور</label>
-        <div style="position:relative;">
-          <input type="password" id="login-password" placeholder="••••••••" style="padding-left:40px;" onkeydown="if(event.key==='Enter') handleLogin()" />
-          <button type="button" id="login-pw-toggle" aria-label="نمایش رمز عبور" onclick="togglePasswordVisibility()" style="position:absolute; left:6px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-faint); padding:6px; display:flex;">
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
-          </button>
+    <div class="login-panel">
+      <div class="login-form-wrap">
+        <div class="field">
+          <label for="login-password">رمز عبور</label>
+          <div style="position:relative;">
+            <input type="password" id="login-password" placeholder="••••••••" style="padding-left:40px;" onkeydown="if(event.key==='Enter') handleLogin()" />
+            <button type="button" id="login-pw-toggle" aria-label="نمایش رمز عبور" onclick="togglePasswordVisibility()" style="position:absolute; left:6px; top:50%; transform:translateY(-50%); background:none; border:none; cursor:pointer; color:var(--text-faint); padding:6px; display:flex;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+            </button>
+          </div>
         </div>
+        <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
+        <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
       </div>
-      <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
-      <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
-      <p class="login-note">دو نوع رمز عبور — یکی برای مدیر و یکی برای بیننده — بدون نیاز به نام کاربری.</p>
     </div>
   </div>
 </div>
@@ -555,46 +589,216 @@
 <div id="view-dash" class="view">
   <main class="main">
     <div class="topbar">
-      <div>
-        <h2 id="sec-title">داشبورد</h2>
-        <div class="sub" id="sec-sub">نمای کلی امروز — میانبر به پست‌ها، آنالیز و کانال‌ها و افراد</div>
+      <div class="topbar-brand" onclick="switchSection('dashboard')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') switchSection('dashboard')">
+        <span class="topbar-badge">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
+        </span>
+        <div class="topbar-brand-text">
+          <b>سامانه هوشمند جریان</b>
+          <span class="sep">/</span>
+          <span id="sec-title">صفحه نخست</span>
+        </div>
       </div>
       <div class="topbar-right">
-        <div class="ticker"><span class="dot2"></span>زنده — به‌روزرسانی بعدی تا ۴۰ دقیقه‌ی دیگر</div>
-        <div class="admin-links" id="admin-links">
-          <button class="chip-btn" onclick="switchSection('export')">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
-            خروجی‌گیری
-          </button>
-          <button class="chip-btn" onclick="switchSection('settings')">
+        <div class="topbar-status"><span class="dot2"></span>به‌روزرسانی خودکار هر ۲ ساعت</div>
+        <div class="admin-menu" id="admin-menu">
+          <button class="chip-btn" id="admin-menu-btn" onclick="toggleAdminMenu()" aria-haspopup="true" aria-expanded="false">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>
-            تنظیمات
+            مدیریت
+            <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
           </button>
+          <div class="admin-menu-list" id="admin-menu-list">
+            <button onclick="switchSection('export'); closeAdminMenu();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>
+              خروجی‌گیری
+            </button>
+            <button onclick="switchSection('settings'); closeAdminMenu();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>
+              تنظیمات
+            </button>
+          </div>
         </div>
-        <span class="role admin" id="role-badge" style="display:none;"></span>
+        <div class="topbar-divider"></div>
         <button class="chip-btn ghost" onclick="logout()">خروج</button>
       </div>
     </div>
 
-    <!-- DASHBOARD: three static shortcut cards — posts / analytics / channels & people -->
-    <section class="section active" id="sec-dashboard">
-      <div class="dash-hero">
-        <h2 class="dash-hero-title">نبض <span class="hl">فضای اجتماعی و سیاسی</span> حوزه‌ی علمیه‌ی خراسان را دنبال کنید</h2>
-        <p class="dash-hero-sub">طلاب، اساتید و کنشگران این حوزه از دریچه‌ی کانال‌های عمومی پیام‌رسان ایتا، به‌صورت زنده رصد و دسته‌بندی می‌شوند و با تحلیل آماری و هوش مصنوعی، روایتی دقیق و به‌روز از گفتمان این حوزه پیش چشم شما قرار می‌گیرد.</p>
+    <div class="modal-overlay" id="intro-modal" onclick="if(event.target===this) closeIntro()">
+      <div class="modal-card">
+        <button class="modal-close" onclick="closeIntro()" aria-label="بستن">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <h3>سامانه هوشمند جریان</h3>
+        <p>سامانه هوشمند جریان، ابزار رصد و تحلیل فضای رسانه‌ای اداره‌ی رصد و راهبری سیاسی‌اجتماعی حوزه‌ی علمیه‌ی خراسان است.</p>
+        <p>این سامانه به‌صورت زنده کانال‌های عمومی ایتا و تلگرام — اعم از خبرگزاری‌های رسمی و شخصیت‌های حوزوی — را پایش می‌کند، پست‌ها را بر اساس دسته‌بندی موضوعی سازمان‌دهی می‌کند و با تحلیل آماری، تصویری دقیق و به‌روز از گفتمان سیاسی‌اجتماعی روز ارائه می‌دهد.</p>
+        <p>دسترسی به بخش‌های سامانه دوسطحی است: مدیر و بیننده، هرکدام با رمز عبور اختصاصی خود.</p>
       </div>
-      <div class="quick-nav">
-        <div class="quick-nav-card banner posts">
-          <div class="qn-banner-img qn-banner-placeholder posts" role="img" aria-label="پست‌ها — پست‌های نمایش داده‌شده در ایتا را بعد از ورود ببینید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('posts')">مشاهده‌ی پست‌ها</button>
+    </div>
+
+    <!-- DASHBOARD: hero (pitch + illustration) + three feature cards to posts / analytics / channels & people -->
+    <section class="section active" id="sec-dashboard">
+      <div class="dash-hero-grid">
+        <div class="dash-hero-text">
+          <h2>نبض <span class="hl">فضای سیاسی اجتماعی</span> در حوزه علمیه خراسان</h2>
+          <div class="dash-hero-stats" id="dash-hero-stats"></div>
         </div>
-        <div class="quick-nav-card banner analytics">
-          <div class="qn-banner-img qn-banner-placeholder analytics" role="img" aria-label="تحلیل و بررسی — آمار و تحلیل فعالیت کاربران را اینجا ببینید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 20V10M12 20V4M20 20v-7"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('analytics')">مشاهده‌ی آنالیز</button>
+        <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
+      </div>
+      <div class="section-label">عرصه‌های رصد و تحلیل</div>
+      <div class="domain-grid">
+        <div class="domain-card" onclick="switchSection('overview')">
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-news.webp" alt="" /></div>
+          <h3>اخبار رسمی</h3>
         </div>
-        <div class="quick-nav-card banner channels">
-          <div class="qn-banner-img qn-banner-placeholder channels" role="img" aria-label="انسان رسانه‌ها — افراد و منابع انتشار پیام‌های سیاسی اجتماعی را بشناسید"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6M14.5 14c2.5 0 4.5 2 4.5 5"/></svg></div>
-          <button class="qn-banner-cta" onclick="switchSection('channels')">مشاهده‌ی کانال‌ها و افراد</button>
+        <div class="domain-card" onclick="switchSection('posts')">
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-cyberspace.webp" alt="" /></div>
+          <h3>کنشگری مجازی</h3>
         </div>
+        <div class="domain-card" onclick="switchSection('schools')">
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-schools.webp" alt="" /></div>
+          <h3>برنامه مدارس</h3>
+        </div>
+        <div class="domain-card" onclick="switchSection('people')">
+          <div class="domain-icon is-illustrated"><img src="images/domain-icon-people.webp" alt="" /></div>
+          <h3>افراد و مجموعه‌ها</h3>
+        </div>
+      </div>
+      <p class="domain-caption">جریان این چهار عرصه را به‌صورت جداگانه رصد و تحلیل می‌کند: اخبار رسمی خبرگزاری‌ها، کنشگری فضای مجازی، برنامه‌های آموزشی مدارس و فعالیت افراد و مجموعه‌های تأثیرگذار. هر عرصه با منبع داده و روش پایش مخصوص به خودش دنبال می‌شود.</p>
+
+      <div class="mag-widget">
+        <div class="mag-widget-body">
+          <div class="mag-widget-info">
+            <h3 class="mag-widget-title">بسته‌های تحلیلی تولید شده</h3>
+            <button class="btn primary" onclick="switchSection('reports')">مشاهده‌ی همه</button>
+          </div>
+          <div class="mag-carousel-wrap">
+            <button class="mag-arrow" onclick="scrollMagCarousel(-1)" aria-label="بعدی">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
+            </button>
+            <div class="mag-carousel" id="mag-carousel-home"></div>
+            <button class="mag-arrow" onclick="scrollMagCarousel(1)" aria-label="قبلی">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div class="analysis-section">
+        <div class="analysis-top">
+          <div class="analysis-art">
+            <img src="images/analysis-illustration.webp" alt="" />
+          </div>
+          <div class="analysis-content">
+            <h3 class="analysis-title">بخش‌های <span class="hl">بسته تحلیل</span> جریان</h3>
+            <p class="analysis-sub">بسته جریان شامل ۱۰ بخش اصلی است که بعضی ثابت در هر شماره به آن پرداخته می‌شود و برخی نیز به‌صورت دوره‌ای بخشی از محتوا را تکمیل خواهند کرد.</p>
+            <div class="analysis-list">
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>خط خبری</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل اخبار روز</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.6 6.2.6-4.6 4.2 1.3 6.1L12 16.8 6.5 19.5l1.3-6.1L3.2 9.2l6.2-.6L12 3z"/></svg></div>
+                <div class="analysis-item-body"><h4>مهم‌ترین اخبار</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div class="analysis-item-body"><h4>نگاه جامعه‌شناسی سیاسی</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+                <div class="analysis-item-body"><h4>اصل ماجرا</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل سازمان‌ها</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H16l4 4v12.5a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5z"/><path d="M16 3v4h4M8 12h8M8 16h5"/></svg></div>
+                <div class="analysis-item-body"><h4>یادداشت طلاب</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.7 6.7C4.6 8.1 3 12 3 12s2.4 4.2 6.3 5.9M14 5.1c5.4.7 7 6.9 7 6.9a12.9 12.9 0 01-2.2 3"/></svg></div>
+                <div class="analysis-item-body"><h4>خارج از دید</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
+                <div class="analysis-item-body"><h4>نبض افکار</h4></div>
+              </div>
+              <div class="analysis-item">
+                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z"/></svg></div>
+                <div class="analysis-item-body"><h4>تحلیل اندیشگده‌ها</h4></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- OVERVIEW / SCHOOLS / PEOPLE — placeholders, غیرفعال به‌خواست کاربر -->
+    <section class="section" id="sec-overview">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">اخبار رسمی</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-schools">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">برنامه مدارس</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <section class="section" id="sec-people">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">افراد و مجموعه‌ها</span></div>
+      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+    </section>
+
+    <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
+    <section class="section" id="sec-reports">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">کتابخانه‌ی مجلات</span></div>
+      <p class="magazines-empty" id="magazines-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز مجله‌ای بارگذاری نشده.</p>
+      <div class="magazine-grid" id="magazine-grid"></div>
+
+      <div class="panel" id="magazine-upload-panel" style="display:none;">
+        <div class="panel-head"><span class="panel-pill">بارگذاری مجله‌ی جدید</span></div>
+        <div class="form-grid">
+          <div class="field"><label>عنوان</label><input type="text" id="mag-title" /></div>
+          <div class="field"><label>شماره</label><input type="text" id="mag-issue" /></div>
+          <div class="field"><label>تاریخ انتشار</label><input type="date" id="mag-date" /></div>
+          <div class="field">
+            <label>نوع فایل</label>
+            <select id="mag-file-type">
+              <option value="pdf">PDF</option>
+              <option value="images">چند عکس</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label>فایل(ها)</label>
+          <input type="file" id="mag-files" multiple accept=".pdf,image/*" />
+        </div>
+        <div class="field">
+          <label>تصویر جلد (اختیاری — برای نمایش در ردیف کاروسل صفحه‌ی نخست)</label>
+          <input type="file" id="mag-cover" accept="image/*" />
+        </div>
+        <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
       </div>
     </section>
 
@@ -602,7 +806,7 @@
     <section class="section" id="sec-channels">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="panel-head"><span class="panel-pill">همه‌ی کانال‌ها و مدیران آن‌ها</span></div>
       <div class="channel-cards" id="channel-cards"></div>
@@ -612,7 +816,7 @@
     <section class="section" id="sec-posts">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="toolbar">
         <select id="posts-filter-channel"><option value="">همه‌ی کانال‌ها</option></select>
@@ -633,7 +837,7 @@
     <section class="section" id="sec-analytics">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="seg" id="analytics-seg">
         <button class="active" data-tab="stats">آمار و نمودارها</button>
@@ -667,7 +871,7 @@
       </div>
 
       <div id="tab-ai" style="display:none;">
-        <div class="ai-note"><span><b>در انتظار توسعه.</b> این زیربخش هنوز طراحی نهایی نشده — نمونه‌ی زیر برای تصمیم‌گیری درباره‌ی شکل نمایش خلاصه، دسته‌بندی پیشنهادی و تحلیل احساسات است. ورک‌فلوی n8n با Claude API نتیجه را در Postgres ذخیره خواهد کرد.</span></div>
+        <div class="ai-note"><span><b>در انتظار توسعه.</b> نمونه‌ی زیر برای تصمیم‌گیری درباره‌ی نمایش خلاصه، دسته‌بندی و تحلیل احساسات است.</span></div>
         <div id="ai-list"></div>
       </div>
     </section>
@@ -676,7 +880,7 @@
     <section class="section" id="sec-export">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="panel">
         <div class="panel-head"><span class="panel-pill">خروجی پست‌ها</span></div>
@@ -720,7 +924,7 @@
     <section class="section" id="sec-settings">
       <button class="section-back" onclick="switchSection('dashboard')">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به داشبورد
+        بازگشت به صفحه نخست
       </button>
       <div class="settings-grid">
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -729,7 +933,17 @@
             <div class="add-row">
               <input type="text" id="new-chan-name" placeholder="نام کانال" />
               <input type="text" id="new-chan-handle" class="mono" placeholder="یوزرنیم (بدون @)" />
-              <select id="new-chan-platform"><option value="eitaa">ایتا</option><option value="telegram">تلگرام</option></select>
+              <select id="new-chan-platform">
+                <option value="eitaa">ایتا</option>
+                <option value="telegram">تلگرام</option>
+                <option value="website">وب‌سایت (RSS)</option>
+              </select>
+              <select id="new-chan-region">
+                <option value="">بدون حوزه‌ی جغرافیایی</option>
+                <option value="domestic">داخلی</option>
+                <option value="regional">منطقه‌ای</option>
+                <option value="international">بین‌المللی</option>
+              </select>
               <select id="new-chan-cat"></select>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
             </div>
@@ -777,9 +991,8 @@
     <footer class="app-footer">
       <div class="app-footer-top">
         <div class="app-footer-brand">
-          <b class="app-footer-title">پروژه جریان</b>
-          <span class="app-footer-tagline">کاوشی عمیق در رویدادهای روز با نگاه سیاسی اجتماعی</span>
-          <small>پایش پیام‌رسان ایتا</small>
+          <b class="app-footer-title">سامانه هوشمند جریان</b>
+          <span class="app-footer-tagline">رصد و تحلیل فضای سیاسی‌اجتماعی</span>
         </div>
         <div class="app-footer-org">
           <div class="afo-item">
@@ -837,48 +1050,11 @@
   })();
 
   const ICONS = {
-    login:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 3.5-6 8-6s8 2 8 6"/></svg>',
-    dashboard: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="8" height="8" rx="1.6"/><rect x="13" y="3" width="8" height="8" rx="1.6"/><rect x="3" y="13" width="8" height="8" rx="1.6"/><rect x="13" y="13" width="8" height="8" rx="1.6"/></svg>',
-    posts:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>',
-    analytics: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>',
-    channels: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3.5 19c0-3.5 2.5-6 5.5-6s5.5 2.5 5.5 6M14.5 14c2.5 0 4.5 2 4.5 5"/></svg>',
-    categories: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 8-8 8-8-8 8-8z"/><circle cx="12" cy="11" r="1.6" fill="currentColor" stroke="none"/></svg>',
-    export: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m0 0l-4-4m4 4l4-4M5 21h14"/></svg>',
-    settings: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>',
     video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2.5" y="6" width="13" height="12" rx="2"/><path d="M15.5 10l6-3.2v10.4l-6-3.2"/></svg>',
     photo: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="4" width="18" height="16" rx="2"/><circle cx="8.5" cy="9.5" r="1.5"/><path d="M21 15.5l-5.5-5-6.5 6.5-2.5-2.5-3 3"/></svg>',
-    person: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="34" r="17"/><path d="M16 96c0-24 15-40 34-40s34 16 34 40"/></svg>'
+    person: '<svg viewBox="0 0 100 100" fill="currentColor"><circle cx="50" cy="34" r="17"/><path d="M16 96c0-24 15-40 34-40s34 16 34 40"/></svg>',
+    doc: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>'
   };
-
-  const SECTIONS = [
-    { key:'login', title:'ورود', desc:'صفحه‌ی ورود چندکاربره با JWT — هر کاربر با اشتراک خودش وارد می‌شود.', badge:{cls:'solo',text:'صفحه‌ی مستقل'}, inNav:false },
-    { key:'dashboard', title:'داشبورد', desc:'بدون سایدبار — تاپ‌بار بالا + سه میانبر ثابت به پست‌ها، آنالیز و کانال‌ها و افراد.', badge:{cls:'live',text:'موجود'}, inNav:true },
-    { key:'posts', title:'پست‌ها', desc:'صفحه‌ی مخصوص خواندن پست‌ها — فهرست کامل با فیلتر کانال/دسته و جست‌وجو.', badge:{cls:'live',text:'موجود'}, inNav:true },
-    { key:'analytics', title:'آنالیز', desc:'تعداد پست به ازای کانال، کلمات پرتکرار — و تحلیل هوش مصنوعی به‌عنوان زیربخش.', badge:{cls:'live',text:'موجود'}, sub:'شامل: تحلیل هوش مصنوعی (زیربخش)', inNav:true },
-    { key:'channels', title:'کانال‌ها و افراد', desc:'فهرست کامل کانال‌های پایش‌شونده به‌همراه مدیر هرکدام.', badge:{cls:'live',text:'موجود'}, inNav:true },
-    { key:'export', title:'خروجی‌گیری', desc:'دانلود داده‌ها با فیلتر بازه‌ی زمانی، کانال و دسته — CSV / Excel / JSON.', badge:{cls:'soon',text:'طراحی جدید'}, inNav:true, adminOnly:true },
-    { key:'settings', title:'کاربران و تنظیمات', desc:'مدیریت کانال‌ها (افزودن/حذف/نام/دسته)، تعریف دسته‌بندی‌ها، کاربران و اتصال به Postgres/PostgREST.', badge:{cls:'soon',text:'طراحی جدید'}, inNav:true, adminOnly:true },
-  ];
-
-  // sitemap cards (shows every section — full directory, not gated by role)
-  const mapGrid = document.getElementById('map-grid');
-  SECTIONS.forEach((s,i)=>{
-    const card = document.createElement('div');
-    card.className='card';
-    card.style.animationDelay = (i*0.05)+'s';
-    card.onclick = ()=> s.key==='login' ? goLogin() : enterDash(s.key);
-    card.innerHTML = `
-      <div class="card-top">
-        <div class="card-icon">${ICONS[s.key]}</div>
-        <span class="badge ${s.badge.cls}">${s.badge.text}</span>
-      </div>
-      <h3>${s.title}</h3>
-      <p>${s.desc}</p>
-      ${s.sub ? `<span class="sub-line">${s.sub}</span>` : ''}
-      ${s.adminOnly ? `<span class="sub-line" style="color:var(--text-faint);">🔒 فقط مدیر</span>` : ''}
-    `;
-    mapGrid.appendChild(card);
-  });
 
   // ---- auth (real Supabase/PostgREST backend) ----
   const SUPABASE_URL = 'https://tfppjveupcxisepteibn.supabase.co';
@@ -886,8 +1062,7 @@
 
   let authToken = sessionStorage.getItem('jarian_token') || null;
   let currentRole = sessionStorage.getItem('jarian_role') || null; // 'app_admin' | 'app_viewer'
-  const adminLinks = document.getElementById('admin-links');
-  const roleBadge = document.getElementById('role-badge');
+  const adminLinks = document.getElementById('admin-menu');
 
   function api(path, opts){
     opts = opts || {};
@@ -912,18 +1087,34 @@
   function logout(){
     authToken = null; currentRole = null;
     sessionStorage.removeItem('jarian_token'); sessionStorage.removeItem('jarian_role');
-    goMap();
+    goLogin();
   }
+
+  const adminMenuBtn = document.getElementById('admin-menu-btn');
+  function toggleAdminMenu(){
+    const open = adminLinks.classList.toggle('open');
+    adminMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeAdminMenu(){
+    adminLinks.classList.remove('open');
+    adminMenuBtn.setAttribute('aria-expanded', 'false');
+  }
+  document.addEventListener('click', e=>{
+    if(adminLinks.classList.contains('open') && !adminLinks.contains(e.target)) closeAdminMenu();
+  });
+  document.addEventListener('keydown', e=>{
+    if(e.key === 'Escape') closeAdminMenu();
+  });
+
+  const ADMIN_ONLY_SECTIONS = ['export','settings'];
 
   function applyRoleUI(){
     const isAdmin = currentRole === 'app_admin';
     adminLinks.style.display = isAdmin ? '' : 'none';
-    roleBadge.style.display = currentRole ? '' : 'none';
-    roleBadge.textContent = isAdmin ? 'مدیر' : 'بیننده';
-    roleBadge.className = 'role' + (isAdmin ? ' admin' : '');
+    document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
     const activeSec = document.querySelector('.section.active');
-    const activeDef = activeSec && SECTIONS.find(s=>'sec-'+s.key===activeSec.id);
-    if(activeDef && activeDef.adminOnly && !isAdmin){
+    const activeKey = activeSec && activeSec.id.replace('sec-','');
+    if(activeKey && ADMIN_ONLY_SECTIONS.includes(activeKey) && !isAdmin){
       switchSection('dashboard');
     }
   }
@@ -958,10 +1149,10 @@
     btn.setAttribute('aria-label', show ? 'پنهان‌کردن رمز عبور' : 'نمایش رمز عبور');
   }
 
-  document.getElementById('icon-brand-top').innerHTML = ICONS.dashboard;
+  function openIntro(){ document.getElementById('intro-modal').classList.add('active'); }
+  function closeIntro(){ document.getElementById('intro-modal').classList.remove('active'); }
 
   function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
-  function goMap(){ show('view-map'); }
   function goLogin(){ show('view-login'); }
   function enterDash(sectionKey){
     if(!authToken){ goLogin(); return; }
@@ -969,19 +1160,22 @@
   }
 
   const TITLES = {
-    dashboard:['داشبورد','نمای کلی امروز — میانبر به پست‌ها، آنالیز و کانال‌ها و افراد'],
-    posts:['پست‌ها','فهرست کامل پست‌های عمومی از ۲۲ کانال، برای خواندن با فیلتر و جست‌وجو'],
-    analytics:['آنالیز','آمار و نمودارها، به‌همراه تحلیل هوش مصنوعی به‌عنوان زیربخش'],
-    channels:['کانال‌ها و افراد','فهرست کامل کانال‌های پایش‌شونده به‌همراه مدیر هرکدام'],
-    export:['خروجی‌گیری','دانلود داده‌ها با فیلتر دلخواه'],
-    settings:['کاربران و تنظیمات','مدیریت کانال‌ها، کاربران و اتصال داده'],
+    dashboard: 'صفحه نخست',
+    posts: 'پست‌ها',
+    analytics: 'آنالیز',
+    channels: 'کانال‌ها و افراد',
+    overview: 'اخبار رسمی',
+    schools: 'برنامه مدارس',
+    people: 'افراد و مجموعه‌ها',
+    reports: 'بخش تحلیلی — کتابخانه‌ی مجلات',
+    export: 'خروجی‌گیری',
+    settings: 'کاربران و تنظیمات',
   };
 
   function switchSection(key){
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+key).classList.add('active');
-    document.getElementById('sec-title').textContent = TITLES[key][0];
-    document.getElementById('sec-sub').textContent = TITLES[key][1];
+    document.getElementById('sec-title').textContent = TITLES[key];
   }
 
   document.getElementById('analytics-seg').addEventListener('click', e=>{
@@ -996,6 +1190,7 @@
   let CHANNELS = [];    // {id, platform, username, title, type, category_id, active}
   let CATEGORIES = [];  // {id, name, color}
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
+  let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1022,10 +1217,38 @@
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
   }
+  async function loadMagazines(){
+    const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
+    MAGAZINES = r.ok ? await r.json() : [];
+  }
+
+  function toFaDigits(n){
+    const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
+    return String(n).replace(/[0-9]/g, d => fa[d]);
+  }
+
+  function renderDashHeroStats(){
+    const wrap = document.getElementById('dash-hero-stats');
+    if(!wrap) return;
+    const total = CHANNELS.length;
+    const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
+    const personCount = CHANNELS.filter(c=>c.type==='person').length;
+    const platformCount = new Set(CHANNELS.map(c=>c.platform)).size;
+    const schoolsCount = 56; // عدد ثابت موقت — هنوز جدول/داده‌ی واقعی مدارس وجود نداره، بعداً با داده‌ی واقعی جایگزین می‌شه
+    const magazinesCount = MAGAZINES.length;
+    wrap.innerHTML = `
+      <div class="dash-hero-stat"><b>${toFaDigits(total)}</b><span>کانال پایش‌شونده</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(newsCount)}</b><span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(personCount)}</b><span>شخصیت</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(platformCount)}</b><span>پلتفرم</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(schoolsCount)}</b><span>مدرسه</span></div>
+      <div class="dash-hero-stat"><b>${toFaDigits(magazinesCount)}</b><span>بسته تحلیل</span></div>`;
+  }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories()]);
+    await Promise.all([loadChannels(), loadCategories(), loadMagazines()]);
     await loadPosts();
+    renderDashHeroStats();
     renderChannelCards();
     populatePostFilters();
     renderPosts();
@@ -1034,6 +1257,7 @@
     refreshCatOptions();
     renderCatGrid();
     renderChanList();
+    renderMagazines();
   }
 
   // ---- channels & people page ----
@@ -1217,6 +1441,13 @@
   const catGridEl = document.getElementById('cat-grid');
   const chanListEl = document.getElementById('chan-list');
   const newChanCatEl = document.getElementById('new-chan-cat');
+  const REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+
+  const newChanPlatformEl = document.getElementById('new-chan-platform');
+  const newChanHandleEl = document.getElementById('new-chan-handle');
+  newChanPlatformEl.addEventListener('change', ()=>{
+    newChanHandleEl.placeholder = newChanPlatformEl.value === 'website' ? 'لینک فید RSS' : 'یوزرنیم (بدون @)';
+  });
 
   function refreshCatOptions(){
     newChanCatEl.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
@@ -1257,7 +1488,9 @@
       });
       row.appendChild(nameInput);
       const handleSpan=document.createElement('span'); handleSpan.className='chan mono';
-      handleSpan.textContent = '@'+ch.username+' · '+(ch.platform==='telegram'?'تلگرام':'ایتا');
+      const platformLabel = ch.platform==='telegram' ? 'تلگرام' : ch.platform==='website' ? 'RSS' : 'ایتا';
+      const handleText = ch.platform==='website' ? ch.username : '@'+ch.username;
+      handleSpan.textContent = handleText+' · '+platformLabel+(ch.region ? ' · '+REGION_LABEL[ch.region] : '');
       row.appendChild(handleSpan);
       const catSel=document.createElement('select'); catSel.className='cat-select';
       catSel.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}" ${c.id===ch.category_id?'selected':''}>${c.name}</option>`).join('');
@@ -1292,18 +1525,209 @@
     const nameEl = document.getElementById('new-chan-name');
     const handleEl = document.getElementById('new-chan-handle');
     const platformEl = document.getElementById('new-chan-platform');
+    const regionEl = document.getElementById('new-chan-region');
     const name = nameEl.value.trim();
-    const handle = handleEl.value.trim().replace(/^@/,'');
+    const rawHandle = handleEl.value.trim();
+    const handle = platformEl.value === 'website' ? rawHandle : rawHandle.replace(/^@/,'');
     if(!name || !handle) return;
     const catVal = newChanCatEl.value;
-    const body = { username: handle, title: name, platform: platformEl.value, category_id: catVal ? Number(catVal) : null };
+    const body = { username: handle, title: name, platform: platformEl.value, region: regionEl.value || null, category_id: catVal ? Number(catVal) : null };
     const r = await api('/channels', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
     if(r.ok){
-      nameEl.value=''; handleEl.value='';
+      nameEl.value=''; handleEl.value=''; regionEl.value='';
       await loadChannels();
       renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
+    }
+  });
+
+  // ---- magazines library (بخش تحلیلی) ----
+  const MAG_TYPE_LABEL = { pdf:'PDF', images:'چند عکس' };
+
+  function renderMagazines(){
+    const grid = document.getElementById('magazine-grid');
+    const empty = document.getElementById('magazines-empty');
+    const isAdmin = currentRole === 'app_admin';
+    grid.innerHTML = '';
+    empty.style.display = MAGAZINES.length ? 'none' : 'block';
+    MAGAZINES.forEach((m, i)=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const meta = [
+        m.issue_no ? ('شماره ' + m.issue_no) : '',
+        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
+        (MAG_TYPE_LABEL[m.file_type] || m.file_type) + ' · ' + files.length + ' فایل',
+      ].filter(Boolean).join(' · ');
+      const el = document.createElement('div'); el.className = 'magazine-card';
+      el.innerHTML = `<div class="mag-icon">${m.file_type==='images' ? ICONS.photo : ICONS.doc}</div>
+        <div class="mag-title">${m.title}</div>
+        <div class="mag-meta">${meta}</div>
+        <div class="mag-actions"></div>`;
+      const actions = el.querySelector('.mag-actions');
+      files.forEach((path, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn'; btn.textContent = files.length > 1 ? ('مشاهده ' + (idx+1)) : 'مشاهده';
+        btn.addEventListener('click', () => openMagazineFile(m, path));
+        actions.appendChild(btn);
+      });
+      if(isAdmin){
+        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
+        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
+        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
+        up.addEventListener('click', () => moveMagazine(m, -1));
+        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===MAGAZINES.length-1;
+        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+        down.addEventListener('click', () => moveMagazine(m, 1));
+        reorder.appendChild(up); reorder.appendChild(down);
+        actions.appendChild(reorder);
+
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف مجله'; del.setAttribute('aria-label', 'حذف مجله‌ی ' + m.title);
+        del.addEventListener('click', () => deleteMagazine(m));
+        actions.appendChild(del);
+      }
+      grid.appendChild(el);
+    });
+    renderMagazineCarousel();
+  }
+
+  // ویجت کاروسل صفحه‌ی نخست — جلدهای مجله در یک ردیف افقی
+  function renderMagazineCarousel(){
+    const wrap = document.getElementById('mag-carousel-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!MAGAZINES.length){
+      wrap.innerHTML = '<div class="mag-empty-hint">هنوز مجله‌ای بارگذاری نشده.</div>';
+      return;
+    }
+    MAGAZINES.forEach(m=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const tile = document.createElement('div'); tile.className = 'mag-tile';
+      tile.innerHTML = `<div class="mag-tile-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
+        <div class="mag-tile-title">${m.title}</div>`;
+      tile.addEventListener('click', () => { if(files.length) openMagazineFile(m, files[0]); });
+      wrap.appendChild(tile);
+    });
+  }
+
+  function scrollMagCarousel(dir){
+    const wrap = document.getElementById('mag-carousel-home');
+    if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  }
+
+  // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر در یک سربرگ جدید باز می‌شن
+  // (نه لینک مستقیم/دانلود دائمی — این جلوی دانلود عادی رو می‌گیره، ولی جلوی اسکرین‌شات یا کاربر فنی مصمم رو نه)
+  async function openMagazineFile(magazine, path){
+    try{
+      const r = await fetch(SUPABASE_URL + '/storage/v1/object/sign/magazines/' + path, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expiresIn: 60 }),
+      });
+      if(!r.ok) throw new Error('sign failed');
+      const data = await r.json();
+      const url = SUPABASE_URL + '/storage/v1' + data.signedURL;
+      window.open(url, '_blank');
+    }catch(e){
+      showToast('باز کردن فایل ممکن نشد — احتمالاً دسترسی Storage هنوز تنظیم نشده');
+    }
+  }
+
+  async function moveMagazine(m, direction){
+    const idx = MAGAZINES.findIndex(x=>x.id===m.id);
+    const swapIdx = idx + direction;
+    if(swapIdx < 0 || swapIdx >= MAGAZINES.length) return;
+    const other = MAGAZINES[swapIdx];
+    const aOrder = m.sort_order || 0, bOrder = other.sort_order || 0;
+    await Promise.all([
+      api('/magazines?id=eq.'+m.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
+      api('/magazines?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
+    ]);
+    await loadMagazines(); renderMagazines();
+  }
+
+  async function deleteMagazine(m){
+    if(!confirm('مجله‌ی «' + m.title + '» حذف شود؟ فایل‌هاش هم برای همیشه پاک می‌شن.')) return;
+    try{
+      const files = Array.isArray(m.files) ? m.files : [];
+      if(files.length){
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/magazines', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: files }),
+        });
+      }
+      if(m.cover_url && m.cover_url.includes('/magazine-covers/')){
+        const coverPath = m.cover_url.split('/magazine-covers/')[1];
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/magazine-covers', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [coverPath] }),
+        });
+      }
+      await api('/magazines?id=eq.'+m.id, {method:'DELETE'});
+      await loadMagazines(); renderMagazines();
+      showToast('مجله حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadMagazineFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/magazines/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('upload failed: ' + file.name);
+    return path;
+  }
+
+  // جلدها توی یه bucket عمومی جداگانه‌ن (magazine-covers) تا بدون signed URL مستقیم نمایش داده بشن —
+  // خودِ فایل کامل مجله همچنان توی bucket خصوصی می‌مونه
+  async function uploadCoverFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/magazine-covers/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('cover upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/magazine-covers/' + path;
+  }
+
+  document.getElementById('mag-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('mag-upload-btn');
+    const titleEl = document.getElementById('mag-title');
+    const issueEl = document.getElementById('mag-issue');
+    const dateEl = document.getElementById('mag-date');
+    const typeEl = document.getElementById('mag-file-type');
+    const filesEl = document.getElementById('mag-files');
+    const coverEl = document.getElementById('mag-cover');
+    const title = titleEl.value.trim();
+    const files = Array.from(filesEl.files || []);
+    if(!title || !files.length){ showToast('عنوان و حداقل یک فایل لازم است'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      const paths = [];
+      for(const f of files){ paths.push(await uploadMagazineFile(f)); }
+      let coverUrl = null;
+      const coverFile = coverEl.files[0];
+      if(coverFile) coverUrl = await uploadCoverFile(coverFile);
+      const nextOrder = MAGAZINES.length ? Math.max(...MAGAZINES.map(m=>m.sort_order||0)) + 1 : 0;
+      const body = { title, issue_no: issueEl.value.trim() || null, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths, cover_url: coverUrl, sort_order: nextOrder };
+      const r = await api('/magazines', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; issueEl.value=''; dateEl.value=''; filesEl.value=''; coverEl.value='';
+      await loadMagazines(); renderMagazines();
+      showToast('مجله بارگذاری شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری مجله';
     }
   });
 
