@@ -44,13 +44,21 @@ MAX_MEDIA_BYTES = 15 * 1024 * 1024  # ۱۵ مگابایت — برای اینک�
 POST_ID_RE = re.compile(r'data-post="([^"]+)"')
 TEXT_RE = re.compile(r'class="etme_widget_message_text js-message_text"[^>]*>(.*?)</div>', re.S)
 BG_IMAGE_RE = re.compile(r"background-image:\s*url\('([^']+)'\)")
+BR_RE = re.compile(r"<br\s*/?>", re.I)
 TAG_RE = re.compile(r"<[^>]*>")
 
 
 def strip_tags(html: str) -> str:
-    text = TAG_RE.sub(" ", html)
+    # پیام‌های اصلی معمولاً چندپاراگرافن (با <br> بین پاراگراف‌ها) — قبل از
+    # حذف کامل تگ‌ها، <br> رو به خط جدید تبدیل می‌کنیم تا این ساختار پاراگرافی
+    # حفظ بشه، نه اینکه همه‌چیز به یک خط چسبیده تبدیل بشه.
+    text = BR_RE.sub("\n", html)
+    text = TAG_RE.sub(" ", text)
     text = unescape(text)
-    return re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"[^\S\n]+", " ", text)  # فاصله/تب تکراری جمع بشه، نه خط جدید
+    text = "\n".join(line.strip() for line in text.split("\n"))
+    text = re.sub(r"\n{3,}", "\n\n", text)  # حداکثر یک خط خالی بین پاراگراف‌ها
+    return text.strip()
 
 
 def login() -> str:
