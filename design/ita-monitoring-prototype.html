@@ -90,6 +90,7 @@
 
   .btn{ appearance:none; border:1px solid var(--border-strong); background: var(--surface-2); color: var(--text); padding:10px 20px; border-radius: var(--radius-pill); font-size:13.5px; font-weight:700; cursor:pointer; transition: all .15s ease; }
   .btn.primary{ background: var(--primary); color:#ffffff; border-color: var(--primary); }
+  .btn.danger{ background: var(--danger); color:#ffffff; border-color: var(--danger); }
   .btn.primary:hover{ background: var(--primary-2); }
   .btn:hover{ border-color: var(--primary); color: var(--text); }
 
@@ -499,6 +500,15 @@
   .news-link{ font-size:11px; font-weight:600; color: var(--text-faint); }
   .news-link:hover{ color: var(--accent-strong); }
   .news-empty{ text-align:center; color: rgba(255,255,255,0.5); font-size:13px; padding:40px 0; }
+  .news-pagination{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:24px; flex-wrap:wrap; }
+  .news-pagination button{
+    border:1px solid rgba(255,255,255,0.14); background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.7);
+    font-size:12.5px; font-weight:700; font-family:inherit; min-width:34px; height:34px; padding:0 10px;
+    border-radius: var(--radius-control); cursor:pointer;
+  }
+  .news-pagination button.active{ background: var(--accent); border-color: var(--accent); color: var(--primary); }
+  .news-pagination button:disabled{ opacity:.35; cursor:default; }
+  .news-pagination .dots{ color: rgba(255,255,255,0.4); font-size:12px; padding:0 2px; }
 
   /* analytics */
   .seg{ display:flex; gap:6px; background: var(--surface-2); border:1px solid var(--border); padding:4px; border-radius:9px; margin-bottom:18px; width:fit-content; }
@@ -543,12 +553,38 @@
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
   .add-row input, .add-row select{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); padding:8px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; }
   .add-row input{ flex:1; min-width:110px; }
-  .chan-domains{ display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+  .chan-domains-details{ position:relative; }
+  .chan-domains-details summary{
+    display:inline-flex; align-items:center; list-style:none; cursor:pointer; background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text-dim);
+    padding:8px 12px; border-radius: var(--radius-control); font-size:12.5px; font-weight:400; font-family:inherit; white-space:nowrap;
+  }
+  .chan-domains-details summary::-webkit-details-marker{ display:none; }
+  .chan-domains-details summary::after{ content:' ▾'; }
+  .chan-domains-details[open] summary::after{ content:' ▴'; }
+  .chan-domains-details[open] summary{ border-color: var(--primary); color: var(--text); }
+  .chan-domains{
+    position:absolute; z-index:5; top:calc(100% + 4px); inset-inline-end:0; display:flex; flex-direction:column; gap:9px;
+    background: var(--surface); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:12px 14px;
+    box-shadow: var(--shadow-hover); min-width:170px;
+  }
   .chan-news-toggle{ display:inline-flex; align-items:center; gap:6px; font-size:12px; font-weight:600; color: var(--text-dim); white-space:nowrap; cursor:pointer; }
   .chan-news-toggle input{ cursor:pointer; }
-  .chan-row-domains{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; flex-shrink:0; }
+  .chan-row-domains-details{ position:relative; flex-shrink:0; }
+  .chan-row-domains-details summary{
+    display:inline-flex; align-items:center; list-style:none; cursor:pointer; font-size:11px; font-weight:400; font-family:inherit; color: var(--text-dim);
+    background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:3.5px 8px; line-height:1.4; white-space:nowrap;
+  }
+  .chan-row-domains-details summary::-webkit-details-marker{ display:none; }
+  .chan-row-domains-details summary::after{ content:' ▾'; }
+  .chan-row-domains-details[open] summary::after{ content:' ▴'; }
+  .chan-row-domains{
+    position:absolute; z-index:5; top:calc(100% + 4px); inset-inline-end:0; display:flex; flex-direction:column; gap:7px;
+    background: var(--surface); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:10px 12px;
+    box-shadow: var(--shadow-hover); min-width:150px;
+  }
   .chan-row-news{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color: var(--text-faint); flex-shrink:0; cursor:pointer; white-space:nowrap; }
   .chan-row-news input{ cursor:pointer; }
+  #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-row:last-child{ border-bottom:none; }
   .chan-row input.name-edit{ flex:1; min-width:90px; background:none; border:1px solid transparent; color: var(--text); font-size:12.5px; font-weight:600; padding:5px 6px; border-radius: var(--radius-control); font-family:inherit; }
@@ -718,6 +754,20 @@
       </div>
     </div>
 
+    <div class="modal-overlay" id="delete-channel-modal" onclick="if(event.target===this) closeDeleteChannelModal()">
+      <div class="modal-card">
+        <button class="modal-close" onclick="closeDeleteChannelModal()" aria-label="بستن">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+        </button>
+        <h3>حذف کانال «<span id="delete-channel-name"></span>»؟</h3>
+        <p>این کار غیرقابل‌بازگشته — همه‌ی پست‌های جمع‌آوری‌شده از این منبع هم برای همیشه پاک می‌شن.</p>
+        <div style="display:flex; gap:10px; margin-top:18px;">
+          <button class="btn" onclick="closeDeleteChannelModal()" style="flex:1;">انصراف</button>
+          <button class="btn danger" id="confirm-delete-channel-btn" style="flex:1;">حذف قطعی</button>
+        </div>
+      </div>
+    </div>
+
     <!-- DASHBOARD: hero (pitch + illustration) + three feature cards to posts / analytics / channels & people -->
     <section class="section active" id="sec-dashboard">
       <div class="dash-hero-grid">
@@ -881,6 +931,7 @@
 
       <div class="news-feed" id="news-feed"></div>
       <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
+      <div class="news-pagination" id="news-pagination"></div>
     </section>
 
     <section class="section" id="sec-schools">
@@ -1080,11 +1131,14 @@
                 <option value="international">بین‌المللی</option>
               </select>
               <select id="new-chan-cat"></select>
-              <div class="chan-domains">
-                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-news" /> اخبار رسمی</label>
-                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-cyberspace" /> کنشگری مجازی</label>
-                <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-people" /> افراد و شخصیت‌ها</label>
-              </div>
+              <details class="chan-domains-details">
+                <summary>نمایش در بخش‌ها</summary>
+                <div class="chan-domains">
+                  <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-news" /> اخبار رسمی</label>
+                  <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-cyberspace" /> کنشگری مجازی</label>
+                  <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-people" /> افراد و شخصیت‌ها</label>
+                </div>
+              </details>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
             </div>
             <div id="chan-list"></div>
@@ -1292,6 +1346,25 @@
   function openIntro(){ document.getElementById('intro-modal').classList.add('active'); }
   function closeIntro(){ document.getElementById('intro-modal').classList.remove('active'); }
 
+  let PENDING_DELETE_CHANNEL = null;
+  function openDeleteChannelModal(ch){
+    PENDING_DELETE_CHANNEL = ch;
+    document.getElementById('delete-channel-name').textContent = ch.title || ch.username;
+    document.getElementById('delete-channel-modal').classList.add('active');
+  }
+  function closeDeleteChannelModal(){
+    PENDING_DELETE_CHANNEL = null;
+    document.getElementById('delete-channel-modal').classList.remove('active');
+  }
+  document.getElementById('confirm-delete-channel-btn').addEventListener('click', async ()=>{
+    if(!PENDING_DELETE_CHANNEL) return;
+    const ch = PENDING_DELETE_CHANNEL;
+    closeDeleteChannelModal();
+    await api('/channels?id=eq.'+ch.id, {method:'DELETE'});
+    await loadChannels(); await loadPosts();
+    renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts();
+  });
+
   function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
   function goLogin(){ show('view-login'); }
   function enterDash(sectionKey){
@@ -1353,7 +1426,7 @@
     telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13"/></svg>',
     eitaa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-3.4-.7L3 20l1-4.8A8.4 8.4 0 1121 11.5z"/></svg>',
   };
-  const newsState = { region: '', time: 'all', source: '', query: '' };
+  const newsState = { region: '', time: 'all', source: '', query: '', page: 1 };
 
   function newsChannels(){ return CHANNELS.filter(c=>c.show_in_news); }
 
@@ -1408,12 +1481,20 @@
     }).sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
   }
 
+  const NEWS_PAGE_SIZE = 10;
+
   function renderNewsFeed(){
     const feed = document.getElementById('news-feed');
     const empty = document.getElementById('news-empty');
     if(!feed) return;
-    const list = filteredNewsPosts();
-    empty.style.display = list.length ? 'none' : 'block';
+    const fullList = filteredNewsPosts();
+    empty.style.display = fullList.length ? 'none' : 'block';
+    const totalPages = Math.max(1, Math.ceil(fullList.length / NEWS_PAGE_SIZE));
+    if(newsState.page > totalPages) newsState.page = totalPages;
+    if(newsState.page < 1) newsState.page = 1;
+    const start = (newsState.page - 1) * NEWS_PAGE_SIZE;
+    const list = fullList.slice(start, start + NEWS_PAGE_SIZE);
+    renderNewsPagination(totalPages);
     feed.innerHTML = list.map(p=>{
       const ch = chById(p.channel_id) || {};
       const topic = catNameOf(p.channel_id);
@@ -1443,6 +1524,29 @@
     }).join('');
   }
 
+  function renderNewsPagination(totalPages){
+    const wrap = document.getElementById('news-pagination');
+    if(!wrap) return;
+    if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+    const cur = newsState.page;
+    const pages = [...new Set([1, totalPages, cur-1, cur, cur+1].filter(p=>p>=1 && p<=totalPages))].sort((a,b)=>a-b);
+    let html = `<button ${cur===1?'disabled':''} onclick="goNewsPage(${cur-1})">قبلی</button>`;
+    let prev = 0;
+    pages.forEach(p=>{
+      if(prev && p - prev > 1) html += `<span class="dots">…</span>`;
+      html += `<button class="${p===cur?'active':''}" onclick="goNewsPage(${p})">${toFaDigits(p)}</button>`;
+      prev = p;
+    });
+    html += `<button ${cur===totalPages?'disabled':''} onclick="goNewsPage(${cur+1})">بعدی</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goNewsPage(p){
+    newsState.page = p;
+    renderNewsFeed();
+    document.querySelector('.news-page-head').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
   function toggleNewsText(postId){
     const t = document.getElementById('news-text-'+postId);
     const b = document.getElementById('news-more-'+postId);
@@ -1461,6 +1565,7 @@
 
   document.getElementById('news-search-input').addEventListener('input', e=>{
     newsState.query = e.target.value.trim();
+    newsState.page = 1;
     renderNewsFeed();
   });
   document.getElementById('news-time-seg').addEventListener('click', e=>{
@@ -1468,6 +1573,7 @@
     document.querySelectorAll('#news-time-seg button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
     newsState.time = b.dataset.t;
+    newsState.page = 1;
     renderNewsFeed();
   });
   document.getElementById('news-region-row').addEventListener('click', e=>{
@@ -1475,10 +1581,12 @@
     document.querySelectorAll('.news-region-chip').forEach(c=>c.classList.remove('active'));
     chip.classList.add('active');
     newsState.region = chip.dataset.r;
+    newsState.page = 1;
     renderNewsFeed();
   });
   document.getElementById('news-source-select').addEventListener('change', e=>{
     newsState.source = e.target.value;
+    newsState.page = 1;
     renderNewsFeed();
   });
 
@@ -1786,6 +1894,9 @@
         renderCatGrid(); renderChannelCards();
       });
       row.appendChild(catSel);
+      const domainsDetails=document.createElement('details'); domainsDetails.className='chan-row-domains-details';
+      const domainsSummary=document.createElement('summary'); domainsSummary.textContent='بخش‌ها';
+      domainsDetails.appendChild(domainsSummary);
       const domainsWrap=document.createElement('div'); domainsWrap.className='chan-row-domains';
       CHAN_DOMAIN_FIELDS.forEach(({field, label, onChange})=>{
         const lbl=document.createElement('label'); lbl.className='chan-row-news';
@@ -1799,14 +1910,10 @@
         lbl.appendChild(document.createTextNode(label));
         domainsWrap.appendChild(lbl);
       });
-      row.appendChild(domainsWrap);
+      domainsDetails.appendChild(domainsWrap);
+      row.appendChild(domainsDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
-      del.addEventListener('click', async ()=>{
-        if(!confirm('این کانال حذف شود؟')) return;
-        await api('/channels?id=eq.'+ch.id, {method:'DELETE'});
-        await loadChannels();
-        renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters();
-      });
+      del.addEventListener('click', ()=> openDeleteChannelModal(ch));
       row.appendChild(del);
       chanListEl.appendChild(row);
     });
