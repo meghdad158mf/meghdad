@@ -169,6 +169,7 @@ async def collect_channel(client: TelegramClient, token: str, channel: dict) -> 
             "platform": "telegram",
             "platform_post_id": str(msg.id),
             "text": msg.message or "",
+            "link": f"https://t.me/{username}/{msg.id}",
             "media_type": media_type_of(msg),
             "views": getattr(msg, "views", 0) or 0,
             "forwards": getattr(msg, "forwards", 0) or 0,
