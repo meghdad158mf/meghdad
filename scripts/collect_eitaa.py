@@ -22,6 +22,7 @@ etme_widget_message_video_player برای تشخیص ویدیو کافیه و ف
 واقعی توی لاگ media_type='video' نگرفت، این فرض هم نیاز به بررسی داره.
 """
 
+import base64
 import datetime
 import os
 import re
@@ -44,8 +45,17 @@ MAX_MEDIA_BYTES = 15 * 1024 * 1024  # ۱۵ مگابایت — برای اینک�
 POST_ID_RE = re.compile(r'data-post="([^"]+)"')
 TEXT_RE = re.compile(r'class="etme_widget_message_text js-message_text"[^>]*>(.*?)</div>', re.S)
 BG_IMAGE_RE = re.compile(r"background-image:\s*url\('([^']+)'\)")
+DATA_URI_RE = re.compile(r"^data:([^;,]+)?(?:;base64)?,(.+)$", re.S)
 BR_RE = re.compile(r"<br\s*/?>", re.I)
 TAG_RE = re.compile(r"<[^>]*>")
+
+
+def find_bg_image(el) -> str | None:
+    if el is None:
+        return None
+    style = el.get("style", "")
+    m = BG_IMAGE_RE.search(style)
+    return m.group(1) if m else None
 
 
 def strip_tags(html: str) -> str:
@@ -112,19 +122,27 @@ def upload_media(token: str, storage_path: str, content: bytes, content_type: st
 
 def download_and_store_media(token: str, source_url: str, channel_id: int, post_id: str) -> dict | None:
     try:
-        resp = requests.get(source_url, timeout=REQUEST_TIMEOUT, stream=True)
-        resp.raise_for_status()
-        content = resp.content
+        # برای ویدیوهای «حجیم/پشتیبانی‌نشده» (پیام message_media_not_supported)،
+        # ایتا اصلاً لینک دانلود نمی‌ده — بندانگشتی مستقیم به‌شکل base64 داخل
+        # همون HTML جاسازی شده (data:image/jpeg;base64,...)، نه یک URL قابل‌فچ.
+        data_m = DATA_URI_RE.match(source_url)
+        if data_m:
+            content_type = data_m.group(1) or "image/jpeg"
+            content = base64.b64decode(data_m.group(2))
+        else:
+            resp = requests.get(source_url, timeout=REQUEST_TIMEOUT, stream=True)
+            resp.raise_for_status()
+            content = resp.content
+            content_type = resp.headers.get("Content-Type", "image/jpeg")
         if len(content) > MAX_MEDIA_BYTES:
-            print(f"    [!] media too big ({len(content)} bytes), skipping download: {source_url}", file=sys.stderr)
+            print(f"    [!] media too big ({len(content)} bytes), skipping download: {source_url[:80]}", file=sys.stderr)
             return None
-        content_type = resp.headers.get("Content-Type", "image/jpeg")
         ext = ".mp4" if "video" in content_type else ".jpg"
         storage_path = f"eitaa/{channel_id}/{post_id}{ext}"
         public_url = upload_media(token, storage_path, content, content_type)
         return {"media_path": public_url, "media_storage_path": storage_path}
     except Exception as e:
-        print(f"    [!] media download failed for {source_url}: {e}", file=sys.stderr)
+        print(f"    [!] media download failed for {source_url[:80]}: {e}", file=sys.stderr)
         return None
 
 
@@ -146,20 +164,32 @@ def extract_posts(html: str, channel_id: int) -> list[dict]:
         text_m = TEXT_RE.search(wrap_html)
         text = strip_tags(text_m.group(1)) if text_m else ""
 
-        # عکس و ویدیو هردو با همین کلاس نمایش داده می‌شن (background-image روی یه
-        # لینک/دیو)؛ برای ویدیو این فقط تصویر بندانگشتیه، نه خودِ فایل قابل‌پخش.
-        photo_el = wrap.find(class_="etme_widget_message_photo_wrap")
+        # دو ساختار متفاوت برای ویدیو دیده شده:
+        #   ۱) ویدیوی «معمولی» (قابل‌جاسازی): کلاس etme_widget_message_video_player
+        #      با etme_widget_message_photo_wrap روی همون <a> ترکیب می‌شه؛
+        #      background-image یه لینک واقعی (/download_xxx?token=...) داره.
+        #   ۲) ویدیوی «حجیم/پشتیبانی‌نشده» (پیام message_media_not_supported):
+        #      فقط etme_widget_message_video_player روی <a>، بدون photo_wrap؛
+        #      بندانگشتی توی یه <i class="etme_widget_message_video_thumb">
+        #      تودرتوئه و معمولاً به‌شکل data:...;base64,... جاسازی شده، نه لینک.
+        # عکس ساده فقط کلاس etme_widget_message_photo_wrap رو داره (بدون
+        # video_player)، با یه لینک واقعی.
+        video_el = wrap.find(class_="etme_widget_message_video_player")
         media_source_url = None
         media_type = None
-        if photo_el is not None:
-            style = photo_el.get("style", "")
-            bg_m = BG_IMAGE_RE.search(style)
-            if bg_m:
-                media_source_url = bg_m.group(1)
-                if media_source_url.startswith("/"):
-                    media_source_url = "https://eitaa.com" + media_source_url
-                is_video = wrap.find(class_="etme_widget_message_video_player") is not None
-                media_type = "video" if is_video else "photo"
+        if video_el is not None:
+            media_type = "video"
+            media_source_url = find_bg_image(video_el) or find_bg_image(
+                wrap.find(class_="etme_widget_message_video_thumb")
+            )
+        else:
+            photo_el = wrap.find(class_="etme_widget_message_photo_wrap")
+            media_source_url = find_bg_image(photo_el)
+            if media_source_url:
+                media_type = "photo"
+
+        if media_source_url and media_source_url.startswith("/"):
+            media_source_url = "https://eitaa.com" + media_source_url
 
         posts.append(
             {
@@ -217,6 +247,12 @@ def main() -> None:
                         p["media_storage_path"] = stored["media_storage_path"]
                         p["media_fetched_at"] = datetime.datetime.now(datetime.timezone.utc).isoformat()
                         total_media += 1
+                    if p["media_source_url"].startswith("data:"):
+                        # بندانگشتی base64 فقط برای همین دانلود لازم بود — ذخیره‌ش توی
+                        # دیتابیس (یه فیلد متنی) حجم عکس رو دوباره توی هر ردیف پست
+                        # تکرار می‌کنه، بدون فایده‌ی «لینک منبع برای دانلود بعدی» که
+                        # media_source_url در بقیه‌ی موارد داره.
+                        p["media_source_url"] = None
             upsert_posts(token, posts)
             total_saved += len(posts)
             print(f"[+] @{username}: {len(posts)} post(s)")
