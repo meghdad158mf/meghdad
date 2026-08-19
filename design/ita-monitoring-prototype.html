@@ -483,19 +483,24 @@
   .news-platform svg{ width:12px; height:12px; }
 
   .news-feed{ display:flex; flex-direction:column; gap:14px; max-width:800px; margin:0 auto; }
-  .news-feed.grid-view{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; max-width:100%; margin:0; align-items:start; }
+  /* grid ردیفی — هر کارتِ یک ردیف تا کف ردیف کشیده می‌شه (align-items پیش‌فرض
+     stretch‌ه) تا لبه‌ی پایین همه‌ی کارت‌های یک ردیف دقیقاً هم‌تراز باشه. */
+  .news-feed.grid-view{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; max-width:100%; margin:0; }
   @media (max-width:900px){ .news-feed.grid-view{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .news-feed.grid-view{ grid-template-columns: 1fr; } }
 
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
   .news-feed.grid-view .news-card{ flex-direction:column; border-inline-start:1px solid var(--border); border-top:3px solid var(--accent); padding:0; overflow:hidden; }
-  .news-feed.grid-view .news-card .news-body{ padding:14px; }
+  .news-feed.grid-view .news-card .news-body{ padding:14px; display:flex; flex-direction:column; flex:1; }
+  .news-feed.grid-view .news-card .news-foot{ margin-top:auto; }
 
   .news-thumb{ width:112px; height:88px; border-radius:10px; overflow:hidden; flex-shrink:0; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
   .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
   .news-feed.grid-view .news-thumb{ width:100%; height:auto; aspect-ratio:4/3; max-height:170px; border-radius:0; }
+  .news-thumb.placeholder{ background: linear-gradient(155deg, var(--navy), #223142); color: rgba(255,255,255,0.35); }
+  .news-thumb.placeholder svg{ width:34px; height:34px; }
 
   .news-body{ flex:1; min-width:0; }
   .news-head{ display:flex; align-items:center; gap:7px; margin-bottom:8px; flex-wrap:wrap; }
@@ -1417,6 +1422,11 @@
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+key).classList.add('active');
     document.getElementById('sec-title').textContent = TITLES[key];
+    // فید اخبار رسمی اولین‌بار موقع loadAll() ساخته می‌شه، وقتی بخش هنوز
+    // display:none‌ه — یعنی clientHeight/scrollHeight برای همه صفر حساب
+    // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
+    // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
+    if(key === 'overview') renderNewsFeed();
   }
 
   document.getElementById('analytics-seg').addEventListener('click', e=>{
@@ -1529,9 +1539,12 @@
       const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
       const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
       const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
+      const thumbHtml = hasThumb
+        ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
+        : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
       return `
       <div class="news-card">
-        ${hasThumb ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>` : ''}
+        ${thumbHtml}
         <div class="news-body">
           <div class="news-head">
             <span class="news-source">${ch.title||ch.username||'؟'}</span>
@@ -1556,6 +1569,26 @@
       </div>`;
     }).join('');
     wireMediaViewerClicks(feed);
+    // دکمه‌ی «نمایش بیشتر» فقط وقتی نشون داده بشه که متن واقعاً از ۳ خط رد شده
+    // باشه — وگرنه برای پست‌های کوتاه، کلیک روش هیچ تغییری ایجاد نمی‌کرد.
+    // فونت فارسی سفارشی (IRANSansX) به‌صورت async لود می‌شه؛ اگه اندازه‌گیری
+    // قبل از لود کامل فونت انجام بشه، ارتفاع متن با فونت جایگزین محاسبه
+    // می‌شه و ممکنه اشتباهاً «سرریز نشده» تشخیص داده بشه — برای همین بعد از
+    // آماده‌شدن فونت‌ها هم یه‌بار دیگه چک می‌کنیم.
+    updateNewsMoreButtons(list);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updateNewsMoreButtons(list));
+    }
+  }
+
+  function updateNewsMoreButtons(list){
+    list.forEach(p=>{
+      const textEl = document.getElementById('news-text-'+p.id);
+      const moreBtn = document.getElementById('news-more-'+p.id);
+      if(!textEl || !moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
+    });
   }
 
   function renderNewsPagination(totalPages){
