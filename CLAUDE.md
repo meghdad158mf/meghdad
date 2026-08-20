@@ -92,15 +92,18 @@ db/migration_006_news_sources.sql          ستون region (متنی، بعدا�
 db/migration_007_news_membership.sql       سه ستون مستقل show_in_news/show_in_cyberspace/show_in_people روی channels — عضویت هر کانال در هر حوزه دیگه از type/platform حدس زده نمی‌شه
 db/migration_008_post_media.sql            ستون‌های media_storage_path/media_source_url/media_fetched_at روی posts + bucket عمومی post-media (دانلود واقعی عکس/فیلم)
 db/migration_009_dynamic_regions.sql       جدول regions (پویا، مثل categories) + channels.region_id — جایگزین ستون متنی region با CHECK ثابت (غیر idempotent، فقط یک‌بار اجرا شده)
+db/migration_010_newspapers.sql            جدول newspapers + bucket عمومی newspaper-covers (تب «روزنامه‌ها»)
 db/seed_telegram_channels.sql              ۴ کانال پیش‌فرض تلگرام
 scripts/collect_eitaa.py                   کالکتور ایتا
 scripts/collect_telegram.py                کالکتور تلگرام (شامل دانلود عکس/فیلم)
 scripts/collect_rss.py                     کالکتور RSS سایت‌های خبری (platform=website)
-scripts/cleanup_media.py                   جاب روزانه‌ی پاک‌سازی رسانه‌ی قدیمی‌تر از ۳ روز از Storage
+scripts/collect_newspapers.py              کالکتور صفحه‌ی اول روزنامه‌ها از کیوسک جار (jaaar.com/kiosk) — دانلود واقعی عکس، نه hotlink
+scripts/cleanup_media.py                   جاب روزانه‌ی پاک‌سازی رسانه‌ی قدیمی‌تر از ۳ روز از Storage (عکس/فیلم پست‌ها + عکس روزنامه‌ها)
 scripts/telegram_session_to_string.py      ابزار یک‌بارمصرف محلی
 .github/workflows/collect-eitaa.yml
 .github/workflows/collect-telegram.yml     timeout-minutes: 40 (به‌خاطر بک‌فیل اولیه + دانلود رسانه، نگاه کن به «معماری فعلی»)
 .github/workflows/collect-rss.yml
+.github/workflows/collect-newspapers.yml
 .github/workflows/cleanup-media.yml
 design/ita-monitoring-prototype.html       فرانت‌اند کامل (تک‌فایل HTML/CSS/JS)
 design/fonts/                              فونت IRANSansX (وریبل + Regular، وصل با @font-face)
@@ -120,6 +123,7 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 - **categories**: id, name, color — دسته‌بندی موضوعی، محور جدا از حوزه‌ی رصد
 - **domains**: id, key, name, sort_order — فقط رفرنس/مستندسازی (migration_002)، فرانت‌اند مستقیم از روی `.domain-card`های هاردکد کار می‌کنه، نه از این جدول کوئری می‌گیره؛ اهمیت عملی نداره.
 - **magazines**: id, title, issue_no, publish_date, file_type (`pdf`|`images`), files (jsonb، مسیرهای bucket خصوصی magazines)، cover_url (لینک عمومی bucket magazine-covers یا null)، sort_order، uploaded_at
+- **newspapers**: id, slug, title, edition_date, image_url (لینک عمومی bucket `newspaper-covers` یا null بعد از پاک‌سازی)، media_storage_path (برای حذف بعدی)، reader_url (لینک آرشیو در jaaar.com)، scraped_at — یکتا روی (slug, edition_date)؛ migration_010
 - **app_config**: رمزهای هش‌شده‌ی مدیر/بیننده + رمز JWT (فقط از طریق توابع SECURITY DEFINER قابل‌خوندنه)
 
 ## بخش تحلیلی — کتابخانه‌ی مجلات (کامل پیاده‌سازی شده)
@@ -139,6 +143,14 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
   - **منطقه** (`#news-region-row`، `renderNewsRegionChips()`): چیپ‌های منطقه از جدول `regions` ساخته می‌شن، پویا (نه هاردکد).
   - **منابع** (`#news-source-details`/`#news-source-list`، `populateNewsSourceOptions()`): چندانتخابی (checkbox list در popover)، نه select تک‌انتخابی.
 - **منبع RSS** (`collect_rss.py`، `platform='website'`) هم مثل ایتا/تلگرام پست تولید می‌کنه؛ `posts.title` فقط برای این‌ها پر می‌شه (ایتا/تلگرام عنوان جدا ندارن).
+
+## تب «روزنامه‌ها» (کامل پیاده‌سازی شده — کنار مطالعه/آنالیز، داخل `sec-overview`)
+
+- **دسترسی**: سه‌تا تب بالای صفحه‌ی اخبار رسمی — «مطالعه» (`#news-tab-study`)، «روزنامه‌ها» (`#news-tab-newspapers`)، «آنالیز» (غیرفعال). `setNewsPageTab('study'|'newspapers')` جابه‌جا می‌کنه، `#news-study-panel`/`#news-newspapers-panel` رو نشون/مخفی می‌کنه.
+- **نمایش**: گرید کاور (`.newspaper-grid`/`.newspaper-card`، زبان بصری همون `.mag-tile` کاروسل مجلات صفحه‌ی نخست) از **آخرین تاریخ موجود** توی جدول `newspapers` (نه لزوماً امروز تقویمی — `renderNewspapers()` فقط ردیف‌هایی که `image_url` دارن رو در نظر می‌گیره، بعد جدیدترین `edition_date` بینشون رو پیدا می‌کنه). کلیک روی هر کاور با همون مکانیزم عمومی `data-viewer-kind="image"`/`wireMediaViewerClicks()` تمام‌صفحه باز می‌شه.
+- **منبع داده**: سایت جار (`jaaar.com/kiosk`) — صفحه‌ش سمت سرور رندر می‌شه (نه SPA پشت جاوااسکریپت)، هر روزنامه یه `div.element-item.issue` با `data-slug` + `img[data-full-image]` + `.actions[data-date]` + `.header .rtl` (عنوان). دسته‌ی «مجله» (`category-6`) عمداً فیلتر می‌شه — این تب فقط روزنامه.
+- ⚠️ **عکس hotlink نیست، واقعاً دانلود و در bucket خودمون آپلود می‌شه** (`newspaper-covers`، عمومی) — دقیقاً همون الگوی `media_storage_path` عکس/فیلم پست‌های تلگرام/ایتا (migration_008). دلیل: از محیط توسعه نمی‌شد تست کرد سرور جار Referer/hotlink رو می‌بنده یا نه؛ دانلود کامل این ریسک رو حذف می‌کنه.
+- **پاک‌سازی خودکار**: چون حجم روزانه‌ی ~۴۰ روزنامه زیاده، `cleanup_media.py` (هر روز، همون جابی که عکس/فیلم پست‌ها رو پاک می‌کنه) نسخه‌های قدیمی‌تر از ۳ روز رو هم از bucket `newspaper-covers` پاک می‌کنه — فقط `image_url`/`media_storage_path` خالی می‌شن، ردیف (عنوان/تاریخ/اسلاگ) می‌مونه. چون تب فقط آخرین تاریخ رو نشون می‌ده، این محدودیت روی چیزی که کاربر می‌بینه اثر نداره.
 
 ## جزئیات مهم طراحی (برای هماهنگی سشن‌های بعدی)
 
