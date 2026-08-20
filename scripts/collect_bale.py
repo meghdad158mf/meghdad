@@ -140,10 +140,22 @@ def parse_flight_rows(stream: str) -> dict:
     return rows
 
 
+def _looks_like_channel_messages(items) -> bool:
+    return bool(items) and all(
+        isinstance(m, dict) and "rid" in m and "message" in m for m in items
+    )
+
+
 def find_messages(obj):
+    # صفحه‌ی واقعی (برخلاف نمونه‌ی کوتاه‌شده‌ای که تست شد) کلی داده‌ی دیگه هم
+    # توی همون قالب Flight داره — چون بله یه اپ پیام‌رسان کامله نه فقط ویوئر
+    # کانال. ممکنه یه آرایه‌ی نامرتبط دیگه هم کلیدش "messages" باشه و زودتر
+    # پیدا بشه؛ برای همین فقط آرایه‌ای که آیتم‌هاش واقعاً شکل پیام کانال
+    # (rid + message) رو دارن قبول می‌کنیم، وگرنه جست‌وجو رو ادامه می‌دیم.
     if isinstance(obj, dict):
-        if "messages" in obj and isinstance(obj["messages"], list):
-            return obj["messages"]
+        val = obj.get("messages")
+        if isinstance(val, list) and _looks_like_channel_messages(val):
+            return val
         for v in obj.values():
             found = find_messages(v)
             if found is not None:
