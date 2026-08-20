@@ -725,11 +725,13 @@
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
-  .newspaper-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap:20px 16px; margin-top:8px; }
+  .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
+  @media (max-width:900px){ .newspaper-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:560px){ .newspaper-grid{ grid-template-columns: 1fr; } }
   .newspaper-card{ cursor:pointer; display:flex; flex-direction:column; gap:9px; }
-  .newspaper-cover{ width:100%; aspect-ratio: 3/4.2; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+  .newspaper-cover{ width:100%; aspect-ratio: 4/3; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
   .newspaper-card:hover .newspaper-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
-  .newspaper-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .newspaper-cover img{ width:100%; height:100%; object-fit:contain; display:block; }
   .newspaper-title{ font-size:12px; font-weight:600; color: rgba(255,255,255,0.82); text-align:center; line-height:1.5; }
   .mag-empty-hint{ font-size:12.5px; color: var(--text-faint); padding:6px 4px; }
 </style>
@@ -1018,6 +1020,14 @@
           <div>
             <h1 class="news-page-title">روزنامه‌ها</h1>
             <p class="news-page-sub" id="newspapers-date-label">صفحه‌ی اول روزنامه‌های امروز</p>
+          </div>
+        </div>
+        <div class="news-filters">
+          <div class="news-filter-row news-toolbar-row">
+            <details class="news-source-details" id="newspaper-source-details">
+              <summary id="newspaper-source-summary">انتخاب روزنامه‌ها…</summary>
+              <div class="news-source-list" id="newspaper-source-list"></div>
+            </details>
           </div>
         </div>
         <div class="newspaper-grid" id="newspaper-grid"></div>
@@ -1518,6 +1528,8 @@
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
+  let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به آخرین تاریخ موجود — برای فیلتر بدون rebuild چک‌باکس‌ها
+  const newspaperState = { selected: [] };  // slug روزنامه‌های انتخاب‌شده؛ آرایه‌ی خالی یعنی همه نمایش داده بشن
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -2373,11 +2385,28 @@
     if(!grid) return;
     const withImage = NEWSPAPERS.filter(n => n.image_url);
     empty.style.display = withImage.length ? 'none' : 'block';
-    if(!withImage.length){ grid.innerHTML = ''; return; }
+    if(!withImage.length){
+      grid.innerHTML = '';
+      NEWSPAPER_TODAYS = [];
+      populateNewspaperSourceOptions();
+      return;
+    }
     const latestDate = withImage[0].edition_date;
     if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(latestDate).toLocaleDateString('fa-IR');
-    const todays = withImage.filter(n => n.edition_date === latestDate);
-    grid.innerHTML = todays.map(n => `
+    NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === latestDate);
+    populateNewspaperSourceOptions();
+    renderNewspaperGrid();
+  }
+
+  // فقط خودِ گرید رو بازمی‌سازه (نه چک‌باکس‌های فیلتر) — تا با تغییر انتخاب
+  // کاربر توی dropdown، خودِ dropdown بسته/rebuild نشه
+  function renderNewspaperGrid(){
+    const grid = document.getElementById('newspaper-grid');
+    if(!grid) return;
+    const list = newspaperState.selected.length
+      ? NEWSPAPER_TODAYS.filter(n => newspaperState.selected.includes(n.slug))
+      : NEWSPAPER_TODAYS;
+    grid.innerHTML = list.map(n => `
       <div class="newspaper-card">
         <div class="newspaper-cover">
           <img src="${escAttr(n.image_url)}" alt="${escAttr(n.title)}" loading="lazy" draggable="false" oncontextmenu="return false"
@@ -2386,6 +2415,34 @@
         <div class="newspaper-title">${escAttr(n.title)}</div>
       </div>`).join('');
     wireMediaViewerClicks(grid);
+  }
+
+  function updateNewspaperSourceSummary(){
+    const summary = document.getElementById('newspaper-source-summary');
+    if(!summary) return;
+    const n = newspaperState.selected.length;
+    summary.textContent = n === 0 ? 'انتخاب روزنامه‌ها…' : toFaDigits(n) + ' روزنامه انتخاب‌شده';
+  }
+
+  function populateNewspaperSourceOptions(){
+    const list = document.getElementById('newspaper-source-list');
+    if(!list) return;
+    const validSlugs = new Set(NEWSPAPER_TODAYS.map(n=>n.slug));
+    newspaperState.selected = newspaperState.selected.filter(s=>validSlugs.has(s));
+    list.innerHTML = NEWSPAPER_TODAYS.map(n=>{
+      const checked = newspaperState.selected.includes(n.slug) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${escAttr(n.slug)}" ${checked}> ${escAttr(n.title)}</label>`;
+    }).join('');
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const slug = chk.value;
+        if(chk.checked){ if(!newspaperState.selected.includes(slug)) newspaperState.selected.push(slug); }
+        else{ newspaperState.selected = newspaperState.selected.filter(x=>x!==slug); }
+        updateNewspaperSourceSummary();
+        renderNewspaperGrid();
+      });
+    });
+    updateNewspaperSourceSummary();
   }
 
   // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر در یک سربرگ جدید باز می‌شن
