@@ -57,13 +57,17 @@ def auth_headers(token: str) -> dict:
     }
 
 
-def fetch_kiosk_html() -> str:
+def fetch_kiosk_html() -> bytes:
+    # عمداً bytes خام برمی‌گردونیم، نه r.text: هدر Content-Type این سایت
+    # charset رو مشخص نمی‌کنه، پس requests رمزگذاری رو غلط حدس می‌زنه و
+    # عنوان‌های فارسی رو خراب می‌کنه (mojibake). با دادن bytes خام به
+    # BeautifulSoup، خودش meta charset=utf-8 توی <head> رو تشخیص می‌ده.
     r = requests.get(KIOSK_URL, timeout=REQUEST_TIMEOUT, headers={"User-Agent": "Mozilla/5.0"})
     r.raise_for_status()
-    return r.text
+    return r.content
 
 
-def extract_newspapers(html: str) -> list[dict]:
+def extract_newspapers(html: bytes) -> list[dict]:
     soup = BeautifulSoup(html, "html.parser")
     papers = []
     seen = set()
