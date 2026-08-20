@@ -287,6 +287,14 @@ def main() -> None:
             # همون درسی که از mojibake سایت جار گرفتیم: هدر Content-Type این
             # سایت هم charset رو مشخص نمی‌کنه، پس صریح utf-8 دیکد می‌کنیم
             html = resp.content.decode("utf-8", errors="replace")
+            # لاگ تشخیصی موقت: چون نمی‌تونیم از این محیط به ble.ir دسترسی
+            # مستقیم داشته باشیم، این خط دقیقاً نشون می‌ده production چی
+            # واقعاً از سرور می‌گیره (صفحه‌ی چالش امنیتی؟ صفحه‌ی خالی؟...)
+            flight_chunks = len(PUSH_RE.findall(html))
+            print(
+                f"    [i] status={resp.status_code} len={len(html)} "
+                f"flight_chunks={flight_chunks} sample={html[:200]!r}"
+            )
             messages = extract_bale_messages(html, username)
             rows = [
                 {
