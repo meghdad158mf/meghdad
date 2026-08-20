@@ -22,13 +22,21 @@ from html import unescape
 import feedparser
 import requests
 
+BLOCK_END_RE = re.compile(r"</(p|div|li|h[1-6])\s*>|<br\s*/?>", re.I)
 TAG_RE = re.compile(r"<[^>]*>")
 
 
 def strip_tags(html: str) -> str:
-    text = TAG_RE.sub(" ", html)
+    # فیدهای RSS معمولاً توضیح رو با تگ‌های <p>/<br> پاراگراف‌بندی می‌کنن — قبل
+    # از حذف کامل تگ‌ها، این مرزها رو به خط جدید تبدیل می‌کنیم تا پاراگراف‌بندی
+    # اصلی حفظ بشه (همون فیکسی که برای متن ایتا انجام شد).
+    text = BLOCK_END_RE.sub("\n", html)
+    text = TAG_RE.sub(" ", text)
     text = unescape(text)
-    return re.sub(r"\s+", " ", text).strip()
+    text = re.sub(r"[^\S\n]+", " ", text)  # فاصله/تب تکراری جمع بشه، نه خط جدید
+    text = "\n".join(line.strip() for line in text.split("\n"))
+    text = re.sub(r"\n{3,}", "\n\n", text)  # حداکثر یک خط خالی بین پاراگراف‌ها
+    return text.strip()
 
 SUPABASE_URL = os.environ["SUPABASE_URL"].rstrip("/")
 SUPABASE_ANON_KEY = os.environ["SUPABASE_ANON_KEY"]
