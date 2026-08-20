@@ -323,6 +323,26 @@ def main() -> None:
             print(f"    [i] stream_len={len(stream_dbg)} messages_key_hits={len(idxs)}")
             for idx in idxs[:5]:
                 print(f"    [i] ...{stream_dbg[max(0, idx - 30):idx + 250]!r}...")
+            rows_dbg = parse_flight_rows(stream_dbg)
+            text_ids = sorted((rid for rid, (kind, _) in rows_dbg.items() if kind == "text"), key=lambda k: (len(k), k))
+            print(f"    [i] total_rows={len(rows_dbg)} text_row_ids={text_ids}")
+            for rid, (kind, payload) in rows_dbg.items():
+                if kind != "raw" or '"messages"' not in payload:
+                    continue
+                try:
+                    obj = json.loads(payload)
+                except Exception as e:
+                    print(f"    [i] row {rid} (raw,len={len(payload)}) json.loads FAILED: {e}")
+                    continue
+                found = find_messages(obj)
+                print(f"    [i] row {rid} json.loads OK, find_messages -> {len(found) if found else 0} items")
+                if found:
+                    for fm in found[:4]:
+                        tref = (fm.get("message") or {}).get("textMessage", {}).get("text")
+                        resolved = None
+                        if isinstance(tref, str) and tref.startswith("$"):
+                            resolved = rows_dbg.get(tref[1:])
+                        print(f"    [i]   rid={fm.get('rid')} text_ref={tref!r} resolved={'FOUND len=' + str(len(resolved[1])) if resolved else 'MISSING'}")
             messages = extract_bale_messages(html, username)
             rows = [
                 {
