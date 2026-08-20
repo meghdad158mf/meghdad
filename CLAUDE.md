@@ -23,7 +23,7 @@
 
 1. **هدر/توپ‌بار** (`.topbar`): سمت راست آیکون برند + مسیر «سامانه هوشمند جریان / صفحه نخست»؛ سمت چپ وضعیت «به‌روزرسانی خودکار هر ۲ ساعت» (نقطه‌ی سبز چشمک‌زن + متن)، دراپ‌داون «مدیریت» (خروجی‌گیری/تنظیمات، فقط مدیر)، دکمه‌ی خروج. **در موبایل (زیر ۶۴۰px) یک‌ردیفه شده**: نام کامل سامانه و متن وضعیت مخفی می‌شن (فقط نقطه‌ی سبز چشمک‌زن می‌مونه، بدون متن — با `font-size:0` نه `display:none`، تا نمادش حفظ بشه)، دکمه‌ی «مدیریت» فقط آیکون چرخ‌دنده (بدون متن/فلش) نشون می‌ده.
 2. **هرو** (`.dash-hero`): تیتر «نبض فضای سیاسی اجتماعی در حوزه علمیه خراسان»، توضیح، **پنل آماری ۶تایی** (`#dash-hero-stats`، تابع `renderDashHeroStats()`): کانال پایش‌شونده / خبرگزاری / شخصیت / پلتفرم / مدرسه / بسته تحلیل — همه با اعداد فارسی (`toFaDigits`). ⚠️ **«مدرسه» یه عدد ثابت جعلیه** (`schoolsCount = 56`، هاردکد با کامنت توی خودِ کد، حدود خط ۱۲۳۱ فایل) چون هنوز منبع داده‌ی واقعی مدارس وجود نداره — با کارت غیرفعال «برنامه مدارس» (پایین‌تر) در تناقضه، به کاربر چندبار گفته شده، هنوز حل نشده.
-3. **«عرصه‌های رصد و تحلیل»** (`.domain-grid`، ۴ کارت `.domain-card`): اخبار رسمی، کنشگری مجازی، برنامه مدارس، افراد و مجموعه‌ها. **بدون تگ زیرمجموعه** (تگ‌ها این جلسه کاملاً حذف شدن). هر ۴ کارت یک تصویر آیکون سه‌بعدی illustrated واقعی دارن (`images/domain-icon-{news,cyberspace,schools,people}.webp`، کلاس `.domain-icon.is-illustrated`) — دیگه SVG گرادیانی دستی نیست، همه از عکس واقعی که کاربر فرستاده استفاده می‌کنن. فقط «کنشگری مجازی» به یه صفحه‌ی واقعی (`posts`) می‌ره؛ بقیه (`overview`/`schools`/`people`) به صفحه‌ی placeholder با متن «این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد» می‌رن. **در موبایل ۲ستونه‌ست** (نه تک‌ستونه — این جلسه عمداً به دو‌ستونه تغییر کرد، زیر ۹۰۰px).
+3. **«عرصه‌های رصد و تحلیل»** (`.domain-grid`، ۴ کارت `.domain-card`): اخبار رسمی، کنشگری مجازی، برنامه مدارس، افراد و مجموعه‌ها. **بدون تگ زیرمجموعه** (تگ‌ها این جلسه کاملاً حذف شدن). هر ۴ کارت یک تصویر آیکون سه‌بعدی illustrated واقعی دارن (`images/domain-icon-{news,cyberspace,schools,people}.webp`، کلاس `.domain-icon.is-illustrated`) — دیگه SVG گرادیانی دستی نیست، همه از عکس واقعی که کاربر فرستاده استفاده می‌کنن. **دو کارت الان به صفحه‌ی واقعی می‌رن**: «اخبار رسمی» به `overview` (کامل پیاده‌سازی‌شده — جزئیات کامل توی بخش «بخش اخبار رسمی» پایین‌تر) و «کنشگری مجازی» به `posts` (فیلتر ساده‌ی کانال/دسته/زمان/جست‌وجو). بقیه (`schools`/`people`) هنوز به صفحه‌ی placeholder با متن «این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد» می‌رن. **در موبایل ۲ستونه‌ست** (نه تک‌ستونه — این جلسه عمداً به دو‌ستونه تغییر کرد، زیر ۹۰۰px).
 4. **متن توضیحی** (`.domain-caption`): یه پاراگراف کوتاه وسط‌چین (سه‌خطی) زیر ردیف کارت‌ها که چهار عرصه رو خلاصه توضیح می‌ده.
 5. **کاروسل مجلات** (`.mag-widget`، عنوانش «بسته‌های تحلیلی تولید شده»): کارت هلویی‌رنگ، کاروسل افقی جلد مجلات از دیتابیس (`#mag-carousel-home`)، دکمه‌ی «مشاهده‌ی همه» به `sec-reports`. ⚠️ **الان پر از داده‌ی تستیه** — عنوان‌های "d"/"r"/"ds" و دو مجله بدون جلد واقعی (فقط آیکون سند روی زمینه‌ی سفید) — این یه مشکل محتوایی/داده‌ایه، نه کد؛ کاربر باید از پنل مدیریت مجلات واقعی رو با عنوان و جلد درست آپلود کنه. چندبار به کاربر گفته شده، هنوز حل نشده.
 6. **«بخش‌های بسته تحلیل جریان»** (`.analysis-section`) — **کاملاً جدید این جلسه، قبلاً توی هیچ نسخه‌ای نبود**: یه بلوک ثابت (نه از دیتابیس) که ۱۰ بخش واقعی هر شماره‌ی بسته‌ی تحلیلی جریان رو معرفی می‌کنه (خط خبری، تحلیل اخبار روز، مهم‌ترین اخبار، نگاه جامعه‌شناسی سیاسی، اصل ماجرا، تحلیل سازمان‌ها، یادداشت طلاب، خارج از دید، نبض افکار، تحلیل اندیشگده‌ها). چیدمان: `.analysis-top` یه گرید دوستونه — تصویر (`images/analysis-illustration.webp`) سمت راست، عنوان+توضیح+گرید۱۰تایی سمت چپ (گرید ۱۰تایی داخل `.analysis-content` تو دَره، نه زیر کل ردیف). گرید ۱۰تایی: ۵ ستون × ۲ ردیف، کارت‌های کوچیک با آیکون خطی. توضیح دقیقاً دو خطیه. **در موبایل ترتیب DOM دست‌نخورده می‌مونه** (تصویر همیشه اول، بعد متن+گرید) — کاربر یه‌بار خواست عوض بشه، امتحان شد، خوشش نیومد، برگردوندیم؛ **دیگه این ترتیب رو توی موبایل عوض نکن مگه اینکه صریح دوباره خواسته بشه.**
@@ -43,6 +43,7 @@
    ```js
    loadChannels = async function(){ CHANNELS = []; };
    loadCategories = async function(){ CATEGORIES = []; };
+   loadRegions = async function(){ REGIONS = []; };   // اگه فیلترهای اخبار رسمی/منطقه رو تست می‌کنی حتماً پر کن، وگرنه چیپ منطقه خالی می‌مونه
    loadPosts = async function(){ POSTS_CACHE = []; };
    loadMagazines = async function(){ MAGAZINES = [ /* آرایه‌ی فیک اختیاری */ ]; };
    currentRole = 'app_admin';   // ⚠️ اسم متغیر currentRole‌ه، نه ROLE — با ROLE کار نمی‌کنه و applyRoleUI() چیزی نشون نمی‌ده
@@ -56,24 +57,28 @@
 ## معماری فعلی
 
 ```
-GitHub Actions (هر ۲ ساعت، cron — فقط از شاخه‌ی main اجرا می‌شه، نگاه کن به نکته‌ی عملیاتی پایین)
+GitHub Actions (کالکتورها هر ۲ ساعت cron، پاک‌سازی روزانه — فقط از شاخه‌ی main اجرا می‌شن، نگاه کن به نکته‌ی عملیاتی پایین)
     │
     ├── scripts/collect_eitaa.py     ── اسکرپ HTML صفحات عمومی eitaa.com (بدون نیاز به API)
-    └── scripts/collect_telegram.py  ── Telethon، polling دوره‌ای (نه listener زنده)
+    ├── scripts/collect_telegram.py  ── Telethon، polling دوره‌ای (نه listener زنده) + دانلود عکس/فیلم پست‌ها
+    ├── scripts/collect_rss.py       ── فید RSS سایت‌های خبری (platform='website')
+    └── scripts/cleanup_media.py     ── روزانه: رسانه‌ی پست‌های قدیمی‌تر از ۳ روز رو از Storage پاک می‌کنه
     │
     ▼
 Supabase (Postgres + PostgREST رایگان)
     │  دو نقش Postgres: app_admin / app_viewer
     │  ورود با پسورد مشترک از طریق تابع public.login() (pgcrypto برای هش، pgjwt برای توکن)
     │  RLS: بیننده فقط خواندن، مدیر خواندن/نوشتن
-    │  Storage: سه bucket — magazines (خصوصی)، magazine-covers (عمومی)
+    │  Storage: چهار bucket — magazines (خصوصی)، magazine-covers (عمومی)، post-media (عمومی، عکس/فیلم پست‌ها)
     ▼
 design/ita-monitoring-prototype.html  ── فرانت‌اند تک‌فایلی، مستقیم با fetch به PostgREST/Storage وصله
 ```
 
 هیچ بک‌اند سفارشی (FastAPI و مشابه) وجود نداره — فرانت‌اند مستقیم با Supabase حرف می‌زنه.
 
-**نکته‌ی مهم:** کالکتورهای GitHub Actions فقط از شاخه‌ی `main` اجرا می‌شن (رفتار پیش‌فرض GitHub)، ولی `main` قدیمیه/ریست‌شده. خودِ کالکتورها (`collect_eitaa.py`/`collect_telegram.py`) هنوز کار می‌کنن چون تغییری نکردن، ولی اگه یه‌روز خواستی این اسکریپت‌ها رو عوض کنی، باید یا `main` رو به‌روز کنی یا این محدودیت رو با کاربر در میون بذاری.
+**نکته‌ی مهم:** کالکتورها/جاب‌های GitHub Actions فقط از شاخه‌ی `main` اجرا می‌شن (رفتار پیش‌فرض GitHub)، پس هر بار که `scripts/*.py` یا `.github/workflows/*.yml` روی `claude/new-project-8ekywm` تغییر می‌کنه، باید همون تغییر با یه PR جدا به `main` هم sync بشه (یه branch از `origin/main` بساز، `origin/claude/new-project-8ekywm` رو داخلش merge کن، PR بزن به `main`) — وگرنه تغییر روی شاخه‌ی زنده می‌مونه ولی هیچ‌وقت واقعاً اجرا نمی‌شه.
+
+**نکته‌ی تجربه‌شده:** اولین اجرای `collect_telegram.py` بعد از هر بار خالی‌کردن جدول `posts` (یا اضافه‌شدن کانال جدید) کلی کندتر از اجرای عادیه، چون باید کل بک‌فیل (تا `MESSAGES_PER_CHANNEL_LIMIT=200` پیام قدیمی) رو بگیره و همزمان عکس/فیلم هر پیام رو هم دانلود کنه — یک‌بار همین باعث شد جاب توی سقف قبلی (۱۵ دقیقه) کنسل بشه و ۲ تا از ۳ کانال اصلاً پردازش نشن. `timeout-minutes` این ورک‌فلو الان **۴۰**ه (هم روی `claude/new-project-8ekywm` هم `main`) که برای یه بک‌فیل کامل کافیه؛ اجراهای بعدی (increment) خیلی سریع‌تر می‌شن.
 
 ## ساختار ریپو
 
@@ -83,12 +88,20 @@ db/migration_002_domains_magazines.sql     جدول domains + magazines، پلت
 db/migration_003_storage_grants.sql        grant های schema/table سطح storage به app_admin/app_viewer (بدون این، هر bucket جدید 403 می‌ده)
 db/migration_004_magazine_sort_delete.sql  ستون sort_order روی magazines
 db/migration_005_magazine_covers.sql       bucket عمومی magazine-covers + policy
+db/migration_006_news_sources.sql          ستون region (متنی، بعداً با migration_009 جایگزین شد) روی channels + title روی posts + ۱۰ منبع پیش‌فرض خبری (ایسنا/مهر/العربیه/بی‌بی‌سی فارسی)
+db/migration_007_news_membership.sql       سه ستون مستقل show_in_news/show_in_cyberspace/show_in_people روی channels — عضویت هر کانال در هر حوزه دیگه از type/platform حدس زده نمی‌شه
+db/migration_008_post_media.sql            ستون‌های media_storage_path/media_source_url/media_fetched_at روی posts + bucket عمومی post-media (دانلود واقعی عکس/فیلم)
+db/migration_009_dynamic_regions.sql       جدول regions (پویا، مثل categories) + channels.region_id — جایگزین ستون متنی region با CHECK ثابت (غیر idempotent، فقط یک‌بار اجرا شده)
 db/seed_telegram_channels.sql              ۴ کانال پیش‌فرض تلگرام
 scripts/collect_eitaa.py                   کالکتور ایتا
-scripts/collect_telegram.py                کالکتور تلگرام
+scripts/collect_telegram.py                کالکتور تلگرام (شامل دانلود عکس/فیلم)
+scripts/collect_rss.py                     کالکتور RSS سایت‌های خبری (platform=website)
+scripts/cleanup_media.py                   جاب روزانه‌ی پاک‌سازی رسانه‌ی قدیمی‌تر از ۳ روز از Storage
 scripts/telegram_session_to_string.py      ابزار یک‌بارمصرف محلی
 .github/workflows/collect-eitaa.yml
-.github/workflows/collect-telegram.yml
+.github/workflows/collect-telegram.yml     timeout-minutes: 40 (به‌خاطر بک‌فیل اولیه + دانلود رسانه، نگاه کن به «معماری فعلی»)
+.github/workflows/collect-rss.yml
+.github/workflows/cleanup-media.yml
 design/ita-monitoring-prototype.html       فرانت‌اند کامل (تک‌فایل HTML/CSS/JS)
 design/fonts/                              فونت IRANSansX (وریبل + Regular، وصل با @font-face)
 design/images/dashboard-hero.webp          تصویرسازی هرو داشبورد (پس‌زمینه‌ی شفاف)
@@ -101,8 +114,9 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 
 ## جدول‌های دیتابیس (خلاصه)
 
-- **channels**: id, platform (`eitaa`|`telegram`|`website`), username, title, type (`news_agency`|`person`), category_id, active
-- **posts**: id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link — یکتا روی (channel_id, platform_post_id)
+- **channels**: id, platform (`eitaa`|`telegram`|`website`), username, title, type (`news_agency`|`person`), category_id, **region_id** (FK به `regions`، nullable)، **show_in_news / show_in_cyberspace / show_in_people** (boolean، مستقل از هم — عضویت کانال در هر عرصه رو دیگه صریح این سه ستون تعیین می‌کنه نه type/platform)، active
+- **posts**: id, channel_id, platform, platform_post_id, text, **title** (فقط پست‌های RSS پر می‌شه)، media_type, **media_storage_path** (مسیر داخل bucket برای حذف بعدی)، **media_source_url** (لینک اصلی رسانه در مبدأ، فقط ایتا)، **media_fetched_at** (null یعنی رسانه پاک‌سازی شده یا اصلاً دانلود نشده)، posted_at, scraped_at, views, forwards, link — یکتا روی (channel_id, platform_post_id)؛ فیلد قدیمی `media_path` = لینک عمومی نمایش مستقیم فایل در bucket `post-media`
+- **regions**: id, name, created_at — منطقه‌ی جغرافیایی منبع خبری (پویا و قابل‌مدیریت از پنل، دقیقاً مثل categories؛ migration_009)
 - **categories**: id, name, color — دسته‌بندی موضوعی، محور جدا از حوزه‌ی رصد
 - **domains**: id, key, name, sort_order — فقط رفرنس/مستندسازی (migration_002)، فرانت‌اند مستقیم از روی `.domain-card`های هاردکد کار می‌کنه، نه از این جدول کوئری می‌گیره؛ اهمیت عملی نداره.
 - **magazines**: id, title, issue_no, publish_date, file_type (`pdf`|`images`), files (jsonb، مسیرهای bucket خصوصی magazines)، cover_url (لینک عمومی bucket magazine-covers یا null)، sort_order، uploaded_at
@@ -115,6 +129,16 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 - **بارگذاری**: فایل اصلی (PDF یا چند عکس) → bucket خصوصی `magazines`؛ جلد (اختیاری) → bucket عمومی `magazine-covers`.
 - **نمایش**: مودال تمام‌صفحه (`#magazine-viewer`) — PDF با iframe، عکس با `<img>` (راست‌کلیک/درگ غیرفعال، جلوگیری کامل از دانلود نیست، به کاربر گفته شده).
 - **مدیریت (فقط مدیر)**: حذف مجله (فایل Storage + ردیف دیتابیس با هم)، جابجایی ترتیب (`sort_order`).
+
+## بخش «اخبار رسمی» (کامل پیاده‌سازی شده — id داخلی کد `overview`)
+
+- **صفحه** (`sec-overview`): تب «مطالعه» فعال، تب «آنالیز» غیرفعال («به‌زودی»). سربرگ + دکمه‌ی نمایش فهرستی/چندستونه (`news-view-list-btn`/`news-view-grid-btn`) + فیلترها + `#news-feed` (کارت‌های خبر، `grid-view` پیش‌فرض ۳ ستونه با ردیف‌های هم‌ارتفاع، در موبایل ۲/۱ ستونه) + صفحه‌بندی (`#news-pagination`).
+- **عضویت کانال در این صفحه**: `newsChannels()` = `CHANNELS.filter(c => c.show_in_news)`. کاملاً مستقل از عضویت در «کنشگری مجازی» (`show_in_cyberspace`) — یک کانال می‌تونه هم‌زمان توی هر دو باشه یا هیچ‌کدوم. از پنل «مدیریت کانال‌ها» با سه چک‌باکس مستقل (اخبار رسمی/کنشگری مجازی/افراد و شخصیت‌ها، آرایه‌ی `CHAN_DOMAIN_FIELDS`) کنترل می‌شه.
+- **ردیف فیلترها** (`newsState = {region, time, sources, query, page, dateFrom, dateTo}`):
+  - **زمان** (`#news-time-seg`): دکمه‌های همه/امروز/دیروز/هفته گذشته + یک `<details id="news-daterange-details">` که **مستقیم داخل همون کادر segmented قرار داره** (نه چسبیده جدا) — کاربر صریح همین چیدمان رو خواسته، دیگه عوضش نکن. باز کردنش دو تا `<input type=date>` (از/تا) + دکمه‌ی پاک‌کردن بازه رو نشون می‌ده. ⚠️ چون دکمه‌ی «پاک‌کردن بازه» یه `<button>` واقعی داخل همین container با delegated-click‌ه، هندلر `#news-time-seg` حتماً باید `!b.dataset.t` رو گارد کنه و `querySelectorAll` رو به `> button` (فرزند مستقیم) محدود کنه، وگرنه کلیک روی پاک‌کردن به‌اشتباه به‌عنوان دکمه‌ی زمانی تشخیص داده می‌شه (باگ واقعی، قبلاً رخ داده و رفع شده).
+  - **منطقه** (`#news-region-row`، `renderNewsRegionChips()`): چیپ‌های منطقه از جدول `regions` ساخته می‌شن، پویا (نه هاردکد).
+  - **منابع** (`#news-source-details`/`#news-source-list`، `populateNewsSourceOptions()`): چندانتخابی (checkbox list در popover)، نه select تک‌انتخابی.
+- **منبع RSS** (`collect_rss.py`، `platform='website'`) هم مثل ایتا/تلگرام پست تولید می‌کنه؛ `posts.title` فقط برای این‌ها پر می‌شه (ایتا/تلگرام عنوان جدا ندارن).
 
 ## جزئیات مهم طراحی (برای هماهنگی سشن‌های بعدی)
 
@@ -133,7 +157,7 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 3. **اگه کاربر عکسی رو مستقیم توی چت paste کنه (نه پیوست `@`)**، اول با جست‌وجوی ترنسکریپت سشن (`.jsonl`، بلوک‌های base64 `image`) امتحان کن استخراجش کنی — این روش قبلاً جواب داده. فقط اگه واقعاً پیدا نشد، از کاربر بخواه به‌عنوان پیوست واقعی دوباره بفرسته.
 4. **رمزهای عبور/کلیدهای حساس هرگز نباید توی چت گفته بشن** — `ADMIN_PASSWORD`، `TG_SESSION`، `TG_API_HASH`، رمز دیتابیس Supabase و JWT secret همه GitHub Secrets‌ان، من هیچ‌کدومشون رو نمی‌دونم و نباید بخوام بدونم.
 5. **`SUPABASE_URL` و `SUPABASE_ANON_KEY` محرمانه نیستن** — هاردکد شدن توی فرانت‌اند، چون anon key عمومیه و RLS امنیتش رو تضمین می‌کنه.
-6. **کالکتورهای GitHub Actions فقط از `main` اجرا می‌شن** (که قدیمیه).
+6. **کالکتورها/جاب‌های GitHub Actions فقط از `main` اجرا می‌شن** — پس هر تغییر توی `scripts/*.py` یا `.github/workflows/*.yml` باید علاوه بر merge به `claude/new-project-8ekywm`، با یه PR جدا هم به `main` sync بشه (روش دقیق توی «معماری فعلی» بالاتر).
 7. کاربر با گیت/GitHub خیلی راحت نیست — هر مرحله دقیق و مرحله‌به‌مرحله توضیح داده بشه. برای دیباگ خطاهای Supabase/Storage: F12 → Network → کلیک روی درخواست قرمز → تب Response. نکته: DevTools کاربر گاهی پاسخ‌ها رو زود از حافظه پاک می‌کنه؛ بگو لاگ رو Clear کنه و یه‌بار امتحان کنه.
 8. کاربر اسکیل `ui-ux-pro-max` نصب کرده. پیشنهادهای رنگ/فونتِ خودکارش با هویت بصری این پروژه نمی‌خونه — فقط چک‌لیست‌های تخصصی‌ش (دسترس‌پذیری، تعامل، تایپوگرافی) رو استفاده کن.
 9. **Artifact محدودیت داره** برای این پروژه: فونت‌های relative path لود نمی‌شن و CSP جلوی فراخوانی Supabase رو می‌گیره. برای نسخه‌ی کاملاً واقعی، لینک GitHub Pages بده؛ برای پیش‌نمایش سریع بدون داده‌ی واقعی، از روش Playwright+موک بالا استفاده کن.
@@ -147,7 +171,7 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 - **«۵۶ مدرسه» عدد ثابت جعلیه** (کد و کامنتش رو بالاتر ببین) — با کارت غیرفعال «برنامه مدارس» در تناقضه؛ منتظر منبع داده‌ی واقعی مدارس.
 - **سه سیستم آیکون متفاوت روی صفحه‌ی نخست** (کارت‌های اصلی سه‌بعدی illustrated / تصویر «بسته تحلیل» گرادیانی‌تخت / گرید ۱۰تایی خطی تک‌رنگ) — فلگ‌شده، تصمیمی گرفته نشده.
 - **هم‌پوشانی اسمی احتمالی**: «بسته‌های تحلیلی تولید شده» (کاروسل، فایل واقعی برای دانلود) در برابر «بخش‌های بسته تحلیل جریان» (توضیح ثابت محتوای هر شماره) — از نظر مفهومی متفاوتن ولی اسمشون شبیهه؛ کاربر می‌دونه، هنوز تصمیم نگرفته.
-- **صفحات واقعی «اخبار رسمی»/«برنامه مدارس»/«افراد و مجموعه‌ها»** هنوز طراحی نشدن — فقط پیام placeholder دارن. منبع داده هم مشخص نیست؛ قبل از ساختن هر جدول/migration جدید حتماً از کاربر بپرس.
+- **صفحات واقعی «برنامه مدارس»/«افراد و مجموعه‌ها»** هنوز طراحی نشدن — فقط پیام placeholder دارن («اخبار رسمی» دیگه جزو این لیست نیست، کامل پیاده‌سازی شده — بخش مخصوصش رو بالاتر ببین). منبع داده هم مشخص نیست؛ قبل از ساختن هر جدول/migration جدید حتماً از کاربر بپرس.
 - **«کنشگری مجازی» احتمالاً به یه صفحه‌ی hub مستقل نیاز داره** (به‌جای پرش مستقیم به `posts`).
 - UI ویرایش نام دسته‌بندی‌های موضوعی (سیاسی/اجتماعی/...) هنوز ساخته نشده.
 - تحلیل هوش مصنوعی واقعی (n8n + Claude API) هنوز فقط UI نمونه‌ست.
