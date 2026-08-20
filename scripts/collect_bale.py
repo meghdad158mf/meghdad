@@ -213,7 +213,10 @@ def parse_bale_message(raw_text: str, channel_username: str) -> dict:
 
     body_parts = []
     if media_raw:
-        body_parts.append("<strong>انتشار توسط:</strong>\n" + clean_section(media_raw))
+        # lstrip: اگه فهرست رسانه‌ها با یه خط خالی شروع بشه (فرمت‌بندی خودِ
+        # پیام اصلی)، بین تیتر «انتشار توسط:» و اولین رسانه یه شکاف اضافه
+        # می‌مونه که لازم نیست
+        body_parts.append("<strong>انتشار توسط:</strong>\n" + clean_section(media_raw).lstrip("\n"))
     if level_raw:
         body_parts.append(clean_section(level_raw))
     if pattern_raw:

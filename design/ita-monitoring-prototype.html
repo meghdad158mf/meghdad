@@ -542,6 +542,10 @@
   .news-feed.grid-view .news-title{ font-size:13.5px; }
   .news-text{ font-size:13px; line-height:1.9; color: var(--text-dim); overflow:hidden; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; white-space:pre-wrap; }
   .news-feed.grid-view .news-text{ font-size:12px; -webkit-line-clamp:3; }
+  /* کارت‌های «ادعا یا شایعه» با تیتر «انتشار توسط:» شروع می‌شن — یه خط
+     برای همون تیتر + ۳ خط برای متن بعدش، یعنی جمعاً ۴ خط نمایش اولیه */
+  .news-text.claims-text,
+  .news-feed.grid-view .news-text.claims-text{ -webkit-line-clamp:4; }
   .news-text.expanded,
   .news-feed.grid-view .news-text.expanded{ -webkit-line-clamp:unset; }
   .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
@@ -1683,6 +1687,14 @@
 
   const NEWS_PAGE_SIZE = 12;
 
+  // پست‌های قدیمی‌تر کانال بله ممکنه بین «انتشار توسط:» و اولین رسانه یه
+  // خط خالی داشته باشن (از قبل توی posts.text ذخیره شده)؛ کالکتور جدید
+  // دیگه این خط رو تولید نمی‌کنه، ولی برای پست‌های از قبل ذخیره‌شده هم
+  // همینجا حذفش می‌کنیم تا نیازی به backfill دیتابیس نباشه.
+  function claimsTextDisplay(text){
+    return (text||'').replace(/(انتشار توسط:<\/strong>)\n+/, '$1\n');
+  }
+
   function renderNewsFeed(){
     const feed = document.getElementById('news-feed');
     const empty = document.getElementById('news-empty');
@@ -1718,7 +1730,7 @@
             <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
           </div>
           ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
-          <p class="news-text" id="news-text-${p.id}">${p.text||''}</p>
+          <p class="news-text${isClaims ? ' claims-text' : ''}" id="news-text-${p.id}">${claimsTextDisplay(p.text)}</p>
           <button class="news-more" onclick="toggleNewsText(${p.id})" id="news-more-${p.id}">
             نمایش بیشتر
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
