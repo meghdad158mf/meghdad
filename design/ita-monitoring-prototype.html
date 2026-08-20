@@ -951,16 +951,18 @@
       </button>
 
       <div class="news-page-tabs">
-        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">مطالعه</button>
+        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
+        <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
+        <button id="news-tab-claims" onclick="setNewsPageTab('claims')">ادعاها و شایعات</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
 
       <div id="news-study-panel">
         <div class="news-page-head">
           <div>
-            <h1 class="news-page-title">اخبار رسمی</h1>
-            <p class="news-page-sub">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
+            <h1 class="news-page-title" id="news-page-title-text">اخبار رسمی</h1>
+            <p class="news-page-sub" id="news-page-sub-text">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
           </div>
           <div class="news-view-toggle">
             <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
@@ -999,7 +1001,7 @@
                 </div>
               </details>
             </div>
-            <span class="news-filter-divider"></span>
+            <span class="news-filter-divider" id="news-filter-divider-1"></span>
             <div class="news-region-chips" id="news-region-row">
               <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
             </div>
@@ -1024,6 +1026,8 @@
         </div>
         <div class="news-filters">
           <div class="news-filter-row news-toolbar-row">
+            <div class="news-seg" id="newspaper-date-tabs" style="display:none;"></div>
+            <span class="news-filter-divider"></span>
             <details class="news-source-details" id="newspaper-source-details">
               <summary id="newspaper-source-summary">انتخاب روزنامه‌ها…</summary>
               <div class="news-source-list" id="newspaper-source-list"></div>
@@ -1506,10 +1510,32 @@
 
   function setNewsPageTab(tab){
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
+    document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
+    document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
-    document.getElementById('news-study-panel').style.display = tab==='study' ? '' : 'none';
+    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
+    // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
+    // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
+    // اساسش کانال‌های پیام‌رسان/وب‌سایت/بله رو برگردونه
+    const showStudy = tab==='study' || tab==='website' || tab==='claims';
+    document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
-    if(tab==='study') renderNewsFeed();
+    if(showStudy){
+      newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
+      newsState.page = 1;
+      // تب «ادعاها و شایعات» فقط یه منبع (کانال بله) داره — فیلتر منطقه و
+      // دراپ‌داون چندانتخابی رسانه‌ها بی‌معنیه، پس مخفی می‌شن
+      const isClaims = tab === 'claims';
+      document.getElementById('news-region-row').style.display = isClaims ? 'none' : '';
+      document.getElementById('news-source-details').style.display = isClaims ? 'none' : '';
+      document.getElementById('news-filter-divider-1').style.display = isClaims ? 'none' : '';
+      document.getElementById('news-page-title-text').textContent = isClaims ? 'ادعاها و شایعات' : 'اخبار رسمی';
+      document.getElementById('news-page-sub-text').textContent = isClaims
+        ? 'رصد و پایش ادعاها و شایعات منتشرشده در فضای مجازی'
+        : 'اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام';
+      populateNewsSourceOptions();
+      renderNewsFeed();
+    }
     if(tab==='newspapers') renderNewspapers();
   }
 
@@ -1528,8 +1554,9 @@
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
-  let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به آخرین تاریخ موجود — برای فیلتر بدون rebuild چک‌باکس‌ها
-  const newspaperState = { selected: [] };  // slug روزنامه‌های انتخاب‌شده؛ آرایه‌ی خالی یعنی همه نمایش داده بشن
+  let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
+  let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
+  const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1549,15 +1576,25 @@
     const r = REGIONS.find(x=>x.id===id);
     return r ? r.name : '';
   }
-  const NEWS_PLATFORM_LABEL = { website: 'وب‌سایت', telegram: 'تلگرام', eitaa: 'ایتا' };
+  const NEWS_PLATFORM_LABEL = { website: 'وب‌سایت', telegram: 'تلگرام', eitaa: 'ایتا', bale: 'بله' };
   const NEWS_PLATFORM_ICON = {
     website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 010 18 13 13 0 010-18z"/></svg>',
     telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13"/></svg>',
     eitaa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-3.4-.7L3 20l1-4.8A8.4 8.4 0 1121 11.5z"/></svg>',
+    bale: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-3.4-.7L3 20l1-4.8A8.4 8.4 0 1121 11.5z"/></svg>',
   };
-  const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '' };
+  const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '', platform: 'social' };
 
-  function newsChannels(){ return CHANNELS.filter(c=>c.show_in_news); }
+  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری RSS،
+  // 'claims' = کانال بله «ادعاها و شایعات»
+  function newsChannels(){
+    return CHANNELS.filter(c => {
+      if(!c.show_in_news) return false;
+      if(newsState.platform === 'website') return c.platform === 'website';
+      if(newsState.platform === 'claims') return c.platform === 'bale';
+      return c.platform !== 'website' && c.platform !== 'bale';
+    });
+  }
 
   function newsPosts(){
     const newsChanIds = new Set(newsChannels().map(c=>c.id));
@@ -1661,10 +1698,13 @@
     feed.innerHTML = list.map(p=>{
       const ch = chById(p.channel_id) || {};
       const topic = catNameOf(p.channel_id);
+      const isClaims = ch.platform === 'bale';
       const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
       const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
       const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
-      const thumbHtml = hasThumb
+      // کانال بله (تب «ادعاها و شایعات») هیچ‌وقت عکس نداره — به‌جای باکس
+      // خالی placeholder، کارت کاملاً متنی (تمام‌عرض) طراحی می‌شه
+      const thumbHtml = isClaims ? '' : hasThumb
         ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
         : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
       return `
@@ -1672,8 +1712,8 @@
         ${thumbHtml}
         <div class="news-body">
           <div class="news-head">
-            <span class="news-source">${ch.title||ch.username||'؟'}</span>
-            <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+            <span class="news-source">${isClaims ? 'ادعا یا شایعه' : (ch.title||ch.username||'؟')}</span>
+            ${isClaims ? '' : `<span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>`}
             ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
             <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
           </div>
@@ -1687,7 +1727,7 @@
             <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
             <div style="display:flex; gap:10px; align-items:center;">
               ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
-              ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+              ${(!isClaims && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
             </div>
           </div>
         </div>
@@ -1824,6 +1864,11 @@
     newsState.page = 1;
     renderNewsFeed();
   });
+  document.getElementById('newspaper-date-tabs').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.date) return;
+    newspaperState.date = b.dataset.date;
+    renderNewspapers();
+  });
 
   async function loadChannels(){
     const r = await api('/channels?select=*&order=added_at.desc');
@@ -1846,7 +1891,9 @@
     MAGAZINES = r.ok ? await r.json() : [];
   }
   async function loadNewspapers(){
-    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=80');
+    // limit=250: با نگه‌داری ۳ روزه (cleanup_media.py) و ~۵۴ روزنامه در روز،
+    // این عدد برای پوشش کامل هر ۳ روزی که هنوز پاک نشدن کافیه
+    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=250');
     NEWSPAPERS = r.ok ? await r.json() : [];
   }
 
@@ -2375,27 +2422,50 @@
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
   }
 
-  // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های آخرین تاریخ موجود در جدول
-  // (نه لزوماً «امروز» تقویمی — اگه کالکتور یه‌بار نتونه اجرا بشه، آخرین
-  // نسخه‌ی موفق رو نشون می‌ده به‌جای خالی موندن صفحه)
+  // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌ها برای یه تاریخ انتخاب‌شده.
+  // پیش‌فرض جدیدترین تاریخ موجوده (معمولاً امروز)، ولی چون cleanup_media.py
+  // فقط عکس‌های قدیمی‌تر از ۳ روز رو پاک می‌کنه، تا وقتی پاک نشدن، تاریخ‌های
+  // قبلی هم توی newspaper-date-tabs قابل‌انتخاب می‌مونن.
   function renderNewspapers(){
     const grid = document.getElementById('newspaper-grid');
     const empty = document.getElementById('newspapers-empty');
     const label = document.getElementById('newspapers-date-label');
     if(!grid) return;
     const withImage = NEWSPAPERS.filter(n => n.image_url);
-    empty.style.display = withImage.length ? 'none' : 'block';
-    if(!withImage.length){
+    NEWSPAPER_DATES = [...new Set(withImage.map(n => n.edition_date))].sort().reverse();
+    empty.style.display = NEWSPAPER_DATES.length ? 'none' : 'block';
+    if(!NEWSPAPER_DATES.length){
       grid.innerHTML = '';
       NEWSPAPER_TODAYS = [];
+      renderNewspaperDateTabs();
       populateNewspaperSourceOptions();
       return;
     }
-    const latestDate = withImage[0].edition_date;
-    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(latestDate).toLocaleDateString('fa-IR');
-    NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === latestDate);
+    if(!newspaperState.date || !NEWSPAPER_DATES.includes(newspaperState.date)) newspaperState.date = NEWSPAPER_DATES[0];
+    renderNewspaperDateTabs();
+    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(newspaperState.date).toLocaleDateString('fa-IR');
+    NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === newspaperState.date);
     populateNewspaperSourceOptions();
     renderNewspaperGrid();
+  }
+
+  function newspaperDateLabel(dateStr){
+    const today = new Date().toLocaleDateString('en-CA');
+    const diffDays = Math.round((new Date(today) - new Date(dateStr)) / 86400000);
+    if(diffDays === 0) return 'امروز';
+    if(diffDays === 1) return 'دیروز';
+    if(diffDays > 1) return toFaDigits(diffDays) + ' روز قبل';
+    return new Date(dateStr).toLocaleDateString('fa-IR'); // حالت غیرمنتظره (تاریخ در آینده)
+  }
+
+  function renderNewspaperDateTabs(){
+    const wrap = document.getElementById('newspaper-date-tabs');
+    if(!wrap) return;
+    if(NEWSPAPER_DATES.length <= 1){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    wrap.style.display = '';
+    wrap.innerHTML = NEWSPAPER_DATES.map(d =>
+      `<button class="${d === newspaperState.date ? 'active' : ''}" data-date="${d}">${newspaperDateLabel(d)}</button>`
+    ).join('');
   }
 
   // فقط خودِ گرید رو بازمی‌سازه (نه چک‌باکس‌های فیلتر) — تا با تغییر انتخاب
