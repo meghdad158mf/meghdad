@@ -473,10 +473,14 @@
   .news-seg button{ border:none; background:none; color: rgba(255,255,255,0.65); font-size:12px; font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-family:inherit; }
   .news-seg button.active{ background: var(--accent); color: var(--primary); }
 
+  .news-toolbar-row{ row-gap:12px; }
+  .news-filter-divider{ width:1px; align-self:stretch; background: rgba(255,255,255,0.12); flex-shrink:0; }
+  .news-region-chips{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
   .news-region-chip{ font-size:11.5px; font-weight:600; padding:8px 15px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); cursor:pointer; }
   .news-region-chip.active{ background: rgba(142,163,184,0.28); border-color: rgba(142,163,184,0.5); color:#fff; }
 
-  .news-source-select{ background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#fff; padding:9px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; cursor:pointer; }
+  .news-source-select{ background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.14); color:#fff; padding:9px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; cursor:pointer; margin-inline-start:auto; }
+  @media (max-width:760px){ .news-filter-divider{ display:none; } .news-source-select{ margin-inline-start:0; width:100%; } }
   .news-source-select option{ color: var(--text); }
 
   .news-platform{ display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color: var(--text-faint); }
@@ -941,19 +945,17 @@
             <span class="sw"></span>
           </div>
         </div>
-        <div class="news-filter-row">
+        <div class="news-filter-row news-toolbar-row">
           <div class="news-seg" id="news-time-seg">
             <button class="active" data-t="all">همه</button>
             <button data-t="today">امروز</button>
             <button data-t="yesterday">دیروز</button>
             <button data-t="week">هفته گذشته</button>
           </div>
-        </div>
-        <div class="news-filter-row" id="news-region-row">
-          <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
-          <span class="news-region-chip" data-r="domestic">داخلی</span>
-          <span class="news-region-chip" data-r="regional">منطقه‌ای</span>
-          <span class="news-region-chip" data-r="international">بین‌المللی</span>
+          <span class="news-filter-divider"></span>
+          <div class="news-region-chips" id="news-region-row">
+            <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
+          </div>
           <select class="news-source-select" id="news-source-select">
             <option value="">انتخاب یک رسانه‌ی مشخص…</option>
           </select>
@@ -1157,9 +1159,6 @@
               </select>
               <select id="new-chan-region">
                 <option value="">بدون حوزه‌ی جغرافیایی</option>
-                <option value="domestic">داخلی</option>
-                <option value="regional">منطقه‌ای</option>
-                <option value="international">بین‌المللی</option>
               </select>
               <select id="new-chan-cat"></select>
               <details class="chan-domains-details">
@@ -1181,6 +1180,14 @@
               <button class="btn primary" id="add-cat-btn">افزودن دسته</button>
             </div>
             <div class="cat-grid" id="cat-grid"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">مناطق جغرافیایی</span></div>
+            <div class="add-row">
+              <input type="text" id="new-region-name" placeholder="نام منطقه‌ی جدید" />
+              <button class="btn primary" id="add-region-btn">افزودن منطقه</button>
+            </div>
+            <div class="cat-grid" id="region-grid"></div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -1440,6 +1447,7 @@
   // ---- real data state ----
   let CHANNELS = [];    // {id, platform, username, title, type, category_id, active}
   let CATEGORIES = [];  // {id, name, color}
+  let REGIONS = [];     // {id, name}
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
 
@@ -1457,7 +1465,10 @@
   }
 
   // ---- اخبار رسمی — بخش مطالعه (فاز ۱) ----
-  const NEWS_REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+  function regionNameOf(id){
+    const r = REGIONS.find(x=>x.id===id);
+    return r ? r.name : '';
+  }
   const NEWS_PLATFORM_LABEL = { website: 'وب‌سایت', telegram: 'تلگرام', eitaa: 'ایتا' };
   const NEWS_PLATFORM_ICON = {
     website: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a13 13 0 010 18 13 13 0 010-18z"/></svg>',
@@ -1488,6 +1499,14 @@
     return d.toLocaleDateString('fa-IR');
   }
 
+  function renderNewsRegionChips(){
+    const row = document.getElementById('news-region-row');
+    if(!row) return;
+    row.innerHTML = '<span class="news-region-chip active" data-r="">همه رسانه‌ها</span>' +
+      REGIONS.map(r=>`<span class="news-region-chip" data-r="${r.id}">${r.name}</span>`).join('');
+    newsState.region = '';
+  }
+
   function populateNewsSourceOptions(){
     const sel = document.getElementById('news-source-select');
     if(!sel) return;
@@ -1501,7 +1520,7 @@
     const now = Date.now();
     return newsPosts().filter(p=>{
       const ch = chById(p.channel_id);
-      if(newsState.region && ch.region !== newsState.region) return false;
+      if(newsState.region && String(ch.region_id) !== newsState.region) return false;
       if(newsState.source && String(p.channel_id) !== newsState.source) return false;
       if(newsState.time !== 'all'){
         const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
@@ -1549,7 +1568,7 @@
           <div class="news-head">
             <span class="news-source">${ch.title||ch.username||'؟'}</span>
             <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
-            ${ch.region ? `<span class="news-region">${NEWS_REGION_LABEL[ch.region]}</span>` : ''}
+            ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
             <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
           </div>
           ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
@@ -1665,6 +1684,10 @@
     const r = await api('/categories?select=*&order=name.asc');
     CATEGORIES = r.ok ? await r.json() : [];
   }
+  async function loadRegions(){
+    const r = await api('/regions?select=*&order=id.asc');
+    REGIONS = r.ok ? await r.json() : [];
+  }
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
@@ -1698,7 +1721,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadMagazines()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -1708,6 +1731,9 @@
     populateExportFilters();
     refreshCatOptions();
     renderCatGrid();
+    refreshRegionOptions();
+    renderRegionGrid();
+    renderNewsRegionChips();
     renderChanList();
     renderMagazines();
     populateNewsSourceOptions();
@@ -1952,9 +1978,10 @@
 
   // ---- settings: categories & channels (real CRUD against Postgres) ----
   const catGridEl = document.getElementById('cat-grid');
+  const regionGridEl = document.getElementById('region-grid');
   const chanListEl = document.getElementById('chan-list');
   const newChanCatEl = document.getElementById('new-chan-cat');
-  const REGION_LABEL = { domestic: 'داخلی', regional: 'منطقه‌ای', international: 'بین‌المللی' };
+  const newChanRegionEl = document.getElementById('new-chan-region');
   const CHAN_DOMAIN_FIELDS = [
     { field: 'show_in_news', label: 'اخبار رسمی', onChange: () => renderNewsFeed() },
     { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => renderPosts() },
@@ -1969,6 +1996,29 @@
 
   function refreshCatOptions(){
     newChanCatEl.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+  }
+
+  function refreshRegionOptions(){
+    newChanRegionEl.innerHTML = '<option value="">بدون حوزه‌ی جغرافیایی</option>' +
+      REGIONS.map(r=>`<option value="${r.id}">${r.name}</option>`).join('');
+  }
+
+  function renderRegionGrid(){
+    regionGridEl.innerHTML = '';
+    REGIONS.forEach(r=>{
+      const count = CHANNELS.filter(ch=>ch.region_id===r.id).length;
+      const el=document.createElement('div'); el.className='cat-card';
+      el.innerHTML = `<span class="name">${r.name}</span><span class="cc-actions"><span class="count mono">${count}</span></span>`;
+      const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف منطقه'; del.setAttribute('aria-label','حذف منطقه‌ی '+r.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این منطقه حذف شود؟')) return;
+        await api('/regions?id=eq.'+r.id, {method:'DELETE'});
+        await loadRegions(); await loadChannels();
+        refreshRegionOptions(); renderRegionGrid(); renderNewsRegionChips(); renderChanList(); renderNewsFeed();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      regionGridEl.appendChild(el);
+    });
   }
 
   function renderCatGrid(){
@@ -2008,7 +2058,7 @@
       const handleSpan=document.createElement('span'); handleSpan.className='chan mono';
       const platformLabel = ch.platform==='telegram' ? 'تلگرام' : ch.platform==='website' ? 'RSS' : 'ایتا';
       const handleText = ch.platform==='website' ? ch.username : '@'+ch.username;
-      handleSpan.textContent = handleText+' · '+platformLabel+(ch.region ? ' · '+REGION_LABEL[ch.region] : '');
+      handleSpan.textContent = handleText+' · '+platformLabel;
       row.appendChild(handleSpan);
       const catSel=document.createElement('select'); catSel.className='cat-select';
       catSel.innerHTML = CATEGORIES.map(c=>`<option value="${c.id}" ${c.id===ch.category_id?'selected':''}>${c.name}</option>`).join('');
@@ -2018,6 +2068,15 @@
         renderCatGrid(); renderChannelCards();
       });
       row.appendChild(catSel);
+      const regionSel=document.createElement('select'); regionSel.className='cat-select region-select'; regionSel.title='منطقه‌ی جغرافیایی';
+      regionSel.innerHTML = `<option value="">بدون منطقه</option>` + REGIONS.map(r=>`<option value="${r.id}" ${ch.region_id===r.id?'selected':''}>${r.name}</option>`).join('');
+      regionSel.addEventListener('change', async ()=>{
+        const val = regionSel.value ? Number(regionSel.value) : null;
+        await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({region_id: val})});
+        ch.region_id = val;
+        renderNewsFeed();
+      });
+      row.appendChild(regionSel);
       const domainsDetails=document.createElement('details'); domainsDetails.className='chan-row-domains-details';
       const domainsSummary=document.createElement('summary'); domainsSummary.textContent='بخش‌ها';
       domainsDetails.appendChild(domainsSummary);
@@ -2052,6 +2111,15 @@
     else alert('این دسته‌بندی از قبل وجود دارد یا خطایی رخ داد.');
   });
 
+  document.getElementById('add-region-btn').addEventListener('click', async ()=>{
+    const el = document.getElementById('new-region-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/regions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadRegions(); refreshRegionOptions(); renderRegionGrid(); renderNewsRegionChips(); renderChanList(); }
+    else alert('این منطقه از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
   document.getElementById('add-chan-btn').addEventListener('click', async ()=>{
     const nameEl = document.getElementById('new-chan-name');
     const handleEl = document.getElementById('new-chan-handle');
@@ -2066,7 +2134,7 @@
     if(!name || !handle) return;
     const catVal = newChanCatEl.value;
     const body = {
-      username: handle, title: name, platform: platformEl.value, region: regionEl.value || null, category_id: catVal ? Number(catVal) : null,
+      username: handle, title: name, platform: platformEl.value, region_id: regionEl.value ? Number(regionEl.value) : null, category_id: catVal ? Number(catVal) : null,
       show_in_news: showNewsEl.checked, show_in_cyberspace: showCyberspaceEl.checked, show_in_people: showPeopleEl.checked,
     };
     const r = await api('/channels', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
