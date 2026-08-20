@@ -280,7 +280,9 @@ def main() -> None:
         username = ch["username"]
         channel_id = ch["id"]
         try:
-            resp = requests.get(f"https://ble.ir/{username}", timeout=REQUEST_TIMEOUT, headers={"User-Agent": "Mozilla/5.0"})
+            # ble.ir/{username} صفحه‌ی «باز کردن در اپ»‌ه (بدون پیام‌ها)؛ نسخه‌ی
+            # وب قابل‌اسکرپ (با HTML شامل React Flight پیام‌ها) زیر مسیر s/ هست
+            resp = requests.get(f"https://ble.ir/s/{username}", timeout=REQUEST_TIMEOUT, headers={"User-Agent": "Mozilla/5.0"})
             resp.raise_for_status()
             # همون درسی که از mojibake سایت جار گرفتیم: هدر Content-Type این
             # سایت هم charset رو مشخص نمی‌کنه، پس صریح utf-8 دیکد می‌کنیم
