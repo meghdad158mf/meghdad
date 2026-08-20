@@ -725,11 +725,13 @@
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
-  .newspaper-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap:20px 16px; margin-top:8px; }
+  .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
+  @media (max-width:900px){ .newspaper-grid{ grid-template-columns: repeat(2,1fr); } }
+  @media (max-width:560px){ .newspaper-grid{ grid-template-columns: 1fr; } }
   .newspaper-card{ cursor:pointer; display:flex; flex-direction:column; gap:9px; }
-  .newspaper-cover{ width:100%; aspect-ratio: 3/4.2; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+  .newspaper-cover{ width:100%; aspect-ratio: 4/3; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
   .newspaper-card:hover .newspaper-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
-  .newspaper-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .newspaper-cover img{ width:100%; height:100%; object-fit:contain; display:block; }
   .newspaper-title{ font-size:12px; font-weight:600; color: rgba(255,255,255,0.82); text-align:center; line-height:1.5; }
   .mag-empty-hint{ font-size:12.5px; color: var(--text-faint); padding:6px 4px; }
 </style>
