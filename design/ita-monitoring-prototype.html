@@ -1024,6 +1024,8 @@
         </div>
         <div class="news-filters">
           <div class="news-filter-row news-toolbar-row">
+            <div class="news-seg" id="newspaper-date-tabs" style="display:none;"></div>
+            <span class="news-filter-divider"></span>
             <details class="news-source-details" id="newspaper-source-details">
               <summary id="newspaper-source-summary">انتخاب روزنامه‌ها…</summary>
               <div class="news-source-list" id="newspaper-source-list"></div>
@@ -1528,8 +1530,9 @@
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
-  let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به آخرین تاریخ موجود — برای فیلتر بدون rebuild چک‌باکس‌ها
-  const newspaperState = { selected: [] };  // slug روزنامه‌های انتخاب‌شده؛ آرایه‌ی خالی یعنی همه نمایش داده بشن
+  let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
+  let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
+  const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1824,6 +1827,11 @@
     newsState.page = 1;
     renderNewsFeed();
   });
+  document.getElementById('newspaper-date-tabs').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.date) return;
+    newspaperState.date = b.dataset.date;
+    renderNewspapers();
+  });
 
   async function loadChannels(){
     const r = await api('/channels?select=*&order=added_at.desc');
@@ -1846,7 +1854,9 @@
     MAGAZINES = r.ok ? await r.json() : [];
   }
   async function loadNewspapers(){
-    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=80');
+    // limit=250: با نگه‌داری ۳ روزه (cleanup_media.py) و ~۵۴ روزنامه در روز،
+    // این عدد برای پوشش کامل هر ۳ روزی که هنوز پاک نشدن کافیه
+    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=250');
     NEWSPAPERS = r.ok ? await r.json() : [];
   }
 
@@ -2375,27 +2385,50 @@
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
   }
 
-  // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های آخرین تاریخ موجود در جدول
-  // (نه لزوماً «امروز» تقویمی — اگه کالکتور یه‌بار نتونه اجرا بشه، آخرین
-  // نسخه‌ی موفق رو نشون می‌ده به‌جای خالی موندن صفحه)
+  // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌ها برای یه تاریخ انتخاب‌شده.
+  // پیش‌فرض جدیدترین تاریخ موجوده (معمولاً امروز)، ولی چون cleanup_media.py
+  // فقط عکس‌های قدیمی‌تر از ۳ روز رو پاک می‌کنه، تا وقتی پاک نشدن، تاریخ‌های
+  // قبلی هم توی newspaper-date-tabs قابل‌انتخاب می‌مونن.
   function renderNewspapers(){
     const grid = document.getElementById('newspaper-grid');
     const empty = document.getElementById('newspapers-empty');
     const label = document.getElementById('newspapers-date-label');
     if(!grid) return;
     const withImage = NEWSPAPERS.filter(n => n.image_url);
-    empty.style.display = withImage.length ? 'none' : 'block';
-    if(!withImage.length){
+    NEWSPAPER_DATES = [...new Set(withImage.map(n => n.edition_date))].sort().reverse();
+    empty.style.display = NEWSPAPER_DATES.length ? 'none' : 'block';
+    if(!NEWSPAPER_DATES.length){
       grid.innerHTML = '';
       NEWSPAPER_TODAYS = [];
+      renderNewspaperDateTabs();
       populateNewspaperSourceOptions();
       return;
     }
-    const latestDate = withImage[0].edition_date;
-    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(latestDate).toLocaleDateString('fa-IR');
-    NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === latestDate);
+    if(!newspaperState.date || !NEWSPAPER_DATES.includes(newspaperState.date)) newspaperState.date = NEWSPAPER_DATES[0];
+    renderNewspaperDateTabs();
+    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(newspaperState.date).toLocaleDateString('fa-IR');
+    NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === newspaperState.date);
     populateNewspaperSourceOptions();
     renderNewspaperGrid();
+  }
+
+  function newspaperDateLabel(dateStr){
+    const today = new Date().toLocaleDateString('en-CA');
+    const diffDays = Math.round((new Date(today) - new Date(dateStr)) / 86400000);
+    if(diffDays === 0) return 'امروز';
+    if(diffDays === 1) return 'دیروز';
+    if(diffDays > 1) return toFaDigits(diffDays) + ' روز قبل';
+    return new Date(dateStr).toLocaleDateString('fa-IR'); // حالت غیرمنتظره (تاریخ در آینده)
+  }
+
+  function renderNewspaperDateTabs(){
+    const wrap = document.getElementById('newspaper-date-tabs');
+    if(!wrap) return;
+    if(NEWSPAPER_DATES.length <= 1){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    wrap.style.display = '';
+    wrap.innerHTML = NEWSPAPER_DATES.map(d =>
+      `<button class="${d === newspaperState.date ? 'active' : ''}" data-date="${d}">${newspaperDateLabel(d)}</button>`
+    ).join('');
   }
 
   // فقط خودِ گرید رو بازمی‌سازه (نه چک‌باکس‌های فیلتر) — تا با تغییر انتخاب
