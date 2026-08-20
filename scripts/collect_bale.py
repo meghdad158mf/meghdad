@@ -293,8 +293,19 @@ def main() -> None:
         channel_id = ch["id"]
         try:
             # ble.ir/{username} صفحه‌ی «باز کردن در اپ»‌ه (بدون پیام‌ها)؛ نسخه‌ی
-            # وب قابل‌اسکرپ (با HTML شامل React Flight پیام‌ها) زیر مسیر s/ هست
-            resp = requests.get(f"https://ble.ir/s/{username}", timeout=REQUEST_TIMEOUT, headers={"User-Agent": "Mozilla/5.0"})
+            # وب قابل‌اسکرپ (با HTML شامل React Flight پیام‌ها) زیر مسیر s/ هست.
+            # UA واقعی مرورگر: با UA مینیمال قبلی، سرور صفحه‌ای ۳ برابر بزرگ‌تر
+            # از چیزی که یه مرورگر واقعی می‌گیره برمی‌گردوند (احتمالاً چون
+            # UA ناقص رو bot/crawler تشخیص می‌ده و نسخه‌ی متفاوتی می‌فرسته)
+            headers = {
+                "User-Agent": (
+                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
+                    "(KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36"
+                ),
+                "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",
+                "Accept-Language": "fa-IR,fa;q=0.9,en-US;q=0.8,en;q=0.7",
+            }
+            resp = requests.get(f"https://ble.ir/s/{username}", timeout=REQUEST_TIMEOUT, headers=headers)
             resp.raise_for_status()
             # همون درسی که از mojibake سایت جار گرفتیم: هدر Content-Type این
             # سایت هم charset رو مشخص نمی‌کنه، پس صریح utf-8 دیکد می‌کنیم
@@ -307,6 +318,11 @@ def main() -> None:
                 f"    [i] status={resp.status_code} len={len(html)} "
                 f"flight_chunks={flight_chunks} sample={html[:200]!r}"
             )
+            stream_dbg = build_flight_stream(html)
+            idxs = [m.start() for m in re.finditer(r'"messages"', stream_dbg)]
+            print(f"    [i] stream_len={len(stream_dbg)} messages_key_hits={len(idxs)}")
+            for idx in idxs[:5]:
+                print(f"    [i] ...{stream_dbg[max(0, idx - 30):idx + 250]!r}...")
             messages = extract_bale_messages(html, username)
             rows = [
                 {
