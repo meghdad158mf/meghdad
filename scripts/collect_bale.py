@@ -321,28 +321,36 @@ def main() -> None:
             stream_dbg = build_flight_stream(html)
             idxs = [m.start() for m in re.finditer(r'"messages"', stream_dbg)]
             print(f"    [i] stream_len={len(stream_dbg)} messages_key_hits={len(idxs)}")
-            for idx in idxs[:5]:
-                print(f"    [i] ...{stream_dbg[max(0, idx - 30):idx + 250]!r}...")
-            rows_dbg = parse_flight_rows(stream_dbg)
-            text_ids = sorted((rid for rid, (kind, _) in rows_dbg.items() if kind == "text"), key=lambda k: (len(k), k))
-            print(f"    [i] total_rows={len(rows_dbg)} text_row_ids={text_ids}")
-            for rid, (kind, payload) in rows_dbg.items():
-                if kind != "raw" or '"messages"' not in payload:
-                    continue
-                try:
-                    obj = json.loads(payload)
-                except Exception as e:
-                    print(f"    [i] row {rid} (raw,len={len(payload)}) json.loads FAILED: {e}")
-                    continue
-                found = find_messages(obj)
-                print(f"    [i] row {rid} json.loads OK, find_messages -> {len(found) if found else 0} items")
-                if found:
-                    for fm in found[:4]:
-                        tref = (fm.get("message") or {}).get("textMessage", {}).get("text")
-                        resolved = None
-                        if isinstance(tref, str) and tref.startswith("$"):
-                            resolved = rows_dbg.get(tref[1:])
-                        print(f"    [i]   rid={fm.get('rid')} text_ref={tref!r} resolved={'FOUND len=' + str(len(resolved[1])) if resolved else 'MISSING'}")
+            # لاگ تشخیصی: چون دفعه‌ی قبل total_rows=14 text_row_ids=[] بود (یعنی
+            # parse_flight_rows قبل از رسیدن به ردیف messages/متن‌ها متوقف شده
+            # بود)، این نسخه دقیقاً نشون می‌ده parse در کدوم موقعیت break می‌کنه
+            i_dbg, n_dbg = 0, len(stream_dbg)
+            order_dbg = []
+            while i_dbg < n_dbg:
+                m_dbg = ROW_ID_RE.match(stream_dbg, i_dbg)
+                if not m_dbg:
+                    print(f"    [i] BREAK(no id match) at i={i_dbg} ctx={stream_dbg[max(0, i_dbg - 40):i_dbg + 120]!r}")
+                    break
+                rid_dbg = m_dbg.group(1)
+                i2 = m_dbg.end()
+                if i2 < n_dbg and stream_dbg[i2] == "T":
+                    tm_dbg = re.match(r"T([0-9a-fA-F]+),", stream_dbg[i2:])
+                    if not tm_dbg:
+                        print(f"    [i] BREAK(bad T header) rid={rid_dbg} i={i2} ctx={stream_dbg[i2:i2 + 60]!r}")
+                        break
+                    hex_len_dbg = int(tm_dbg.group(1), 16)
+                    i3 = i2 + tm_dbg.end()
+                    text_bytes_dbg = stream_dbg[i3:].encode("utf-8")[:hex_len_dbg]
+                    text_dbg = text_bytes_dbg.decode("utf-8", errors="replace")
+                    order_dbg.append((rid_dbg, "text", len(text_dbg)))
+                    i_dbg = i3 + len(text_dbg)
+                else:
+                    nl_dbg = stream_dbg.find("\n", i2)
+                    if nl_dbg == -1:
+                        nl_dbg = n_dbg
+                    order_dbg.append((rid_dbg, "raw", nl_dbg - i2))
+                    i_dbg = nl_dbg + 1
+            print(f"    [i] parsed {len(order_dbg)} rows before stop (of stream_len={n_dbg}, final i={i_dbg}): {order_dbg}")
             messages = extract_bale_messages(html, username)
             rows = [
                 {
