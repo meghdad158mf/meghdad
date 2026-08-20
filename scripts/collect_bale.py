@@ -49,7 +49,13 @@ ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 REQUEST_TIMEOUT = 20
 
 PUSH_RE = re.compile(r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)')
-ROW_ID_RE = re.compile(r'([0-9a-zA-Z]+):')
+# با `*` نه `+`: صفحه‌ی واقعی خط‌های hint بدون شناسه هم داره، مثل
+# `:HL["/_next/static/css/...","style",...]` — این‌ها راهنمای preload
+# منابعن، نه ردیف پیام؛ اگه با `+` فقط شناسه‌ی غیرخالی قبول کنیم، parse
+# دقیقاً همین‌جا با «هیچ match نشد» بی‌صدا متوقف می‌شه و هیچ‌وقت به ردیف‌های
+# بعدی (شامل messages و متن پیام‌ها) نمی‌رسه — دقیقاً همون باگی که باعث
+# می‌شد کالکتور همیشه ۰ پست ذخیره کنه با اینکه هیچ خطایی هم نمی‌داد
+ROW_ID_RE = re.compile(r'([0-9a-zA-Z]*):')
 # فقط *بولد*هایی که حداکثر یک خط جدید داخلشونه رو تبدیل می‌کنیم (مثل تیتر
 # «موضوع:» + متن زیرش) — نه بولدهایی که از یک پاراگراف کامل رد می‌شن؛ چون
 # این کانال گاهی ستاره‌های تنها/جفت‌نشده وسط متن داره (اشتباه تایپی ادمین)
@@ -310,47 +316,6 @@ def main() -> None:
             # همون درسی که از mojibake سایت جار گرفتیم: هدر Content-Type این
             # سایت هم charset رو مشخص نمی‌کنه، پس صریح utf-8 دیکد می‌کنیم
             html = resp.content.decode("utf-8", errors="replace")
-            # لاگ تشخیصی موقت: چون نمی‌تونیم از این محیط به ble.ir دسترسی
-            # مستقیم داشته باشیم، این خط دقیقاً نشون می‌ده production چی
-            # واقعاً از سرور می‌گیره (صفحه‌ی چالش امنیتی؟ صفحه‌ی خالی؟...)
-            flight_chunks = len(PUSH_RE.findall(html))
-            print(
-                f"    [i] status={resp.status_code} len={len(html)} "
-                f"flight_chunks={flight_chunks} sample={html[:200]!r}"
-            )
-            stream_dbg = build_flight_stream(html)
-            idxs = [m.start() for m in re.finditer(r'"messages"', stream_dbg)]
-            print(f"    [i] stream_len={len(stream_dbg)} messages_key_hits={len(idxs)}")
-            # لاگ تشخیصی: چون دفعه‌ی قبل total_rows=14 text_row_ids=[] بود (یعنی
-            # parse_flight_rows قبل از رسیدن به ردیف messages/متن‌ها متوقف شده
-            # بود)، این نسخه دقیقاً نشون می‌ده parse در کدوم موقعیت break می‌کنه
-            i_dbg, n_dbg = 0, len(stream_dbg)
-            order_dbg = []
-            while i_dbg < n_dbg:
-                m_dbg = ROW_ID_RE.match(stream_dbg, i_dbg)
-                if not m_dbg:
-                    print(f"    [i] BREAK(no id match) at i={i_dbg} ctx={stream_dbg[max(0, i_dbg - 40):i_dbg + 120]!r}")
-                    break
-                rid_dbg = m_dbg.group(1)
-                i2 = m_dbg.end()
-                if i2 < n_dbg and stream_dbg[i2] == "T":
-                    tm_dbg = re.match(r"T([0-9a-fA-F]+),", stream_dbg[i2:])
-                    if not tm_dbg:
-                        print(f"    [i] BREAK(bad T header) rid={rid_dbg} i={i2} ctx={stream_dbg[i2:i2 + 60]!r}")
-                        break
-                    hex_len_dbg = int(tm_dbg.group(1), 16)
-                    i3 = i2 + tm_dbg.end()
-                    text_bytes_dbg = stream_dbg[i3:].encode("utf-8")[:hex_len_dbg]
-                    text_dbg = text_bytes_dbg.decode("utf-8", errors="replace")
-                    order_dbg.append((rid_dbg, "text", len(text_dbg)))
-                    i_dbg = i3 + len(text_dbg)
-                else:
-                    nl_dbg = stream_dbg.find("\n", i2)
-                    if nl_dbg == -1:
-                        nl_dbg = n_dbg
-                    order_dbg.append((rid_dbg, "raw", nl_dbg - i2))
-                    i_dbg = nl_dbg + 1
-            print(f"    [i] parsed {len(order_dbg)} rows before stop (of stream_len={n_dbg}, final i={i_dbg}): {order_dbg}")
             messages = extract_bale_messages(html, username)
             rows = [
                 {
