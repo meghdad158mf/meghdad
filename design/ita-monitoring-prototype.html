@@ -951,7 +951,8 @@
       </button>
 
       <div class="news-page-tabs">
-        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">مطالعه</button>
+        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
+        <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
@@ -1508,10 +1509,20 @@
 
   function setNewsPageTab(tab){
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
+    document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
-    document.getElementById('news-study-panel').style.display = tab==='study' ? '' : 'none';
+    // «شبکه‌های اجتماعی» و «وب‌سایت‌ها» یه پنل مشترک (news-study-panel) رو با
+    // فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک می‌ذارن — فقط newsState.platform
+    // عوض می‌شه که newsChannels() بر اساسش کانال‌های پیام‌رسان یا وب‌سایت رو برگردونه
+    const showStudy = tab==='study' || tab==='website';
+    document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
-    if(tab==='study') renderNewsFeed();
+    if(showStudy){
+      newsState.platform = tab==='website' ? 'website' : 'social';
+      newsState.page = 1;
+      populateNewsSourceOptions();
+      renderNewsFeed();
+    }
     if(tab==='newspapers') renderNewspapers();
   }
 
@@ -1558,9 +1569,12 @@
     telegram: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 3L2 11l6 2m14-10l-4 18-8-6m12-12L8 13"/></svg>',
     eitaa: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.4 8.4 0 01-8.9 8.4 8.6 8.6 0 01-3.4-.7L3 20l1-4.8A8.4 8.4 0 1121 11.5z"/></svg>',
   };
-  const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '' };
+  const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '', platform: 'social' };
 
-  function newsChannels(){ return CHANNELS.filter(c=>c.show_in_news); }
+  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری RSS
+  function newsChannels(){
+    return CHANNELS.filter(c => c.show_in_news && (newsState.platform === 'website' ? c.platform === 'website' : c.platform !== 'website'));
+  }
 
   function newsPosts(){
     const newsChanIds = new Set(newsChannels().map(c=>c.id));
