@@ -723,6 +723,14 @@
   .mag-tile-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
+
+  /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
+  .newspaper-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(150px,1fr)); gap:20px 16px; margin-top:8px; }
+  .newspaper-card{ cursor:pointer; display:flex; flex-direction:column; gap:9px; }
+  .newspaper-cover{ width:100%; aspect-ratio: 3/4.2; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); transition: transform .2s ease, box-shadow .2s ease; }
+  .newspaper-card:hover .newspaper-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
+  .newspaper-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .newspaper-title{ font-size:12px; font-weight:600; color: rgba(255,255,255,0.82); text-align:center; line-height:1.5; }
   .mag-empty-hint{ font-size:12.5px; color: var(--text-faint); padding:6px 4px; }
 </style>
 
@@ -941,66 +949,80 @@
       </button>
 
       <div class="news-page-tabs">
-        <button class="active">مطالعه</button>
+        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">مطالعه</button>
+        <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
 
-      <div class="news-page-head">
-        <div>
-          <h1 class="news-page-title">اخبار رسمی</h1>
-          <p class="news-page-sub">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
+      <div id="news-study-panel">
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">اخبار رسمی</h1>
+            <p class="news-page-sub">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
+          </div>
+          <div class="news-view-toggle">
+            <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            </button>
+            <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+            </button>
+          </div>
         </div>
-        <div class="news-view-toggle">
-          <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-          </button>
-          <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-          </button>
-        </div>
-      </div>
 
-      <div class="news-filters">
-        <div class="news-filter-row">
-          <div class="news-search-box" id="news-search-box">
-            <input type="text" id="news-search-input" placeholder="جستجو در عنوان و متن…" />
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-search-box" id="news-search-box">
+              <input type="text" id="news-search-input" placeholder="جستجو در عنوان و متن…" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+            <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+              جستجوی هوشمند
+              <span class="sw"></span>
+            </div>
           </div>
-          <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
-            جستجوی هوشمند
-            <span class="sw"></span>
-          </div>
-        </div>
-        <div class="news-filter-row news-toolbar-row">
-          <div class="news-seg" id="news-time-seg">
-            <button class="active" data-t="all">همه</button>
-            <button data-t="today">امروز</button>
-            <button data-t="yesterday">دیروز</button>
-            <button data-t="week">هفته گذشته</button>
-            <details class="news-daterange-details" id="news-daterange-details">
-              <summary id="news-daterange-summary">بازه زمانی</summary>
-              <div class="news-source-list news-daterange-popover">
-                <label class="news-daterange-field">از <input type="date" id="news-date-from" /></label>
-                <label class="news-daterange-field">تا <input type="date" id="news-date-to" /></label>
-                <button type="button" class="news-daterange-clear" id="news-daterange-clear">پاک‌کردن بازه</button>
-              </div>
+          <div class="news-filter-row news-toolbar-row">
+            <div class="news-seg" id="news-time-seg">
+              <button class="active" data-t="all">همه</button>
+              <button data-t="today">امروز</button>
+              <button data-t="yesterday">دیروز</button>
+              <button data-t="week">هفته گذشته</button>
+              <details class="news-daterange-details" id="news-daterange-details">
+                <summary id="news-daterange-summary">بازه زمانی</summary>
+                <div class="news-source-list news-daterange-popover">
+                  <label class="news-daterange-field">از <input type="date" id="news-date-from" /></label>
+                  <label class="news-daterange-field">تا <input type="date" id="news-date-to" /></label>
+                  <button type="button" class="news-daterange-clear" id="news-daterange-clear">پاک‌کردن بازه</button>
+                </div>
+              </details>
+            </div>
+            <span class="news-filter-divider"></span>
+            <div class="news-region-chips" id="news-region-row">
+              <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
+            </div>
+            <details class="news-source-details" id="news-source-details">
+              <summary id="news-source-summary">انتخاب رسانه‌ها…</summary>
+              <div class="news-source-list" id="news-source-list"></div>
             </details>
           </div>
-          <span class="news-filter-divider"></span>
-          <div class="news-region-chips" id="news-region-row">
-            <span class="news-region-chip active" data-r="">همه رسانه‌ها</span>
-          </div>
-          <details class="news-source-details" id="news-source-details">
-            <summary id="news-source-summary">انتخاب رسانه‌ها…</summary>
-            <div class="news-source-list" id="news-source-list"></div>
-          </details>
         </div>
+
+        <div class="news-feed grid-view" id="news-feed"></div>
+        <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
+        <div class="news-pagination" id="news-pagination"></div>
       </div>
 
-      <div class="news-feed grid-view" id="news-feed"></div>
-      <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
-      <div class="news-pagination" id="news-pagination"></div>
+      <div id="news-newspapers-panel" style="display:none;">
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">روزنامه‌ها</h1>
+            <p class="news-page-sub" id="newspapers-date-label">صفحه‌ی اول روزنامه‌های امروز</p>
+          </div>
+        </div>
+        <div class="newspaper-grid" id="newspaper-grid"></div>
+        <p class="news-empty" id="newspapers-empty" style="display:none;">هنوز روزنامه‌ای دریافت نشده.</p>
+      </div>
     </section>
 
     <section class="section" id="sec-schools">
@@ -1472,6 +1494,15 @@
     if(key === 'overview') renderNewsFeed();
   }
 
+  function setNewsPageTab(tab){
+    document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
+    document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
+    document.getElementById('news-study-panel').style.display = tab==='study' ? '' : 'none';
+    document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
+    if(tab==='study') renderNewsFeed();
+    if(tab==='newspapers') renderNewspapers();
+  }
+
   document.getElementById('analytics-seg').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b) return;
     document.querySelectorAll('#analytics-seg button').forEach(x=>x.classList.remove('active'));
@@ -1486,6 +1517,7 @@
   let REGIONS = [];     // {id, name}
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
+  let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1801,6 +1833,10 @@
     const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
     MAGAZINES = r.ok ? await r.json() : [];
   }
+  async function loadNewspapers(){
+    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=80');
+    NEWSPAPERS = r.ok ? await r.json() : [];
+  }
 
   function toFaDigits(n){
     const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
@@ -1826,7 +1862,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -1841,6 +1877,7 @@
     renderNewsRegionChips();
     renderChanList();
     renderMagazines();
+    renderNewspapers();
     populateNewsSourceOptions();
     renderNewsFeed();
   }
@@ -2324,6 +2361,31 @@
   function scrollMagCarousel(dir){
     const wrap = document.getElementById('mag-carousel-home');
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  }
+
+  // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های آخرین تاریخ موجود در جدول
+  // (نه لزوماً «امروز» تقویمی — اگه کالکتور یه‌بار نتونه اجرا بشه، آخرین
+  // نسخه‌ی موفق رو نشون می‌ده به‌جای خالی موندن صفحه)
+  function renderNewspapers(){
+    const grid = document.getElementById('newspaper-grid');
+    const empty = document.getElementById('newspapers-empty');
+    const label = document.getElementById('newspapers-date-label');
+    if(!grid) return;
+    const withImage = NEWSPAPERS.filter(n => n.image_url);
+    empty.style.display = withImage.length ? 'none' : 'block';
+    if(!withImage.length){ grid.innerHTML = ''; return; }
+    const latestDate = withImage[0].edition_date;
+    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(latestDate).toLocaleDateString('fa-IR');
+    const todays = withImage.filter(n => n.edition_date === latestDate);
+    grid.innerHTML = todays.map(n => `
+      <div class="newspaper-card">
+        <div class="newspaper-cover">
+          <img src="${escAttr(n.image_url)}" alt="${escAttr(n.title)}" loading="lazy" draggable="false" oncontextmenu="return false"
+               data-viewer-kind="image" data-viewer-src="${escAttr(n.image_url)}"${n.reader_url ? ` data-viewer-link="${escAttr(n.reader_url)}"` : ''} />
+        </div>
+        <div class="newspaper-title">${escAttr(n.title)}</div>
+      </div>`).join('');
+    wireMediaViewerClicks(grid);
   }
 
   // فایل‌ها در bucket خصوصی Storage هستن — با یک signed URL کوتاه‌عمر در یک سربرگ جدید باز می‌شن
