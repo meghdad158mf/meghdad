@@ -1144,7 +1144,7 @@
         <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
       </div>
       <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
-      <div class="posts-grid" id="posts-list"></div>
+      <div class="news-feed grid-view social-tab" id="posts-list"></div>
     </section>
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
@@ -1529,6 +1529,7 @@
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview') renderNewsFeed();
+    if(key === 'posts') renderPosts();
   }
 
   function setNewsPageTab(tab){
@@ -2105,23 +2106,73 @@
     return `<div class="pt-media">${mediaIcon}<b>رسانه</b><span>پیش‌نمایش موجود نیست</span></div>`;
   }
 
+  // ظاهر کارت‌های این صفحه دقیقاً همون کارت‌های تب «شبکه‌های اجتماعی» توی
+  // اخبار رسمی‌ه (همون کلاس‌های news-card/news-thumb/news-text و...) —
+  // فقط منبع داده و فیلترها فرق داره (filteredPosts به‌جای filteredNewsPosts)
   function renderPosts(){
     const filtered = filteredPosts();
-    postsList.innerHTML = '';
     postsEmpty.style.display = filtered.length ? 'none' : 'block';
-    filtered.slice(0,150).forEach(p=>{
-      const el=document.createElement('div'); el.className='post-tile';
-      const isMedia = p.media_type && p.media_type!=='none';
-      const mediaBlock = postMediaBlock(p);
-      const time = p.posted_at || p.scraped_at;
-      const timeLabel = time ? new Date(time).toLocaleString('fa-IR',{hour:'2-digit',minute:'2-digit'}) : '';
-      el.innerHTML = `<div class="pt-head">${chAvatar(p.channel_id)}<div class="pt-who"><b>${chName(p.channel_id)}</b></div></div>
-        ${mediaBlock}
-        <div class="pt-text${isMedia?' compact':''}">${(p.text||'').slice(0,500)}</div>
-        <div class="pt-foot"><span class="cat">${catNameOf(p.channel_id)}</span><span class="time mono">${timeLabel}</span></div>`;
-      wireMediaViewerClicks(el);
-      postsList.appendChild(el);
+    const list = filtered.slice(0,150);
+    postsList.innerHTML = list.map(p=>{
+      const ch = chById(p.channel_id) || {};
+      const topic = catNameOf(p.channel_id);
+      const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
+      const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
+      const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
+      const thumbHtml = hasThumb
+        ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
+        : ch.avatar_url
+          ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+          : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+      return `
+      <div class="news-card">
+        ${thumbHtml}
+        <div class="news-body">
+          <div class="news-head">
+            <span class="news-source">${ch.title||ch.username||'؟'}</span>
+            <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+            ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
+            <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
+          </div>
+          <p class="news-text" id="post-text-${p.id}">${p.text||''}</p>
+          <button class="news-more" onclick="togglePostText(${p.id})" id="post-more-${p.id}">
+            نمایش بیشتر
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="news-foot">
+            <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
+              ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    wireMediaViewerClicks(postsList);
+    updatePostMoreButtons(list);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updatePostMoreButtons(list));
+    }
+  }
+
+  function updatePostMoreButtons(list){
+    list.forEach(p=>{
+      const textEl = document.getElementById('post-text-'+p.id);
+      const moreBtn = document.getElementById('post-more-'+p.id);
+      if(!textEl || !moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
     });
+  }
+
+  function togglePostText(postId){
+    const t = document.getElementById('post-text-'+postId);
+    const b = document.getElementById('post-more-'+postId);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
   }
 
   filterChannelEl.addEventListener('change', renderPosts);
