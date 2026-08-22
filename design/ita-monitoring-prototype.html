@@ -507,7 +507,17 @@
     box-shadow: var(--shadow-hover); min-width:220px; max-height:260px; overflow-y:auto;
   }
   .news-source-list label{ display:flex; align-items:center; gap:7px; font-size:12.5px; color: var(--text-dim); cursor:pointer; white-space:nowrap; }
-  .news-source-list label input{ cursor:pointer; }
+  /* توی صفحه‌ی کنشگری مجازی، دکمه‌ی «انتخاب کانال‌ها…» با margin-inline-start:auto
+     کاملاً به لبه‌ی راست toolbar چسبیده — با inset-inline-end:0 پیش‌فرض (که لبه‌ی
+     چپ پاپ‌آپ رو ثابت نگه می‌داره و به سمت راست باز می‌شه)، پاپ‌آپ از لبه‌ی راست
+     صفحه بیرون می‌زد. اینجا برعکسش می‌کنیم: لبه‌ی راست ثابت می‌مونه، به چپ باز می‌شه */
+  #posts-source-list{ inset-inline-end:auto; inset-inline-start:0; }
+  /* وقتی این دراپ‌داون داخل .toolbar تو در توئه (مثل صفحه‌ی کنشگری مجازی)،
+     قانون عمومی «.toolbar input» (که برای اینپوت متنی جست‌وجوئه) رو چک‌باکس‌ها
+     هم به ارث می‌برن — flex:1/min-width بزرگ باعث می‌شه چک‌باکس عملاً نامرئی
+     بشه و چیدمان راست‌چین متن رو هم به‌هم بریزه؛ all:revert کاملاً برش می‌گردونه
+     به ظاهر پیش‌فرض checkbox مرورگر */
+  .news-source-list label input[type=checkbox]{ all: revert; cursor:pointer; flex:none; }
   @media (max-width:760px){ .news-filter-divider{ display:none; } .news-source-details{ margin-inline-start:0; width:100%; } .news-source-list{ inset-inline-end:auto; inset-inline-start:0; width:100%; } }
 
   .news-platform{ display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color: var(--text-faint); }
