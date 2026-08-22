@@ -610,13 +610,11 @@
   .school-report-full-img{ width:100%; height:auto; display:block; border-radius: var(--radius); box-shadow: var(--shadow); }
   .school-report-caption{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; padding:12px 4px 0; }
   .school-report-title{ font-size:13.5px; font-weight:700; color:#fff; }
-  .school-report-filename{ font-size:11px; color: rgba(255,255,255,0.5); word-break:break-all; text-align:right; direction:rtl; }
-  .school-report-date{ font-size:11px; color: rgba(255,255,255,0.4); margin-inline-start:auto; }
+  .school-report-date{ font-size:11px; color: rgba(255,255,255,0.4); }
   .school-report-file-card{ display:flex; align-items:center; gap:14px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:16px 18px; box-shadow: var(--shadow); cursor:pointer; }
   .school-report-file-icon{ width:34px; height:34px; color: var(--text-faint); flex-shrink:0; }
-  .school-report-file-info{ display:flex; flex-direction:column; gap:3px; min-width:0; }
   .school-report-file-card .school-report-title{ color: var(--text); }
-  .school-report-file-card .school-report-filename{ color: var(--text-faint); }
+  .school-report-file-card .school-report-date{ color: var(--text-faint); }
 
   .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
   .ai-note b{ color: var(--accent); }
@@ -2042,22 +2040,18 @@
       const el = document.createElement('div'); el.className = 'school-report-block';
       const isImage = (r.file_type || 'image') === 'image';
       const dateStr = r.uploaded_at ? new Date(r.uploaded_at).toLocaleDateString('fa-IR') : '';
-      const caption = `
-        <div class="school-report-caption">
-          ${r.title ? `<span class="school-report-title">${escAttr(r.title)}</span>` : ''}
-          ${r.file_name ? `<span class="school-report-filename">${escAttr(r.file_name)}</span>` : ''}
-          <span class="school-report-date">${dateStr}</span>
-        </div>`;
+      const titleText = escAttr(r.title || 'گزارش بدون عنوان');
       if(isImage){
-        el.innerHTML = `<img class="school-report-full-img" src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" />${caption}`;
+        el.innerHTML = `<img class="school-report-full-img" src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" />
+          <div class="school-report-caption">
+            <span class="school-report-title">${titleText}</span>
+            <span class="school-report-date">${dateStr}</span>
+          </div>`;
       }else{
         el.innerHTML = `
           <div class="school-report-file-card">
             <div class="school-report-file-icon">${ICONS.doc}</div>
-            <div class="school-report-file-info">
-              ${r.title ? `<span class="school-report-title">${escAttr(r.title)}</span>` : ''}
-              <span class="school-report-filename">${escAttr(r.file_name || '')}</span>
-            </div>
+            <span class="school-report-title">${titleText}</span>
             <span class="school-report-date">${dateStr}</span>
           </div>`;
         el.querySelector('.school-report-file-card').addEventListener('click', () => window.open(r.image_url, '_blank'));
