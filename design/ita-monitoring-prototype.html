@@ -650,6 +650,10 @@
   .chan-row-news input{ cursor:pointer; }
   #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
+  .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
+  .chan-avatar-btn img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .chan-avatar-btn svg{ width:15px; height:15px; }
+  .chan-avatar-btn input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
   .chan-row:last-child{ border-bottom:none; }
   .chan-row input.name-edit{ flex:1; min-width:90px; background:none; border:1px solid transparent; color: var(--text); font-size:12.5px; font-weight:600; padding:5px 6px; border-radius: var(--radius-control); font-family:inherit; }
   .chan-row input.name-edit:hover{ border-color: var(--border); }
@@ -1732,9 +1736,13 @@
       const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
       // کانال بله (تب «ادعاها و شایعات») هیچ‌وقت عکس نداره — به‌جای باکس
       // خالی placeholder، کارت کاملاً متنی (تمام‌عرض) طراحی می‌شه
+      // اگه خودِ پست عکس نداره، عکس پیش‌فرض همون کانال (اگه از پنل «مدیریت
+      // کانال‌ها» آپلود شده باشه) به‌جای باکس خالی placeholder نشون داده می‌شه
       const thumbHtml = isClaims ? '' : hasThumb
         ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
-        : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+        : ch.avatar_url
+          ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+          : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
       return `
       <div class="news-card">
         ${thumbHtml}
@@ -2272,6 +2280,26 @@
     chanListEl.innerHTML = '';
     CHANNELS.forEach(ch=>{
       const row=document.createElement('div'); row.className='chan-row';
+      const avatarBtn=document.createElement('label'); avatarBtn.className='chan-avatar-btn'; avatarBtn.title='عکس پیش‌فرض کانال (برای پست‌های بدون عکس)';
+      avatarBtn.innerHTML = ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" />` : ICONS.photo;
+      const avatarInput=document.createElement('input'); avatarInput.type='file'; avatarInput.accept='image/*';
+      avatarInput.addEventListener('change', async ()=>{
+        const file = avatarInput.files[0];
+        if(!file) return;
+        try{
+          const url = await uploadChannelAvatarFile(file);
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({avatar_url: url})});
+          ch.avatar_url = url;
+          avatarBtn.innerHTML = `<img src="${escAttr(url)}" alt="" />`;
+          avatarBtn.appendChild(avatarInput);
+          renderNewsFeed();
+          showToast('عکس پیش‌فرض کانال ذخیره شد');
+        }catch(e){
+          showToast('بارگذاری عکس ناموفق بود');
+        }
+      });
+      avatarBtn.appendChild(avatarInput);
+      row.appendChild(avatarBtn);
       const nameInput=document.createElement('input');
       nameInput.className='name-edit'; nameInput.value=ch.title||ch.username;
       let saveTimer;
@@ -2625,6 +2653,20 @@
     });
     if(!r.ok) throw new Error('cover upload failed');
     return SUPABASE_URL + '/storage/v1/object/public/magazine-covers/' + path;
+  }
+
+  // عکس پیش‌فرض هر کانال، برای پست‌هایی که خودشون عکس ندارن — دقیقاً
+  // همون الگوی bucket عمومی jpg جلد مجلات (uploadCoverFile بالا)
+  async function uploadChannelAvatarFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/channel-avatars/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('avatar upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/channel-avatars/' + path;
   }
 
   document.getElementById('mag-upload-btn').addEventListener('click', async () => {
