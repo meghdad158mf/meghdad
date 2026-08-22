@@ -517,6 +517,7 @@
   /* grid ردیفی — هر کارتِ یک ردیف تا کف ردیف کشیده می‌شه (align-items پیش‌فرض
      stretch‌ه) تا لبه‌ی پایین همه‌ی کارت‌های یک ردیف دقیقاً هم‌تراز باشه. */
   .news-feed.grid-view{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; max-width:100%; margin:0; }
+  .news-feed.grid-view.social-tab{ grid-template-columns: repeat(4,1fr); }
   @media (max-width:900px){ .news-feed.grid-view{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .news-feed.grid-view{ grid-template-columns: 1fr; } }
 
@@ -530,6 +531,10 @@
   .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
   .news-feed.grid-view .news-thumb{ width:100%; height:auto; aspect-ratio:4/3; max-height:170px; border-radius:0; }
+  /* تب «شبکه‌های اجتماعی»: کارت‌ها کمی کشیده‌تر از نظر عمودی، شبیه فید
+     موبایل، چون عکس‌های کانال‌های پیام‌رسان بیشتر عمودی/مربعی‌ان و با
+     برش ۴:۳ افقی بد دیده می‌شدن */
+  .news-feed.grid-view.social-tab .news-thumb{ aspect-ratio:2/3; max-height:340px; }
   .news-thumb.placeholder{ background: linear-gradient(155deg, var(--navy), #223142); color: rgba(255,255,255,0.35); }
   .news-thumb.placeholder svg{ width:34px; height:34px; }
 
@@ -546,6 +551,9 @@
      برای همون تیتر + ۳ خط برای متن بعدش، یعنی جمعاً ۴ خط نمایش اولیه */
   .news-text.claims-text,
   .news-feed.grid-view .news-text.claims-text{ -webkit-line-clamp:4; }
+  /* کارت‌های تب «شبکه‌های اجتماعی» چون عکسشون کشیده‌تره، فضای بیشتری هم
+     دارن — قسمت متن هم ۵ خط نشون بده تا نسبت به عکس خیلی کوچیک نباشه */
+  .news-feed.grid-view.social-tab .news-text{ -webkit-line-clamp:5; }
   .news-text.expanded,
   .news-feed.grid-view .news-text.expanded{ -webkit-line-clamp:unset; }
   .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
@@ -1018,7 +1026,7 @@
           </div>
         </div>
 
-        <div class="news-feed grid-view" id="news-feed"></div>
+        <div class="news-feed grid-view social-tab" id="news-feed"></div>
         <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
         <div class="news-pagination" id="news-pagination"></div>
       </div>
@@ -1524,6 +1532,7 @@
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
+    document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
     // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
     // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
     // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
