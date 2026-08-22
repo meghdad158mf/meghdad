@@ -1133,7 +1133,10 @@
       </div>
 
       <div class="toolbar">
-        <select id="posts-filter-channel"><option value="">همه‌ی کانال‌ها</option></select>
+        <details class="news-source-details" id="posts-source-details">
+          <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
+          <div class="news-source-list" id="posts-source-list"></div>
+        </details>
         <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
         <select id="posts-filter-time">
           <option value="">همه‌ی زمان‌ها</option>
@@ -1141,7 +1144,15 @@
           <option value="yesterday">دیروز</option>
           <option value="week">این هفته</option>
         </select>
-        <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+        <div class="news-search-box" id="posts-search-box">
+          <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+        <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+          جستجوی هوشمند
+          <span class="sw"></span>
+        </div>
       </div>
       <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
       <div class="news-feed grid-view social-tab" id="posts-list"></div>
@@ -2006,16 +2017,47 @@
   }
 
   // ---- posts page ----
-  const filterChannelEl = document.getElementById('posts-filter-channel');
   const filterCatEl = document.getElementById('posts-filter-cat');
   const filterTimeEl = document.getElementById('posts-filter-time');
   const searchEl = document.getElementById('posts-search');
   const postsList = document.getElementById('posts-list');
   const postsEmpty = document.getElementById('posts-empty');
+  // به‌جای یه select تک‌انتخابی، مثل «انتخاب رسانه‌ها…» تب شبکه‌های اجتماعی
+  // یه چندانتخابی چک‌باکسیه — بشه چندتا کانال رو هم‌زمان انتخاب کرد
+  let postsSelectedChannels = [];
+
+  function updatePostSourceSummary(){
+    const summary = document.getElementById('posts-source-summary');
+    if(!summary) return;
+    const n = postsSelectedChannels.length;
+    summary.textContent = n === 0 ? 'انتخاب کانال‌ها…' : toFaDigits(n) + ' کانال انتخاب‌شده';
+  }
+
+  function populatePostSourceOptions(){
+    const list = document.getElementById('posts-source-list');
+    if(!list) return;
+    const cyberChannels = CHANNELS.filter(c=>c.show_in_cyberspace);
+    const validIds = new Set(cyberChannels.map(c=>String(c.id)));
+    postsSelectedChannels = postsSelectedChannels.filter(id=>validIds.has(id));
+    list.innerHTML = cyberChannels.map(c=>{
+      const id = String(c.id);
+      const checked = postsSelectedChannels.includes(id) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${id}" ${checked}> ${escAttr(c.title||c.username)}</label>`;
+    }).join('');
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const id = chk.value;
+        if(chk.checked){ if(!postsSelectedChannels.includes(id)) postsSelectedChannels.push(id); }
+        else{ postsSelectedChannels = postsSelectedChannels.filter(x=>x!==id); }
+        updatePostSourceSummary();
+        renderPosts();
+      });
+    });
+    updatePostSourceSummary();
+  }
 
   function populatePostFilters(){
-    filterChannelEl.innerHTML = '<option value="">همه‌ی کانال‌ها</option>' +
-      CHANNELS.filter(c=>c.show_in_cyberspace).map(c=>`<option value="${c.id}">${c.title||c.username}</option>`).join('');
+    populatePostSourceOptions();
     filterCatEl.innerHTML = '<option value="">همه‌ی دسته‌بندی‌ها</option>' +
       CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   }
@@ -2031,14 +2073,13 @@
   }
 
   function filteredPosts(){
-    const chFilter = filterChannelEl.value;
     const catFilter = filterCatEl.value;
     const timeFilter = filterTimeEl.value;
     const q = searchEl.value.trim();
     return POSTS_CACHE.filter(p=>{
       const ownerCh = chById(p.channel_id);
       if(!ownerCh || !ownerCh.show_in_cyberspace) return false;
-      if(chFilter && String(p.channel_id) !== chFilter) return false;
+      if(postsSelectedChannels.length && !postsSelectedChannels.includes(String(p.channel_id))) return false;
       if(catFilter){
         const ch = chById(p.channel_id);
         if(!ch || String(ch.category_id) !== catFilter) return false;
@@ -2175,7 +2216,6 @@
     b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
   }
 
-  filterChannelEl.addEventListener('change', renderPosts);
   filterCatEl.addEventListener('change', renderPosts);
   filterTimeEl.addEventListener('change', renderPosts);
   searchEl.addEventListener('input', renderPosts);
