@@ -323,9 +323,9 @@
   .modal-card p + p{ margin-top:12px; }
 
   .media-viewer-overlay{ background:rgba(6,9,13,0.88); padding:20px; }
-  .media-viewer-card{ max-width:min(92vw,900px); max-height:90vh; width:auto; padding:0; background:transparent; box-shadow:none; overflow:visible; display:flex; align-items:center; justify-content:center; }
+  .media-viewer-card{ max-width:min(96vw,1400px); max-height:94vh; width:auto; padding:0; background:transparent; box-shadow:none; overflow:visible; display:flex; align-items:center; justify-content:center; }
   .media-viewer-card img,
-  .media-viewer-card video{ max-width:min(92vw,900px); max-height:80vh; width:auto; height:auto; min-width:min(92vw,360px); border-radius: var(--radius-card); display:block; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6); }
+  .media-viewer-card video{ max-width:min(96vw,1400px); max-height:88vh; width:auto; height:auto; min-width:min(92vw,360px); border-radius: var(--radius-card); display:block; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6); }
   .media-viewer-card .modal-close{ top:-14px; left:-14px; background: var(--surface); color: var(--text); }
   .media-viewer-link{ position:absolute; bottom:-42px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#fff; background:rgba(255,255,255,0.12); padding:7px 16px; border-radius:100px; text-decoration:none; white-space:nowrap; }
   .media-viewer-link svg{ width:13px; height:13px; }
@@ -604,14 +604,19 @@
   .words{ display:flex; flex-wrap:wrap; gap:8px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
 
-  /* schools — گالری اسکرین‌شات تحلیل‌های Power BI (خودِ کاربر توی Power BI تحلیل می‌کنه، فقط عکس نتیجه اینجا نمایش داده می‌شه) */
-  .school-report-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:20px; }
-  .school-report-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); overflow:hidden; box-shadow: var(--shadow); display:flex; flex-direction:column; }
-  .school-report-cover{ width:100%; aspect-ratio: 16/10; background: var(--surface-2); overflow:hidden; cursor:pointer; }
-  .school-report-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .school-report-body{ padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
-  .school-report-title{ font-size:12.5px; font-weight:600; color: var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .school-report-date{ font-size:10.5px; color: var(--text-faint); flex-shrink:0; }
+  /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
+  .school-report-list{ display:flex; flex-direction:column; gap:32px; margin-bottom:20px; }
+  .school-report-block{ position:relative; }
+  .school-report-full-img{ width:100%; height:auto; display:block; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .school-report-caption{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; padding:12px 4px 0; }
+  .school-report-title{ font-size:13.5px; font-weight:700; color:#fff; }
+  .school-report-filename{ font-size:11px; color: rgba(255,255,255,0.5); word-break:break-all; }
+  .school-report-date{ font-size:11px; color: rgba(255,255,255,0.4); margin-inline-start:auto; }
+  .school-report-file-card{ display:flex; align-items:center; gap:14px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:16px 18px; box-shadow: var(--shadow); cursor:pointer; }
+  .school-report-file-icon{ width:34px; height:34px; color: var(--text-faint); flex-shrink:0; }
+  .school-report-file-info{ display:flex; flex-direction:column; gap:3px; min-width:0; }
+  .school-report-file-card .school-report-title{ color: var(--text); }
+  .school-report-file-card .school-report-filename{ color: var(--text-faint); }
 
   .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
   .ai-note b{ color: var(--accent); }
@@ -1081,18 +1086,15 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">برنامه مدارس</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;margin-top:-6px;">تحلیل‌های مدارس علمیه در Power BI انجام می‌شود؛ نتیجه به‌صورت تصویر در این صفحه منتشر می‌شود.</p>
-
       <p class="school-reports-empty" id="school-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز گزارشی بارگذاری نشده.</p>
-      <div class="school-report-grid" id="school-report-grid"></div>
+      <div class="school-report-list" id="school-report-list"></div>
 
       <div class="panel" id="school-report-upload-panel" style="display:none;">
         <div class="panel-head"><span class="panel-pill">بارگذاری گزارش جدید</span></div>
         <div class="field"><label>عنوان (اختیاری)</label><input type="text" id="school-report-title" /></div>
         <div class="field">
-          <label>تصویر</label>
-          <input type="file" id="school-report-file" accept="image/*" />
+          <label>فایل (تصویر، PDF یا اکسل)</label>
+          <input type="file" id="school-report-file" accept="image/*,.pdf,.xlsx,.xls,.csv" />
         </div>
         <button class="btn primary" id="school-report-upload-btn" style="margin-top:8px">بارگذاری گزارش</button>
       </div>
@@ -1626,7 +1628,7 @@
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
   const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
-  let SCHOOL_REPORTS = []; // {id, title, image_url, media_storage_path, sort_order, uploaded_at} — اسکرین‌شات‌های تحلیل Power BI
+  let SCHOOL_REPORTS = []; // {id, title, image_url, media_storage_path, sort_order, uploaded_at, file_type, file_name} — گزارش‌های تحلیل Power BI (تصویر/PDF/اکسل)
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -2028,35 +2030,55 @@
     renderSchoolReports();
   }
 
-  // ---- schools page: گالری اسکرین‌شات‌های تحلیل Power BI ----
+  // ---- schools page: گزارش‌های تحلیل Power BI — هر عکس تمام‌عرض، پشت‌سرهم ----
   function renderSchoolReports(){
-    const grid = document.getElementById('school-report-grid');
+    const list = document.getElementById('school-report-list');
     const empty = document.getElementById('school-reports-empty');
-    if(!grid) return;
+    if(!list) return;
     const isAdmin = currentRole === 'app_admin';
     empty.style.display = SCHOOL_REPORTS.length ? 'none' : 'block';
-    grid.innerHTML = '';
+    list.innerHTML = '';
     SCHOOL_REPORTS.forEach(r => {
-      const el = document.createElement('div'); el.className = 'school-report-card';
-      el.innerHTML = `
-        <div class="school-report-cover">
-          <img src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(r.image_url)}" />
-        </div>
-        <div class="school-report-body">
-          <span class="school-report-title">${escAttr(r.title || 'گزارش بدون عنوان')}</span>
-          <span class="school-report-date">${r.uploaded_at ? new Date(r.uploaded_at).toLocaleDateString('fa-IR') : ''}</span>
+      const el = document.createElement('div'); el.className = 'school-report-block';
+      const isImage = (r.file_type || 'image') === 'image';
+      const dateStr = r.uploaded_at ? new Date(r.uploaded_at).toLocaleDateString('fa-IR') : '';
+      const caption = `
+        <div class="school-report-caption">
+          ${r.title ? `<span class="school-report-title">${escAttr(r.title)}</span>` : ''}
+          ${r.file_name ? `<span class="school-report-filename">${escAttr(r.file_name)}</span>` : ''}
+          <span class="school-report-date">${dateStr}</span>
         </div>`;
+      if(isImage){
+        el.innerHTML = `<img class="school-report-full-img" src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" />${caption}`;
+      }else{
+        el.innerHTML = `
+          <div class="school-report-file-card">
+            <div class="school-report-file-icon">${ICONS.doc}</div>
+            <div class="school-report-file-info">
+              ${r.title ? `<span class="school-report-title">${escAttr(r.title)}</span>` : ''}
+              <span class="school-report-filename">${escAttr(r.file_name || '')}</span>
+            </div>
+            <span class="school-report-date">${dateStr}</span>
+          </div>`;
+        el.querySelector('.school-report-file-card').addEventListener('click', () => window.open(r.image_url, '_blank'));
+      }
       if(isAdmin){
         const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
         del.title = 'حذف گزارش'; del.setAttribute('aria-label', 'حذف گزارش');
         del.style.cssText = 'position:absolute;top:8px;left:8px;background:rgba(20,27,36,0.6);color:#fff;';
         del.addEventListener('click', () => deleteSchoolReport(r));
-        el.querySelector('.school-report-cover').style.position = 'relative';
-        el.querySelector('.school-report-cover').appendChild(del);
+        (el.querySelector('.school-report-file-card') || el).style.position = 'relative';
+        (el.querySelector('.school-report-file-card') || el).appendChild(del);
       }
-      grid.appendChild(el);
+      list.appendChild(el);
     });
-    wireMediaViewerClicks(grid);
+  }
+
+  function detectSchoolReportFileType(file){
+    const name = (file.name || '').toLowerCase();
+    if(/\.pdf$/.test(name)) return 'pdf';
+    if(/\.(xlsx|xls|csv)$/.test(name)) return 'excel';
+    return 'image';
   }
 
   async function deleteSchoolReport(r){
@@ -2094,12 +2116,12 @@
     const titleEl = document.getElementById('school-report-title');
     const fileEl = document.getElementById('school-report-file');
     const file = fileEl.files[0];
-    if(!file){ showToast('یک تصویر انتخاب کنید'); return; }
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
     btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
     try{
       const { path, url } = await uploadSchoolReportFile(file);
       const nextOrder = SCHOOL_REPORTS.length ? Math.max(...SCHOOL_REPORTS.map(r=>r.sort_order||0)) + 1 : 0;
-      const body = { title: titleEl.value.trim() || null, image_url: url, media_storage_path: path, sort_order: nextOrder };
+      const body = { title: titleEl.value.trim() || null, image_url: url, media_storage_path: path, sort_order: nextOrder, file_type: detectSchoolReportFileType(file), file_name: file.name };
       const r = await api('/school_reports', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
       if(!r.ok) throw new Error('insert failed');
       titleEl.value=''; fileEl.value='';
