@@ -604,6 +604,15 @@
   .words{ display:flex; flex-wrap:wrap; gap:8px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
 
+  /* schools — گالری اسکرین‌شات تحلیل‌های Power BI (خودِ کاربر توی Power BI تحلیل می‌کنه، فقط عکس نتیجه اینجا نمایش داده می‌شه) */
+  .school-report-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(240px,1fr)); gap:16px; margin-bottom:20px; }
+  .school-report-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); overflow:hidden; box-shadow: var(--shadow); display:flex; flex-direction:column; }
+  .school-report-cover{ width:100%; aspect-ratio: 16/10; background: var(--surface-2); overflow:hidden; cursor:pointer; }
+  .school-report-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .school-report-body{ padding:12px 14px; display:flex; align-items:center; justify-content:space-between; gap:8px; }
+  .school-report-title{ font-size:12.5px; font-weight:600; color: var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .school-report-date{ font-size:10.5px; color: var(--text-faint); flex-shrink:0; }
+
   .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
   .ai-note b{ color: var(--accent); }
   .ai-post{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px; margin-bottom:10px; }
@@ -1073,7 +1082,20 @@
         بازگشت به صفحه نخست
       </button>
       <div class="panel-head"><span class="panel-pill">برنامه مدارس</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+      <p style="color:var(--text-dim);font-size:13.5px;margin-top:-6px;">تحلیل‌های مدارس علمیه در Power BI انجام می‌شود؛ نتیجه به‌صورت تصویر در این صفحه منتشر می‌شود.</p>
+
+      <p class="school-reports-empty" id="school-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز گزارشی بارگذاری نشده.</p>
+      <div class="school-report-grid" id="school-report-grid"></div>
+
+      <div class="panel" id="school-report-upload-panel" style="display:none;">
+        <div class="panel-head"><span class="panel-pill">بارگذاری گزارش جدید</span></div>
+        <div class="field"><label>عنوان (اختیاری)</label><input type="text" id="school-report-title" /></div>
+        <div class="field">
+          <label>تصویر</label>
+          <input type="file" id="school-report-file" accept="image/*" />
+        </div>
+        <button class="btn primary" id="school-report-upload-btn" style="margin-top:8px">بارگذاری گزارش</button>
+      </div>
     </section>
 
     <section class="section" id="sec-people">
@@ -1462,6 +1484,7 @@
     const isAdmin = currentRole === 'app_admin';
     adminLinks.style.display = isAdmin ? '' : 'none';
     document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('school-report-upload-panel').style.display = isAdmin ? '' : 'none';
     const activeSec = document.querySelector('.section.active');
     const activeKey = activeSec && activeSec.id.replace('sec-','');
     if(activeKey && ADMIN_ONLY_SECTIONS.includes(activeKey) && !isAdmin){
@@ -1603,6 +1626,7 @@
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
   const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
+  let SCHOOL_REPORTS = []; // {id, title, image_url, media_storage_path, sort_order, uploaded_at} — اسکرین‌شات‌های تحلیل Power BI
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1954,6 +1978,10 @@
     const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=250');
     NEWSPAPERS = r.ok ? await r.json() : [];
   }
+  async function loadSchoolReports(){
+    const r = await api('/school_reports?select=*&order=sort_order.asc,uploaded_at.desc');
+    SCHOOL_REPORTS = r.ok ? await r.json() : [];
+  }
 
   function toFaDigits(n){
     const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
@@ -1967,7 +1995,7 @@
     const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
     const personCount = CHANNELS.filter(c=>c.type==='person').length;
     const platformCount = new Set(CHANNELS.map(c=>c.platform)).size;
-    const schoolsCount = 56; // عدد ثابت موقت — هنوز جدول/داده‌ی واقعی مدارس وجود نداره، بعداً با داده‌ی واقعی جایگزین می‌شه
+    const schoolsCount = 126; // عدد واقعی از آخرین گزارش Power BI کاربر (مرداد ۱۴۰۴) — چون تحلیل مدارس الان توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته، منبع زنده‌ای براش نداریم؛ با هر گزارش جدید دستی به‌روز بشه
     const magazinesCount = MAGAZINES.length;
     wrap.innerHTML = `
       <div class="dash-hero-stat"><b>${toFaDigits(total)}</b><span>کانال پایش‌شونده</span></div>
@@ -1979,7 +2007,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers(), loadSchoolReports()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -1997,7 +2025,92 @@
     renderNewspapers();
     populateNewsSourceOptions();
     renderNewsFeed();
+    renderSchoolReports();
   }
+
+  // ---- schools page: گالری اسکرین‌شات‌های تحلیل Power BI ----
+  function renderSchoolReports(){
+    const grid = document.getElementById('school-report-grid');
+    const empty = document.getElementById('school-reports-empty');
+    if(!grid) return;
+    const isAdmin = currentRole === 'app_admin';
+    empty.style.display = SCHOOL_REPORTS.length ? 'none' : 'block';
+    grid.innerHTML = '';
+    SCHOOL_REPORTS.forEach(r => {
+      const el = document.createElement('div'); el.className = 'school-report-card';
+      el.innerHTML = `
+        <div class="school-report-cover">
+          <img src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(r.image_url)}" />
+        </div>
+        <div class="school-report-body">
+          <span class="school-report-title">${escAttr(r.title || 'گزارش بدون عنوان')}</span>
+          <span class="school-report-date">${r.uploaded_at ? new Date(r.uploaded_at).toLocaleDateString('fa-IR') : ''}</span>
+        </div>`;
+      if(isAdmin){
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف گزارش'; del.setAttribute('aria-label', 'حذف گزارش');
+        del.style.cssText = 'position:absolute;top:8px;left:8px;background:rgba(20,27,36,0.6);color:#fff;';
+        del.addEventListener('click', () => deleteSchoolReport(r));
+        el.querySelector('.school-report-cover').style.position = 'relative';
+        el.querySelector('.school-report-cover').appendChild(del);
+      }
+      grid.appendChild(el);
+    });
+    wireMediaViewerClicks(grid);
+  }
+
+  async function deleteSchoolReport(r){
+    if(!confirm('این گزارش حذف شود؟')) return;
+    try{
+      if(r.media_storage_path){
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/school-reports', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [r.media_storage_path] }),
+        });
+      }
+      await api('/school_reports?id=eq.'+r.id, {method:'DELETE'});
+      await loadSchoolReports(); renderSchoolReports();
+      showToast('گزارش حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadSchoolReportFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/school-reports/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('upload failed');
+    return { path, url: SUPABASE_URL + '/storage/v1/object/public/school-reports/' + path };
+  }
+
+  document.getElementById('school-report-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('school-report-upload-btn');
+    const titleEl = document.getElementById('school-report-title');
+    const fileEl = document.getElementById('school-report-file');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک تصویر انتخاب کنید'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      const { path, url } = await uploadSchoolReportFile(file);
+      const nextOrder = SCHOOL_REPORTS.length ? Math.max(...SCHOOL_REPORTS.map(r=>r.sort_order||0)) + 1 : 0;
+      const body = { title: titleEl.value.trim() || null, image_url: url, media_storage_path: path, sort_order: nextOrder };
+      const r = await api('/school_reports', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; fileEl.value='';
+      await loadSchoolReports(); renderSchoolReports();
+      showToast('گزارش بارگذاری شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری گزارش';
+    }
+  });
 
   // ---- channels & people page ----
   function activityOf(channelId){
