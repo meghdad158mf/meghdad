@@ -616,6 +616,31 @@
   .school-report-file-card .school-report-title{ color: var(--text); }
   .school-report-file-card .school-report-date{ color: var(--text-faint); }
 
+  /* people — «افراد و مجموعه‌ها» (فعالان/اساتید/آنالیز) */
+  .news-toolbar-row select{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
+  .person-badge{ font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:100px; color: var(--accent-strong); background: var(--accent-soft); white-space:nowrap; }
+  .people-table-wrap{ overflow-x:auto; margin-bottom:10px; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .people-table{ width:100%; border-collapse:collapse; background: var(--surface); min-width:640px; }
+  .people-table th{ text-align:right; font-size:11px; font-weight:700; color: var(--text-faint); padding:12px 14px; background: var(--surface-2); border-bottom:1px solid var(--border); white-space:nowrap; }
+  .people-table td{ padding:11px 14px; font-size:12.5px; color: var(--text); border-bottom:1px solid var(--border); white-space:nowrap; }
+  .people-table tr:last-child td{ border-bottom:none; }
+  .people-table tr:hover td{ background: var(--surface-2); }
+  .people-table td.wrap{ white-space:normal; }
+  .people-table td.actions{ width:1%; }
+  .people-analytics-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:16px; }
+  .people-analytics-grid .dash-panel{ min-width:0; }
+  #people-top-tabs{ overflow-x:auto; flex-wrap:nowrap; }
+  #people-top-tabs button{ flex-shrink:0; white-space:nowrap; }
+  @media (max-width:900px){ .people-analytics-grid{ grid-template-columns:1fr; } }
+  #people-analytics-position-bars, #people-analytics-specialty-bars{ overflow-x:auto; padding-bottom:4px; }
+  #people-analytics-position-bars .bar-col, #people-analytics-specialty-bars .bar-col{ flex:0 0 54px; }
+  /* چک‌باکس‌لیست چندانتخابی سمت/حوزه‌ی تخصصی وقتی داخل فرم (روی پس‌زمینه‌ی روشن پنل) باشه،
+     نه توار فیلتر تیره — رنگ‌های .news-source-details پیش‌فرض برای زمینه‌ی تیره طراحی شده */
+  .field .news-source-details{ margin-inline-start:0; width:100%; }
+  .field .news-source-details summary{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); width:100%; box-sizing:border-box; justify-content:space-between; }
+  .field .news-source-list{ inset-inline-end:0; color-scheme:light; }
+  .field .news-source-list label{ color: var(--text-dim); }
+
   .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
   .ai-note b{ color: var(--accent); }
   .ai-post{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px; margin-bottom:10px; }
@@ -1103,8 +1128,198 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">افراد و مجموعه‌ها</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+
+      <div class="news-page-tabs" id="people-top-tabs">
+        <button class="active" data-people-tab="professors">اساتید سیاسی‌اجتماعی</button>
+        <button data-people-tab="activists">فعالان سیاسی‌اجتماعی</button>
+        <button disabled>شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></button>
+        <button disabled>جامعه مخاطب<span class="news-soon">به‌زودی</span></button>
+        <button data-people-tab="analytics">آنالیز</button>
+      </div>
+
+      <!-- ===== فعالان سیاسی‌اجتماعی → افراد ===== -->
+      <div id="people-tab-activists" style="display:none;">
+        <div class="seg" style="margin-bottom:18px;">
+          <button class="active">افراد</button>
+          <button disabled>تشکل‌ها<span class="news-soon">به‌زودی</span></button>
+          <button disabled>مجموعه‌ها<span class="news-soon">به‌زودی</span></button>
+        </div>
+
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">افراد</h1>
+            <p class="news-page-sub" id="people-count-sub"></p>
+          </div>
+        </div>
+
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-search-box" id="people-search-box">
+              <input type="text" id="people-search-input" placeholder="جست‌وجو در نام…" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+          </div>
+          <div class="news-filter-row news-toolbar-row">
+            <details class="news-source-details" id="people-filter-position-details">
+              <summary id="people-filter-position-summary">همه‌ی سمت/تخصص/عرصه</summary>
+              <div class="news-source-list" id="people-filter-position-list"></div>
+            </details>
+            <select id="people-filter-importance">
+              <option value="">همه‌ی سطوح اهمیت</option>
+              <option value="برجسته">برجسته</option>
+              <option value="عادی">عادی</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="people-table-wrap">
+          <table class="people-table">
+            <thead><tr><th>نام</th><th>کد ملی</th><th>سمت/تخصص/عرصه</th><th>شهر</th><th>اهمیت</th><th>تشکل/مجموعه</th><th></th></tr></thead>
+            <tbody id="people-list"></tbody>
+          </table>
+        </div>
+        <p class="news-empty" id="people-empty" style="display:none;">فردی ثبت نشده.</p>
+        <div class="news-pagination" id="people-pagination"></div>
+
+        <div class="panel" id="people-admin-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">افزودن فرد</span></div>
+          <div class="form-grid">
+            <div class="field"><label>نام</label><input type="text" id="person-name" /></div>
+            <div class="field"><label>کد ملی</label><input type="text" id="person-national-id" /></div>
+            <div class="field"><label>شهر</label><input type="text" id="person-city" /></div>
+            <div class="field">
+              <label>سمت/تخصص/عرصه (چندتایی)</label>
+              <details class="news-source-details" id="person-position-details">
+                <summary id="person-position-summary">انتخاب سمت/تخصص/عرصه…</summary>
+                <div class="news-source-list" id="person-position-list"></div>
+              </details>
+            </div>
+            <div class="field"><label>اهمیت</label><select id="person-importance"><option value="عادی">عادی</option><option value="برجسته">برجسته</option></select></div>
+          </div>
+          <div class="field"><label>تشکل/مجموعه‌ی مرتبط (اختیاری)</label><input type="text" id="person-affiliation" /></div>
+          <div class="field"><label>یادداشت (اختیاری)</label><input type="text" id="person-notes" /></div>
+          <button class="btn primary" id="add-person-btn" style="margin-top:8px">افزودن فرد</button>
+        </div>
+
+        <div class="panel" id="people-bulk-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری گروهی از اکسل</span></div>
+          <p style="color:var(--text-dim);font-size:12.5px;line-height:1.9;">ترتیب ستون‌های اکسل باید دقیقاً این باشد (ردیف اول = سرستون، خودش نادیده گرفته می‌شود): <b>نام | کد ملی | شهر | سمت/تخصص/عرصه | اهمیت | تشکل/مجموعه | یادداشت</b>. چون این ستون چندانتخابیه، می‌تونید چند مقدار رو با ویرگول یا اسلش جدا از هم توی همون سلول بنویسید (مثلاً «طلبه، فعال دانشجویی»)؛ هر مقداری که با موارد زیر یکی نباشه نادیده گرفته می‌شه، و اگه هیچ‌کدوم مچ نشه به‌صورت خودکار «سایر» ثبت می‌شود.</p>
+          <input type="file" id="people-bulk-file" accept=".xlsx,.xls,.csv" />
+          <button class="btn primary" id="people-bulk-upload-btn" style="margin-top:8px">پردازش و بارگذاری</button>
+          <p id="people-bulk-status" style="font-size:12px;color:var(--text-dim);margin-top:8px;"></p>
+        </div>
+
+        <div class="panel" id="people-positions-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت سمت/تخصص/عرصه</span></div>
+          <div class="add-row">
+            <input type="text" id="new-position-name" placeholder="مورد جدید" />
+            <button class="btn primary" id="add-position-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="position-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== اساتید سیاسی‌اجتماعی ===== -->
+      <div id="people-tab-professors">
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">اساتید سیاسی‌اجتماعی</h1>
+            <p class="news-page-sub" id="professors-count-sub"></p>
+          </div>
+        </div>
+
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-search-box" id="professors-search-box">
+              <input type="text" id="professors-search-input" placeholder="جست‌وجو در نام…" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+          </div>
+          <div class="news-filter-row news-toolbar-row">
+            <details class="news-source-details" id="professors-filter-specialty-details">
+              <summary id="professors-filter-specialty-summary">همه‌ی حوزه‌های تخصصی</summary>
+              <div class="news-source-list" id="professors-filter-specialty-list"></div>
+            </details>
+            <select id="professors-filter-rank"><option value="">همه‌ی مرتبه‌ها</option></select>
+            <select id="professors-filter-importance">
+              <option value="">همه‌ی سطوح اهمیت</option>
+              <option value="برجسته">برجسته</option>
+              <option value="عادی">عادی</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="people-table-wrap">
+          <table class="people-table">
+            <thead><tr><th>نام</th><th>کد ملی</th><th>دانشگاه/حوزه</th><th>حوزه‌ی تخصصی</th><th>مرتبه</th><th>شهر</th><th>اهمیت</th><th></th></tr></thead>
+            <tbody id="professors-list"></tbody>
+          </table>
+        </div>
+        <p class="news-empty" id="professors-empty" style="display:none;">استادی ثبت نشده.</p>
+        <div class="news-pagination" id="professors-pagination"></div>
+
+        <div class="panel" id="professors-admin-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">افزودن استاد</span></div>
+          <div class="form-grid">
+            <div class="field"><label>نام</label><input type="text" id="professor-name" /></div>
+            <div class="field"><label>کد ملی</label><input type="text" id="professor-national-id" /></div>
+            <div class="field"><label>شهر</label><input type="text" id="professor-city" /></div>
+            <div class="field"><label>دانشگاه/حوزه‌ی محل تدریس</label><input type="text" id="professor-institution" /></div>
+            <div class="field">
+              <label>حوزه‌ی تخصصی (چندتایی)</label>
+              <details class="news-source-details" id="professor-specialty-details">
+                <summary id="professor-specialty-summary">انتخاب حوزه‌های تخصصی…</summary>
+                <div class="news-source-list" id="professor-specialty-list"></div>
+              </details>
+            </div>
+            <div class="field"><label>مرتبه‌ی علمی/حوزوی</label><select id="professor-rank"></select></div>
+            <div class="field"><label>اهمیت</label><select id="professor-importance"><option value="عادی">عادی</option><option value="برجسته">برجسته</option></select></div>
+          </div>
+          <div class="field"><label>یادداشت (اختیاری)</label><input type="text" id="professor-notes" /></div>
+          <button class="btn primary" id="add-professor-btn" style="margin-top:8px">افزودن استاد</button>
+        </div>
+
+        <div class="panel" id="professors-bulk-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری گروهی از اکسل</span></div>
+          <p style="color:var(--text-dim);font-size:12.5px;line-height:1.9;">ترتیب ستون‌های اکسل باید دقیقاً این باشد (ردیف اول = سرستون، خودش نادیده گرفته می‌شود): <b>نام | کد ملی | شهر | دانشگاه/حوزه | حوزه‌ی تخصصی | مرتبه | اهمیت | یادداشت</b>. چون حوزه‌ی تخصصی چندانتخابیه، می‌تونید چند مقدار رو با ویرگول یا اسلش جدا از هم توی همون سلول بنویسید. مقدار ستون «مرتبه» (تک‌مقداره) باید دقیقاً با یکی از مقادیر موجود یکی باشد؛ در غیر این صورت (یا اگه هیچ حوزه‌ی تخصصی مچ نشه) به‌صورت خودکار «سایر» ثبت می‌شود.</p>
+          <input type="file" id="professors-bulk-file" accept=".xlsx,.xls,.csv" />
+          <button class="btn primary" id="professors-bulk-upload-btn" style="margin-top:8px">پردازش و بارگذاری</button>
+          <p id="professors-bulk-status" style="font-size:12px;color:var(--text-dim);margin-top:8px;"></p>
+        </div>
+
+        <div class="panel" id="professors-lists-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت حوزه‌های تخصصی</span></div>
+          <div class="add-row">
+            <input type="text" id="new-specialty-name" placeholder="حوزه‌ی تخصصی جدید" />
+            <button class="btn primary" id="add-specialty-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="specialty-grid"></div>
+        </div>
+
+        <div class="panel" id="professors-ranks-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت مرتبه‌ها</span></div>
+          <div class="add-row">
+            <input type="text" id="new-rank-name" placeholder="مرتبه‌ی جدید" />
+            <button class="btn primary" id="add-rank-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="rank-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== آنالیز: آمار تجمیعی افراد و مجموعه‌ها ===== -->
+      <div id="people-tab-analytics" style="display:none;">
+        <div class="cards-row" id="people-analytics-stats"></div>
+        <div class="people-analytics-grid">
+          <div class="dash-panel">
+            <div class="panel-head"><span class="panel-pill">تفکیک فعالان بر اساس سمت</span></div>
+            <div class="bars" id="people-analytics-position-bars"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="panel-head"><span class="panel-pill">تفکیک اساتید بر اساس حوزه‌ی تخصصی</span></div>
+            <div class="bars" id="people-analytics-specialty-bars"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
@@ -1385,6 +1600,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- برای پردازش اکسل بارگذاری‌شده در بخش «افراد و مجموعه‌ها» (بارگذاری گروهی) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -1485,6 +1702,13 @@
     adminLinks.style.display = isAdmin ? '' : 'none';
     document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('school-report-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-admin-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-bulk-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-positions-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-admin-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-bulk-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-lists-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-ranks-panel').style.display = isAdmin ? '' : 'none';
     const activeSec = document.querySelector('.section.active');
     const activeKey = activeSec && activeSec.id.replace('sec-','');
     if(activeKey && ADMIN_ONLY_SECTIONS.includes(activeKey) && !isAdmin){
@@ -1627,6 +1851,16 @@
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
   const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
   let SCHOOL_REPORTS = []; // {id, title, image_url, media_storage_path, sort_order, uploaded_at, file_type, file_name} — گزارش‌های تحلیل Power BI (تصویر/PDF/اکسل)
+  let PEOPLE = [];            // {id, name, city, position_id, importance, affiliation, channel_id, notes}
+  let PERSON_POSITIONS = [];  // {id, name} — سمت/جایگاه، قابل‌مدیریت از پنل
+  const PEOPLE_PAGE_SIZE = 30;
+  const peopleState = { query: '', positions: [], importance: '', page: 1 };
+  const personFormPositions = []; // سمت‌های انتخاب‌شده در فرم «افزودن فرد»
+  let PROFESSORS = [];            // {id, name, city, institution, specialty_id, rank_id, importance, notes}
+  let PROFESSOR_SPECIALTIES = []; // {id, name} — حوزه/رشته‌ی تخصصی، قابل‌مدیریت از پنل
+  let PROFESSOR_RANKS = [];       // {id, name} — مرتبه‌ی علمی/حوزوی، قابل‌مدیریت از پنل
+  const professorsState = { query: '', specialties: [], rank: '', importance: '', page: 1 };
+  const professorFormSpecialties = []; // حوزه‌های تخصصی انتخاب‌شده در فرم «افزودن استاد»
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1982,6 +2216,33 @@
     const r = await api('/school_reports?select=*&order=sort_order.asc,uploaded_at.desc');
     SCHOOL_REPORTS = r.ok ? await r.json() : [];
   }
+  async function loadPeople(){
+    // people_positions(position_id) امبد می‌شه چون سمت چندانتخابیه (جدول واسط)
+    const r = await api('/people?select=*,people_positions(position_id)&order=name.asc&limit=5000');
+    PEOPLE = r.ok ? await r.json() : [];
+  }
+  async function loadPersonPositions(){
+    const r = await api('/person_positions?select=*&order=id.asc');
+    PERSON_POSITIONS = r.ok ? await r.json() : [];
+  }
+  function personPositionIds(p){ return (p.people_positions||[]).map(x=>String(x.position_id)); }
+  function personPositionNames(p){ return personPositionIds(p).map(id=>positionNameOf(Number(id))).join('، ') || '—'; }
+
+  async function loadProfessors(){
+    // professor_specialty_links(specialty_id) امبد می‌شه چون حوزه‌ی تخصصی چندانتخابیه
+    const r = await api('/professors?select=*,professor_specialty_links(specialty_id)&order=name.asc&limit=5000');
+    PROFESSORS = r.ok ? await r.json() : [];
+  }
+  function professorSpecialtyIds(p){ return (p.professor_specialty_links||[]).map(x=>String(x.specialty_id)); }
+  function professorSpecialtyNames(p){ return professorSpecialtyIds(p).map(id=>specialtyNameOf(Number(id))).join('، ') || '—'; }
+  async function loadProfessorSpecialties(){
+    const r = await api('/professor_specialties?select=*&order=id.asc');
+    PROFESSOR_SPECIALTIES = r.ok ? await r.json() : [];
+  }
+  async function loadProfessorRanks(){
+    const r = await api('/professor_ranks?select=*&order=id.asc');
+    PROFESSOR_RANKS = r.ok ? await r.json() : [];
+  }
 
   function toFaDigits(n){
     const fa = ['۰','۱','۲','۳','۴','۵','۶','۷','۸','۹'];
@@ -2007,7 +2268,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers(), loadSchoolReports()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -2026,6 +2287,9 @@
     populateNewsSourceOptions();
     renderNewsFeed();
     renderSchoolReports();
+    renderPeoplePage();
+    renderProfessorsPage();
+    renderPeopleAnalytics();
   }
 
   // ---- schools page: گزارش‌های تحلیل Power BI — هر عکس تمام‌عرض، پشت‌سرهم ----
@@ -2125,6 +2389,612 @@
       showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
     }finally{
       btn.disabled = false; btn.textContent = 'بارگذاری گزارش';
+    }
+  });
+
+  // ---- ابزار عمومی: چک‌باکس‌لیست چندانتخابی (سمت/حوزه‌ی تخصصی) ----
+  // items: آرایه‌ی {id,name} | selectedIds: آرایه‌ی رشته‌ای که این تابع خودش mutate می‌کنه
+  function wireMultiSelect(listElId, summaryElId, items, selectedIds, placeholderText, onChange){
+    const list = document.getElementById(listElId);
+    const summary = document.getElementById(summaryElId);
+    if(!list) return;
+    // آیتم‌هایی که دیگه وجود ندارن (حذف شدن) از انتخاب‌شده‌ها هم پاک بشن
+    const validIds = new Set(items.map(it=>String(it.id)));
+    for(let i=selectedIds.length-1; i>=0; i--){ if(!validIds.has(selectedIds[i])) selectedIds.splice(i,1); }
+    list.innerHTML = items.map(it=>{
+      const id = String(it.id);
+      const checked = selectedIds.includes(id) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${id}" ${checked}> ${escAttr(it.name)}</label>`;
+    }).join('');
+    function updateSummary(){
+      if(!summary) return;
+      const n = selectedIds.length;
+      summary.textContent = n === 0 ? placeholderText : toFaDigits(n) + ' مورد انتخاب‌شده';
+    }
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const id = chk.value;
+        if(chk.checked){ if(!selectedIds.includes(id)) selectedIds.push(id); }
+        else{ const idx = selectedIds.indexOf(id); if(idx>-1) selectedIds.splice(idx,1); }
+        updateSummary();
+        if(onChange) onChange();
+      });
+    });
+    updateSummary();
+  }
+
+  // ---- افراد و مجموعه‌ها: زیرشاخه‌ی «افراد» (فعالان) ----
+  function positionNameOf(id){
+    const p = PERSON_POSITIONS.find(x=>x.id===id);
+    return p ? p.name : '—';
+  }
+
+  function filteredPeople(){
+    const q = peopleState.query.trim().toLowerCase();
+    return PEOPLE.filter(p=>{
+      if(q && !(p.name||'').toLowerCase().includes(q)) return false;
+      if(peopleState.positions.length && !personPositionIds(p).some(id=>peopleState.positions.includes(id))) return false;
+      if(peopleState.importance && p.importance !== peopleState.importance) return false;
+      return true;
+    });
+  }
+
+  function renderPeopleList(){
+    const wrap = document.getElementById('people-list');
+    const empty = document.getElementById('people-empty');
+    if(!wrap) return;
+    const full = filteredPeople();
+    empty.style.display = full.length ? 'none' : 'block';
+    const totalPages = Math.max(1, Math.ceil(full.length / PEOPLE_PAGE_SIZE));
+    if(peopleState.page > totalPages) peopleState.page = totalPages;
+    if(peopleState.page < 1) peopleState.page = 1;
+    const start = (peopleState.page - 1) * PEOPLE_PAGE_SIZE;
+    const list = full.slice(start, start + PEOPLE_PAGE_SIZE);
+    const isAdmin = currentRole === 'app_admin';
+    wrap.innerHTML = list.map(p => `
+      <tr>
+        <td><b>${escAttr(p.name)}</b>${p.importance === 'برجسته' ? ' <span class="person-badge">برجسته</span>' : ''}</td>
+        <td class="mono">${p.national_id ? escAttr(p.national_id) : '—'}</td>
+        <td class="wrap">${escAttr(personPositionNames(p))}</td>
+        <td>${p.city ? escAttr(p.city) : '—'}</td>
+        <td>${p.importance}</td>
+        <td class="wrap">${p.affiliation ? escAttr(p.affiliation) : '—'}</td>
+        <td class="actions">${isAdmin ? `<button class="del-btn" data-person-id="${p.id}" title="حذف فرد" aria-label="حذف ${escAttr(p.name)}">✕</button>` : ''}</td>
+      </tr>`).join('');
+    if(isAdmin){
+      wrap.querySelectorAll('[data-person-id]').forEach(btn=>{
+        btn.addEventListener('click', () => deletePerson(Number(btn.dataset.personId)));
+      });
+    }
+    const sub = document.getElementById('people-count-sub');
+    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
+    renderPeoplePagination(totalPages);
+  }
+
+  function renderPeoplePagination(totalPages){
+    const wrap = document.getElementById('people-pagination');
+    if(!wrap) return;
+    if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+    const cur = peopleState.page;
+    const pages = [...new Set([1, totalPages, cur-1, cur, cur+1].filter(p=>p>=1 && p<=totalPages))].sort((a,b)=>a-b);
+    let html = `<button ${cur===1?'disabled':''} onclick="goPeoplePage(${cur-1})">قبلی</button>`;
+    let prev = 0;
+    pages.forEach(p=>{
+      if(prev && p - prev > 1) html += `<span class="dots">…</span>`;
+      html += `<button class="${p===cur?'active':''}" onclick="goPeoplePage(${p})">${toFaDigits(p)}</button>`;
+      prev = p;
+    });
+    html += `<button ${cur===totalPages?'disabled':''} onclick="goPeoplePage(${cur+1})">بعدی</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goPeoplePage(p){
+    peopleState.page = p;
+    renderPeopleList();
+    document.getElementById('people-list').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  async function deletePerson(id){
+    if(!confirm('این فرد حذف شود؟')) return;
+    await api('/people?id=eq.'+id, {method:'DELETE'});
+    await loadPeople();
+    renderPeopleList();
+  }
+
+  function populatePositionSelects(){
+    wireMultiSelect('people-filter-position-list', 'people-filter-position-summary', PERSON_POSITIONS, peopleState.positions, 'همه‌ی سمت/تخصص/عرصه', ()=>{ peopleState.page = 1; renderPeopleList(); });
+    wireMultiSelect('person-position-list', 'person-position-summary', PERSON_POSITIONS, personFormPositions, 'انتخاب سمت/تخصص/عرصه…');
+  }
+
+  function renderPositionGrid(){
+    const wrap = document.getElementById('position-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PERSON_POSITIONS.forEach(p=>{
+      const count = PEOPLE.filter(x=>personPositionIds(x).includes(String(p.id))).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(p.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف سمت'; del.setAttribute('aria-label', 'حذف سمت ' + p.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این سمت حذف شود؟')) return;
+        await api('/person_positions?id=eq.'+p.id, {method:'DELETE'});
+        await loadPersonPositions();
+        populatePositionSelects(); renderPositionGrid(); renderPeopleList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderPeoplePage(){
+    populatePositionSelects();
+    renderPositionGrid();
+    renderPeopleList();
+  }
+
+  // ---- افراد و مجموعه‌ها: تب‌های سطح‌بالا (فعالان / اساتید / آنالیز) ----
+  const peopleTopTabsEl = document.getElementById('people-top-tabs');
+  if(peopleTopTabsEl) peopleTopTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.disabled || !b.dataset.peopleTab) return;
+    peopleTopTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    ['activists','professors','analytics'].forEach(key=>{
+      const el = document.getElementById('people-tab-'+key);
+      if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
+    });
+  });
+
+  // ---- اساتید سیاسی‌اجتماعی ----
+  function specialtyNameOf(id){
+    const s = PROFESSOR_SPECIALTIES.find(x=>x.id===id);
+    return s ? s.name : '—';
+  }
+  function rankNameOf(id){
+    const r = PROFESSOR_RANKS.find(x=>x.id===id);
+    return r ? r.name : '—';
+  }
+
+  function filteredProfessors(){
+    const q = professorsState.query.trim().toLowerCase();
+    return PROFESSORS.filter(p=>{
+      if(q && !(p.name||'').toLowerCase().includes(q)) return false;
+      if(professorsState.specialties.length && !professorSpecialtyIds(p).some(id=>professorsState.specialties.includes(id))) return false;
+      if(professorsState.rank && p.rank_id !== Number(professorsState.rank)) return false;
+      if(professorsState.importance && p.importance !== professorsState.importance) return false;
+      return true;
+    });
+  }
+
+  function renderProfessorsList(){
+    const wrap = document.getElementById('professors-list');
+    const empty = document.getElementById('professors-empty');
+    if(!wrap) return;
+    const full = filteredProfessors();
+    empty.style.display = full.length ? 'none' : 'block';
+    const totalPages = Math.max(1, Math.ceil(full.length / PEOPLE_PAGE_SIZE));
+    if(professorsState.page > totalPages) professorsState.page = totalPages;
+    if(professorsState.page < 1) professorsState.page = 1;
+    const start = (professorsState.page - 1) * PEOPLE_PAGE_SIZE;
+    const list = full.slice(start, start + PEOPLE_PAGE_SIZE);
+    const isAdmin = currentRole === 'app_admin';
+    wrap.innerHTML = list.map(p => `
+      <tr>
+        <td><b>${escAttr(p.name)}</b>${p.importance === 'برجسته' ? ' <span class="person-badge">برجسته</span>' : ''}</td>
+        <td class="mono">${p.national_id ? escAttr(p.national_id) : '—'}</td>
+        <td>${p.institution ? escAttr(p.institution) : '—'}</td>
+        <td class="wrap">${escAttr(professorSpecialtyNames(p))}</td>
+        <td>${escAttr(rankNameOf(p.rank_id))}</td>
+        <td>${p.city ? escAttr(p.city) : '—'}</td>
+        <td>${p.importance}</td>
+        <td class="actions">${isAdmin ? `<button class="del-btn" data-professor-id="${p.id}" title="حذف استاد" aria-label="حذف ${escAttr(p.name)}">✕</button>` : ''}</td>
+      </tr>`).join('');
+    if(isAdmin){
+      wrap.querySelectorAll('[data-professor-id]').forEach(btn=>{
+        btn.addEventListener('click', () => deleteProfessor(Number(btn.dataset.professorId)));
+      });
+    }
+    const sub = document.getElementById('professors-count-sub');
+    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
+    renderProfessorsPagination(totalPages);
+  }
+
+  function renderProfessorsPagination(totalPages){
+    const wrap = document.getElementById('professors-pagination');
+    if(!wrap) return;
+    if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+    const cur = professorsState.page;
+    const pages = [...new Set([1, totalPages, cur-1, cur, cur+1].filter(p=>p>=1 && p<=totalPages))].sort((a,b)=>a-b);
+    let html = `<button ${cur===1?'disabled':''} onclick="goProfessorsPage(${cur-1})">قبلی</button>`;
+    let prev = 0;
+    pages.forEach(p=>{
+      if(prev && p - prev > 1) html += `<span class="dots">…</span>`;
+      html += `<button class="${p===cur?'active':''}" onclick="goProfessorsPage(${p})">${toFaDigits(p)}</button>`;
+      prev = p;
+    });
+    html += `<button ${cur===totalPages?'disabled':''} onclick="goProfessorsPage(${cur+1})">بعدی</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goProfessorsPage(p){
+    professorsState.page = p;
+    renderProfessorsList();
+    document.getElementById('professors-list').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  async function deleteProfessor(id){
+    if(!confirm('این استاد حذف شود؟')) return;
+    await api('/professors?id=eq.'+id, {method:'DELETE'});
+    await loadProfessors();
+    renderProfessorsList();
+  }
+
+  function populateSpecialtyRankSelects(){
+    wireMultiSelect('professors-filter-specialty-list', 'professors-filter-specialty-summary', PROFESSOR_SPECIALTIES, professorsState.specialties, 'همه‌ی حوزه‌های تخصصی', ()=>{ professorsState.page = 1; renderProfessorsList(); });
+    wireMultiSelect('professor-specialty-list', 'professor-specialty-summary', PROFESSOR_SPECIALTIES, professorFormSpecialties, 'انتخاب حوزه‌های تخصصی…');
+    const rankFilterSel = document.getElementById('professors-filter-rank');
+    if(rankFilterSel) rankFilterSel.innerHTML = '<option value="">همه‌ی مرتبه‌ها</option>' + PROFESSOR_RANKS.map(r=>`<option value="${r.id}">${escAttr(r.name)}</option>`).join('');
+    const rankAddSel = document.getElementById('professor-rank');
+    if(rankAddSel) rankAddSel.innerHTML = PROFESSOR_RANKS.map(r=>`<option value="${r.id}">${escAttr(r.name)}</option>`).join('');
+  }
+
+  function renderSpecialtyGrid(){
+    const wrap = document.getElementById('specialty-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PROFESSOR_SPECIALTIES.forEach(s=>{
+      const count = PROFESSORS.filter(x=>professorSpecialtyIds(x).includes(String(s.id))).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(s.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف'; del.setAttribute('aria-label', 'حذف ' + s.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این حوزه‌ی تخصصی حذف شود؟')) return;
+        await api('/professor_specialties?id=eq.'+s.id, {method:'DELETE'});
+        await loadProfessorSpecialties();
+        populateSpecialtyRankSelects(); renderSpecialtyGrid(); renderProfessorsList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderRankGrid(){
+    const wrap = document.getElementById('rank-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PROFESSOR_RANKS.forEach(r=>{
+      const count = PROFESSORS.filter(x=>x.rank_id===r.id).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(r.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف'; del.setAttribute('aria-label', 'حذف ' + r.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این مرتبه حذف شود؟')) return;
+        await api('/professor_ranks?id=eq.'+r.id, {method:'DELETE'});
+        await loadProfessorRanks();
+        populateSpecialtyRankSelects(); renderRankGrid(); renderProfessorsList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderProfessorsPage(){
+    populateSpecialtyRankSelects();
+    renderSpecialtyGrid();
+    renderRankGrid();
+    renderProfessorsList();
+  }
+
+  const professorsSearchEl = document.getElementById('professors-search-input');
+  if(professorsSearchEl){
+    let professorsSearchTimer;
+    professorsSearchEl.addEventListener('input', e=>{
+      clearTimeout(professorsSearchTimer);
+      const val = e.target.value;
+      professorsSearchTimer = setTimeout(()=>{
+        professorsState.query = val;
+        professorsState.page = 1;
+        renderProfessorsList();
+      }, 300);
+    });
+  }
+  const professorsFilterRankEl = document.getElementById('professors-filter-rank');
+  if(professorsFilterRankEl) professorsFilterRankEl.addEventListener('change', e=>{
+    professorsState.rank = e.target.value; professorsState.page = 1; renderProfessorsList();
+  });
+  const professorsFilterImportanceEl = document.getElementById('professors-filter-importance');
+  if(professorsFilterImportanceEl) professorsFilterImportanceEl.addEventListener('change', e=>{
+    professorsState.importance = e.target.value; professorsState.page = 1; renderProfessorsList();
+  });
+
+  const addProfessorBtn = document.getElementById('add-professor-btn');
+  if(addProfessorBtn) addProfessorBtn.addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('professor-name');
+    const name = nameEl.value.trim();
+    if(!name){ showToast('نام الزامی است'); return; }
+    const body = {
+      name,
+      national_id: document.getElementById('professor-national-id').value.trim() || null,
+      city: document.getElementById('professor-city').value.trim() || null,
+      institution: document.getElementById('professor-institution').value.trim() || null,
+      rank_id: Number(document.getElementById('professor-rank').value) || null,
+      importance: document.getElementById('professor-importance').value,
+      notes: document.getElementById('professor-notes').value.trim() || null,
+    };
+    const r = await api('/professors', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(body)});
+    if(!r.ok){ showToast('افزودن ناموفق بود'); return; }
+    const [inserted] = await r.json();
+    if(professorFormSpecialties.length){
+      const links = professorFormSpecialties.map(sid => ({ professor_id: inserted.id, specialty_id: Number(sid) }));
+      await api('/professor_specialty_links', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+    }
+    nameEl.value = ''; document.getElementById('professor-national-id').value = ''; document.getElementById('professor-city').value = '';
+    document.getElementById('professor-institution').value = ''; document.getElementById('professor-notes').value = '';
+    professorFormSpecialties.length = 0;
+    await loadProfessors(); populateSpecialtyRankSelects(); renderProfessorsList(); renderSpecialtyGrid(); renderRankGrid();
+    showToast('استاد اضافه شد');
+  });
+
+  const addSpecialtyBtn = document.getElementById('add-specialty-btn');
+  if(addSpecialtyBtn) addSpecialtyBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-specialty-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/professor_specialties', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadProfessorSpecialties(); populateSpecialtyRankSelects(); renderSpecialtyGrid(); }
+    else alert('این حوزه‌ی تخصصی از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  const addRankBtn = document.getElementById('add-rank-btn');
+  if(addRankBtn) addRankBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-rank-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/professor_ranks', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadProfessorRanks(); populateSpecialtyRankSelects(); renderRankGrid(); }
+    else alert('این مرتبه از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  // بارگذاری گروهی اساتید از اکسل — ستون‌ها به ترتیب: نام | شهر | دانشگاه/حوزه |
+  // حوزه‌ی تخصصی | مرتبه | اهمیت | یادداشت (ردیف اول = سرستون، نادیده گرفته می‌شود)
+  const professorsBulkBtn = document.getElementById('professors-bulk-upload-btn');
+  if(professorsBulkBtn) professorsBulkBtn.addEventListener('click', async ()=>{
+    const fileEl = document.getElementById('professors-bulk-file');
+    const statusEl = document.getElementById('professors-bulk-status');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
+    professorsBulkBtn.disabled = true; professorsBulkBtn.textContent = 'در حال پردازش…';
+    statusEl.textContent = '';
+    try{
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+      const dataRows = rows.slice(1).filter(r => r.some(c => String(c).trim() !== ''));
+      if(!dataRows.length){ showToast('هیچ ردیفی پیدا نشد'); return; }
+      const otherSpecialty = PROFESSOR_SPECIALTIES.find(s => s.name === 'سایر');
+      const otherRank = PROFESSOR_RANKS.find(r => r.name === 'سایر');
+      const specByName = {}; PROFESSOR_SPECIALTIES.forEach(s => { specByName[s.name.trim()] = s.id; });
+      const rankByName = {}; PROFESSOR_RANKS.forEach(r => { rankByName[r.name.trim()] = r.id; });
+      // ستون «حوزه‌ی تخصصی» می‌تونه چند مقدار با کاما/اسلش جدا از هم داشته باشه (چندانتخابیه)
+      function parseSpecialtyIds(cell){
+        const tokens = String(cell||'').split(/[,،\/]/).map(t=>t.trim()).filter(Boolean);
+        const ids = tokens.map(t=>specByName[t]).filter(Boolean);
+        if(!ids.length && otherSpecialty) ids.push(otherSpecialty.id);
+        return [...new Set(ids)];
+      }
+      const payload = dataRows.map(r=>{
+        const [name, nationalId, city, institution, specialty, rank, importance, notes] = r;
+        const rankId = rankByName[String(rank||'').trim()] || (otherRank ? otherRank.id : null);
+        const imp = String(importance||'').trim() === 'برجسته' ? 'برجسته' : 'عادی';
+        return {
+          name: String(name||'').trim(),
+          national_id: String(nationalId||'').trim() || null,
+          city: String(city||'').trim() || null,
+          institution: String(institution||'').trim() || null,
+          rank_id: rankId,
+          importance: imp,
+          notes: String(notes||'').trim() || null,
+          _specialtyIds: parseSpecialtyIds(specialty),
+        };
+      }).filter(r => r.name);
+      if(!payload.length){ showToast('ردیف معتبری (با نام) پیدا نشد'); return; }
+      const CHUNK = 500;
+      let inserted = 0;
+      for(let i=0; i<payload.length; i+=CHUNK){
+        const chunk = payload.slice(i, i+CHUNK);
+        const rows = chunk.map(({_specialtyIds, ...rest}) => rest);
+        const r = await api('/professors', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(rows)});
+        if(!r.ok) throw new Error('insert failed at chunk ' + i);
+        const insertedRows = await r.json();
+        const links = [];
+        insertedRows.forEach((row, idx) => {
+          chunk[idx]._specialtyIds.forEach(sid => links.push({ professor_id: row.id, specialty_id: sid }));
+        });
+        if(links.length){
+          const lr = await api('/professor_specialty_links', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+          if(!lr.ok) throw new Error('link insert failed at chunk ' + i);
+        }
+        inserted += chunk.length;
+        statusEl.textContent = toFaDigits(inserted) + ' از ' + toFaDigits(payload.length) + ' ردیف بارگذاری شد…';
+      }
+      fileEl.value = '';
+      await loadProfessors(); renderProfessorsPage();
+      showToast(toFaDigits(inserted) + ' نفر با موفقیت بارگذاری شد');
+      statusEl.textContent = '';
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — فرمت فایل یا دیتابیس را بررسی کنید');
+    }finally{
+      professorsBulkBtn.disabled = false; professorsBulkBtn.textContent = 'پردازش و بارگذاری';
+    }
+  });
+
+  // ---- آنالیز: آمار تجمیعی افراد و مجموعه‌ها ----
+  function renderPeopleAnalytics(){
+    const statsWrap = document.getElementById('people-analytics-stats');
+    if(!statsWrap) return;
+    const brilliantCount = PEOPLE.filter(p=>p.importance==='برجسته').length + PROFESSORS.filter(p=>p.importance==='برجسته').length;
+    const cities = new Set([...PEOPLE.map(p=>p.city), ...PROFESSORS.map(p=>p.city)].filter(Boolean));
+    statsWrap.innerHTML = `
+      <div class="stat-card"><div class="label">کل فعالان</div><div class="val">${toFaDigits(PEOPLE.length)}</div></div>
+      <div class="stat-card"><div class="label">کل اساتید</div><div class="val">${toFaDigits(PROFESSORS.length)}</div></div>
+      <div class="stat-card"><div class="label">افراد برجسته</div><div class="val">${toFaDigits(brilliantCount)}</div></div>
+      <div class="stat-card"><div class="label">شهرهای پوشش‌داده‌شده</div><div class="val">${toFaDigits(cities.size)}</div></div>`;
+
+    const posBars = document.getElementById('people-analytics-position-bars');
+    if(posBars){
+      const counts = PERSON_POSITIONS.map(pos => [pos.name, PEOPLE.filter(p=>personPositionIds(p).includes(String(pos.id))).length]).filter(x=>x[1]>0);
+      if(!counts.length){
+        posBars.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ای نیست</span>';
+      }else{
+        const max = Math.max(...counts.map(c=>c[1]));
+        posBars.innerHTML = counts.map(([label,n])=>`
+          <div class="bar-col"><span class="n mono">${toFaDigits(n)}</span><div class="bar" style="height:${(n/max*100).toFixed(0)}%"></div><span class="lbl">${label}</span></div>`).join('');
+      }
+    }
+
+    const specBars = document.getElementById('people-analytics-specialty-bars');
+    if(specBars){
+      const counts = PROFESSOR_SPECIALTIES.map(s => [s.name, PROFESSORS.filter(p=>professorSpecialtyIds(p).includes(String(s.id))).length]).filter(x=>x[1]>0);
+      if(!counts.length){
+        specBars.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ای نیست</span>';
+      }else{
+        const max = Math.max(...counts.map(c=>c[1]));
+        specBars.innerHTML = counts.map(([label,n])=>`
+          <div class="bar-col"><span class="n mono">${toFaDigits(n)}</span><div class="bar" style="height:${(n/max*100).toFixed(0)}%"></div><span class="lbl">${label}</span></div>`).join('');
+      }
+    }
+  }
+
+  const peopleSearchEl = document.getElementById('people-search-input');
+  if(peopleSearchEl){
+    let peopleSearchTimer;
+    peopleSearchEl.addEventListener('input', e=>{
+      clearTimeout(peopleSearchTimer);
+      const val = e.target.value;
+      peopleSearchTimer = setTimeout(()=>{
+        peopleState.query = val;
+        peopleState.page = 1;
+        renderPeopleList();
+      }, 300);
+    });
+  }
+  const peopleFilterImportanceEl = document.getElementById('people-filter-importance');
+  if(peopleFilterImportanceEl) peopleFilterImportanceEl.addEventListener('change', e=>{
+    peopleState.importance = e.target.value;
+    peopleState.page = 1;
+    renderPeopleList();
+  });
+
+  const addPersonBtn = document.getElementById('add-person-btn');
+  if(addPersonBtn) addPersonBtn.addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('person-name');
+    const name = nameEl.value.trim();
+    if(!name){ showToast('نام الزامی است'); return; }
+    const body = {
+      name,
+      national_id: document.getElementById('person-national-id').value.trim() || null,
+      city: document.getElementById('person-city').value.trim() || null,
+      importance: document.getElementById('person-importance').value,
+      affiliation: document.getElementById('person-affiliation').value.trim() || null,
+      notes: document.getElementById('person-notes').value.trim() || null,
+    };
+    const r = await api('/people', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(body)});
+    if(!r.ok){ showToast('افزودن ناموفق بود'); return; }
+    const [inserted] = await r.json();
+    if(personFormPositions.length){
+      const links = personFormPositions.map(pid => ({ person_id: inserted.id, position_id: Number(pid) }));
+      await api('/people_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+    }
+    nameEl.value = ''; document.getElementById('person-national-id').value = ''; document.getElementById('person-city').value = '';
+    document.getElementById('person-affiliation').value = ''; document.getElementById('person-notes').value = '';
+    personFormPositions.length = 0;
+    await loadPeople(); populatePositionSelects(); renderPeopleList(); renderPositionGrid();
+    showToast('فرد اضافه شد');
+  });
+
+  const addPositionBtn = document.getElementById('add-position-btn');
+  if(addPositionBtn) addPositionBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-position-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/person_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadPersonPositions(); populatePositionSelects(); renderPositionGrid(); }
+    else alert('این سمت از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  // بارگذاری گروهی از اکسل — ستون‌ها به ترتیب: نام | شهر | سمت | اهمیت | تشکل/مجموعه | یادداشت
+  // (ردیف اول = سرستون، نادیده گرفته می‌شود). «سمت» باید دقیقاً با نام یکی از
+  // person_positions یکی باشه، وگرنه به‌صورت خودکار «سایر» ثبت می‌شه.
+  const peopleBulkBtn = document.getElementById('people-bulk-upload-btn');
+  if(peopleBulkBtn) peopleBulkBtn.addEventListener('click', async ()=>{
+    const fileEl = document.getElementById('people-bulk-file');
+    const statusEl = document.getElementById('people-bulk-status');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
+    peopleBulkBtn.disabled = true; peopleBulkBtn.textContent = 'در حال پردازش…';
+    statusEl.textContent = '';
+    try{
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+      const dataRows = rows.slice(1).filter(r => r.some(c => String(c).trim() !== ''));
+      if(!dataRows.length){ showToast('هیچ ردیفی پیدا نشد'); return; }
+      const otherPos = PERSON_POSITIONS.find(p => p.name === 'سایر');
+      const posByName = {};
+      PERSON_POSITIONS.forEach(p => { posByName[p.name.trim()] = p.id; });
+      // ستون «سمت» می‌تونه چند مقدار با کاما/اسلش جدا از هم داشته باشه (سمت چندانتخابیه)
+      function parsePositionIds(cell){
+        const tokens = String(cell||'').split(/[,،\/]/).map(t=>t.trim()).filter(Boolean);
+        const ids = tokens.map(t=>posByName[t]).filter(Boolean);
+        if(!ids.length && otherPos) ids.push(otherPos.id);
+        return [...new Set(ids)];
+      }
+      const payload = dataRows.map(r=>{
+        const [name, nationalId, city, position, importance, affiliation, notes] = r;
+        const imp = String(importance||'').trim() === 'برجسته' ? 'برجسته' : 'عادی';
+        return {
+          name: String(name||'').trim(),
+          national_id: String(nationalId||'').trim() || null,
+          city: String(city||'').trim() || null,
+          importance: imp,
+          affiliation: String(affiliation||'').trim() || null,
+          notes: String(notes||'').trim() || null,
+          _positionIds: parsePositionIds(position),
+        };
+      }).filter(r => r.name);
+      if(!payload.length){ showToast('ردیف معتبری (با نام) پیدا نشد'); return; }
+      const CHUNK = 500;
+      let inserted = 0;
+      for(let i=0; i<payload.length; i+=CHUNK){
+        const chunk = payload.slice(i, i+CHUNK);
+        const rows = chunk.map(({_positionIds, ...rest}) => rest);
+        const r = await api('/people', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(rows)});
+        if(!r.ok) throw new Error('insert failed at chunk ' + i);
+        const insertedRows = await r.json();
+        // ترتیب ردیف‌های برگشتی با ترتیب درج یکیه (یک دستور INSERT ... VALUES)
+        const links = [];
+        insertedRows.forEach((row, idx) => {
+          chunk[idx]._positionIds.forEach(pid => links.push({ person_id: row.id, position_id: pid }));
+        });
+        if(links.length){
+          const lr = await api('/people_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+          if(!lr.ok) throw new Error('link insert failed at chunk ' + i);
+        }
+        inserted += chunk.length;
+        statusEl.textContent = toFaDigits(inserted) + ' از ' + toFaDigits(payload.length) + ' ردیف بارگذاری شد…';
+      }
+      fileEl.value = '';
+      await loadPeople(); renderPeoplePage();
+      showToast(toFaDigits(inserted) + ' نفر با موفقیت بارگذاری شد');
+      statusEl.textContent = '';
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — فرمت فایل یا دیتابیس را بررسی کنید');
+    }finally{
+      peopleBulkBtn.disabled = false; peopleBulkBtn.textContent = 'پردازش و بارگذاری';
     }
   });
 
