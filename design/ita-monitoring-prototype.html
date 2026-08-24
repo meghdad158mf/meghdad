@@ -326,7 +326,7 @@
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
-  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 160px 2px 26px; text-align:center; letter-spacing:0.01em; }
+  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 160px 2px 26px; text-align:center; letter-spacing:0.01em; scroll-margin-top: 32px; }
   .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:16px; margin-bottom:26px; }
   .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 28px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
@@ -3774,7 +3774,7 @@
   // دو کارت راهنمای سریع زیر هرو — فقط اسکرول توی همون صفحه‌ی نخست،
   // نه switchSection (چون هر دو مقصد از قبل توی همین sec-dashboard هستن)
   function scrollToDomainGrid(){
-    const el = document.querySelector('.domain-grid');
+    const el = document.querySelector('.section-label');
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
   function scrollToPackageCard(){
