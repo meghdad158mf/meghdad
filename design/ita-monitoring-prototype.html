@@ -782,10 +782,15 @@
 
   /* گرید «دیدن سایر بسته‌های تحلیلی» صفحه‌ی نخست — برخلاف .magazine-card (که
      خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن (مثل .domain-card)،
-     مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی بالای هر کدوم */
-  .archive-home-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap:20px; }
-  .archive-home-card{ display:flex; flex-direction:column; gap:10px; }
-  .archive-home-cover{ width:100%; aspect-ratio: 4/3; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+     مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی (عمودی، مثل جلد مجله)
+     بالای هر کدوم. عنوانِ این ویجت هم عمداً از .panel-pill (فونت مونواسپیس
+     JetBrains Mono) استفاده نمی‌کنه چون حروف فارسیِ عبارت طولانی رو به‌هم
+     نمی‌چسبونه (bug واقعاً دیده‌شده) — یه h3 ساده با فونت پیش‌فرض سایت. */
+  .archive-home-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+  .archive-home-heading{ font-size:15px; font-weight:800; color:#fff; margin:0; }
+  .archive-home-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
+  .archive-home-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
+  .archive-home-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
   .archive-home-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
   .archive-home-cover svg{ width:26%; height:26%; opacity:.5; }
   .archive-home-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
@@ -1008,8 +1013,8 @@
       </div>
 
       <div class="archive-home-panel">
-        <div class="panel-head">
-          <span class="panel-pill">دیدن سایر بسته‌های تحلیلی</span>
+        <div class="archive-home-head">
+          <h3 class="archive-home-heading">دیدن سایر بسته‌های تحلیلی</h3>
           <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
         </div>
         <div class="archive-home-grid" id="archive-grid-home"></div>
