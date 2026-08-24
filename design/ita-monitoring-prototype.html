@@ -328,7 +328,7 @@
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
   .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 160px 2px 26px; text-align:center; letter-spacing:0.01em; }
   .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:16px; margin-bottom:26px; }
-  .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 90px; }
+  .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 28px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   .domain-card{
     display:flex; flex-direction:column; align-items:center; text-align:center; padding:6px 12px; cursor:pointer;
@@ -340,6 +340,14 @@
   .domain-icon.is-illustrated{ width:136px; height:136px; }
   .domain-icon.is-illustrated img{ width:136px; height:136px; max-width:136px; object-fit:contain; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
+
+  /* میان‌بر به زیربخش‌های هر عرصه (فعال و به‌زودی) — زیر توضیح سه‌خطی،
+     تا کاربر بدون رد شدن از تب پیش‌فرض مستقیم بره به همون زیربخش */
+  .domain-shortcuts{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:0 0 40px; }
+  .domain-shortcuts a{ font-size:11.5px; color: rgba(255,255,255,0.65); cursor:pointer; text-decoration:none; padding:5px 12px; border:1px solid rgba(255,255,255,0.14); border-radius: var(--radius-pill); transition: color .15s ease, border-color .15s ease, background .15s ease; }
+  .domain-shortcuts a:hover{ color: var(--accent); border-color: var(--accent); background: rgba(234,179,147,0.08); }
+  .domain-shortcuts .domain-shortcut-disabled{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color: rgba(255,255,255,0.32); cursor:default; padding:5px 12px; border:1px solid rgba(255,255,255,0.08); border-radius: var(--radius-pill); }
+  @media (max-width:640px){ .domain-shortcuts{ gap:8px; } }
 
   .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
   .modal-overlay.active{ display:flex; }
@@ -997,6 +1005,19 @@
         </div>
       </div>
       <p class="domain-caption">جریان این چهار عرصه را به‌صورت جداگانه رصد و تحلیل می‌کند: اخبار رسمی خبرگزاری‌ها، کنشگری فضای مجازی، برنامه‌های آموزشی مدارس و فعالیت افراد و مجموعه‌های تأثیرگذار. هر عرصه با منبع داده و روش پایش مخصوص به خودش دنبال می‌شود.</p>
+
+      <div class="domain-shortcuts">
+        <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
+        <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
+        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
+        <span class="domain-shortcut-disabled">پرونده ویژه<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">خبرخوان مدارس<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">آنالیز اخبار<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToPeopleTab('activists')">فعالان</a>
+        <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToPeopleTab('analytics')">آنالیز افراد</a>
+      </div>
 
       <div class="package-card">
         <div class="package-top">
@@ -1944,6 +1965,17 @@
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview') renderNewsFeed();
     if(key === 'posts') renderPosts();
+  }
+
+  // میان‌برهای کارت‌های صفحه‌ی نخست به زیربخش‌های خودِ همون صفحه
+  function goToNewsTab(tab){
+    switchSection('overview');
+    setNewsPageTab(tab);
+  }
+  function goToPeopleTab(tab){
+    switchSection('people');
+    const btn = document.querySelector('#people-top-tabs button[data-people-tab="'+tab+'"]');
+    if(btn) btn.click();
   }
 
   function setNewsPageTab(tab){
