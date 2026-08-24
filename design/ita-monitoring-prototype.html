@@ -764,6 +764,14 @@
   .mag-reorder button:disabled{ opacity:.35; cursor:default; }
   .mag-reorder svg{ width:11px; height:11px; }
 
+  /* تب «بسته‌های آموزش تحلیلی» — کارتش عیناً .magazine-card ولی به‌جای
+     .mag-icon کوچیک، یه پوستر واقعی بالای عنوانه (چون خودِ کاربر خواسته
+     پوستری باشه) */
+  .basirat-card{ padding-top:14px; }
+  .basirat-poster{ width:100%; aspect-ratio: 16/9; border-radius: var(--radius-control); overflow:hidden; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); margin-bottom:2px; }
+  .basirat-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .basirat-poster svg{ width:26%; height:26%; opacity:.5; }
+
   /* کاروسل جلد مجلات — الان داخل کارت واحد .package-card (پایین‌تر) استفاده
      می‌شه، نه یه ویجت جدای خودش */
   .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
@@ -780,21 +788,38 @@
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
-  /* گرید «دیدن سایر بسته‌های تحلیلی» صفحه‌ی نخست — برخلاف .magazine-card (که
-     خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن (مثل .domain-card)،
-     مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی (عمودی، مثل جلد مجله)
-     بالای هر کدوم. عنوانِ این ویجت هم عمداً از .panel-pill (فونت مونواسپیس
-     JetBrains Mono) استفاده نمی‌کنه چون حروف فارسیِ عبارت طولانی رو به‌هم
-     نمی‌چسبونه (bug واقعاً دیده‌شده) — یه h3 ساده با فونت پیش‌فرض سایت. */
-  .archive-home-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
-  .archive-home-heading{ font-size:15px; font-weight:800; color:#fff; margin:0; }
-  .archive-home-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
-  .archive-home-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
-  .archive-home-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
-  .archive-home-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .archive-home-cover svg{ width:26%; height:26%; opacity:.5; }
-  .archive-home-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
-  .archive-home-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
+  /* ویجت‌های عمومی صفحه‌ی نخست (زیر کارت هلویی «بسته تحلیلی جریان») — الان
+     دوتان: «بسته‌های آموزش تحلیلی» و «دیدن سایر بسته‌های تحلیلی». برخلاف
+     .magazine-card (که خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن
+     (مثل .domain-card)، مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی
+     بالای/کنار هر کدوم. عنوانِ هر ویجت هم عمداً از .panel-pill (فونت
+     مونواسپیس JetBrains Mono) استفاده نمی‌کنه چون حروف فارسیِ عبارت طولانی
+     رو به‌هم نمی‌چسبونه (bug واقعاً دیده‌شده) — یه h3 ساده با فونت پیش‌فرض سایت. */
+  .home-widget-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+  .home-widget-logo{ width:34px; height:auto; flex-shrink:0; border-radius:6px; }
+  .home-widget-heading{ font-size:14.5px; font-weight:700; color:#fff; margin:0; }
+  .home-widget-desc{ font-size:13px; color: rgba(255,255,255,0.65); margin:7px 0 0; line-height:1.8; }
+  .home-poster-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
+  .home-poster-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
+
+  /* «بسته‌های آموزش تحلیلی» — طرح دوستونه مثل بالای کارت هلویی: یه ستون
+     باریک با لوگو+عنوان+توضیح+دکمه (سمت راست)، و چند تا پوستر در یه ردیف
+     قابل‌اسکرول کنارش (سمت چپ) — نه گرید تمام‌عرض زیرش */
+  .basirat-widget-block{ display:flex; align-items:flex-start; gap:24px; margin:28px 0 40px; }
+  @media (max-width:760px){ .basirat-widget-block{ flex-direction:column; gap:18px; } }
+  .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
+  @media (max-width:760px){ .basirat-widget-info{ flex:none; } }
+  .basirat-widget-title-row{ display:flex; align-items:center; gap:9px; }
+  .basirat-widget-info .btn{ margin-top:8px; }
+  .home-poster-row{ flex:1; min-width:0; width:100%; display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
+  .home-poster-row::-webkit-scrollbar{ display:none; }
+  .home-poster-row .home-poster-card{ flex-shrink:0; width:190px; }
+  .home-poster-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+  .home-poster-cover.is-landscape{ aspect-ratio: 16/9; }
+  .home-poster-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .home-poster-cover svg{ width:26%; height:26%; opacity:.5; }
+  .home-poster-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
+  .home-poster-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
 
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
   .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
@@ -1012,12 +1037,24 @@
         </div>
       </div>
 
-      <div class="archive-home-panel">
-        <div class="archive-home-head">
-          <h3 class="archive-home-heading">دیدن سایر بسته‌های تحلیلی</h3>
+      <div class="basirat-widget-block">
+        <div class="basirat-widget-info">
+          <div class="basirat-widget-title-row">
+            <img class="home-widget-logo" src="images/basirat-logo.webp" alt="مدرسه مجازی بصیرت" />
+            <h3 class="home-widget-heading">بسته‌های آموزش تحلیلی</h3>
+          </div>
+          <p class="home-widget-desc">این قسمت مربوط به بسته‌های آموزشی تحلیلی است که در مدرسه مجازی بصیرت بارگذاری شده است.</p>
+          <button class="btn" onclick="openReportsBasiratTab()">مشاهده‌ی همه</button>
+        </div>
+        <div class="home-poster-row" id="basirat-grid-home"></div>
+      </div>
+
+      <div class="home-widget-block">
+        <div class="home-widget-head">
+          <h3 class="home-widget-heading">دیدن سایر بسته‌های تحلیلی</h3>
           <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
         </div>
-        <div class="archive-home-grid" id="archive-grid-home"></div>
+        <div class="home-poster-grid" id="archive-grid-home"></div>
       </div>
     </section>
 
@@ -1347,6 +1384,7 @@
 
       <div class="news-page-tabs" id="reports-page-tabs">
         <button class="active" data-reports-tab="own">مجلات جریان</button>
+        <button data-reports-tab="basirat">بسته‌های آموزش تحلیلی</button>
         <button data-reports-tab="archive">دیدن سایر بسته‌های تحلیلی</button>
       </div>
 
@@ -1377,6 +1415,28 @@
             <input type="file" id="mag-cover" accept="image/*" />
           </div>
           <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
+        </div>
+      </div>
+
+      <div id="reports-tab-basirat" style="display:none;">
+        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
+        <div class="magazine-grid" id="basirat-grid"></div>
+
+        <div class="panel" id="basirat-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
+            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
+          </div>
+          <div class="field">
+            <label>توضیح کوتاه (اختیاری)</label>
+            <input type="text" id="bas-desc" />
+          </div>
+          <div class="field">
+            <label>پوستر (اختیاری)</label>
+            <input type="file" id="bas-poster" accept="image/*" />
+          </div>
+          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
         </div>
       </div>
 
@@ -1755,6 +1815,7 @@
     adminLinks.style.display = isAdmin ? '' : 'none';
     document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('archive-report-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('basirat-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('school-report-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('people-admin-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('people-bulk-panel').style.display = isAdmin ? '' : 'none';
@@ -1901,6 +1962,7 @@
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
+  let BASIRAT_COURSES = [];   // {id, title, description, poster_url, external_url, sort_order, created_at}
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
@@ -2265,6 +2327,10 @@
     const r = await api('/archive_reports?select=*&order=sort_order.asc,uploaded_at.desc');
     ARCHIVE_REPORTS = r.ok ? await r.json() : [];
   }
+  async function loadBasiratCourses(){
+    const r = await api('/basirat_courses?select=*&order=sort_order.asc,created_at.desc');
+    BASIRAT_COURSES = r.ok ? await r.json() : [];
+  }
   async function loadNewspapers(){
     // limit=250: با نگه‌داری ۳ روزه (cleanup_media.py) و ~۵۴ روزنامه در روز،
     // این عدد برای پوشش کامل هر ۳ روزی که هنوز پاک نشدن کافیه
@@ -2327,7 +2393,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadArchiveReports(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -2343,6 +2409,7 @@
     renderChanList();
     renderMagazines();
     renderArchiveReports();
+    renderBasiratCourses();
     renderNewspapers();
     populateNewsSourceOptions();
     renderNewsFeed();
@@ -3870,7 +3937,7 @@
     const b = e.target.closest('button'); if(!b || !b.dataset.reportsTab) return;
     reportsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    ['own','archive'].forEach(key=>{
+    ['own','basirat','archive'].forEach(key=>{
       const el = document.getElementById('reports-tab-'+key);
       if(el) el.style.display = key === b.dataset.reportsTab ? '' : 'none';
     });
@@ -3941,10 +4008,10 @@
         m.source_org || '',
         m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
       ].filter(Boolean).join(' · ');
-      const el = document.createElement('div'); el.className = 'archive-home-card';
-      el.innerHTML = `<div class="archive-home-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
-        <div class="archive-home-title">${m.title}</div>
-        <div class="archive-home-meta">${meta}</div>`;
+      const el = document.createElement('div'); el.className = 'home-poster-card';
+      el.innerHTML = `<div class="home-poster-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
+        <div class="home-poster-title">${m.title}</div>
+        <div class="home-poster-meta">${meta}</div>`;
       el.style.cursor = files.length ? 'pointer' : 'default';
       el.addEventListener('click', () => { if(files.length) openArchiveReportFile(m, files[0]); });
       wrap.appendChild(el);
@@ -4065,6 +4132,149 @@
       titleEl.value=''; sourceOrgEl.value=''; dateEl.value=''; filesEl.value=''; coverEl.value='';
       await loadArchiveReports(); renderArchiveReports();
       showToast('به آرشیو اضافه شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری';
+    }
+  });
+
+  // ---- تب «بسته‌های آموزش تحلیلی» (بخش تحلیلی) ----
+  // این بسته‌ها روی خودِ سایت مدرسه مجازی بصیرت میزبانی می‌شن — ما فقط
+  // عنوان + توضیح کوتاه + پوستر (bucket عمومی basirat-course-posters) + یه
+  // لینک بیرونی نگه می‌داریم؛ برخلاف مجلات/آرشیو هیچ فایلی توی Storage
+  // خودمون دانلود/سیو نمی‌شه، چون فایلی برای دانلود وجود نداره.
+  function renderBasiratCourses(){
+    const grid = document.getElementById('basirat-grid');
+    const empty = document.getElementById('basirat-empty');
+    if(!grid) return;
+    const isAdmin = currentRole === 'app_admin';
+    grid.innerHTML = '';
+    empty.style.display = BASIRAT_COURSES.length ? 'none' : 'block';
+    BASIRAT_COURSES.forEach((c, i)=>{
+      const el = document.createElement('div'); el.className = 'magazine-card basirat-card';
+      el.innerHTML = `<div class="basirat-poster">${c.poster_url ? `<img src="${c.poster_url}" alt="${c.title}" draggable="false" oncontextmenu="return false" />` : ICONS.doc}</div>
+        <div class="mag-title">${c.title}</div>
+        ${c.description ? `<div class="mag-meta">${c.description}</div>` : ''}
+        <div class="mag-actions"></div>`;
+      const actions = el.querySelector('.mag-actions');
+      const link = document.createElement('a');
+      link.className = 'btn'; link.textContent = 'مشاهده در بصیرت';
+      link.href = c.external_url; link.target = '_blank'; link.rel = 'noopener';
+      actions.appendChild(link);
+      if(isAdmin){
+        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
+        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
+        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
+        up.addEventListener('click', () => moveBasiratCourse(c, -1));
+        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===BASIRAT_COURSES.length-1;
+        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+        down.addEventListener('click', () => moveBasiratCourse(c, 1));
+        reorder.appendChild(up); reorder.appendChild(down);
+        actions.appendChild(reorder);
+
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف مورد'; del.setAttribute('aria-label', 'حذف ' + c.title);
+        del.addEventListener('click', () => deleteBasiratCourse(c));
+        actions.appendChild(del);
+      }
+      grid.appendChild(el);
+    });
+    renderBasiratHomeGrid();
+  }
+
+  // ویجت گرید صفحه‌ی نخست — پوستر بسته‌های آموزش تحلیلی؛ کلیک مستقیم لینک
+  // بیرونی رو باز می‌کنه (نه signed URL، چون فایلی توی Storage ما نیست)
+  function renderBasiratHomeGrid(){
+    const wrap = document.getElementById('basirat-grid-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!BASIRAT_COURSES.length){
+      wrap.innerHTML = '<p style="color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:20px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>';
+      return;
+    }
+    BASIRAT_COURSES.slice(0, 6).forEach(c=>{
+      const el = document.createElement('div'); el.className = 'home-poster-card';
+      el.innerHTML = `<div class="home-poster-cover is-landscape">${c.poster_url ? `<img src="${c.poster_url}" alt="${c.title}" draggable="false" oncontextmenu="return false" />` : ICONS.doc}</div>
+        <div class="home-poster-title">${c.title}</div>`;
+      el.addEventListener('click', () => window.open(c.external_url, '_blank'));
+      wrap.appendChild(el);
+    });
+  }
+
+  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
+  // و مستقیم تب «بسته‌های آموزش تحلیلی» رو فعال می‌کنه
+  function openReportsBasiratTab(){
+    switchSection('reports');
+    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="basirat"]');
+    if(tabBtn) tabBtn.click();
+  }
+
+  async function moveBasiratCourse(c, direction){
+    const idx = BASIRAT_COURSES.findIndex(x=>x.id===c.id);
+    const swapIdx = idx + direction;
+    if(swapIdx < 0 || swapIdx >= BASIRAT_COURSES.length) return;
+    const other = BASIRAT_COURSES[swapIdx];
+    const aOrder = c.sort_order || 0, bOrder = other.sort_order || 0;
+    await Promise.all([
+      api('/basirat_courses?id=eq.'+c.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
+      api('/basirat_courses?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
+    ]);
+    await loadBasiratCourses(); renderBasiratCourses();
+  }
+
+  async function deleteBasiratCourse(c){
+    if(!confirm('«' + c.title + '» حذف شود؟')) return;
+    try{
+      if(c.poster_url && c.poster_url.includes('/basirat-course-posters/')){
+        const posterPath = c.poster_url.split('/basirat-course-posters/')[1];
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/basirat-course-posters', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [posterPath] }),
+        });
+      }
+      await api('/basirat_courses?id=eq.'+c.id, {method:'DELETE'});
+      await loadBasiratCourses(); renderBasiratCourses();
+      showToast('حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadBasiratPosterFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/basirat-course-posters/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('poster upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/basirat-course-posters/' + path;
+  }
+
+  document.getElementById('bas-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('bas-upload-btn');
+    const titleEl = document.getElementById('bas-title');
+    const linkEl = document.getElementById('bas-link');
+    const descEl = document.getElementById('bas-desc');
+    const posterEl = document.getElementById('bas-poster');
+    const title = titleEl.value.trim();
+    const link = linkEl.value.trim();
+    if(!title || !link){ showToast('عنوان و لینک صفحه‌ی آموزش لازم است'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      let posterUrl = null;
+      const posterFile = posterEl.files[0];
+      if(posterFile) posterUrl = await uploadBasiratPosterFile(posterFile);
+      const nextOrder = BASIRAT_COURSES.length ? Math.max(...BASIRAT_COURSES.map(c=>c.sort_order||0)) + 1 : 0;
+      const body = { title, external_url: link, description: descEl.value.trim() || null, poster_url: posterUrl, sort_order: nextOrder };
+      const r = await api('/basirat_courses', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; linkEl.value=''; descEl.value=''; posterEl.value='';
+      await loadBasiratCourses(); renderBasiratCourses();
+      showToast('بسته‌ی آموزشی اضافه شد');
     }catch(e){
       showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
     }finally{
