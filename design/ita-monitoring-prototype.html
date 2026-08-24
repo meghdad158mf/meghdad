@@ -278,7 +278,7 @@
 
   /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
   .dash-hero-grid{
-    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 28px 24px;
+    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 28px 100px;
     background: linear-gradient(155deg, rgba(142,163,184,0.14), rgba(255,255,255,0.02));
     border:1px solid rgba(142,163,184,0.22); border-radius:20px; margin-bottom:8px;
   }
@@ -307,6 +307,22 @@
   }
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
+
+  /* دو کارت راهنمای سریع زیر هرو — مثل یه فهرست کوتاه، هرکدوم با کلیک
+     می‌بره پایین‌تر توی همون صفحه (نه صفحه‌ی جدید): یکی به گرید ۴تایی
+     عرصه‌های رصد، یکی به کارت هلویی بسته تحلیلی جریان. عمداً کوتاه و
+     کم‌عرض‌تر از عرض کامل صفحه‌ن، و با margin-top منفی نصفشون روی
+     پایین کادر هرو (که padding-bottom بیشتری گرفته) قرار می‌گیره */
+  .quicknav-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; max-width:820px; margin:-72px auto 8px; position:relative; z-index:1; }
+  @media (max-width:700px){ .quicknav-grid{ grid-template-columns:1fr; margin-top:-56px; } }
+  .quicknav-card{
+    background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card);
+    padding:20px 22px; box-shadow: var(--shadow); cursor:pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .quicknav-card:hover{ transform:translateY(-3px); box-shadow: var(--shadow-hover); }
+  .quicknav-card h3{ font-size:15px; font-weight:800; color: var(--navy); margin:0 0 8px; }
+  .quicknav-card p{ font-size:12.5px; color: var(--text-dim); line-height:1.9; margin:0; }
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
@@ -949,6 +965,18 @@
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
+
+      <div class="quicknav-grid">
+        <div class="quicknav-card" onclick="scrollToDomainGrid()">
+          <h3>می‌خواهم عرصه‌های رصد را ببینم!</h3>
+          <p>اگر می‌خواهید بدانید جریان در کدام حوزه‌ها فعالیت می‌کند، عرصه‌های رصد و تحلیل جریان را از اینجا مشاهده کنید.</p>
+        </div>
+        <div class="quicknav-card" onclick="scrollToPackageCard()">
+          <h3>می‌خواهم بسته تحلیلی جریان را ببینم!</h3>
+          <p>اگر به دنبال محصول اصلی تحلیلی جریان هستید، بسته تحلیلی جریان را از اینجا مشاهده کنید.</p>
+        </div>
+      </div>
+
       <div class="section-label">عرصه‌های رصد و تحلیل</div>
       <div class="domain-grid">
         <div class="domain-card" onclick="switchSection('overview')">
@@ -3706,6 +3734,17 @@
   function scrollMagCarousel(dir){
     const wrap = document.getElementById('mag-carousel-home');
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  }
+
+  // دو کارت راهنمای سریع زیر هرو — فقط اسکرول توی همون صفحه‌ی نخست،
+  // نه switchSection (چون هر دو مقصد از قبل توی همین sec-dashboard هستن)
+  function scrollToDomainGrid(){
+    const el = document.querySelector('.domain-grid');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  function scrollToPackageCard(){
+    const el = document.querySelector('.package-card');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌ها برای یه تاریخ انتخاب‌شده.
