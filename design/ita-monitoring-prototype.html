@@ -143,7 +143,7 @@
 
   /* بسته تحلیلی جریان — کارت واحد که کاروسل «مجلات جریان» قبلی و توضیح ۱۰بخشی
      قبلی (که جدا و زیر هم بودن) رو با هم ترکیب می‌کنه، زیر یه عنوان یکتا،
-     تا با تب جدید «آرشیو تولیدات دیگران» (که زیر همین کارت میاد) اشتباه نشه */
+     تا با تب جدید «دیدن سایر بسته‌های تحلیلی» (که زیر همین کارت میاد) اشتباه نشه */
   .package-card{
     margin: 4px 0 40px; padding:26px 24px; border-radius: var(--radius-card);
     background: linear-gradient(155deg, #fffaf5, #fbe9d7);
@@ -780,6 +780,17 @@
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
+  /* گرید «دیدن سایر بسته‌های تحلیلی» صفحه‌ی نخست — برخلاف .magazine-card (که
+     خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن (مثل .domain-card)،
+     مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی بالای هر کدوم */
+  .archive-home-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(170px,1fr)); gap:20px; }
+  .archive-home-card{ display:flex; flex-direction:column; gap:10px; }
+  .archive-home-cover{ width:100%; aspect-ratio: 4/3; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+  .archive-home-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .archive-home-cover svg{ width:26%; height:26%; opacity:.5; }
+  .archive-home-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
+  .archive-home-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
+
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
   .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
   @media (max-width:900px){ .newspaper-grid{ grid-template-columns: repeat(2,1fr); } }
@@ -994,6 +1005,14 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
           </button>
         </div>
+      </div>
+
+      <div class="archive-home-panel">
+        <div class="panel-head">
+          <span class="panel-pill">دیدن سایر بسته‌های تحلیلی</span>
+          <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
+        </div>
+        <div class="archive-home-grid" id="archive-grid-home"></div>
       </div>
     </section>
 
@@ -1323,7 +1342,7 @@
 
       <div class="news-page-tabs" id="reports-page-tabs">
         <button class="active" data-reports-tab="own">مجلات جریان</button>
-        <button data-reports-tab="archive">آرشیو تولیدات دیگران</button>
+        <button data-reports-tab="archive">دیدن سایر بسته‌های تحلیلی</button>
       </div>
 
       <div id="reports-tab-own">
@@ -3837,7 +3856,7 @@
     }
   });
 
-  // ---- تب «آرشیو تولیدات دیگران» (بخش تحلیلی) ----
+  // ---- تب «دیدن سایر بسته‌های تحلیلی» (بخش تحلیلی) ----
   // برخلاف مجلات جریان، این‌ها تولیدات نهادهای دیگه‌ست که فقط بایگانی می‌کنیم —
   // همون الگوی داده/Storage مجلات (bucket خصوصی برای فایل + bucket عمومی برای جلد)،
   // فقط با یه ستون اضافه‌ی source_org (نهاد تولیدکننده).
@@ -3896,6 +3915,43 @@
       }
       grid.appendChild(el);
     });
+    renderArchiveHomeGrid();
+  }
+
+  // ویجت گرید صفحه‌ی نخست — برای دیدن سایر بسته‌های تحلیلی؛ بدون قاب/پس‌زمینه
+  // (مستقیم روی بوم تیره، طبق درخواست صریح کاربر)، هر کارت یه عکس نمایشی
+  // واقعی (جلد) بالای عنوان داره. بدون کنترل‌های مدیریتی (جابجایی/حذف) —
+  // این فقط یه پیش‌نمایش کوچیکه، مدیریت واقعی جاش توی خودِ تب آرشیوه
+  function renderArchiveHomeGrid(){
+    const wrap = document.getElementById('archive-grid-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!ARCHIVE_REPORTS.length){
+      wrap.innerHTML = '<p style="color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:20px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>';
+      return;
+    }
+    ARCHIVE_REPORTS.slice(0, 6).forEach(m=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const meta = [
+        m.source_org || '',
+        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
+      ].filter(Boolean).join(' · ');
+      const el = document.createElement('div'); el.className = 'archive-home-card';
+      el.innerHTML = `<div class="archive-home-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
+        <div class="archive-home-title">${m.title}</div>
+        <div class="archive-home-meta">${meta}</div>`;
+      el.style.cursor = files.length ? 'pointer' : 'default';
+      el.addEventListener('click', () => { if(files.length) openArchiveReportFile(m, files[0]); });
+      wrap.appendChild(el);
+    });
+  }
+
+  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
+  // و مستقیم تب «دیدن سایر بسته‌های تحلیلی» رو فعال می‌کنه
+  function openReportsArchiveTab(){
+    switchSection('reports');
+    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="archive"]');
+    if(tabBtn) tabBtn.click();
   }
 
   async function openArchiveReportFile(report, path){
