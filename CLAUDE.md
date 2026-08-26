@@ -7,9 +7,9 @@
 **شاخه‌ی زنده و واقعی این پروژه `claude/new-project-8ekywm`ه، نه `main`.** GitHub Pages از همین شاخه سرو می‌شه:
 `https://meghdad158mf.github.io/meghdad/design/ita-monitoring-prototype.html`
 
-هارنس Claude Code معمولاً یه شاخه‌ی دیگه (مثلاً `claude/new-project-continuation-ho4dzv` یا مشابه) رو به‌صورت پیش‌فرض لوکال چک‌اوت می‌کنه که **قدیمی و نامرتبطه** — اگه گیت‌گرپ یا Read روی فایل‌های لوکال چیزی متفاوت از چیزی که اینجا توضیح داده شده نشون داد، نگران نشو، یعنی روی شاخه‌ی اشتباهی — همیشه اول `git fetch origin claude/new-project-8ekywm` بزن و کارت رو از `origin/claude/new-project-8ekywm` شروع کن، نه از فایل لوکال چک‌اوت‌شده.
+هارنس Claude Code معمولاً یه شاخه‌ی دیگه رو به‌صورت پیش‌فرض لوکال چک‌اوت می‌کنه که **قدیمی و نامرتبطه** — اگه گیت‌گرپ یا Read روی فایل‌های لوکال چیزی متفاوت از چیزی که اینجا توضیح داده شده نشون داد، نگران نشو، یعنی روی شاخه‌ی اشتباهی — همیشه اول `git fetch origin claude/new-project-8ekywm` بزن و کارت رو از `origin/claude/new-project-8ekywm` شروع کن، نه از فایل لوکال چک‌اوت‌شده.
 
-**روش کار همیشگی**: `git checkout -b <شاخه‌ی-جدید> origin/claude/new-project-8ekywm` → تغییر بده → با Playwright و داده‌ی موک پیش‌نمایش بگیر (روش دقیق پایین‌تر) → اسکرین‌شات رو با `SendUserFile` برای کاربر بفرست و صریح بپرس تأیید می‌کنه یا نه → فقط بعد از تأیید، commit + push + یه Pull Request به‌سمت `claude/new-project-8ekywm` (نه `main`!) → قبل از مرج حتماً `pull_request_read` با متد `get_commits` رو چک کن که کامیت درست توی PR هست → مرج → با `get_file_contents` روی `refs/heads/claude/new-project-8ekywm` تأیید کن تغییر واقعاً نشسته → به کاربر بگو Ctrl+F5 بزنه. **پوش مستقیم به `claude/new-project-8ekywm` مسدوده** — همیشه از مسیر شاخه‌ی جدید + PR برو، حتی برای تغییرات کوچیک.
+**روش کار همیشگی**: `git checkout -b <شاخه‌ی-جدید> origin/claude/new-project-8ekywm` → تغییر بده → با Playwright و داده‌ی موک پیش‌نمایش بگیر (روش دقیق پایین‌تر) → اسکرین‌شات رو با `SendUserFile` برای کاربر بفرست و صریح بپرس تأیید می‌کنه یا نه → فقط بعد از تأیید، commit + push + یه Pull Request به‌سمت `claude/new-project-8ekywm` (نه `main`!) → قبل از مرج حتماً `pull_request_read` با متد `get_commits` رو چک کن که کامیت درست توی PR هست → مرج → با `get_file_contents`/`git diff` تأیید کن تغییر واقعاً نشسته (zero-diff بین شاخه‌ی محلی و `origin/claude/new-project-8ekywm` بعد از `fetch`) → به کاربر بگو Ctrl+F5 بزنه. **پوش مستقیم به `claude/new-project-8ekywm` مسدوده** — همیشه از مسیر شاخه‌ی جدید + PR برو، حتی برای تغییرات کوچیک.
 
 ## پروژه چیه؟
 
@@ -22,14 +22,18 @@
 از بالا به پایین، صفحه‌ی نخست (`sec-dashboard`) این بخش‌ها رو داره:
 
 1. **هدر/توپ‌بار** (`.topbar`): سمت راست آیکون برند + مسیر «سامانه هوشمند جریان / صفحه نخست»؛ سمت چپ وضعیت «به‌روزرسانی خودکار هر ۲ ساعت» (نقطه‌ی سبز چشمک‌زن + متن)، دراپ‌داون «مدیریت» (خروجی‌گیری/تنظیمات، فقط مدیر)، دکمه‌ی خروج. **در موبایل (زیر ۶۴۰px) یک‌ردیفه شده**: نام کامل سامانه و متن وضعیت مخفی می‌شن (فقط نقطه‌ی سبز چشمک‌زن می‌مونه، بدون متن — با `font-size:0` نه `display:none`، تا نمادش حفظ بشه)، دکمه‌ی «مدیریت» فقط آیکون چرخ‌دنده (بدون متن/فلش) نشون می‌ده.
-2. **هرو** (`.dash-hero`): تیتر «نبض فضای سیاسی اجتماعی در حوزه علمیه خراسان»، توضیح، **پنل آماری ۶تایی** (`#dash-hero-stats`، تابع `renderDashHeroStats()`): کانال پایش‌شونده / خبرگزاری / شخصیت / پلتفرم / مدرسه / بسته تحلیل — همه با اعداد فارسی (`toFaDigits`). ⚠️ **«مدرسه» یه عدد ثابت جعلیه** (`schoolsCount = 56`، هاردکد با کامنت توی خودِ کد، حدود خط ۱۲۳۱ فایل) چون هنوز منبع داده‌ی واقعی مدارس وجود نداره — با کارت غیرفعال «برنامه مدارس» (پایین‌تر) در تناقضه، به کاربر چندبار گفته شده، هنوز حل نشده.
-3. **«عرصه‌های رصد و تحلیل»** (`.domain-grid`، ۴ کارت `.domain-card`): اخبار رسمی، کنشگری مجازی، برنامه مدارس، افراد و مجموعه‌ها. **بدون تگ زیرمجموعه** (تگ‌ها این جلسه کاملاً حذف شدن). هر ۴ کارت یک تصویر آیکون سه‌بعدی illustrated واقعی دارن (`images/domain-icon-{news,cyberspace,schools,people}.webp`، کلاس `.domain-icon.is-illustrated`) — دیگه SVG گرادیانی دستی نیست، همه از عکس واقعی که کاربر فرستاده استفاده می‌کنن. **دو کارت الان به صفحه‌ی واقعی می‌رن**: «اخبار رسمی» به `overview` (کامل پیاده‌سازی‌شده — جزئیات کامل توی بخش «بخش اخبار رسمی» پایین‌تر) و «کنشگری مجازی» به `posts` (فیلتر ساده‌ی کانال/دسته/زمان/جست‌وجو). بقیه (`schools`/`people`) هنوز به صفحه‌ی placeholder با متن «این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد» می‌رن. **در موبایل ۲ستونه‌ست** (نه تک‌ستونه — این جلسه عمداً به دو‌ستونه تغییر کرد، زیر ۹۰۰px).
-4. **متن توضیحی** (`.domain-caption`): یه پاراگراف کوتاه وسط‌چین (سه‌خطی) زیر ردیف کارت‌ها که چهار عرصه رو خلاصه توضیح می‌ده.
-5. **کاروسل مجلات** (`.mag-widget`، عنوانش «بسته‌های تحلیلی تولید شده»): کارت هلویی‌رنگ، کاروسل افقی جلد مجلات از دیتابیس (`#mag-carousel-home`)، دکمه‌ی «مشاهده‌ی همه» به `sec-reports`. ⚠️ **الان پر از داده‌ی تستیه** — عنوان‌های "d"/"r"/"ds" و دو مجله بدون جلد واقعی (فقط آیکون سند روی زمینه‌ی سفید) — این یه مشکل محتوایی/داده‌ایه، نه کد؛ کاربر باید از پنل مدیریت مجلات واقعی رو با عنوان و جلد درست آپلود کنه. چندبار به کاربر گفته شده، هنوز حل نشده.
-6. **«بخش‌های بسته تحلیل جریان»** (`.analysis-section`) — **کاملاً جدید این جلسه، قبلاً توی هیچ نسخه‌ای نبود**: یه بلوک ثابت (نه از دیتابیس) که ۱۰ بخش واقعی هر شماره‌ی بسته‌ی تحلیلی جریان رو معرفی می‌کنه (خط خبری، تحلیل اخبار روز، مهم‌ترین اخبار، نگاه جامعه‌شناسی سیاسی، اصل ماجرا، تحلیل سازمان‌ها، یادداشت طلاب، خارج از دید، نبض افکار، تحلیل اندیشگده‌ها). چیدمان: `.analysis-top` یه گرید دوستونه — تصویر (`images/analysis-illustration.webp`) سمت راست، عنوان+توضیح+گرید۱۰تایی سمت چپ (گرید ۱۰تایی داخل `.analysis-content` تو دَره، نه زیر کل ردیف). گرید ۱۰تایی: ۵ ستون × ۲ ردیف، کارت‌های کوچیک با آیکون خطی. توضیح دقیقاً دو خطیه. **در موبایل ترتیب DOM دست‌نخورده می‌مونه** (تصویر همیشه اول، بعد متن+گرید) — کاربر یه‌بار خواست عوض بشه، امتحان شد، خوشش نیومد، برگردوندیم؛ **دیگه این ترتیب رو توی موبایل عوض نکن مگه اینکه صریح دوباره خواسته بشه.**
-7. **فوتر** (`.app-footer`): تماس، آدرس، نهاد مسئول.
+2. **هرو** (`.dash-hero-grid`): تیتر «نبض فضای سیاسی اجتماعی در حوزه علمیه خراسان»، توضیح، **پنل آماری ۶تایی** (`#dash-hero-stats`، تابع `renderDashHeroStats()`): کانال پایش‌شونده / خبرگزاری / شخصیت / پلتفرم / مدرسه / بسته تحلیل — همه با اعداد فارسی (`toFaDigits`). «مدرسه» عدد ثابت (`schoolsCount = 126`) از آخرین گزارش Power BI کاربر — چون تحلیل مدارس توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته (بخش «برنامه مدارس» رو پایین‌تر ببین)، منبع زنده‌ای براش نیست؛ با هر گزارش جدید باید دستی به‌روز بشه. `margin-top: 50px` روی خودِ `.dash-hero-grid` (نه `margin-bottom` مشترک `.topbar`) فاصله‌ی بیشتری از هدر ایجاد می‌کنه.
+3. **دو کارت راهنمای سریع** (`.quicknav-grid`، دو `.quicknav-card`): «می‌خواهم عرصه‌های رصد را ببینم!» (کلیک → `scrollToDomainGrid()`) و «می‌خواهم بسته تحلیلی جریان را ببینم!» (کلیک → `scrollToPackageCard()`) — هر دو فقط اسکرول *داخل همون صفحه*، نه ناوبری واقعی. کارت‌ها بدون آیکون/دکمه، فقط عنوان+توضیح، وسط‌چین و کم‌عرض. کادر هرو با `padding-bottom: 100px` تا نصف پشت این دو کارت کشیده شده (`margin: -72px` روی خودِ `.quicknav-grid` این افکت رو می‌سازه).
+4. **«عرصه‌های رصد و تحلیل»** (`.section-label` + `.domain-grid`، ۴ کارت `.domain-card`): اخبار رسمی، کنشگری مجازی، برنامه مدارس، افراد و مجموعه‌ها. بدون تگ زیرمجموعه. هر ۴ کارت یک تصویر آیکون سه‌بعدی illustrated واقعی دارن (`images/domain-icon-{news,cyberspace,schools,people}.webp`، کلاس `.domain-icon.is-illustrated`). کارت‌ها هیچ قاب/پس‌زمینه‌ای ندارن — مستقیم روی بوم تیره. کلیک هر کارت → `switchSection('overview'|'posts'|'schools'|'people')` — **همه‌ی ۴ صفحه الان کامل پیاده‌سازی شده‌ان** (دیگه هیچ‌کدوم placeholder نیستن؛ جزئیات هرکدوم پایین‌تر). در موبایل ۲ستونه (زیر ۹۰۰px). `.section-label` خودش `margin-top: 160px` داره (فاصله‌ی زیاد از دو کارت راهنمای بالاش) و `scroll-margin-top: 140px` (برای وقتی `scrollToDomainGrid()` بهش اسکرول می‌کنه، تا تیتر چسبیده به لبه‌ی بالای صفحه دیده نشه).
+5. **متن توضیحی** (`.domain-caption`): یه پاراگراف کوتاه وسط‌چین (سه‌خطی) زیر ردیف کارت‌ها که چهار عرصه رو خلاصه توضیح می‌ده.
+6. **ردیف میان‌برهای زیربخش‌ها** (`.domain-shortcuts`، ۱۴ مورد): زیر توضیح سه‌خطی، لینک‌های pill-شکل به همه‌ی زیرتب‌های سه عرصه‌ای که تب دارن (اخبار رسمی: ۷ تا، کنشگری مجازی: ۲ تا، افراد و مجموعه‌ها: ۵ تا — «برنامه مدارس» تب نداره پس ازش چیزی نیومده). موارد فعال `<a onclick="goToNewsTab(tab)"|"goToPeopleTab(tab)"|"switchSection('posts')">` و موارد هنوز غیرفعال `<span class="domain-shortcut-disabled">...<span class="news-soon">به‌زودی</span></span>` (بدون گروه‌بندی با اسم عرصه — فقط اسم خودِ تب، کنار هم؛ چون بدون اسم عرصه دو مورد «آنالیز» تکراری می‌شدن، به «آنالیز اخبار»/«آنالیز افراد»/«آنالیز کنشگری» تغییر نام دادن تا مشخص باشن). `goToNewsTab(tab)`/`goToPeopleTab(tab)` هر دو ابتدا `switchSection` می‌زنن بعد تب داخلی رو عوض می‌کنن — تعریفشون بلافاصله بعد از `switchSection()` توی کد اومده.
+7. **کارت «بسته تحلیلی جریان»** (`.package-card`، کارت هلویی‌رنگ یکپارچه — قبلاً دو بلوک جدا بود، توی PR #122 یکی شدن): بالا (`.package-top`) تصویر (`images/analysis-illustration.webp`) + عنوان/توضیح/گرید۱۰تایی خطی (ثابت، نه از دیتابیس — خط خبری، تحلیل اخبار روز، مهم‌ترین اخبار، نگاه جامعه‌شناسی سیاسی، اصل ماجرا، تحلیل سازمان‌ها، یادداشت طلاب، خارج از دید، نبض افکار، تحلیل اندیشگده‌ها)؛ زیرش (`.package-divider` بعد) کاروسل افقی جلد مجلات از دیتابیس (`#mag-carousel-home`، جدول `magazines`) با فلش چپ/راست (جهت **تأیید و تست‌شده**: راست=«›»=بعدی، چپ=«‹»=قبلی) و دکمه‌ی «مشاهده‌ی همه» به `sec-reports`. `margin-top: 200px` (بالای کارت، از ردیف میان‌برهای بالاش جدا می‌کنه) + `scroll-margin-top: 90px` (برای `scrollToPackageCard()`).
+8. **ویجت «بسته‌های آموزش تحلیلی»** (`.basirat-widget-block`، طرح دوستونه): سمت راست لوگو+عنوان+توضیح+دکمه (مدرسه مجازی بصیرت)، سمت چپ ردیف پوستر افقی قابل‌اسکرول از جدول `basirat_courses` (`#basirat-grid-home`). `margin-top: 160px`.
+9. **خط جداکننده‌ی نازک** (`.home-widget-divider`) بین این ویجت و ویجت بعدی.
+10. **ویجت «دیدن سایر بسته‌های تحلیلی»** (`.home-widget-block`): عنوان+دکمه‌ی «مشاهده‌ی همه» بالا، گرید پوستر پایین از جدول `archive_reports` (`#archive-grid-home`).
+11. **فوتر** (`.app-footer`): تماس، آدرس، نهاد مسئول.
 
-⚠️ نکات باز/فلگ‌شده که حل نشدن (به «قدم بعدی» پایین نگاه کن): تناقض «۵۶ مدرسه»، داده‌ی تستی کاروسل مجلات، سه سیستم آیکون متفاوت (کارت‌های اصلی سه‌بعدی / تصویر بخش تحلیل گرادیانی‌تخت / گرید ۱۰تایی خطی)، هم‌پوشانی اسمی احتمالی بین «بسته‌های تحلیلی تولید شده» (کاروسل، دانلود واقعی) و «بخش‌های بسته تحلیل جریان» (توضیح ثابت محتوا).
+⚠️ نکات باز/فلگ‌شده که حل نشدن (به «قدم بعدی» پایین نگاه کن): داده‌ی تستی احتمالی توی مجلات/آرشیو/بصیرت (نیاز به بررسی مجدد از پنل مدیریت)، سه سیستم آیکون متفاوت (کارت‌های اصلی سه‌بعدی illustrated / تصویر بخش «بسته تحلیلی جریان» گرادیانی‌تخت / گرید ۱۰تایی خطی).
 
 ## روش پیش‌نمایش قبل از مرج (Playwright + داده‌ی موک)
 
@@ -39,29 +43,41 @@
    ```
    git --git-dir=/home/user/meghdad/.git archive origin/claude/new-project-8ekywm design/images design/fonts | tar -x --strip-components=1
    ```
-2. قبل از مارکر `// ---- boot ----`، بوت اصلی رو با این جایگزین کن (نه با صداکردن مستقیم `enterDash` — باید `loadAll()` هم صدا زده بشه وگرنه پنل آمار هرو و کاروسل مجلات خالی می‌مونن چون `renderDashHeroStats()`/`renderMagazines()` فقط داخل `loadAll()` صدا زده می‌شن):
+2. قبل از مارکر `// ---- boot ----`، بوت اصلی رو با این جایگزین کن (نه با صداکردن مستقیم `enterDash` — باید `loadAll()` هم صدا زده بشه). ⚠️ **این لیست باید کامل باشه** — `loadAll()` همه‌ی این توابع رو صدا می‌زنه و اگه حتی یکی override نشده باشه، fetch واقعی به Supabase (که این محیط بهش دسترسی نداره) fail می‌شه و چون `loadAll().then(...)` بدون `.catch()`ه، کل promise chain reject می‌شه و `enterDash` هیچ‌وقت صدا زده نمی‌شه — نتیجه: صفحه‌ی ورود (login) به‌جای داشبورد نشون داده می‌شه، بدون هیچ خطای واضحی (این باگ واقعاً یه‌بار رخ داد و کلی وقت گرفت تا پیدا بشه):
    ```js
    loadChannels = async function(){ CHANNELS = []; };
    loadCategories = async function(){ CATEGORIES = []; };
    loadRegions = async function(){ REGIONS = []; };   // اگه فیلترهای اخبار رسمی/منطقه رو تست می‌کنی حتماً پر کن، وگرنه چیپ منطقه خالی می‌مونه
    loadPosts = async function(){ POSTS_CACHE = []; };
-   loadMagazines = async function(){ MAGAZINES = [ /* آرایه‌ی فیک اختیاری */ ]; };
+   loadMagazines = async function(){ MAGAZINES = []; };
+   loadArchiveReports = async function(){ ARCHIVE_REPORTS = []; };
+   loadBasiratCourses = async function(){ BASIRAT_COURSES = []; };
+   loadSchoolReports = async function(){ SCHOOL_REPORTS = []; };
+   loadPeople = async function(){ PEOPLE = []; };
+   loadPersonPositions = async function(){ PERSON_POSITIONS = []; };
+   loadProfessors = async function(){ PROFESSORS = []; };
+   loadProfessorSpecialties = async function(){ PROFESSOR_SPECIALTIES = []; };
+   loadProfessorRanks = async function(){ PROFESSOR_RANKS = []; };
+   loadNewspapers = async function(){ NEWSPAPERS = []; };
    currentRole = 'app_admin';   // ⚠️ اسم متغیر currentRole‌ه، نه ROLE — با ROLE کار نمی‌کنه و applyRoleUI() چیزی نشون نمی‌ده
    authToken = 'fake-token';
    applyRoleUI();
    loadAll().then(()=> enterDash('dashboard'));
    ```
+   اگه صفحه بعد از اجرا همچنان روی «ورود» موند (نه داشبورد)، اول چک کن که همه‌ی `loadX` بالا override شدن؛ اگه فرقی نکرد، با `page.on('pageerror', ...)`/`page.on('console', ...)` خطاهای واقعی رو بگیر (معمولاً `Failed to fetch` یا مشابه، از یه `loadX` جا‌افتاده میاد).
 3. با `NODE_PATH=/opt/node22/lib/node_modules node script.js` اجرا کن (پکیج playwright به‌صورت گلوبال نصبه، `require('playwright')` مستقیم کار نمی‌کنه بدون NODE_PATH). مرورگر: `executablePath: '/opt/pw-browsers/chromium'`.
-4. برای تست موبایل، `viewport: { width: 390, height: 844 }` (اندازه‌ی آیفون) رو امتحان کن.
+4. برای تست موبایل، `viewport: { width: 390, height: 900 }` (یا ۸۴۴) رو امتحان کن؛ برای چک اسکرول افقی، `document.body.scrollWidth` رو با `document.documentElement.clientWidth` مقایسه کن (باید مساوی باشن).
 
 ## معماری فعلی
 
 ```
-GitHub Actions (کالکتورها هر ۲ ساعت cron، پاک‌سازی روزانه — فقط از شاخه‌ی main اجرا می‌شن، نگاه کن به نکته‌ی عملیاتی پایین)
+GitHub Actions (کالکتورها با cron دوره‌ای، پاک‌سازی روزانه — فقط از شاخه‌ی main اجرا می‌شن، نگاه کن به نکته‌ی عملیاتی پایین)
     │
     ├── scripts/collect_eitaa.py     ── اسکرپ HTML صفحات عمومی eitaa.com (بدون نیاز به API)
     ├── scripts/collect_telegram.py  ── Telethon، polling دوره‌ای (نه listener زنده) + دانلود عکس/فیلم پست‌ها
     ├── scripts/collect_rss.py       ── فید RSS سایت‌های خبری (platform='website')
+    ├── scripts/collect_newspapers.py── صفحه‌ی اول روزنامه‌ها از کیوسک جار (jaaar.com/kiosk)
+    ├── scripts/collect_bale.py      ── کانال «رصد شایعات» (@rasadfakenews) پیام‌رسان بله، برای تب «ادعاها و شایعات» — پارس React Flight payload سمت‌سرور صفحه‌ی ble.ir (نه API رسمی)
     └── scripts/cleanup_media.py     ── روزانه: رسانه‌ی پست‌های قدیمی‌تر از RETENTION_DAYS رو از Storage پاک می‌کنه (فعلاً موقتاً ۱ روز، نگاه کن به «نکات عملیاتی» پایین)
     │
     ▼
@@ -69,16 +85,25 @@ Supabase (Postgres + PostgREST رایگان)
     │  دو نقش Postgres: app_admin / app_viewer
     │  ورود با پسورد مشترک از طریق تابع public.login() (pgcrypto برای هش، pgjwt برای توکن)
     │  RLS: بیننده فقط خواندن، مدیر خواندن/نوشتن
-    │  Storage: چهار bucket — magazines (خصوصی)، magazine-covers (عمومی)، post-media (عمومی، عکس/فیلم پست‌ها)
+    │  Storage: ۹ bucket — magazines (خصوصی)، magazine-covers، post-media، newspaper-covers،
+    │           channel-avatars، school-reports، archive-reports (خصوصی)، archive-report-covers،
+    │           basirat-course-posters — همه‌ی خصوصی‌ها با signed URL کوتاه‌عمر باز می‌شن
     ▼
 design/ita-monitoring-prototype.html  ── فرانت‌اند تک‌فایلی، مستقیم با fetch به PostgREST/Storage وصله
 ```
 
 هیچ بک‌اند سفارشی (FastAPI و مشابه) وجود نداره — فرانت‌اند مستقیم با Supabase حرف می‌زنه.
 
-**نکته‌ی مهم:** کالکتورها/جاب‌های GitHub Actions فقط از شاخه‌ی `main` اجرا می‌شن (رفتار پیش‌فرض GitHub)، پس هر بار که `scripts/*.py` یا `.github/workflows/*.yml` روی `claude/new-project-8ekywm` تغییر می‌کنه، باید همون تغییر با یه PR جدا به `main` هم sync بشه (یه branch از `origin/main` بساز، `origin/claude/new-project-8ekywm` رو داخلش merge کن، PR بزن به `main`) — وگرنه تغییر روی شاخه‌ی زنده می‌مونه ولی هیچ‌وقت واقعاً اجرا نمی‌شه.
+**نکته‌ی مهم:** کالکتورها/جاب‌های GitHub Actions فقط از شاخه‌ی `main` اجرا می‌شن (رفتار پیش‌فرض GitHub)، پس هر بار که `scripts/*.py` یا `.github/workflows/*.yml` روی `claude/new-project-8ekywm` تغییر می‌کنه، باید همون تغییر با یه PR جدا به `main` هم sync بشه. **روش این پروژه**: یه branch از `origin/main` بساز (`git checkout -b <شاخه‌جدید> origin/main`)، `origin/claude/new-project-8ekywm` رو کامل داخلش merge کن (`git merge origin/claude/new-project-8ekywm`) — این معمولاً یه عالمه فایل دیگه (فرانت‌اند، migrationها) رو هم میاره چون `main` معمولاً چند PR عقب‌تره؛ اشکالی نداره، این روال استانداردیه که تا الان چندین‌بار همین‌طوری انجام شده (PRهای «sync: به‌روزرسانی main با claude/new-project-8ekywm») — بعد PR بزن به `main`. وگرنه تغییر روی شاخه‌ی زنده می‌مونه ولی هیچ‌وقت واقعاً اجرا نمی‌شه.
 
-**نکته‌ی تجربه‌شده:** اولین اجرای `collect_telegram.py` بعد از هر بار خالی‌کردن جدول `posts` (یا اضافه‌شدن کانال جدید) کلی کندتر از اجرای عادیه، چون باید کل بک‌فیل (تا `MESSAGES_PER_CHANNEL_LIMIT=200` پیام قدیمی) رو بگیره و همزمان عکس/فیلم هر پیام رو هم دانلود کنه — یک‌بار همین باعث شد جاب توی سقف قبلی (۱۵ دقیقه) کنسل بشه و ۲ تا از ۳ کانال اصلاً پردازش نشن. `timeout-minutes` این ورک‌فلو الان **۴۰**ه (هم روی `claude/new-project-8ekywm` هم `main`) که برای یه بک‌فیل کامل کافیه؛ اجراهای بعدی (increment) خیلی سریع‌تر می‌شن.
+**نکته‌ی تجربه‌شده:** اولین اجرای `collect_telegram.py` بعد از هر بار خالی‌کردن جدول `posts` (یا اضافه‌شدن کانال جدید) کلی کندتر از اجرای عادیه، چون باید کل بک‌فیل (تا `MESSAGES_PER_CHANNEL_LIMIT=200` پیام قدیمی) رو بگیره و همزمان عکس/فیلم هر پیام رو هم دانلود کنه. `timeout-minutes` این ورک‌فلو **۴۰**ه (هم روی `claude/new-project-8ekywm` هم `main`) که برای یه بک‌فیل کامل کافیه؛ اجراهای بعدی (increment) خیلی سریع‌تر می‌شن.
+
+**نکته‌ی حجم Storage:** پلن رایگان Supabase فقط ۱ گیگابایت Storage می‌ده. باکت `post-media` (عکس/فیلم واقعی پست‌ها) به‌تنهایی بیشترین حجم رو می‌گیره — با حساب سرانگشتی حدود ۱.۲ گیگ/روز جمع‌آوری می‌شه. اگه لازم شد حجم Storage رو دوباره چک کنی، این کوئری رو بده کاربر توی SQL Editor اجرا کنه:
+```sql
+select bucket_id, count(*) as file_count, round(sum((metadata->>'size')::bigint) / 1024.0 / 1024.0, 1) as size_mb
+from storage.objects group by bucket_id order by size_mb desc;
+```
+(این محیط دسترسی شبکه‌ی مستقیم به دامنه‌ی Supabase رو نداره — نمی‌شه از اینجا مستقیم کوئری زد یا Storage API صدا زد؛ همیشه باید از کاربر خواست خودش توی داشبورد/SQL Editor اجرا کنه و نتیجه رو برگردونه.)
 
 ## ساختار ریپو
 
@@ -93,23 +118,34 @@ db/migration_007_news_membership.sql       سه ستون مستقل show_in_news
 db/migration_008_post_media.sql            ستون‌های media_storage_path/media_source_url/media_fetched_at روی posts + bucket عمومی post-media (دانلود واقعی عکس/فیلم)
 db/migration_009_dynamic_regions.sql       جدول regions (پویا، مثل categories) + channels.region_id — جایگزین ستون متنی region با CHECK ثابت (غیر idempotent، فقط یک‌بار اجرا شده)
 db/migration_010_newspapers.sql            جدول newspapers + bucket عمومی newspaper-covers (تب «روزنامه‌ها»)
+db/migration_011_bale_claims.sql           پلتفرم 'bale' روی channels/posts + کانال پیش‌فرض «رصد شایعات» (@rasadfakenews) برای تب «ادعاها و شایعات»
+db/migration_012_channel_avatar.sql        ستون avatar_url روی channels + bucket عمومی channel-avatars (عکس پیش‌فرض کانال برای پست‌های بدون عکس)
+db/migration_013_school_reports.sql        جدول school_reports + bucket عمومی school-reports (گالری اسکرین‌شات Power BI برای «برنامه مدارس»)
+db/migration_014_school_reports_files.sql  ستون‌های file_type/file_name روی school_reports (پشتیبانی PDF/اکسل، نه فقط عکس)
+db/migration_015_people.sql                بخش «افراد و مجموعه‌ها»: person_positions, people, people_positions, professor_specialties, professor_ranks, professors, professor_specialty_links
+db/migration_016_archive_reports.sql       جدول archive_reports + bucket خصوصی archive-reports + bucket عمومی archive-report-covers (تب «دیدن سایر بسته‌های تحلیلی»)
+db/migration_017_basirat_courses.sql       جدول basirat_courses + bucket عمومی basirat-course-posters (تب/ویجت «بسته‌های آموزش تحلیلی»)
 db/seed_telegram_channels.sql              ۴ کانال پیش‌فرض تلگرام
+scripts/requirements.txt                   وابستگی‌های مشترک پایتون همه‌ی اسکریپت‌ها (requests, beautifulsoup4, telethon, python-dotenv, feedparser)
 scripts/collect_eitaa.py                   کالکتور ایتا
 scripts/collect_telegram.py                کالکتور تلگرام (شامل دانلود عکس/فیلم)
 scripts/collect_rss.py                     کالکتور RSS سایت‌های خبری (platform=website)
 scripts/collect_newspapers.py              کالکتور صفحه‌ی اول روزنامه‌ها از کیوسک جار (jaaar.com/kiosk) — دانلود واقعی عکس، نه hotlink
+scripts/collect_bale.py                    کالکتور کانال بله «رصد شایعات» — پارس HTML رندرشده‌ی سمت‌سرور (React Flight payload)، نه API رسمی بله
 scripts/cleanup_media.py                   جاب روزانه‌ی پاک‌سازی رسانه‌ی قدیمی‌تر از RETENTION_DAYS از Storage (عکس/فیلم پست‌ها + عکس روزنامه‌ها؛ فعلاً موقتاً ۱ روز)
 scripts/telegram_session_to_string.py      ابزار یک‌بارمصرف محلی
 .github/workflows/collect-eitaa.yml
 .github/workflows/collect-telegram.yml     timeout-minutes: 40 (به‌خاطر بک‌فیل اولیه + دانلود رسانه، نگاه کن به «معماری فعلی»)
 .github/workflows/collect-rss.yml
 .github/workflows/collect-newspapers.yml
+.github/workflows/collect-bale.yml         چندبار در روز (ساعت‌های مشخص به وقت ایران)، timeout-minutes: 15
 .github/workflows/cleanup-media.yml
 design/ita-monitoring-prototype.html       فرانت‌اند کامل (تک‌فایل HTML/CSS/JS)
 design/fonts/                              فونت IRANSansX (وریبل + Regular، وصل با @font-face)
 design/images/dashboard-hero.webp          تصویرسازی هرو داشبورد (پس‌زمینه‌ی شفاف)
 design/images/domain-icon-{news,cyberspace,schools,people}.webp   آیکون‌های سه‌بعدی illustrated ۴ کارت اصلی
-design/images/analysis-illustration.webp   تصویر بخش «بخش‌های بسته تحلیل جریان»
+design/images/analysis-illustration.webp   تصویر بخش «بسته تحلیلی جریان»
+design/images/basirat-logo.webp            لوگوی مدرسه مجازی بصیرت
 .claude/skills/ui-ux-pro-max/              اسکیل طراحی نصب‌شده توسط یک سشن دیگه (چک‌لیست‌های UI/UX)
 ```
 
@@ -117,76 +153,99 @@ design/images/analysis-illustration.webp   تصویر بخش «بخش‌های �
 
 ## جدول‌های دیتابیس (خلاصه)
 
-- **channels**: id, platform (`eitaa`|`telegram`|`website`), username, title, type (`news_agency`|`person`), category_id, **region_id** (FK به `regions`، nullable)، **show_in_news / show_in_cyberspace / show_in_people** (boolean، مستقل از هم — عضویت کانال در هر عرصه رو دیگه صریح این سه ستون تعیین می‌کنه نه type/platform)، active
-- **posts**: id, channel_id, platform, platform_post_id, text, **title** (فقط پست‌های RSS پر می‌شه)، media_type, **media_storage_path** (مسیر داخل bucket برای حذف بعدی)، **media_source_url** (لینک اصلی رسانه در مبدأ، فقط ایتا)، **media_fetched_at** (null یعنی رسانه پاک‌سازی شده یا اصلاً دانلود نشده)، posted_at, scraped_at, views, forwards, link — یکتا روی (channel_id, platform_post_id)؛ فیلد قدیمی `media_path` = لینک عمومی نمایش مستقیم فایل در bucket `post-media`
-- **regions**: id, name, created_at — منطقه‌ی جغرافیایی منبع خبری (پویا و قابل‌مدیریت از پنل، دقیقاً مثل categories؛ migration_009)
+- **channels**: id, platform (`eitaa`|`telegram`|`website`|`bale`)، username, title, type (`news_agency`|`person`), category_id, **region_id** (FK به `regions`، nullable)، **avatar_url** (عکس پیش‌فرض کانال، migration_012)، **show_in_news / show_in_cyberspace / show_in_people** (boolean، مستقل از هم)، active
+- **posts**: id, channel_id, platform, platform_post_id, text, **title** (پست‌های RSS و بله پر می‌کنن)، media_type, **media_storage_path**، **media_source_url** (فقط ایتا)، **media_fetched_at**، posted_at, scraped_at, views, forwards, link — یکتا روی (channel_id, platform_post_id)
+- **regions**: id, name, created_at — منطقه‌ی جغرافیایی منبع خبری (پویا، مثل categories؛ migration_009)
 - **categories**: id, name, color — دسته‌بندی موضوعی، محور جدا از حوزه‌ی رصد
-- **domains**: id, key, name, sort_order — فقط رفرنس/مستندسازی (migration_002)، فرانت‌اند مستقیم از روی `.domain-card`های هاردکد کار می‌کنه، نه از این جدول کوئری می‌گیره؛ اهمیت عملی نداره.
-- **magazines**: id, title, issue_no, publish_date, file_type (`pdf`|`images`), files (jsonb، مسیرهای bucket خصوصی magazines)، cover_url (لینک عمومی bucket magazine-covers یا null)، sort_order، uploaded_at
-- **newspapers**: id, slug, title, edition_date, image_url (لینک عمومی bucket `newspaper-covers` یا null بعد از پاک‌سازی)، media_storage_path (برای حذف بعدی)، reader_url (لینک آرشیو در jaaar.com)، scraped_at — یکتا روی (slug, edition_date)؛ migration_010
+- **domains**: id, key, name, sort_order — فقط رفرنس/مستندسازی (migration_002)، فرانت‌اند مستقیم از روی `.domain-card`های هاردکد کار می‌کنه، اهمیت عملی نداره.
+- **magazines**: id, title, issue_no, publish_date, file_type (`pdf`|`images`), files (jsonb، bucket خصوصی magazines)، cover_url (bucket magazine-covers)، sort_order، uploaded_at — «بسته تحلیلی جریان» خودِ جریان
+- **newspapers**: id, slug, title, edition_date, image_url (bucket `newspaper-covers`)، media_storage_path، reader_url، scraped_at — یکتا روی (slug, edition_date)؛ migration_010
+- **school_reports**: id, title, image_url, media_storage_path, **file_type** (`image`|`pdf`|`excel`، migration_014)، **file_name**، sort_order, uploaded_at — گالری اسکرین‌شات/فایل Power BI برای «برنامه مدارس»؛ bucket عمومی `school-reports`؛ migration_013/014
+- **people / person_positions / people_positions**: افراد (فعالان سیاسی‌اجتماعی) — `people` هر ردیف یک نفر (national_id، city، importance، affiliation، channel_id، notes)؛ `person_positions` سمت‌های پویا و قابل‌مدیریت؛ `people_positions` جدول واسط many-to-many (یک نفر چند سمت)؛ migration_015
+- **professors / professor_specialties / professor_ranks / professor_specialty_links**: اساتید سیاسی‌اجتماعی — `professors` هر ردیف یک نفر (national_id، city، institution، rank_id تک‌انتخابی، importance، notes)؛ `professor_specialties` حوزه‌ی تخصصی پویا و **چندانتخابی** (جدول واسط `professor_specialty_links`)؛ `professor_ranks` مرتبه‌ی علمی/حوزوی پویا و تک‌انتخابی؛ migration_015. ⚠️ ستون `national_id` روی هر دو جدول `people`/`professors` طبق تصمیم صریح کاربر برای هر دو نقش (مدیر و بیننده) قابل‌مشاهده‌ست.
+- **archive_reports**: id, title, **source_org** (نهاد تولیدکننده)، publish_date, file_type, files (jsonb، bucket خصوصی archive-reports)، cover_url (bucket archive-report-covers)، sort_order، uploaded_at — دقیقاً الگوی `magazines` ولی برای تولیدات تحلیلی نهادهای دیگه (نه خودِ جریان)؛ migration_016
+- **basirat_courses**: id, title, description, poster_url (bucket basirat-course-posters)، **external_url** (لینک بیرونی به سایت بصیرت — هیچ فایل واقعی توی Storage خودمون ذخیره نمی‌شه، فقط پوستر+لینک)، sort_order، created_at؛ migration_017
 - **app_config**: رمزهای هش‌شده‌ی مدیر/بیننده + رمز JWT (فقط از طریق توابع SECURITY DEFINER قابل‌خوندنه)
 
-## بخش تحلیلی — کتابخانه‌ی مجلات (کامل پیاده‌سازی شده)
+## بخش تحلیلی (`sec-reports`، سه تب)
 
-- **صفحه‌ی نخست**: ویجت کاروسل افقی (`#mag-carousel-home`) — جلد مجلات به‌شکل کارت‌های مستطیلی، فلش چپ/راست برای اسکرول (جهت **تأیید و تست‌شده**: راست=«›»=بعدی، چپ=«‹»=قبلی). کارت هلویی‌رنگ (`linear-gradient(155deg, #fffaf5, #fbe9d7)`).
-- **صفحه‌ی اختصاصی** (`sec-reports`، «بخش تحلیلی — کتابخانه‌ی مجلات»): گرید کامل مجلات + پنل بارگذاری (فقط مدیر).
-- **بارگذاری**: فایل اصلی (PDF یا چند عکس) → bucket خصوصی `magazines`؛ جلد (اختیاری) → bucket عمومی `magazine-covers`.
-- **نمایش**: مودال تمام‌صفحه (`#magazine-viewer`) — PDF با iframe، عکس با `<img>` (راست‌کلیک/درگ غیرفعال، جلوگیری کامل از دانلود نیست، به کاربر گفته شده).
-- **مدیریت (فقط مدیر)**: حذف مجله (فایل Storage + ردیف دیتابیس با هم)، جابجایی ترتیب (`sort_order`).
+قبلاً «کتابخانه‌ی مجلات» بود؛ الان سه تب مستقل داره، هرکدوم با داده/Storage جدا ولی الگوی UI مشترک (`.magazine-grid`، `data-viewer-kind`، پنل بارگذاری فقط مدیر):
 
-## بخش «اخبار رسمی» (کامل پیاده‌سازی شده — id داخلی کد `overview`)
+1. **«مجلات جریان»** (`#reports-tab-own`، پیش‌فرض): همون کتابخانه‌ی اصلی مجلات خودِ جریان، جدول `magazines`. بارگذاری: فایل اصلی (PDF یا چند عکس) → bucket خصوصی `magazines`؛ جلد (اختیاری) → bucket عمومی `magazine-covers`. مدیریت (فقط مدیر): حذف (فایل Storage + ردیف با هم)، جابجایی ترتیب.
+2. **«بسته‌های آموزش تحلیلی»** (`#reports-tab-basirat`، `openReportsBasiratTab()`): بسته‌های آموزشی مدرسه مجازی بصیرت — عنوان، توضیح کوتاه، پوستر، لینک بیرونی. جدول `basirat_courses`.
+3. **«دیدن سایر بسته‌های تحلیلی»** (`#reports-tab-archive`، `openReportsArchiveTab()`): بایگانی تولیدات تحلیلی نهادهای دیگر (نه خودِ جریان). جدول `archive_reports`.
 
-- **صفحه** (`sec-overview`): تب «مطالعه» فعال، تب «آنالیز» غیرفعال («به‌زودی»). سربرگ + دکمه‌ی نمایش فهرستی/چندستونه (`news-view-list-btn`/`news-view-grid-btn`) + فیلترها + `#news-feed` (کارت‌های خبر، `grid-view` پیش‌فرض ۳ ستونه با ردیف‌های هم‌ارتفاع، در موبایل ۲/۱ ستونه) + صفحه‌بندی (`#news-pagination`).
-- **عضویت کانال در این صفحه**: `newsChannels()` = `CHANNELS.filter(c => c.show_in_news)`. کاملاً مستقل از عضویت در «کنشگری مجازی» (`show_in_cyberspace`) — یک کانال می‌تونه هم‌زمان توی هر دو باشه یا هیچ‌کدوم. از پنل «مدیریت کانال‌ها» با سه چک‌باکس مستقل (اخبار رسمی/کنشگری مجازی/افراد و شخصیت‌ها، آرایه‌ی `CHAN_DOMAIN_FIELDS`) کنترل می‌شه.
+نمایش فایل اصلی (نه پوستر): مودال تمام‌صفحه (`#magazine-viewer`) — PDF با iframe، عکس با `<img>` (راست‌کلیک/درگ غیرفعال، جلوگیری کامل از دانلود نیست، به کاربر گفته شده).
+
+## بخش «اخبار رسمی» (`sec-overview`، پنج تب واقعی + سه placeholder)
+
+- **تب‌ها** (`.news-page-tabs` بالای صفحه): «شبکه‌های اجتماعی» (`study`، پیش‌فرض)، «وب‌سایت‌ها» (`website`)، «روزنامه‌ها» (`newspapers`، جزئیات پایین‌تر)، «ادعاها و شایعات» (`claims`) — چهارتا فعالن؛ «پرونده ویژه»، «خبرخوان مدارس»، «آنالیز» غیرفعال با نشان «به‌زودی». `setNewsPageTab(tab)` جابه‌جا می‌کنه.
+- **عضویت کانال در این صفحه**: `newsChannels()` = `CHANNELS.filter(c => c.show_in_news)`. مستقل از «کنشگری مجازی» (`show_in_cyberspace`). از پنل «مدیریت کانال‌ها» با سه چک‌باکس مستقل کنترل می‌شه.
+- **تب «ادعاها و شایعات» (`claims`)**: فیلتر می‌کنه روی `platform === 'bale'` (فقط کانال «رصد شایعات»، migration_011). متن پست‌ها با `claimsTextDisplay()` و کلاس `.claims-text` (کلمپ ۴ خطی، متفاوت از بقیه‌ی تب‌ها) نمایش داده می‌شه چون ساختار پست‌های این کانال (موضوع/الگوی انتشار/رسانه‌های منتشرکننده) با بقیه فرق داره — `collect_bale.py` قبلاً موضوع رو جدا کرده و `posts.title` گذاشته.
 - **ردیف فیلترها** (`newsState = {region, time, sources, query, page, dateFrom, dateTo}`):
-  - **زمان** (`#news-time-seg`): دکمه‌های همه/امروز/دیروز/هفته گذشته + یک `<details id="news-daterange-details">` که **مستقیم داخل همون کادر segmented قرار داره** (نه چسبیده جدا) — کاربر صریح همین چیدمان رو خواسته، دیگه عوضش نکن. باز کردنش دو تا `<input type=date>` (از/تا) + دکمه‌ی پاک‌کردن بازه رو نشون می‌ده. ⚠️ چون دکمه‌ی «پاک‌کردن بازه» یه `<button>` واقعی داخل همین container با delegated-click‌ه، هندلر `#news-time-seg` حتماً باید `!b.dataset.t` رو گارد کنه و `querySelectorAll` رو به `> button` (فرزند مستقیم) محدود کنه، وگرنه کلیک روی پاک‌کردن به‌اشتباه به‌عنوان دکمه‌ی زمانی تشخیص داده می‌شه (باگ واقعی، قبلاً رخ داده و رفع شده).
-  - **منطقه** (`#news-region-row`، `renderNewsRegionChips()`): چیپ‌های منطقه از جدول `regions` ساخته می‌شن، پویا (نه هاردکد).
-  - **منابع** (`#news-source-details`/`#news-source-list`، `populateNewsSourceOptions()`): چندانتخابی (checkbox list در popover)، نه select تک‌انتخابی.
-- **منبع RSS** (`collect_rss.py`، `platform='website'`) هم مثل ایتا/تلگرام پست تولید می‌کنه؛ `posts.title` فقط برای این‌ها پر می‌شه (ایتا/تلگرام عنوان جدا ندارن).
+  - **زمان** (`#news-time-seg`): دکمه‌های همه/امروز/دیروز/هفته گذشته + `<details id="news-daterange-details">` داخل همون کادر segmented. ⚠️ هندلر `#news-time-seg` باید `!b.dataset.t` رو گارد کنه و `querySelectorAll` رو به `> button` محدود کنه، وگرنه کلیک روی «پاک‌کردن بازه» اشتباه تشخیص داده می‌شه.
+  - **منطقه** (`#news-region-row`، `renderNewsRegionChips()`): پویا از جدول `regions`.
+  - **منابع** (`#news-source-details`/`#news-source-list`، `populateNewsSourceOptions()`): چندانتخابی.
+- **منبع RSS** (`collect_rss.py`، `platform='website'`) هم مثل ایتا/تلگرام/بله پست تولید می‌کنه؛ `posts.title` برای RSS و بله پر می‌شه (ایتا/تلگرام عنوان جدا ندارن).
 
-## تب «روزنامه‌ها» (کامل پیاده‌سازی شده — کنار مطالعه/آنالیز، داخل `sec-overview`)
+## تب «روزنامه‌ها» (داخل `sec-overview`)
 
-- **دسترسی**: سه‌تا تب بالای صفحه‌ی اخبار رسمی — «مطالعه» (`#news-tab-study`)، «روزنامه‌ها» (`#news-tab-newspapers`)، «آنالیز» (غیرفعال). `setNewsPageTab('study'|'newspapers')` جابه‌جا می‌کنه، `#news-study-panel`/`#news-newspapers-panel` رو نشون/مخفی می‌کنه.
-- **نمایش**: گرید کاور (`.newspaper-grid`/`.newspaper-card`، زبان بصری همون `.mag-tile` کاروسل مجلات صفحه‌ی نخست) از **آخرین تاریخ موجود** توی جدول `newspapers` (نه لزوماً امروز تقویمی — `renderNewspapers()` فقط ردیف‌هایی که `image_url` دارن رو در نظر می‌گیره، بعد جدیدترین `edition_date` بینشون رو پیدا می‌کنه). کلیک روی هر کاور با همون مکانیزم عمومی `data-viewer-kind="image"`/`wireMediaViewerClicks()` تمام‌صفحه باز می‌شه.
-- **منبع داده**: سایت جار (`jaaar.com/kiosk`) — صفحه‌ش سمت سرور رندر می‌شه (نه SPA پشت جاوااسکریپت)، هر روزنامه یه `div.element-item.issue` با `data-slug` + `img[data-full-image]` + `.actions[data-date]` + `.header .rtl` (عنوان). دسته‌ی «مجله» (`category-6`) عمداً فیلتر می‌شه — این تب فقط روزنامه.
-- ⚠️ **عکس hotlink نیست، واقعاً دانلود و در bucket خودمون آپلود می‌شه** (`newspaper-covers`، عمومی) — دقیقاً همون الگوی `media_storage_path` عکس/فیلم پست‌های تلگرام/ایتا (migration_008). دلیل: از محیط توسعه نمی‌شد تست کرد سرور جار Referer/hotlink رو می‌بنده یا نه؛ دانلود کامل این ریسک رو حذف می‌کنه.
-- **پاک‌سازی خودکار**: چون حجم روزانه‌ی ~۴۰ روزنامه زیاده، `cleanup_media.py` (هر روز، همون جابی که عکس/فیلم پست‌ها رو پاک می‌کنه) نسخه‌های قدیمی‌تر از `RETENTION_DAYS` (فعلاً موقتاً ۱ روز — نگاه کن به نکته‌ی عملیاتی ۱۳) رو هم از bucket `newspaper-covers` پاک می‌کنه — فقط `image_url`/`media_storage_path` خالی می‌شن، ردیف (عنوان/تاریخ/اسلاگ) می‌مونه. چون تب فقط آخرین تاریخ رو نشون می‌ده، این محدودیت روی چیزی که کاربر می‌بینه اثر نداره.
+- **دسترسی**: یکی از تب‌های بالای صفحه‌ی اخبار رسمی (بالاتر ببین). `setNewsPageTab('newspapers')`.
+- **نمایش**: گرید کاور (`.newspaper-grid`/`.newspaper-card`) از **آخرین تاریخ موجود** توی جدول `newspapers` (نه لزوماً امروز تقویمی). کلیک روی هر کاور با `data-viewer-kind="image"`/`wireMediaViewerClicks()` تمام‌صفحه باز می‌شه.
+- **منبع داده**: سایت جار (`jaaar.com/kiosk`) — سمت سرور رندر می‌شه، هر روزنامه یه `div.element-item.issue` با `data-slug` + `img[data-full-image]` + `.actions[data-date]` + `.header .rtl`. دسته‌ی «مجله» (`category-6`) فیلتر می‌شه.
+- ⚠️ **عکس hotlink نیست، واقعاً دانلود و در bucket خودمون آپلود می‌شه** (`newspaper-covers`) — همون الگوی `media_storage_path` پست‌ها.
+- **پاک‌سازی خودکار**: `cleanup_media.py` نسخه‌های قدیمی‌تر از `RETENTION_DAYS` (فعلاً موقتاً ۱ روز) رو هم از `newspaper-covers` پاک می‌کنه — فقط `image_url`/`media_storage_path` خالی می‌شن، ردیف می‌مونه.
+
+## بخش «افراد و مجموعه‌ها» (`sec-people`، کامل پیاده‌سازی شده)
+
+- **دسترسی**: تب‌های بالای صفحه (`#people-top-tabs`، دلجیت‌شده روی کلیک با `data-people-tab`، **تابع مستقل ندارن** — برای اسکریپت شبیه‌سازی کلیک باید `.click()` روی دکمه‌ی موردنظر صدا زده بشه): «اساتید سیاسی‌اجتماعی» (`professors`، پیش‌فرض)، «فعالان سیاسی‌اجتماعی» (`activists`)، «آنالیز» (`analytics`) فعال؛ «شرکت‌کننده در برنامه‌ها» و «جامعه مخاطب» هنوز غیرفعال («به‌زودی» — این دو دسته و «تشکل‌ها/مجموعه‌ها» عمداً بعداً پیاده می‌شن، وقتی زیرشاخه‌هاشون مشخص بشه).
+- **تب فعالان**: نمایش جدولی از `people`، سمت (`person_positions`، چندانتخابی many-to-many) نمایش داده می‌شه. ستون **کد ملی** قابل‌مشاهده برای هر دو نقش (تصمیم صریح کاربر).
+- **تب اساتید**: نمایش جدولی از `professors` — دانشگاه/حوزه (`institution`)، حوزه‌ی تخصصی (`professor_specialties`، چندانتخابی)، مرتبه‌ی علمی/حوزوی (`professor_ranks`، تک‌انتخابی). کد ملی اینجا هم قابل‌مشاهده.
+- **بارگذاری گروهی از اکسل**: هم برای فعالان هم اساتید، ستون‌ها به ترتیب ثابت (بدون سرستون).
+- **تب آنالیز**: آمار تجمیعی + نمودار میله‌ای از هر دو جدول.
+
+## بخش «برنامه مدارس» (`sec-schools`، کامل پیاده‌سازی شده — گالری Power BI)
+
+- تصمیم نهایی: تحلیل واقعی مدارس همچنان توی خودِ Power BI کاربر انجام می‌شه (نه اینکه داده‌ی خام وارد Supabase بشه) — فقط نتیجه‌ی نهایی به‌صورت اسکرین‌شات/فایل از پنل مدیریت آپلود و به‌شکل گالری نمایش داده می‌شه.
+- **آپلود**: تصویر، PDF، یا اکسل (`file_type`). عنوان اختیاری (پیش‌فرض «گزارش بدون عنوان» اگه خالی بمونه). نام خام فایل هیچ‌جا نشون داده نمی‌شه، فقط عنوانی که مدیر تایپ کرده.
+- **نمایش**: عکس‌ها تمام‌عرض و پشت‌سرهم روی خودِ صفحه (نه گرید thumbnail که نیاز به کلیک داشته باشه)؛ PDF/اکسل به‌شکل کارت فایل فشرده که در تب جدید باز می‌شه.
+- **آمار مرتبط**: `schoolsCount = 126` روی هرو صفحه نخست (بالاتر ببین) — دستی، نه از این جدول محاسبه می‌شه.
 
 ## جزئیات مهم طراحی (برای هماهنگی سشن‌های بعدی)
 
-- **سیستم بصری کل اپ**: «کارت روشن شناور روی بوم تیره‌ی یکپارچه». اکثر پنل/کارت محتوا (`.panel`, `.stat-card`, `.magazine-card`, کارت‌های ورود) یک سطح روشن (`var(--surface)`) شناور روی بوم تیره دارن. **استثنا**: کارت‌های صفحه‌ی نخست (`.domain-card`) هیچ قاب/پس‌زمینه‌ای ندارن — فقط آیکون illustrated + عنوان، مستقیم روی بوم تیره، فقط با فاصله‌ی گرید جدا می‌شن. این تصمیم قطعیه — اگه جای دیگه‌ای اشاره‌ای به کارت با بردر/پس‌زمینه برای `.domain-card` دیدی، منسوخه. رنگ اصلی برند (سرمه‌ای #16202a + هلویی #EAB393) عوض نشده.
+- **سیستم بصری کل اپ**: «کارت روشن شناور روی بوم تیره‌ی یکپارچه». اکثر پنل/کارت محتوا (`.panel`, `.stat-card`, `.magazine-card`, کارت‌های ورود) یک سطح روشن (`var(--surface)`) شناور روی بوم تیره دارن. **استثنا**: کارت‌های صفحه‌ی نخست (`.domain-card`، `.quicknav-card`) هیچ قاب/پس‌زمینه‌ای ندارن (به‌جز `.quicknav-card` که سطح روشن داره، برخلاف `.domain-card`) — این تصمیم قطعیه، اگه جای دیگه‌ای اشاره‌ای متفاوت دیدی منسوخه. رنگ اصلی برند (سرمه‌ای #16202a + هلویی #EAB393) عوض نشده.
+- **الگوی `scroll-margin-top`**: برای هر عنصری که مقصد یه اسکرول برنامه‌ای (`scrollIntoView`) می‌شه، به‌جای `block:'start'` خام (که دقیقاً می‌چسبونتش به لبه‌ی بالای viewport)، `scroll-margin-top` روی خودِ عنصر بذار تا یه فاصله‌ی قابل‌کنترل از بالا بمونه. این الگو الان روی `.section-label` (۱۴۰px) و `.package-card` (۹۰px) استفاده شده.
 - **باگ رفع‌شده**: قانون CSS `#view-login{ display:flex }` روی خودِ ID باعث می‌شد صفحه‌ی ورود همیشه نمایش داده بشه، مستقل از کلاس `active`. الان `#view-login.active`ه.
 - تصویرسازی هرو داشبورد (`design/images/dashboard-hero.webp`) عمداً **پس‌زمینه‌ی شفاف** داره — هیچ‌وقت با فایل تخت‌رنگ جایگزینش نکن.
 - بخش «داشبورد» همه‌جا به «صفحه نخست» تغییر نام داده. فقط شناسه‌های داخلی کد (`sec-dashboard`, `switchSection('dashboard')`, کلید `dashboard` در `TITLES`) هنوز انگلیسی/قدیمی‌ان — عمداً دست نخورده.
 - کارت‌های «اخبار رسمی»/«برنامه مدارس» هنوز از کلید‌های داخلی قدیمی استفاده می‌کنن (`overview`/`schools`) — اسم نمایشی به‌روزه، id/key کد نه، عمداً.
-- Storage bucketهای خصوصی (`magazines`) با **signed URL کوتاه‌عمر (۶۰ ثانیه)** باز می‌شن؛ bucketهای عمومی (`magazine-covers`) مستقیم با URL ثابت.
-- **همه‌ی ۴ آیکون کارت اصلی الان فایل تصویر واقعی‌ان** (`.webp`، از عکس‌های واقعی که کاربر توی چت فرستاد، استخراج‌شده از ترنسکریپت JSONL چون paste مستقیم روی دیسک قابل‌دسترس نیست — نکته‌ی عملیاتی پایین رو ببین) — دیگه SVG گرادیانی دستی نیستن، اون روش منسوخه.
+- Storage bucketهای خصوصی (`magazines`, `archive-reports`) با **signed URL کوتاه‌عمر (۶۰ ثانیه)** باز می‌شن؛ bucketهای عمومی مستقیم با URL ثابت.
+- **همه‌ی ۴ آیکون کارت اصلی الان فایل تصویر واقعی‌ان** (`.webp`) — دیگه SVG گرادیانی دستی نیستن، اون روش منسوخه.
 
 ## نکات مهم عملیاتی (حتماً بخون قبل از کار)
 
-1. **تمام تغییرات باید از مسیر شاخه‌ی جدید + Pull Request به `claude/new-project-8ekywm` برن** (نه push مستقیم — مسدوده؛ نه PR به `main`). قبل از هر مرج، `get_commits` رو چک کن که کامیت درست توی PR هست؛ بعد از مرج، `get_file_contents` رو چک کن که واقعاً نشسته.
-2. **قبل از هر تغییر UI، پیش‌نمایش Playwright بگیر و اسکرین‌شات رو با `SendUserFile` برای تأیید صریح کاربر بفرست** — فقط بعد از تأیید کلامی کاربر (نه صرفاً پیام خودکار stop-hook) commit/push/PR/merge کن. الگوی پیش‌نمایش بالاتر توضیح داده شده.
-3. **اگه کاربر عکسی رو مستقیم توی چت paste کنه (نه پیوست `@`)**، اول با جست‌وجوی ترنسکریپت سشن (`.jsonl`، بلوک‌های base64 `image`) امتحان کن استخراجش کنی — این روش قبلاً جواب داده. فقط اگه واقعاً پیدا نشد، از کاربر بخواه به‌عنوان پیوست واقعی دوباره بفرسته.
+1. **تمام تغییرات باید از مسیر شاخه‌ی جدید + Pull Request به `claude/new-project-8ekywm` برن** (نه push مستقیم — مسدوده؛ نه PR به `main`). قبل از هر مرج، `get_commits` رو چک کن که کامیت درست توی PR هست؛ بعد از مرج، `git fetch` + `git diff` (zero-diff) تأیید کن که واقعاً نشسته.
+2. **قبل از هر تغییر UI، پیش‌نمایش Playwright بگیر و اسکرین‌شات رو با `SendUserFile` برای تأیید صریح کاربر بفرست** — فقط بعد از تأیید کلامی کاربر commit/push/PR/merge کن. الگوی پیش‌نمایش بالاتر توضیح داده شده (⚠️ حتماً همه‌ی `loadX` override بشه، وگرنه صفحه‌ی ورود جای داشبورد می‌مونه).
+3. **اگه کاربر عکسی رو مستقیم توی چت paste کنه (نه پیوست `@`)**، اول با جست‌وجوی ترنسکریپت سشن (`.jsonl`، بلوک‌های base64 `image`) امتحان کن استخراجش کنی. فقط اگه واقعاً پیدا نشد، از کاربر بخواه به‌عنوان پیوست واقعی دوباره بفرسته.
 4. **رمزهای عبور/کلیدهای حساس هرگز نباید توی چت گفته بشن** — `ADMIN_PASSWORD`، `TG_SESSION`، `TG_API_HASH`، رمز دیتابیس Supabase و JWT secret همه GitHub Secrets‌ان، من هیچ‌کدومشون رو نمی‌دونم و نباید بخوام بدونم.
-5. **`SUPABASE_URL` و `SUPABASE_ANON_KEY` محرمانه نیستن** — هاردکد شدن توی فرانت‌اند، چون anon key عمومیه و RLS امنیتش رو تضمین می‌کنه.
-6. **کالکتورها/جاب‌های GitHub Actions فقط از `main` اجرا می‌شن** — پس هر تغییر توی `scripts/*.py` یا `.github/workflows/*.yml` باید علاوه بر merge به `claude/new-project-8ekywm`، با یه PR جدا هم به `main` sync بشه (روش دقیق توی «معماری فعلی» بالاتر).
+5. **`SUPABASE_URL` و `SUPABASE_ANON_KEY` محرمانه نیستن** — هاردکد شدن توی فرانت‌اند، چون anon key عمومیه و RLS امنیتش رو تضمین می‌کنه. با این‌حال، این محیط (Claude Code remote sandbox) دسترسی شبکه‌ی مستقیم به دامنه‌ی Supabase رو **نداره** (سیاست شبکه‌ی سشن مسدودش می‌کنه) — برای هر بررسی داده‌ی زنده باید از کاربر خواست خودش کوئری/چک رو انجام بده (SQL Editor یا داشبورد Storage/Usage).
+6. **کالکتورها/جاب‌های GitHub Actions فقط از `main` اجرا می‌شن** — پس هر تغییر توی `scripts/*.py` یا `.github/workflows/*.yml` باید علاوه بر merge به `claude/new-project-8ekywm`، با یه PR جدا هم به `main` sync بشه (روش دقیق توی «معماری فعلی» بالاتر — کل شاخه merge می‌شه، نه فقط فایل مورد نظر).
 7. کاربر با گیت/GitHub خیلی راحت نیست — هر مرحله دقیق و مرحله‌به‌مرحله توضیح داده بشه. برای دیباگ خطاهای Supabase/Storage: F12 → Network → کلیک روی درخواست قرمز → تب Response. نکته: DevTools کاربر گاهی پاسخ‌ها رو زود از حافظه پاک می‌کنه؛ بگو لاگ رو Clear کنه و یه‌بار امتحان کنه.
 8. کاربر اسکیل `ui-ux-pro-max` نصب کرده. پیشنهادهای رنگ/فونتِ خودکارش با هویت بصری این پروژه نمی‌خونه — فقط چک‌لیست‌های تخصصی‌ش (دسترس‌پذیری، تعامل، تایپوگرافی) رو استفاده کن.
 9. **Artifact محدودیت داره** برای این پروژه: فونت‌های relative path لود نمی‌شن و CSP جلوی فراخوانی Supabase رو می‌گیره. برای نسخه‌ی کاملاً واقعی، لینک GitHub Pages بده؛ برای پیش‌نمایش سریع بدون داده‌ی واقعی، از روش Playwright+موک بالا استفاده کن.
 10. جهت فلش‌های کاروسل مجلات **حل شده** — اگه کسی گفت برعکسه، اول با تست خودکار (Playwright، چک `scrollLeft` واقعی) دوباره تأیید کن قبل از تغییر کورکورانه‌ی `dir`.
 11. **قبل از ساختن هر Storage bucket جدید**، علاوه بر RLS policy، grant سطح schema/table هم لازمه (migration_003) — یه‌بار برای کل schema `storage` انجام شده، برای bucketهای بعدی فقط RLS policy مخصوص همون bucket رو بنویس.
-12. **کارت «کنشگری مجازی» فعلاً تصمیم موقته**: کلیک روی کارت می‌بره به `posts` مستقیم، چون هنوز صفحه‌ی hub مستقلی طراحی نشده.
-13. ⚠️ **`RETENTION_DAYS` توی `scripts/cleanup_media.py` موقتاً از ۳ به ۱ روز کم شده** (۲۶ شهریور ۱۴۰۵، بعد از ایمیل هشدار Fair Use پلن رایگان Supabase). دلیل: با کوئری SQL روی `storage.objects` مشخص شد باکت `post-media` به‌تنهایی با پنجره‌ی ۳ روزه حدود ۳.۵ گیگابایت می‌شد (سقف پلن رایگان Storage فقط ۱ گیگابایته)؛ جاب پاک‌سازی خودش سالم بود (۸ اجرای پشت‌سرهم موفق)، فقط حجم روزانه‌ی جمع‌آوری‌شده (~۱.۲ گیگ/روز از کل کانال‌ها/RSS) با پنجره‌ی ۳ روزه همخونی نداشت. **این تغییر موقتیه** — بعد از مهاجرت (ارتقا به Supabase Pro یا مهاجرت به VPS شخصی، بحثش توی «قدم بعدی» پایین‌تره) باید `RETENTION_DAYS` توی هر دو شاخه (`claude/new-project-8ekywm` و `main`) به ۳ برگرده. کامنت بالای متغیر توی خود کد هم همین رو یادآوری می‌کنه.
+12. **کارت «کنشگری مجازی» فعلاً تصمیم موقته**: کلیک روی کارت می‌بره به `posts` مستقیم. صفحه‌ی `posts` الان خودش دو تب داره («پست‌های منتشر شده» فعال، «آنالیز» غیرفعال) ولی هنوز یه hub مستقل کامل نیست.
+13. ⚠️ **`RETENTION_DAYS` توی `scripts/cleanup_media.py` موقتاً از ۳ به ۱ روز کم شده** (۲۶ شهریور ۱۴۰۵، بعد از ایمیل هشدار Fair Use پلن رایگان Supabase). دلیل: باکت `post-media` با پنجره‌ی ۳ روزه حدود ۳.۵ گیگابایت می‌شد (سقف پلن رایگان Storage فقط ۱ گیگابایته)؛ جاب پاک‌سازی خودش سالم بود، فقط حجم روزانه‌ی جمع‌آوری‌شده (~۱.۲ گیگ/روز) با پنجره‌ی ۳ روزه همخونی نداشت. **این تغییر موقتیه** — بعد از تصمیم مهاجرت (ارتقا به Supabase Pro یا مهاجرت به VPS شخصی) باید `RETENTION_DAYS` توی هر دو شاخه به ۳ برگرده.
+14. **بخش «بخش تحلیلی» (`sec-reports`) سه تب مستقل داره** («مجلات جریان» / «بسته‌های آموزش تحلیلی» / «دیدن سایر بسته‌های تحلیلی») — قبل از این‌ها فقط یه کتابخانه‌ی مجلات ساده بود، الان یکی از سه تب. `openReportsBasiratTab()`/`openReportsArchiveTab()` مستقیم از صفحه‌ی نخست به تب مربوطه می‌رن.
 
 ## قدم بعدی (موارد باز — هیچ‌کدوم بدون درخواست صریح کاربر پیش نره)
 
-- **داده‌ی واقعی کاروسل مجلات**: عنوان‌های تستی ("d"/"r"/"ds") و دو مجله بدون جلد واقعی هنوز جایگزین نشدن — منتظر آپلود واقعی از پنل مدیریت.
-- **«۵۶ مدرسه» عدد ثابت جعلیه** (کد و کامنتش رو بالاتر ببین) — با کارت غیرفعال «برنامه مدارس» در تناقضه؛ منتظر منبع داده‌ی واقعی مدارس.
-- **سه سیستم آیکون متفاوت روی صفحه‌ی نخست** (کارت‌های اصلی سه‌بعدی illustrated / تصویر «بسته تحلیل» گرادیانی‌تخت / گرید ۱۰تایی خطی تک‌رنگ) — فلگ‌شده، تصمیمی گرفته نشده.
-- **هم‌پوشانی اسمی احتمالی**: «بسته‌های تحلیلی تولید شده» (کاروسل، فایل واقعی برای دانلود) در برابر «بخش‌های بسته تحلیل جریان» (توضیح ثابت محتوای هر شماره) — از نظر مفهومی متفاوتن ولی اسمشون شبیهه؛ کاربر می‌دونه، هنوز تصمیم نگرفته.
-- **صفحات واقعی «برنامه مدارس»/«افراد و مجموعه‌ها»** هنوز طراحی نشدن — فقط پیام placeholder دارن («اخبار رسمی» دیگه جزو این لیست نیست، کامل پیاده‌سازی شده — بخش مخصوصش رو بالاتر ببین). منبع داده هم مشخص نیست؛ قبل از ساختن هر جدول/migration جدید حتماً از کاربر بپرس.
-- **«کنشگری مجازی» احتمالاً به یه صفحه‌ی hub مستقل نیاز داره** (به‌جای پرش مستقیم به `posts`).
+- **داده‌ی احتمالاً تستی توی مجلات/آرشیو/بصیرت**: قبلاً (چند نسخه پیش) عنوان‌های تستی مثل "d"/"r"/"ds" دیده شده بود؛ از اون‌موقع تعداد مجلات/آرشیو/بسته‌های بصیرت رشد کرده (طبق `dash-hero-stats` و ویجت‌های جدید صفحه نخست) ولی این محیط دسترسی مستقیم به دیتابیس نداره تا تأیید کنه دیتای واقعیه یا نه — اگه کاربر گفت هنوز چیز تستی می‌بینه، از پنل مدیریت مربوطه پاک/جایگزین کن.
+- **سه سیستم آیکون متفاوت روی صفحه‌ی نخست** (کارت‌های اصلی سه‌بعدی illustrated / تصویر «بسته تحلیلی جریان» گرادیانی‌تخت / گرید ۱۰تایی خطی تک‌رنگ) — فلگ‌شده، تصمیمی گرفته نشده.
+- **«کنشگری مجازی» احتمالاً به یه صفحه‌ی hub مستقل‌تر نیاز داره** (الان دو تب داره ولی تب دومش «آنالیز» هنوز غیرفعاله).
 - UI ویرایش نام دسته‌بندی‌های موضوعی (سیاسی/اجتماعی/...) هنوز ساخته نشده.
 - تحلیل هوش مصنوعی واقعی (n8n + Claude API) هنوز فقط UI نمونه‌ست.
 - خروجی Excel هنوز کار نمی‌کنه (toast «به‌زودی» می‌ده؛ CSV/JSON واقعیه).
-- بحث «مهاجرت به VPS شخصی در برابر ارتقا به Supabase Pro» باز مونده — الان دیگه فوری‌تره چون فضای دیتابیس ۵۰۰ مگابایتی نیست که تنگ بشه، بلکه **Storage** (۱ گیگابایت رایگان) همین الان (۲۶ شهریور ۱۴۰۵) رد شده و باعث کاهش موقت `RETENTION_DAYS` به ۱ روز شده (نکته‌ی عملیاتی ۱۳) — بعد از تصمیم‌گیری، اون مقدار باید به ۳ برگرده.
+- «شرکت‌کننده در برنامه‌ها» و «جامعه مخاطب» (زیرمجموعه‌های «افراد و مجموعه‌ها») و «تشکل‌ها/مجموعه‌ها» هنوز پیاده نشدن — منتظر مشخص‌شدن زیرشاخه‌هاشون از کاربر (migration_015 رو ببین).
+- بحث «مهاجرت به VPS شخصی در برابر ارتقا به Supabase Pro» باز مونده — فوریه چون **Storage** (۱ گیگابایت رایگان) رد شده و باعث کاهش موقت `RETENTION_DAYS` به ۱ روز شده (نکته‌ی عملیاتی ۱۳) — بعد از تصمیم‌گیری، اون مقدار باید به ۳ برگرده.

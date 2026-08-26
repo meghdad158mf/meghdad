@@ -321,8 +321,8 @@
     transition: transform .2s ease, box-shadow .2s ease;
   }
   .quicknav-card:hover{ transform:translateY(-3px); box-shadow: var(--shadow-hover); }
-  .quicknav-card h3{ font-size:15px; font-weight:800; color: var(--navy); margin:0 0 8px; }
-  .quicknav-card p{ font-size:12.5px; color: var(--text-dim); line-height:1.9; margin:0; }
+  .quicknav-card h3{ font-size:15px; font-weight:800; color: var(--navy); margin:0 0 8px; text-align:center; }
+  .quicknav-card p{ font-size:12.5px; color: var(--text-dim); line-height:1.9; margin:0; text-align:center; }
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
@@ -977,12 +977,12 @@
 
       <div class="quicknav-grid">
         <div class="quicknav-card" onclick="scrollToDomainGrid()">
-          <h3>می‌خواهم عرصه‌های رصد را ببینم!</h3>
-          <p>اگر می‌خواهید بدانید جریان در کدام حوزه‌ها فعالیت می‌کند، عرصه‌های رصد و تحلیل جریان را از اینجا مشاهده کنید.</p>
+          <h3>عرصه‌های رصد</h3>
+          <p>برای دیدن عرصه‌هایی که می‌توانید توسط جریان رصد کنید،<br>اینجا را مشاهده کنید.</p>
         </div>
         <div class="quicknav-card" onclick="scrollToPackageCard()">
-          <h3>می‌خواهم بسته تحلیلی جریان را ببینم!</h3>
-          <p>اگر به دنبال محصول اصلی تحلیلی جریان هستید، بسته تحلیلی جریان را از اینجا مشاهده کنید.</p>
+          <h3>بسته‌های تحلیلی</h3>
+          <p>برای دسترسی به بسته‌های تحلیلی تولیدشده توسط جریان،<br>اینجا را مشاهده کنید.</p>
         </div>
       </div>
 
