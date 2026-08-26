@@ -324,6 +324,13 @@
   .quicknav-card h3{ font-size:15px; font-weight:800; color: var(--navy); margin:0 0 8px; text-align:center; }
   .quicknav-card p{ font-size:12.5px; color: var(--text-dim); line-height:1.9; margin:0; text-align:center; }
 
+  /* «چرا جریان» — سه ستون معرفی مزیت اصلی، مستقیم روی بوم تیره (بدون قاب)،
+     بین دو کارت راهنمای سریع و گرید ۴تایی عرصه‌های رصد */
+  .why-jarian-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:36px; max-width:1040px; margin:96px auto 64px; text-align:center; }
+  @media (max-width:760px){ .why-jarian-grid{ grid-template-columns:1fr; gap:28px; } }
+  .why-jarian-item h3{ font-size:15px; font-weight:800; color:#fff; margin:0 0 10px; }
+  .why-jarian-item p{ font-size:13px; color: rgba(255,255,255,0.62); line-height:1.9; margin:0; }
+
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
   .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 160px 2px 26px; text-align:center; letter-spacing:0.01em; scroll-margin-top: 140px; }
@@ -1004,6 +1011,21 @@
         <div class="quicknav-card" onclick="scrollToPackageCard()">
           <h3>بسته‌های تحلیلی</h3>
           <p>برای دسترسی به بسته‌های تحلیلی تولیدشده توسط جریان،<br>اینجا را مشاهده کنید.</p>
+        </div>
+      </div>
+
+      <div class="why-jarian-grid">
+        <div class="why-jarian-item">
+          <h3>رصد جامع و لحظه‌ای</h3>
+          <p>اخبار رسمی، کنشگری مجازی، مدارس و افراد را در یک سامانه‌ی واحد و به‌روز دنبال می‌کنیم.</p>
+        </div>
+        <div class="why-jarian-item">
+          <h3>تحلیل دقیق و تخصصی</h3>
+          <p>با نگاه جامعه‌شناسی سیاسی، رویدادها را از دل داده‌ها استخراج و تحلیل می‌کنیم.</p>
+        </div>
+        <div class="why-jarian-item">
+          <h3>دسترسی امن و اختصاصی</h3>
+          <p>با سطح‌بندی دقیق نقش‌ها، اطلاعات حساس فقط در اختیار افراد مجاز قرار می‌گیرد.</p>
         </div>
       </div>
 
