@@ -67,13 +67,25 @@ BOLD_RE = re.compile(r"\*((?:[^*\n]|\n(?!\n))+)\*")
 # منتشرکننده» → نگه داشته می‌شه با عنوان جدید «انتشار توسط:»؛ «سطح
 # انتشار:» و کلمه‌ی شدت («متوسط؛»/«بالا؛») حذف می‌شن ولی ادامه‌ی متنش
 # می‌مونه؛ «الگوی انتشار:» هم حذف می‌شه ولی متنش می‌مونه.
+#
+# ۵ شهریور ۱۴۰۵: ادمین کانال فرمت پیام‌ها رو عوض کرد — دیگه بخش‌های
+# «رسانه‌های منتشرکننده/سطح انتشار/الگوی انتشار» نمی‌ذاره، فقط «موضوع» و
+# یه بخش با همون اموجی 🎯 که قبلاً «اهداف» بود ولی الان برچسبش «توضیحات»ه
+# و کل متن اصلی ادعا/شایعه رو حمل می‌کنه (نه چیزی که باید دور ریخته بشه).
+# چون parse_bale_message برچسب متنی هر بخش رو نگه نمی‌داره (فقط اموجی)،
+# تشخیص فرمت جدید به‌جای مقایسه‌ی برچسب، از روی نبودِ هر سه بخش قدیمی انجام
+# می‌شه: اگه هیچ‌کدوم از 📰/📊/🧠 نبود، همون محتوای 🎯 به‌عنوان بدنه‌ی اصلی
+# نشون داده می‌شه (به‌جای دور ریختن قدیمی‌اش).
 SECTION_MARKERS_RE = re.compile(r"(📌|🎯|📰|📊|🧠)")
 LEVEL_PREFIX_RE = re.compile(r"^\s*🔸\s*[^\n؛]+؛\*?\s*")
 HASHTAG_RE = re.compile(r"^\s*#\S+\s*")
 # اموجی هر بخش، وقتی خودش داخل یه بولد بود، یه ستاره‌ی بازکننده برای بخش
 # بعدی به انتهای بخش فعلی می‌چسبونه (چون split دقیقاً سرِ خودِ اموجی برش
 # می‌زنه، نه بعد از اون ستاره) — این آرتیفکت باید قبل از هر پردازش دیگه‌ای
-# حذف بشه، وگرنه شمارش زوج/فرد ستاره‌های واقعی رو به‌هم می‌ریزه.
+# حذف بشه، وگرنه شمارش زوج/فرد ستاره‌های واقعی رو به‌هم می‌ریزه. فقط برای
+# بخش‌های میانی صادقه: توی آخرین بخش پیام، یه «*» انتهایی می‌تونه بولد
+# واقعیِ خودِ همون بخش باشه (نه نشتی از بخش بعدی که وجود نداره)، پس اونجا
+# دست‌نخورده می‌مونه و fix_orphan_asterisk تشخیص درست‌ترش می‌ده.
 TRAILING_ARTIFACT_RE = re.compile(r"\*\s*$")
 
 
@@ -198,7 +210,11 @@ def parse_bale_message(raw_text: str, channel_username: str) -> dict:
     for i in range(1, len(parts), 2):
         marker = parts[i]
         content = parts[i + 1] if i + 1 < len(parts) else ""
-        content = TRAILING_ARTIFACT_RE.sub("", content)
+        # فقط بخش‌های میانی نشتیِ ستاره‌ی بخش بعدی رو می‌گیرن؛ آخرین بخش
+        # پیام next-marker‌ای نداره که ازش نشتی بگیره، پس دست‌نخورده می‌مونه
+        is_last_section = (i + 2) >= len(parts)
+        if not is_last_section:
+            content = TRAILING_ARTIFACT_RE.sub("", content)
         colon_idx = content.find(":")
         body = content[colon_idx + 1 :] if colon_idx != -1 else content
         sections.setdefault(marker, body.strip())
@@ -209,7 +225,10 @@ def parse_bale_message(raw_text: str, channel_username: str) -> dict:
     media_raw = sections.get("📰")
     level_raw = LEVEL_PREFIX_RE.sub("", sections.get("📊", "")).strip()
     pattern_raw = sections.get("🧠", "").strip()
-    # «اهداف» عمداً استفاده نمی‌شه — طبق خواسته‌ی کاربر کلاً حذف می‌شه
+    description_raw = sections.get("🎯", "").strip()
+    # فرمت قدیمی: «اهداف» عمداً استفاده نمی‌شه — طبق خواسته‌ی کاربر کلاً حذف
+    # می‌شه. فرمت جدید (بدون 📰/📊/🧠): همین بخش «توضیحات» تنها متن واقعی
+    # پیامه، پس به‌جای دور ریختن، به‌عنوان بدنه‌ی اصلی نشون داده می‌شه.
 
     body_parts = []
     if media_raw:
@@ -221,6 +240,8 @@ def parse_bale_message(raw_text: str, channel_username: str) -> dict:
         body_parts.append(clean_section(level_raw))
     if pattern_raw:
         body_parts.append(clean_section(pattern_raw))
+    if not media_raw and not level_raw and not pattern_raw and description_raw:
+        body_parts.append(clean_section(description_raw).strip())
 
     return {"title": title, "text": "\n\n".join(body_parts)}
 
