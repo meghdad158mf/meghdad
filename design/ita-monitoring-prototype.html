@@ -829,7 +829,12 @@
   /* «بسته‌های آموزش تحلیلی» — طرح دوستونه مثل بالای کارت هلویی: یه ستون
      باریک با لوگو+عنوان+توضیح+دکمه (سمت راست)، و چند تا پوستر در یه ردیف
      قابل‌اسکرول کنارش (سمت چپ) — نه گرید تمام‌عرض زیرش */
-  .basirat-widget-block{ display:flex; align-items:flex-start; gap:24px; margin:160px 0 56px; }
+  /* ترتیب نمایش این دو ویجت روی صفحه («دیدن سایر بسته‌های تحلیلی» اول،
+     «ضمیمه جریان» دوم) عمداً برعکسِ ترتیب تعریف این دو کلاسه — به همین
+     خاطر فاصله‌ی ۱۶۰px از کارت هلویی بالاش رو .home-widget-block می‌گیره
+     (چون اون همیشه اولیه)، نه .basirat-widget-block */
+  .home-widget-block{ margin:160px 0 56px; }
+  .basirat-widget-block{ display:flex; align-items:flex-start; gap:24px; margin:0; }
   .home-widget-divider{ height:1px; background: rgba(255,255,255,0.12); margin:0 0 56px; }
   @media (max-width:760px){ .basirat-widget-block{ flex-direction:column; gap:18px; } }
   .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
@@ -1031,7 +1036,7 @@
           </div>
           <div class="package-content">
             <h3 class="package-title">بسته تحلیلی <span class="hl">جریان</span></h3>
-            <p class="package-sub">بسته جریان شامل ۱۰ بخش اصلی است که بعضی ثابت در هر شماره به آن پرداخته می‌شود و برخی نیز به‌صورت دوره‌ای بخشی از محتوا را تکمیل خواهند کرد.</p>
+            <p class="package-sub">بسته تحلیلی جریان، خلاصه‌ای تحلیلی، دقیق و چندلایه از تحولات سیاسی‌اجتماعی است که سعی دارد نگاهی جامع را در اختیار مخاطب قرار دهد. این بسته شامل ۱۰ بخش است.</p>
             <div class="package-list">
               <div class="package-item">
                 <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
@@ -1094,26 +1099,25 @@
         </div>
       </div>
 
-      <div class="basirat-widget-block">
-        <div class="basirat-widget-info">
-          <div class="basirat-widget-title-row">
-            <img class="home-widget-logo" src="images/basirat-logo.webp" alt="مدرسه مجازی بصیرت" />
-            <h3 class="home-widget-heading">بسته‌های آموزش تحلیلی</h3>
-          </div>
-          <p class="home-widget-desc">این قسمت مربوط به بسته‌های آموزشی تحلیلی است که در مدرسه مجازی بصیرت بارگذاری شده است.</p>
-          <button class="btn" onclick="openReportsBasiratTab()">مشاهده‌ی همه</button>
-        </div>
-        <div class="home-poster-row" id="basirat-grid-home"></div>
-      </div>
-
-      <div class="home-widget-divider"></div>
-
       <div class="home-widget-block">
         <div class="home-widget-head">
           <h3 class="home-widget-heading">دیدن سایر بسته‌های تحلیلی</h3>
           <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
         </div>
         <div class="home-poster-grid" id="archive-grid-home"></div>
+      </div>
+
+      <div class="home-widget-divider"></div>
+
+      <div class="basirat-widget-block">
+        <div class="basirat-widget-info">
+          <div class="basirat-widget-title-row">
+            <h3 class="home-widget-heading">ضمیمه جریان</h3>
+          </div>
+          <p class="home-widget-desc">محتوای تکمیلی برای تعمیق عرصه‌های رصد و تحلیل</p>
+          <button class="btn" onclick="openReportsBasiratTab()">مشاهده‌ی همه</button>
+        </div>
+        <div class="home-poster-row" id="basirat-grid-home"></div>
       </div>
     </section>
 
