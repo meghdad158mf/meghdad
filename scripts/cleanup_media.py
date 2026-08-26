@@ -1,10 +1,11 @@
 """
-پاک‌سازی روزانه‌ی عکس/فیلم‌های قدیمی‌تر از ۳ روز از Supabase Storage.
+پاک‌سازی روزانه‌ی عکس/فیلم‌های قدیمی‌تر از RETENTION_DAYS روز از Supabase Storage.
 با GitHub Actions یک‌بار در روز اجرا می‌شود.
 
 چرا: عکس و فیلم برخلاف متن پست حجم زیادی می‌گیرن و فضای Storage
-Supabase محدوده. به‌جای نگه‌داشتن همیشگی، فقط ۳ روز اخیر نگه داشته
-می‌شه؛ media_type روی پست دست‌نخورده می‌مونه (تا UI بدونه رسانه‌ای
+Supabase محدوده. به‌جای نگه‌داشتن همیشگی، فقط چند روز اخیر نگه داشته
+می‌شه (فعلاً موقتاً ۱ روز، نگاه کن به کامنت بالای RETENTION_DAYS)؛
+media_type روی پست دست‌نخورده می‌مونه (تا UI بدونه رسانه‌ای
 وجود داشته)، فقط media_path/media_storage_path/media_fetched_at پاک
 می‌شن. برای ایتا media_source_url (لینک اصلی) نگه داشته می‌شه — اگه
 همون پست هنوز توی صفحه‌ی عمومی کانال باشه، اجرای بعدی collect_eitaa.py
@@ -34,7 +35,10 @@ ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 REQUEST_TIMEOUT = 30
 MEDIA_BUCKET = "post-media"
 NEWSPAPER_BUCKET = "newspaper-covers"
-RETENTION_DAYS = 3
+# موقتاً از ۳ به ۱ روز کم شده (۲۶ شهریور ۱۴۰۵) چون post-media به‌تنهایی
+# با پنجره‌ی ۳ روزه حدود ۳.۵ گیگ می‌شد و از سقف Storage پلن رایگان
+# Supabase (۱ گیگ) رد می‌زد. بعد از مهاجرت (Pro یا VPS شخصی) به ۳ برگردون.
+RETENTION_DAYS = 1
 
 
 def login() -> str:
