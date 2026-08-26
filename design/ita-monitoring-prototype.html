@@ -141,34 +141,46 @@
 
   .main{ padding: 22px 28px 60px; max-width: 1180px; margin: 0 auto; }
 
-  .analysis-section{ margin:70px 0 0; }
-  .analysis-top{ display:grid; grid-template-columns: 1fr 1.25fr; gap:24px; align-items:start; }
-  @media (max-width:860px){ .analysis-top{ grid-template-columns:1fr; gap:20px; } }
-  .analysis-art{ position:relative; display:flex; align-items:center; justify-content:flex-end; }
-  @media (max-width:860px){ .analysis-art{ justify-content:center; } }
-  .analysis-art svg, .analysis-art img{ width:100%; max-width:300px; height:auto; }
-  .analysis-title{ font-size: clamp(19px,2.4vw,25px); font-weight:700; color:#fff; line-height:1.5; margin-bottom:10px; }
-  .analysis-title .hl{ color: var(--accent); }
-  .analysis-sub{ font-size:13.5px; color: rgba(255,255,255,0.6); line-height:1.8; max-width:460px; margin:0; }
-  .analysis-list{ display:grid; grid-template-columns: repeat(5,1fr); gap:0; margin-top:18px; }
-  @media (max-width:560px){ .analysis-list{ grid-template-columns: repeat(2,1fr); } }
-  .analysis-item{
-    display:flex; flex-direction:column; align-items:center; text-align:center; gap:7px;
-    padding:14px 10px;
-    border-inline-end:1px solid rgba(255,255,255,0.12);
-    border-block-end:1px solid rgba(255,255,255,0.12);
+  /* بسته تحلیلی جریان — کارت واحد که کاروسل «مجلات جریان» قبلی و توضیح ۱۰بخشی
+     قبلی (که جدا و زیر هم بودن) رو با هم ترکیب می‌کنه، زیر یه عنوان یکتا،
+     تا با تب جدید «دیدن سایر بسته‌های تحلیلی» (که زیر همین کارت میاد) اشتباه نشه */
+  .package-card{
+    margin: 200px 0 40px; padding:26px 24px; border-radius: var(--radius-card); scroll-margin-top: 90px;
+    background: linear-gradient(155deg, #fffaf5, #fbe9d7);
+    border:1px solid rgba(181,101,29,0.3);
+    box-shadow: 0 22px 46px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
+    animation: rise .55s .1s ease both;
   }
-  .analysis-item:nth-child(5n){ border-inline-end:none; }
-  .analysis-item:nth-child(n+6){ border-block-end:none; }
+  .package-top{ display:grid; grid-template-columns: 1fr 1fr; gap:28px; align-items:center; }
+  @media (max-width:860px){ .package-top{ grid-template-columns:1fr; gap:18px; } }
+  .package-art{ position:relative; display:flex; align-items:center; justify-content:center; }
+  .package-art img{ width:100%; max-width:320px; height:auto; }
+  .package-title{ font-size: clamp(18px,2.2vw,23px); font-weight:800; color: var(--text); line-height:1.5; margin:0 0 8px; }
+  .package-title .hl{ color: var(--accent-strong); }
+  .package-sub{ font-size:13px; color: var(--text-dim); line-height:1.8; max-width:460px; margin:0 0 16px; }
+  .package-list{ display:grid; grid-template-columns: repeat(5,1fr); gap:0; }
+  @media (max-width:560px){ .package-list{ grid-template-columns: repeat(2,1fr); } }
+  .package-item{
+    display:flex; flex-direction:column; align-items:center; text-align:center; gap:6px;
+    padding:12px 8px;
+    border-inline-end:1px solid rgba(181,101,29,0.18);
+    border-block-end:1px solid rgba(181,101,29,0.18);
+  }
+  .package-item:nth-child(5n){ border-inline-end:none; }
+  .package-item:nth-child(n+6){ border-block-end:none; }
   @media (max-width:560px){
-    .analysis-item:nth-child(5n){ border-inline-end:1px solid rgba(255,255,255,0.12); }
-    .analysis-item:nth-child(2n){ border-inline-end:none; }
-    .analysis-item:nth-child(n+6){ border-block-end:1px solid rgba(255,255,255,0.12); }
-    .analysis-item:nth-child(n+9){ border-block-end:none; }
+    .package-item:nth-child(5n){ border-inline-end:1px solid rgba(181,101,29,0.18); }
+    .package-item:nth-child(2n){ border-inline-end:none; }
+    .package-item:nth-child(n+6){ border-block-end:1px solid rgba(181,101,29,0.18); }
+    .package-item:nth-child(n+9){ border-block-end:none; }
   }
-  .analysis-item-icon{ width:28px; height:28px; border-radius:8px; background: linear-gradient(155deg, rgba(234,179,147,0.28), rgba(234,179,147,0.1)); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
-  .analysis-item-icon svg{ width:13px; height:13px; }
-  .analysis-item-body h4{ font-size:10.5px; font-weight:700; color:#fff; margin:0; line-height:1.35; }
+  .package-item-icon{ width:26px; height:26px; border-radius:8px; background: rgba(181,101,29,0.12); color: var(--accent-strong); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+  .package-item-icon svg{ width:12px; height:12px; }
+  .package-item-body h4{ font-size:10px; font-weight:700; color: var(--text); margin:0; line-height:1.35; }
+  .package-divider{ height:1px; background: rgba(181,101,29,0.22); margin:24px 0 18px; }
+  .package-carousel-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; flex-wrap:wrap; }
+  .package-carousel-title{ font-size:13.5px; font-weight:700; color: var(--text); }
+  .package-carousel-head .btn.primary{ padding:8px 16px; font-size:12px; }
 
   .app-footer{ margin-top:56px; padding-top:24px; border-top:1px solid rgba(255,255,255,0.14); }
   .app-footer-top{ display:flex; justify-content:space-between; gap:32px; flex-wrap:wrap; }
@@ -266,9 +278,9 @@
 
   /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
   .dash-hero-grid{
-    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 28px 24px;
+    display:grid; grid-template-columns: 1.1fr 1fr; gap:44px; align-items:center; padding: 28px 28px 100px;
     background: linear-gradient(155deg, rgba(142,163,184,0.14), rgba(255,255,255,0.02));
-    border:1px solid rgba(142,163,184,0.22); border-radius:20px; margin-bottom:8px;
+    border:1px solid rgba(142,163,184,0.22); border-radius:20px; margin:50px 0 8px;
   }
   @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
   .dash-hero-text{ text-align:right; }
@@ -296,11 +308,27 @@
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
 
+  /* دو کارت راهنمای سریع زیر هرو — مثل یه فهرست کوتاه، هرکدوم با کلیک
+     می‌بره پایین‌تر توی همون صفحه (نه صفحه‌ی جدید): یکی به گرید ۴تایی
+     عرصه‌های رصد، یکی به کارت هلویی بسته تحلیلی جریان. عمداً کوتاه و
+     کم‌عرض‌تر از عرض کامل صفحه‌ن، و با margin-top منفی نصفشون روی
+     پایین کادر هرو (که padding-bottom بیشتری گرفته) قرار می‌گیره */
+  .quicknav-grid{ display:grid; grid-template-columns: 1fr 1fr; gap:18px; max-width:820px; margin:-72px auto 8px; position:relative; z-index:1; }
+  @media (max-width:700px){ .quicknav-grid{ grid-template-columns:1fr; margin-top:-56px; } }
+  .quicknav-card{
+    background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card);
+    padding:20px 22px; box-shadow: var(--shadow); cursor:pointer;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .quicknav-card:hover{ transform:translateY(-3px); box-shadow: var(--shadow-hover); }
+  .quicknav-card h3{ font-size:15px; font-weight:800; color: var(--navy); margin:0 0 8px; }
+  .quicknav-card p{ font-size:12.5px; color: var(--text-dim); line-height:1.9; margin:0; }
+
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
-  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 56px 2px 26px; text-align:center; letter-spacing:0.01em; }
+  .section-label{ font-size:15px; font-weight:800; color: #fff; margin: 160px 2px 26px; text-align:center; letter-spacing:0.01em; scroll-margin-top: 140px; }
   .domain-grid{ display:grid; grid-template-columns: repeat(4, minmax(0,170px)); justify-content:center; gap:16px; margin-bottom:26px; }
-  .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 90px; }
+  .domain-caption{ text-align:center; color: rgba(255,255,255,0.55); font-size:13.5px; line-height:2; max-width:620px; margin:0 auto 28px; }
   @media (max-width:900px){ .domain-grid{ grid-template-columns: repeat(2,1fr); } }
   .domain-card{
     display:flex; flex-direction:column; align-items:center; text-align:center; padding:6px 12px; cursor:pointer;
@@ -313,6 +341,14 @@
   .domain-icon.is-illustrated img{ width:136px; height:136px; max-width:136px; object-fit:contain; }
   .domain-card h3{ font-size:14.5px; font-weight:700; color:#fff; display:flex; align-items:center; gap:7px; flex-wrap:wrap; justify-content:center; }
 
+  /* میان‌بر به زیربخش‌های هر عرصه (فعال و به‌زودی) — زیر توضیح سه‌خطی،
+     تا کاربر بدون رد شدن از تب پیش‌فرض مستقیم بره به همون زیربخش */
+  .domain-shortcuts{ display:flex; align-items:center; justify-content:center; gap:10px; flex-wrap:wrap; margin:0 0 40px; }
+  .domain-shortcuts a{ font-size:11.5px; color: rgba(255,255,255,0.65); cursor:pointer; text-decoration:none; padding:5px 12px; border:1px solid rgba(255,255,255,0.14); border-radius: var(--radius-pill); transition: color .15s ease, border-color .15s ease, background .15s ease; }
+  .domain-shortcuts a:hover{ color: var(--accent); border-color: var(--accent); background: rgba(234,179,147,0.08); }
+  .domain-shortcuts .domain-shortcut-disabled{ display:inline-flex; align-items:center; gap:6px; font-size:11.5px; color: rgba(255,255,255,0.32); cursor:default; padding:5px 12px; border:1px solid rgba(255,255,255,0.08); border-radius: var(--radius-pill); }
+  @media (max-width:640px){ .domain-shortcuts{ gap:8px; } }
+
   .modal-overlay{ display:none; position:fixed; inset:0; background:rgba(10,14,20,0.6); z-index:100; align-items:center; justify-content:center; padding:24px; }
   .modal-overlay.active{ display:flex; }
   .modal-card{ position:relative; background: var(--surface); border-radius: var(--radius-card); box-shadow: 0 30px 70px -20px rgba(0,0,0,0.5); max-width:520px; width:100%; max-height:85vh; overflow-y:auto; padding:32px; }
@@ -323,9 +359,9 @@
   .modal-card p + p{ margin-top:12px; }
 
   .media-viewer-overlay{ background:rgba(6,9,13,0.88); padding:20px; }
-  .media-viewer-card{ max-width:min(92vw,900px); max-height:90vh; width:auto; padding:0; background:transparent; box-shadow:none; overflow:visible; display:flex; align-items:center; justify-content:center; }
+  .media-viewer-card{ max-width:min(96vw,1400px); max-height:94vh; width:auto; padding:0; background:transparent; box-shadow:none; overflow:visible; display:flex; align-items:center; justify-content:center; }
   .media-viewer-card img,
-  .media-viewer-card video{ max-width:min(92vw,900px); max-height:80vh; width:auto; height:auto; min-width:min(92vw,360px); border-radius: var(--radius-card); display:block; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6); }
+  .media-viewer-card video{ max-width:min(96vw,1400px); max-height:88vh; width:auto; height:auto; min-width:min(92vw,360px); border-radius: var(--radius-card); display:block; box-shadow: 0 30px 70px -20px rgba(0,0,0,0.6); }
   .media-viewer-card .modal-close{ top:-14px; left:-14px; background: var(--surface); color: var(--text); }
   .media-viewer-link{ position:absolute; bottom:-42px; left:50%; transform:translateX(-50%); display:flex; align-items:center; gap:6px; font-size:12.5px; font-weight:600; color:#fff; background:rgba(255,255,255,0.12); padding:7px 16px; border-radius:100px; text-decoration:none; white-space:nowrap; }
   .media-viewer-link svg{ width:13px; height:13px; }
@@ -507,7 +543,17 @@
     box-shadow: var(--shadow-hover); min-width:220px; max-height:260px; overflow-y:auto;
   }
   .news-source-list label{ display:flex; align-items:center; gap:7px; font-size:12.5px; color: var(--text-dim); cursor:pointer; white-space:nowrap; }
-  .news-source-list label input{ cursor:pointer; }
+  /* توی صفحه‌ی کنشگری مجازی، دکمه‌ی «انتخاب کانال‌ها…» با margin-inline-start:auto
+     کاملاً به لبه‌ی راست toolbar چسبیده — با inset-inline-end:0 پیش‌فرض (که لبه‌ی
+     چپ پاپ‌آپ رو ثابت نگه می‌داره و به سمت راست باز می‌شه)، پاپ‌آپ از لبه‌ی راست
+     صفحه بیرون می‌زد. اینجا برعکسش می‌کنیم: لبه‌ی راست ثابت می‌مونه، به چپ باز می‌شه */
+  #posts-source-list{ inset-inline-end:auto; inset-inline-start:0; }
+  /* وقتی این دراپ‌داون داخل .toolbar تو در توئه (مثل صفحه‌ی کنشگری مجازی)،
+     قانون عمومی «.toolbar input» (که برای اینپوت متنی جست‌وجوئه) رو چک‌باکس‌ها
+     هم به ارث می‌برن — flex:1/min-width بزرگ باعث می‌شه چک‌باکس عملاً نامرئی
+     بشه و چیدمان راست‌چین متن رو هم به‌هم بریزه؛ all:revert کاملاً برش می‌گردونه
+     به ظاهر پیش‌فرض checkbox مرورگر */
+  .news-source-list label input[type=checkbox]{ all: revert; cursor:pointer; flex:none; }
   @media (max-width:760px){ .news-filter-divider{ display:none; } .news-source-details{ margin-inline-start:0; width:100%; } .news-source-list{ inset-inline-end:auto; inset-inline-start:0; width:100%; } }
 
   .news-platform{ display:inline-flex; align-items:center; gap:4px; font-size:10px; font-weight:600; color: var(--text-faint); }
@@ -517,6 +563,7 @@
   /* grid ردیفی — هر کارتِ یک ردیف تا کف ردیف کشیده می‌شه (align-items پیش‌فرض
      stretch‌ه) تا لبه‌ی پایین همه‌ی کارت‌های یک ردیف دقیقاً هم‌تراز باشه. */
   .news-feed.grid-view{ display:grid; grid-template-columns: repeat(3,1fr); gap:14px; max-width:100%; margin:0; }
+  .news-feed.grid-view.social-tab{ grid-template-columns: repeat(4,1fr); }
   @media (max-width:900px){ .news-feed.grid-view{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .news-feed.grid-view{ grid-template-columns: 1fr; } }
 
@@ -530,6 +577,10 @@
   .news-thumb img{ width:100%; height:100%; object-fit:cover; display:block; cursor:zoom-in; }
   @media (max-width:520px){ .news-feed:not(.grid-view) .news-thumb{ width:100%; height:150px; } }
   .news-feed.grid-view .news-thumb{ width:100%; height:auto; aspect-ratio:4/3; max-height:170px; border-radius:0; }
+  /* تب «شبکه‌های اجتماعی»: کارت‌ها کمی کشیده‌تر از نظر عمودی، شبیه فید
+     موبایل، چون عکس‌های کانال‌های پیام‌رسان بیشتر عمودی/مربعی‌ان و با
+     برش ۴:۳ افقی بد دیده می‌شدن */
+  .news-feed.grid-view.social-tab .news-thumb{ aspect-ratio:2/3; max-height:340px; }
   .news-thumb.placeholder{ background: linear-gradient(155deg, var(--navy), #223142); color: rgba(255,255,255,0.35); }
   .news-thumb.placeholder svg{ width:34px; height:34px; }
 
@@ -546,6 +597,9 @@
      برای همون تیتر + ۳ خط برای متن بعدش، یعنی جمعاً ۴ خط نمایش اولیه */
   .news-text.claims-text,
   .news-feed.grid-view .news-text.claims-text{ -webkit-line-clamp:4; }
+  /* کارت‌های تب «شبکه‌های اجتماعی» چون عکسشون کشیده‌تره، فضای بیشتری هم
+     دارن — قسمت متن هم ۵ خط نشون بده تا نسبت به عکس خیلی کوچیک نباشه */
+  .news-feed.grid-view.social-tab .news-text{ -webkit-line-clamp:5; }
   .news-text.expanded,
   .news-feed.grid-view .news-text.expanded{ -webkit-line-clamp:unset; }
   .news-more{ margin-top:8px; font-size:12px; font-weight:700; color: var(--accent-strong); cursor:pointer; background:none; border:none; padding:0; display:inline-flex; align-items:center; gap:3px; }
@@ -585,6 +639,43 @@
   .bar-col .lbl{ font-size:10px; color: var(--text-faint); direction:ltr; }
   .words{ display:flex; flex-wrap:wrap; gap:8px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
+
+  /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
+  .school-report-list{ display:flex; flex-direction:column; gap:32px; margin-bottom:20px; }
+  .school-report-block{ position:relative; }
+  .school-report-full-img{ width:100%; height:auto; display:block; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .school-report-caption{ display:flex; flex-wrap:wrap; align-items:baseline; gap:4px 12px; padding:12px 4px 0; }
+  .school-report-title{ font-size:13.5px; font-weight:700; color:#fff; }
+  .school-report-date{ font-size:11px; color: rgba(255,255,255,0.4); }
+  .school-report-file-card{ display:flex; align-items:center; gap:14px; background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:16px 18px; box-shadow: var(--shadow); cursor:pointer; }
+  .school-report-file-icon{ width:34px; height:34px; color: var(--text-faint); flex-shrink:0; }
+  .school-report-file-card .school-report-title{ color: var(--text); }
+  .school-report-file-card .school-report-date{ color: var(--text-faint); }
+
+  /* people — «افراد و مجموعه‌ها» (فعالان/اساتید/آنالیز) */
+  .news-toolbar-row select{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
+  .person-badge{ font-size:9.5px; font-weight:700; padding:2px 8px; border-radius:100px; color: var(--accent-strong); background: var(--accent-soft); white-space:nowrap; }
+  .people-table-wrap{ overflow-x:auto; margin-bottom:10px; border-radius: var(--radius); box-shadow: var(--shadow); }
+  .people-table{ width:100%; border-collapse:collapse; background: var(--surface); min-width:640px; }
+  .people-table th{ text-align:right; font-size:11px; font-weight:700; color: var(--text-faint); padding:12px 14px; background: var(--surface-2); border-bottom:1px solid var(--border); white-space:nowrap; }
+  .people-table td{ padding:11px 14px; font-size:12.5px; color: var(--text); border-bottom:1px solid var(--border); white-space:nowrap; }
+  .people-table tr:last-child td{ border-bottom:none; }
+  .people-table tr:hover td{ background: var(--surface-2); }
+  .people-table td.wrap{ white-space:normal; }
+  .people-table td.actions{ width:1%; }
+  .people-analytics-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:16px; }
+  .people-analytics-grid .dash-panel{ min-width:0; }
+  #people-top-tabs{ overflow-x:auto; flex-wrap:nowrap; }
+  #people-top-tabs button{ flex-shrink:0; white-space:nowrap; }
+  @media (max-width:900px){ .people-analytics-grid{ grid-template-columns:1fr; } }
+  #people-analytics-position-bars, #people-analytics-specialty-bars{ overflow-x:auto; padding-bottom:4px; }
+  #people-analytics-position-bars .bar-col, #people-analytics-specialty-bars .bar-col{ flex:0 0 54px; }
+  /* چک‌باکس‌لیست چندانتخابی سمت/حوزه‌ی تخصصی وقتی داخل فرم (روی پس‌زمینه‌ی روشن پنل) باشه،
+     نه توار فیلتر تیره — رنگ‌های .news-source-details پیش‌فرض برای زمینه‌ی تیره طراحی شده */
+  .field .news-source-details{ margin-inline-start:0; width:100%; }
+  .field .news-source-details summary{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); width:100%; box-sizing:border-box; justify-content:space-between; }
+  .field .news-source-list{ inset-inline-end:0; color-scheme:light; }
+  .field .news-source-list label{ color: var(--text-dim); }
 
   .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.16); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
   .ai-note b{ color: var(--accent); }
@@ -642,6 +733,10 @@
   .chan-row-news input{ cursor:pointer; }
   #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
+  .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
+  .chan-avatar-btn img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .chan-avatar-btn svg{ width:15px; height:15px; }
+  .chan-avatar-btn input{ position:absolute; inset:0; opacity:0; cursor:pointer; }
   .chan-row:last-child{ border-bottom:none; }
   .chan-row input.name-edit{ flex:1; min-width:90px; background:none; border:1px solid transparent; color: var(--text); font-size:12.5px; font-weight:600; padding:5px 6px; border-radius: var(--radius-control); font-family:inherit; }
   .chan-row input.name-edit:hover{ border-color: var(--border); }
@@ -693,27 +788,16 @@
   .mag-reorder button:disabled{ opacity:.35; cursor:default; }
   .mag-reorder svg{ width:11px; height:11px; }
 
-  /* magazine carousel widget — home page, rectangular front-page tiles.
-     Warm accent-tinted card (not plain var(--surface) white) so it stays
-     legible against the dark canvas AND doesn't read as just another
-     feature-card in the grid above it. */
-  .mag-widget{
-    margin: 4px 0 40px; padding:14px; border-radius: var(--radius-card);
-    background: linear-gradient(155deg, #fffaf5, #fbe9d7);
-    border:1px solid rgba(181,101,29,0.3);
-    box-shadow: 0 22px 46px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
-    animation: rise .55s .1s ease both;
-    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
-  }
-  .mag-widget:hover{ transform:translateY(-3px); border-color: rgba(181,101,29,0.45); box-shadow: 0 28px 56px -20px rgba(10,15,22,0.5), 0 1px 0 rgba(255,255,255,0.8) inset; }
-  .mag-widget-body{ display:flex; align-items:stretch; gap:16px; }
-  .mag-widget-info{ flex:0 0 208px; display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:10px; border-left:1px solid rgba(181,101,29,0.26); padding-left:16px; }
-  .mag-widget-title{ font-size:16.5px; font-weight:800; color: var(--text); line-height:1.7; }
-  .mag-widget-info .btn.primary{ padding:9px 18px; font-size:12.5px; }
-  @media (max-width:760px){
-    .mag-widget-body{ flex-direction:column; }
-    .mag-widget-info{ flex:none; border-left:none; padding-left:0; border-bottom:1px solid rgba(181,101,29,0.26); padding-bottom:12px; }
-  }
+  /* تب «بسته‌های آموزش تحلیلی» — کارتش عیناً .magazine-card ولی به‌جای
+     .mag-icon کوچیک، یه پوستر واقعی بالای عنوانه (چون خودِ کاربر خواسته
+     پوستری باشه) */
+  .basirat-card{ padding-top:14px; }
+  .basirat-poster{ width:100%; aspect-ratio: 16/9; border-radius: var(--radius-control); overflow:hidden; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); margin-bottom:2px; }
+  .basirat-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .basirat-poster svg{ width:26%; height:26%; opacity:.5; }
+
+  /* کاروسل جلد مجلات — الان داخل کارت واحد .package-card (پایین‌تر) استفاده
+     می‌شه، نه یه ویجت جدای خودش */
   .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
   .mag-carousel{ display:flex; gap:14px; overflow-x:auto; scroll-behavior:smooth; padding:4px 2px 6px; scrollbar-width:none; flex:1; min-width:0; }
   .mag-carousel::-webkit-scrollbar{ display:none; }
@@ -727,6 +811,43 @@
   .mag-tile-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
+
+  /* ویجت‌های عمومی صفحه‌ی نخست (زیر کارت هلویی «بسته تحلیلی جریان») — الان
+     دوتان: «بسته‌های آموزش تحلیلی» و «دیدن سایر بسته‌های تحلیلی». برخلاف
+     .magazine-card (که خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن
+     (مثل .domain-card)، مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی
+     بالای/کنار هر کدوم. عنوانِ هر ویجت هم عمداً از .panel-pill (فونت
+     مونواسپیس JetBrains Mono) استفاده نمی‌کنه چون حروف فارسیِ عبارت طولانی
+     رو به‌هم نمی‌چسبونه (bug واقعاً دیده‌شده) — یه h3 ساده با فونت پیش‌فرض سایت. */
+  .home-widget-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
+  .home-widget-logo{ width:34px; height:auto; flex-shrink:0; border-radius:6px; }
+  .home-widget-heading{ font-size:14.5px; font-weight:700; color:#fff; margin:0; }
+  .home-widget-desc{ font-size:13px; color: rgba(255,255,255,0.65); margin:7px 0 0; line-height:1.8; }
+  .home-poster-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
+  .home-poster-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
+
+  /* «بسته‌های آموزش تحلیلی» — طرح دوستونه مثل بالای کارت هلویی: یه ستون
+     باریک با لوگو+عنوان+توضیح+دکمه (سمت راست)، و چند تا پوستر در یه ردیف
+     قابل‌اسکرول کنارش (سمت چپ) — نه گرید تمام‌عرض زیرش */
+  .basirat-widget-block{ display:flex; align-items:flex-start; gap:24px; margin:160px 0 56px; }
+  .home-widget-divider{ height:1px; background: rgba(255,255,255,0.12); margin:0 0 56px; }
+  @media (max-width:760px){ .basirat-widget-block{ flex-direction:column; gap:18px; } }
+  .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
+  @media (max-width:760px){ .basirat-widget-info{ flex:none; } }
+  .basirat-widget-title-row{ display:flex; align-items:center; gap:11px; }
+  .basirat-widget-info .home-widget-logo{ width:64px; }
+  .basirat-widget-info .home-widget-heading{ font-size:21px; }
+  .basirat-widget-info .home-widget-desc{ font-size:15.5px; line-height:1.85; }
+  .basirat-widget-info .btn{ margin-top:8px; }
+  .home-poster-row{ flex:1; min-width:0; width:100%; display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
+  .home-poster-row::-webkit-scrollbar{ display:none; }
+  .home-poster-row .home-poster-card{ flex-shrink:0; width:190px; }
+  .home-poster-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+  .home-poster-cover.is-landscape{ aspect-ratio: 16/9; }
+  .home-poster-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .home-poster-cover svg{ width:26%; height:26%; opacity:.5; }
+  .home-poster-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
+  .home-poster-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
 
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
   .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
@@ -853,6 +974,18 @@
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
       </div>
+
+      <div class="quicknav-grid">
+        <div class="quicknav-card" onclick="scrollToDomainGrid()">
+          <h3>می‌خواهم عرصه‌های رصد را ببینم!</h3>
+          <p>اگر می‌خواهید بدانید جریان در کدام حوزه‌ها فعالیت می‌کند، عرصه‌های رصد و تحلیل جریان را از اینجا مشاهده کنید.</p>
+        </div>
+        <div class="quicknav-card" onclick="scrollToPackageCard()">
+          <h3>می‌خواهم بسته تحلیلی جریان را ببینم!</h3>
+          <p>اگر به دنبال محصول اصلی تحلیلی جریان هستید، بسته تحلیلی جریان را از اینجا مشاهده کنید.</p>
+        </div>
+      </div>
+
       <div class="section-label">عرصه‌های رصد و تحلیل</div>
       <div class="domain-grid">
         <div class="domain-card" onclick="switchSection('overview')">
@@ -874,76 +1007,113 @@
       </div>
       <p class="domain-caption">جریان این چهار عرصه را به‌صورت جداگانه رصد و تحلیل می‌کند: اخبار رسمی خبرگزاری‌ها، کنشگری فضای مجازی، برنامه‌های آموزشی مدارس و فعالیت افراد و مجموعه‌های تأثیرگذار. هر عرصه با منبع داده و روش پایش مخصوص به خودش دنبال می‌شود.</p>
 
-      <div class="mag-widget">
-        <div class="mag-widget-body">
-          <div class="mag-widget-info">
-            <h3 class="mag-widget-title">بسته‌های تحلیلی تولید شده</h3>
-            <button class="btn primary" onclick="switchSection('reports')">مشاهده‌ی همه</button>
-          </div>
-          <div class="mag-carousel-wrap">
-            <button class="mag-arrow" onclick="scrollMagCarousel(-1)" aria-label="بعدی">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
-            </button>
-            <div class="mag-carousel" id="mag-carousel-home"></div>
-            <button class="mag-arrow" onclick="scrollMagCarousel(1)" aria-label="قبلی">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
-            </button>
-          </div>
-        </div>
+      <div class="domain-shortcuts">
+        <a onclick="goToNewsTab('study')">شبکه‌های اجتماعی</a>
+        <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
+        <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
+        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
+        <span class="domain-shortcut-disabled">پرونده ویژه<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">خبرخوان مدارس<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">آنالیز اخبار<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToPeopleTab('professors')">اساتید سیاسی‌اجتماعی</a>
+        <a onclick="goToPeopleTab('activists')">فعالان</a>
+        <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
+        <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToPeopleTab('analytics')">آنالیز افراد</a>
+        <a onclick="switchSection('posts')">پست‌های منتشر شده</a>
+        <span class="domain-shortcut-disabled">آنالیز کنشگری<span class="news-soon">به‌زودی</span></span>
       </div>
 
-      <div class="analysis-section">
-        <div class="analysis-top">
-          <div class="analysis-art">
+      <div class="package-card">
+        <div class="package-top">
+          <div class="package-art">
             <img src="images/analysis-illustration.webp" alt="" />
           </div>
-          <div class="analysis-content">
-            <h3 class="analysis-title">بخش‌های <span class="hl">بسته تحلیل</span> جریان</h3>
-            <p class="analysis-sub">بسته جریان شامل ۱۰ بخش اصلی است که بعضی ثابت در هر شماره به آن پرداخته می‌شود و برخی نیز به‌صورت دوره‌ای بخشی از محتوا را تکمیل خواهند کرد.</p>
-            <div class="analysis-list">
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
-                <div class="analysis-item-body"><h4>خط خبری</h4></div>
+          <div class="package-content">
+            <h3 class="package-title">بسته تحلیلی <span class="hl">جریان</span></h3>
+            <p class="package-sub">بسته جریان شامل ۱۰ بخش اصلی است که بعضی ثابت در هر شماره به آن پرداخته می‌شود و برخی نیز به‌صورت دوره‌ای بخشی از محتوا را تکمیل خواهند کرد.</p>
+            <div class="package-list">
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 4a16 16 0 0116 16M4 11a9 9 0 019 9"/><circle cx="5" cy="19" r="1.4" fill="currentColor" stroke="none"/></svg></div>
+                <div class="package-item-body"><h4>خط خبری</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></div>
-                <div class="analysis-item-body"><h4>تحلیل اخبار روز</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/><circle cx="12" cy="15" r="1.6" fill="currentColor" stroke="none"/></svg></div>
+                <div class="package-item-body"><h4>تحلیل اخبار روز</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.6 6.2.6-4.6 4.2 1.3 6.1L12 16.8 6.5 19.5l1.3-6.1L3.2 9.2l6.2-.6L12 3z"/></svg></div>
-                <div class="analysis-item-body"><h4>مهم‌ترین اخبار</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 3l2.6 5.6 6.2.6-4.6 4.2 1.3 6.1L12 16.8 6.5 19.5l1.3-6.1L3.2 9.2l6.2-.6L12 3z"/></svg></div>
+                <div class="package-item-body"><h4>مهم‌ترین اخبار</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
-                <div class="analysis-item-body"><h4>نگاه جامعه‌شناسی سیاسی</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg></div>
+                <div class="package-item-body"><h4>نگاه جامعه‌شناسی سیاسی</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
-                <div class="analysis-item-body"><h4>اصل ماجرا</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.2" fill="currentColor" stroke="none"/></svg></div>
+                <div class="package-item-body"><h4>اصل ماجرا</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/></svg></div>
-                <div class="analysis-item-body"><h4>تحلیل سازمان‌ها</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 7h1M14 7h1M9 11h1M14 11h1M9 15h1M14 15h1"/></svg></div>
+                <div class="package-item-body"><h4>تحلیل سازمان‌ها</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H16l4 4v12.5a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5z"/><path d="M16 3v4h4M8 12h8M8 16h5"/></svg></div>
-                <div class="analysis-item-body"><h4>یادداشت طلاب</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M4 19.5V4.5A1.5 1.5 0 015.5 3H16l4 4v12.5a1.5 1.5 0 01-1.5 1.5h-13A1.5 1.5 0 014 19.5z"/><path d="M16 3v4h4M8 12h8M8 16h5"/></svg></div>
+                <div class="package-item-body"><h4>یادداشت طلاب</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.7 6.7C4.6 8.1 3 12 3 12s2.4 4.2 6.3 5.9M14 5.1c5.4.7 7 6.9 7 6.9a12.9 12.9 0 01-2.2 3"/></svg></div>
-                <div class="analysis-item-body"><h4>خارج از دید</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 3l18 18M10.6 10.6a2 2 0 002.8 2.8M6.7 6.7C4.6 8.1 3 12 3 12s2.4 4.2 6.3 5.9M14 5.1c5.4.7 7 6.9 7 6.9a12.9 12.9 0 01-2.2 3"/></svg></div>
+                <div class="package-item-body"><h4>خارج از دید</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
-                <div class="analysis-item-body"><h4>نبض افکار</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M3 12h4l2-7 4 14 2-7h6"/></svg></div>
+                <div class="package-item-body"><h4>نبض افکار</h4></div>
               </div>
-              <div class="analysis-item">
-                <div class="analysis-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z"/></svg></div>
-                <div class="analysis-item-body"><h4>تحلیل اندیشگده‌ها</h4></div>
+              <div class="package-item">
+                <div class="package-item-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0012 3z"/></svg></div>
+                <div class="package-item-body"><h4>تحلیل اندیشگده‌ها</h4></div>
               </div>
             </div>
           </div>
         </div>
+
+        <div class="package-divider"></div>
+
+        <div class="package-carousel-head">
+          <span class="package-carousel-title">آخرین شماره‌های منتشرشده</span>
+          <button class="btn primary" onclick="switchSection('reports')">مشاهده‌ی همه</button>
+        </div>
+        <div class="mag-carousel-wrap">
+          <button class="mag-arrow" onclick="scrollMagCarousel(-1)" aria-label="بعدی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M9 6l6 6-6 6"/></svg>
+          </button>
+          <div class="mag-carousel" id="mag-carousel-home"></div>
+          <button class="mag-arrow" onclick="scrollMagCarousel(1)" aria-label="قبلی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="basirat-widget-block">
+        <div class="basirat-widget-info">
+          <div class="basirat-widget-title-row">
+            <img class="home-widget-logo" src="images/basirat-logo.webp" alt="مدرسه مجازی بصیرت" />
+            <h3 class="home-widget-heading">بسته‌های آموزش تحلیلی</h3>
+          </div>
+          <p class="home-widget-desc">این قسمت مربوط به بسته‌های آموزشی تحلیلی است که در مدرسه مجازی بصیرت بارگذاری شده است.</p>
+          <button class="btn" onclick="openReportsBasiratTab()">مشاهده‌ی همه</button>
+        </div>
+        <div class="home-poster-row" id="basirat-grid-home"></div>
+      </div>
+
+      <div class="home-widget-divider"></div>
+
+      <div class="home-widget-block">
+        <div class="home-widget-head">
+          <h3 class="home-widget-heading">دیدن سایر بسته‌های تحلیلی</h3>
+          <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
+        </div>
+        <div class="home-poster-grid" id="archive-grid-home"></div>
       </div>
     </section>
 
@@ -959,6 +1129,8 @@
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button id="news-tab-claims" onclick="setNewsPageTab('claims')">ادعاها و شایعات</button>
+        <button disabled>پرونده ویژه<span class="news-soon">به‌زودی</span></button>
+        <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
 
@@ -1016,7 +1188,7 @@
           </div>
         </div>
 
-        <div class="news-feed grid-view" id="news-feed"></div>
+        <div class="news-feed grid-view social-tab" id="news-feed"></div>
         <p class="news-empty" id="news-empty" style="display:none;">هنوز خبری از منابع خبری جمع‌آوری نشده.</p>
         <div class="news-pagination" id="news-pagination"></div>
       </div>
@@ -1048,8 +1220,18 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">برنامه مدارس</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+      <p class="school-reports-empty" id="school-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز گزارشی بارگذاری نشده.</p>
+      <div class="school-report-list" id="school-report-list"></div>
+
+      <div class="panel" id="school-report-upload-panel" style="display:none;">
+        <div class="panel-head"><span class="panel-pill">بارگذاری گزارش جدید</span></div>
+        <div class="field"><label>عنوان (اختیاری)</label><input type="text" id="school-report-title" /></div>
+        <div class="field">
+          <label>فایل (تصویر، PDF یا اکسل)</label>
+          <input type="file" id="school-report-file" accept="image/*,.pdf,.xlsx,.xls,.csv" />
+        </div>
+        <button class="btn primary" id="school-report-upload-btn" style="margin-top:8px">بارگذاری گزارش</button>
+      </div>
     </section>
 
     <section class="section" id="sec-people">
@@ -1057,8 +1239,198 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">افراد و مجموعه‌ها</span></div>
-      <p style="color:var(--text-dim);font-size:13.5px;">این بخش هنوز طراحی نشده — به‌زودی در دسترس قرار می‌گیرد.</p>
+
+      <div class="news-page-tabs" id="people-top-tabs">
+        <button class="active" data-people-tab="professors">اساتید سیاسی‌اجتماعی</button>
+        <button data-people-tab="activists">فعالان سیاسی‌اجتماعی</button>
+        <button disabled>شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></button>
+        <button disabled>جامعه مخاطب<span class="news-soon">به‌زودی</span></button>
+        <button data-people-tab="analytics">آنالیز</button>
+      </div>
+
+      <!-- ===== فعالان سیاسی‌اجتماعی → افراد ===== -->
+      <div id="people-tab-activists" style="display:none;">
+        <div class="seg" style="margin-bottom:18px;">
+          <button class="active">افراد</button>
+          <button disabled>تشکل‌ها<span class="news-soon">به‌زودی</span></button>
+          <button disabled>مجموعه‌ها<span class="news-soon">به‌زودی</span></button>
+        </div>
+
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">افراد</h1>
+            <p class="news-page-sub" id="people-count-sub"></p>
+          </div>
+        </div>
+
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-search-box" id="people-search-box">
+              <input type="text" id="people-search-input" placeholder="جست‌وجو در نام…" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+          </div>
+          <div class="news-filter-row news-toolbar-row">
+            <details class="news-source-details" id="people-filter-position-details">
+              <summary id="people-filter-position-summary">همه‌ی سمت/تخصص/عرصه</summary>
+              <div class="news-source-list" id="people-filter-position-list"></div>
+            </details>
+            <select id="people-filter-importance">
+              <option value="">همه‌ی سطوح اهمیت</option>
+              <option value="برجسته">برجسته</option>
+              <option value="عادی">عادی</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="people-table-wrap">
+          <table class="people-table">
+            <thead><tr><th>نام</th><th>کد ملی</th><th>سمت/تخصص/عرصه</th><th>شهر</th><th>اهمیت</th><th>تشکل/مجموعه</th><th></th></tr></thead>
+            <tbody id="people-list"></tbody>
+          </table>
+        </div>
+        <p class="news-empty" id="people-empty" style="display:none;">فردی ثبت نشده.</p>
+        <div class="news-pagination" id="people-pagination"></div>
+
+        <div class="panel" id="people-admin-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">افزودن فرد</span></div>
+          <div class="form-grid">
+            <div class="field"><label>نام</label><input type="text" id="person-name" /></div>
+            <div class="field"><label>کد ملی</label><input type="text" id="person-national-id" /></div>
+            <div class="field"><label>شهر</label><input type="text" id="person-city" /></div>
+            <div class="field">
+              <label>سمت/تخصص/عرصه (چندتایی)</label>
+              <details class="news-source-details" id="person-position-details">
+                <summary id="person-position-summary">انتخاب سمت/تخصص/عرصه…</summary>
+                <div class="news-source-list" id="person-position-list"></div>
+              </details>
+            </div>
+            <div class="field"><label>اهمیت</label><select id="person-importance"><option value="عادی">عادی</option><option value="برجسته">برجسته</option></select></div>
+          </div>
+          <div class="field"><label>تشکل/مجموعه‌ی مرتبط (اختیاری)</label><input type="text" id="person-affiliation" /></div>
+          <div class="field"><label>یادداشت (اختیاری)</label><input type="text" id="person-notes" /></div>
+          <button class="btn primary" id="add-person-btn" style="margin-top:8px">افزودن فرد</button>
+        </div>
+
+        <div class="panel" id="people-bulk-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری گروهی از اکسل</span></div>
+          <p style="color:var(--text-dim);font-size:12.5px;line-height:1.9;">ترتیب ستون‌های اکسل باید دقیقاً این باشد (ردیف اول = سرستون، خودش نادیده گرفته می‌شود): <b>نام | کد ملی | شهر | سمت/تخصص/عرصه | اهمیت | تشکل/مجموعه | یادداشت</b>. چون این ستون چندانتخابیه، می‌تونید چند مقدار رو با ویرگول یا اسلش جدا از هم توی همون سلول بنویسید (مثلاً «طلبه، فعال دانشجویی»)؛ هر مقداری که با موارد زیر یکی نباشه نادیده گرفته می‌شه، و اگه هیچ‌کدوم مچ نشه به‌صورت خودکار «سایر» ثبت می‌شود.</p>
+          <input type="file" id="people-bulk-file" accept=".xlsx,.xls,.csv" />
+          <button class="btn primary" id="people-bulk-upload-btn" style="margin-top:8px">پردازش و بارگذاری</button>
+          <p id="people-bulk-status" style="font-size:12px;color:var(--text-dim);margin-top:8px;"></p>
+        </div>
+
+        <div class="panel" id="people-positions-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت سمت/تخصص/عرصه</span></div>
+          <div class="add-row">
+            <input type="text" id="new-position-name" placeholder="مورد جدید" />
+            <button class="btn primary" id="add-position-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="position-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== اساتید سیاسی‌اجتماعی ===== -->
+      <div id="people-tab-professors">
+        <div class="news-page-head">
+          <div>
+            <h1 class="news-page-title">اساتید سیاسی‌اجتماعی</h1>
+            <p class="news-page-sub" id="professors-count-sub"></p>
+          </div>
+        </div>
+
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-search-box" id="professors-search-box">
+              <input type="text" id="professors-search-input" placeholder="جست‌وجو در نام…" />
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+            </div>
+          </div>
+          <div class="news-filter-row news-toolbar-row">
+            <details class="news-source-details" id="professors-filter-specialty-details">
+              <summary id="professors-filter-specialty-summary">همه‌ی حوزه‌های تخصصی</summary>
+              <div class="news-source-list" id="professors-filter-specialty-list"></div>
+            </details>
+            <select id="professors-filter-rank"><option value="">همه‌ی مرتبه‌ها</option></select>
+            <select id="professors-filter-importance">
+              <option value="">همه‌ی سطوح اهمیت</option>
+              <option value="برجسته">برجسته</option>
+              <option value="عادی">عادی</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="people-table-wrap">
+          <table class="people-table">
+            <thead><tr><th>نام</th><th>کد ملی</th><th>دانشگاه/حوزه</th><th>حوزه‌ی تخصصی</th><th>مرتبه</th><th>شهر</th><th>اهمیت</th><th></th></tr></thead>
+            <tbody id="professors-list"></tbody>
+          </table>
+        </div>
+        <p class="news-empty" id="professors-empty" style="display:none;">استادی ثبت نشده.</p>
+        <div class="news-pagination" id="professors-pagination"></div>
+
+        <div class="panel" id="professors-admin-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">افزودن استاد</span></div>
+          <div class="form-grid">
+            <div class="field"><label>نام</label><input type="text" id="professor-name" /></div>
+            <div class="field"><label>کد ملی</label><input type="text" id="professor-national-id" /></div>
+            <div class="field"><label>شهر</label><input type="text" id="professor-city" /></div>
+            <div class="field"><label>دانشگاه/حوزه‌ی محل تدریس</label><input type="text" id="professor-institution" /></div>
+            <div class="field">
+              <label>حوزه‌ی تخصصی (چندتایی)</label>
+              <details class="news-source-details" id="professor-specialty-details">
+                <summary id="professor-specialty-summary">انتخاب حوزه‌های تخصصی…</summary>
+                <div class="news-source-list" id="professor-specialty-list"></div>
+              </details>
+            </div>
+            <div class="field"><label>مرتبه‌ی علمی/حوزوی</label><select id="professor-rank"></select></div>
+            <div class="field"><label>اهمیت</label><select id="professor-importance"><option value="عادی">عادی</option><option value="برجسته">برجسته</option></select></div>
+          </div>
+          <div class="field"><label>یادداشت (اختیاری)</label><input type="text" id="professor-notes" /></div>
+          <button class="btn primary" id="add-professor-btn" style="margin-top:8px">افزودن استاد</button>
+        </div>
+
+        <div class="panel" id="professors-bulk-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری گروهی از اکسل</span></div>
+          <p style="color:var(--text-dim);font-size:12.5px;line-height:1.9;">ترتیب ستون‌های اکسل باید دقیقاً این باشد (ردیف اول = سرستون، خودش نادیده گرفته می‌شود): <b>نام | کد ملی | شهر | دانشگاه/حوزه | حوزه‌ی تخصصی | مرتبه | اهمیت | یادداشت</b>. چون حوزه‌ی تخصصی چندانتخابیه، می‌تونید چند مقدار رو با ویرگول یا اسلش جدا از هم توی همون سلول بنویسید. مقدار ستون «مرتبه» (تک‌مقداره) باید دقیقاً با یکی از مقادیر موجود یکی باشد؛ در غیر این صورت (یا اگه هیچ حوزه‌ی تخصصی مچ نشه) به‌صورت خودکار «سایر» ثبت می‌شود.</p>
+          <input type="file" id="professors-bulk-file" accept=".xlsx,.xls,.csv" />
+          <button class="btn primary" id="professors-bulk-upload-btn" style="margin-top:8px">پردازش و بارگذاری</button>
+          <p id="professors-bulk-status" style="font-size:12px;color:var(--text-dim);margin-top:8px;"></p>
+        </div>
+
+        <div class="panel" id="professors-lists-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت حوزه‌های تخصصی</span></div>
+          <div class="add-row">
+            <input type="text" id="new-specialty-name" placeholder="حوزه‌ی تخصصی جدید" />
+            <button class="btn primary" id="add-specialty-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="specialty-grid"></div>
+        </div>
+
+        <div class="panel" id="professors-ranks-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">مدیریت مرتبه‌ها</span></div>
+          <div class="add-row">
+            <input type="text" id="new-rank-name" placeholder="مرتبه‌ی جدید" />
+            <button class="btn primary" id="add-rank-btn">افزودن</button>
+          </div>
+          <div class="cat-grid" id="rank-grid"></div>
+        </div>
+      </div>
+
+      <!-- ===== آنالیز: آمار تجمیعی افراد و مجموعه‌ها ===== -->
+      <div id="people-tab-analytics" style="display:none;">
+        <div class="cards-row" id="people-analytics-stats"></div>
+        <div class="people-analytics-grid">
+          <div class="dash-panel">
+            <div class="panel-head"><span class="panel-pill">تفکیک فعالان بر اساس سمت</span></div>
+            <div class="bars" id="people-analytics-position-bars"></div>
+          </div>
+          <div class="dash-panel">
+            <div class="panel-head"><span class="panel-pill">تفکیک اساتید بر اساس حوزه‌ی تخصصی</span></div>
+            <div class="bars" id="people-analytics-specialty-bars"></div>
+          </div>
+        </div>
+      </div>
     </section>
 
     <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
@@ -1067,33 +1439,94 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
-      <div class="panel-head"><span class="panel-pill">کتابخانه‌ی مجلات</span></div>
-      <p class="magazines-empty" id="magazines-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز مجله‌ای بارگذاری نشده.</p>
-      <div class="magazine-grid" id="magazine-grid"></div>
+      <div class="panel-head"><span class="panel-pill">بخش تحلیلی</span></div>
 
-      <div class="panel" id="magazine-upload-panel" style="display:none;">
-        <div class="panel-head"><span class="panel-pill">بارگذاری مجله‌ی جدید</span></div>
-        <div class="form-grid">
-          <div class="field"><label>عنوان</label><input type="text" id="mag-title" /></div>
-          <div class="field"><label>شماره</label><input type="text" id="mag-issue" /></div>
-          <div class="field"><label>تاریخ انتشار</label><input type="date" id="mag-date" /></div>
-          <div class="field">
-            <label>نوع فایل</label>
-            <select id="mag-file-type">
-              <option value="pdf">PDF</option>
-              <option value="images">چند عکس</option>
-            </select>
+      <div class="news-page-tabs" id="reports-page-tabs">
+        <button class="active" data-reports-tab="own">مجلات جریان</button>
+        <button data-reports-tab="basirat">بسته‌های آموزش تحلیلی</button>
+        <button data-reports-tab="archive">دیدن سایر بسته‌های تحلیلی</button>
+      </div>
+
+      <div id="reports-tab-own">
+        <p class="magazines-empty" id="magazines-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز مجله‌ای بارگذاری نشده.</p>
+        <div class="magazine-grid" id="magazine-grid"></div>
+
+        <div class="panel" id="magazine-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری مجله‌ی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="mag-title" /></div>
+            <div class="field"><label>شماره</label><input type="text" id="mag-issue" /></div>
+            <div class="field"><label>تاریخ انتشار</label><input type="date" id="mag-date" /></div>
+            <div class="field">
+              <label>نوع فایل</label>
+              <select id="mag-file-type">
+                <option value="pdf">PDF</option>
+                <option value="images">چند عکس</option>
+              </select>
+            </div>
           </div>
+          <div class="field">
+            <label>فایل(ها)</label>
+            <input type="file" id="mag-files" multiple accept=".pdf,image/*" />
+          </div>
+          <div class="field">
+            <label>تصویر جلد (اختیاری — برای نمایش در ردیف کاروسل صفحه‌ی نخست)</label>
+            <input type="file" id="mag-cover" accept="image/*" />
+          </div>
+          <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
         </div>
-        <div class="field">
-          <label>فایل(ها)</label>
-          <input type="file" id="mag-files" multiple accept=".pdf,image/*" />
+      </div>
+
+      <div id="reports-tab-basirat" style="display:none;">
+        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
+        <div class="magazine-grid" id="basirat-grid"></div>
+
+        <div class="panel" id="basirat-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
+            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
+          </div>
+          <div class="field">
+            <label>توضیح کوتاه (اختیاری)</label>
+            <input type="text" id="bas-desc" />
+          </div>
+          <div class="field">
+            <label>پوستر (اختیاری)</label>
+            <input type="file" id="bas-poster" accept="image/*" />
+          </div>
+          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
         </div>
-        <div class="field">
-          <label>تصویر جلد (اختیاری — برای نمایش در ردیف کاروسل صفحه‌ی نخست)</label>
-          <input type="file" id="mag-cover" accept="image/*" />
+      </div>
+
+      <div id="reports-tab-archive" style="display:none;">
+        <p class="magazines-empty" id="archive-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>
+        <div class="magazine-grid" id="archive-report-grid"></div>
+
+        <div class="panel" id="archive-report-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری تولید تحلیلی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="arc-title" /></div>
+            <div class="field"><label>نهاد تولیدکننده</label><input type="text" id="arc-source-org" /></div>
+            <div class="field"><label>تاریخ انتشار</label><input type="date" id="arc-date" /></div>
+            <div class="field">
+              <label>نوع فایل</label>
+              <select id="arc-file-type">
+                <option value="pdf">PDF</option>
+                <option value="images">چند عکس</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>فایل(ها)</label>
+            <input type="file" id="arc-files" multiple accept=".pdf,image/*" />
+          </div>
+          <div class="field">
+            <label>تصویر جلد (اختیاری)</label>
+            <input type="file" id="arc-cover" accept="image/*" />
+          </div>
+          <button class="btn primary" id="arc-upload-btn" style="margin-top:8px">بارگذاری</button>
         </div>
-        <button class="btn primary" id="mag-upload-btn" style="margin-top:8px">بارگذاری مجله</button>
       </div>
     </section>
 
@@ -1113,8 +1546,16 @@
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
         بازگشت به صفحه نخست
       </button>
+      <div class="news-page-tabs">
+        <button class="active">پست‌های منتشر شده</button>
+        <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
+      </div>
+
       <div class="toolbar">
-        <select id="posts-filter-channel"><option value="">همه‌ی کانال‌ها</option></select>
+        <details class="news-source-details" id="posts-source-details">
+          <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
+          <div class="news-source-list" id="posts-source-list"></div>
+        </details>
         <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
         <select id="posts-filter-time">
           <option value="">همه‌ی زمان‌ها</option>
@@ -1122,10 +1563,18 @@
           <option value="yesterday">دیروز</option>
           <option value="week">این هفته</option>
         </select>
-        <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+        <div class="news-search-box" id="posts-search-box">
+          <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        </div>
+        <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+          جستجوی هوشمند
+          <span class="sw"></span>
+        </div>
       </div>
       <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
-      <div class="posts-grid" id="posts-list"></div>
+      <div class="news-feed grid-view social-tab" id="posts-list"></div>
     </section>
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
@@ -1323,6 +1772,8 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- برای پردازش اکسل بارگذاری‌شده در بخش «افراد و مجموعه‌ها» (بارگذاری گروهی) -->
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -1422,6 +1873,16 @@
     const isAdmin = currentRole === 'app_admin';
     adminLinks.style.display = isAdmin ? '' : 'none';
     document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('archive-report-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('basirat-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('school-report-upload-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-admin-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-bulk-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('people-positions-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-admin-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-bulk-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-lists-panel').style.display = isAdmin ? '' : 'none';
+    document.getElementById('professors-ranks-panel').style.display = isAdmin ? '' : 'none';
     const activeSec = document.querySelector('.section.active');
     const activeKey = activeSec && activeSec.id.replace('sec-','');
     if(activeKey && ADMIN_ONLY_SECTIONS.includes(activeKey) && !isAdmin){
@@ -1496,7 +1957,7 @@
     overview: 'اخبار رسمی',
     schools: 'برنامه مدارس',
     people: 'افراد و مجموعه‌ها',
-    reports: 'بخش تحلیلی — کتابخانه‌ی مجلات',
+    reports: 'بخش تحلیلی',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
   };
@@ -1510,6 +1971,18 @@
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview') renderNewsFeed();
+    if(key === 'posts') renderPosts();
+  }
+
+  // میان‌برهای کارت‌های صفحه‌ی نخست به زیربخش‌های خودِ همون صفحه
+  function goToNewsTab(tab){
+    switchSection('overview');
+    setNewsPageTab(tab);
+  }
+  function goToPeopleTab(tab){
+    switchSection('people');
+    const btn = document.querySelector('#people-top-tabs button[data-people-tab="'+tab+'"]');
+    if(btn) btn.click();
   }
 
   function setNewsPageTab(tab){
@@ -1517,6 +1990,7 @@
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
+    document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
     // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
     // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
     // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
@@ -1557,10 +2031,23 @@
   let REGIONS = [];     // {id, name}
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
+  let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
+  let BASIRAT_COURSES = [];   // {id, title, description, poster_url, external_url, sort_order, created_at}
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
   const newspaperState = { selected: [], date: null };  // date=null یعنی جدیدترین تاریخ موجود
+  let SCHOOL_REPORTS = []; // {id, title, image_url, media_storage_path, sort_order, uploaded_at, file_type, file_name} — گزارش‌های تحلیل Power BI (تصویر/PDF/اکسل)
+  let PEOPLE = [];            // {id, name, city, position_id, importance, affiliation, channel_id, notes}
+  let PERSON_POSITIONS = [];  // {id, name} — سمت/جایگاه، قابل‌مدیریت از پنل
+  const PEOPLE_PAGE_SIZE = 30;
+  const peopleState = { query: '', positions: [], importance: '', page: 1 };
+  const personFormPositions = []; // سمت‌های انتخاب‌شده در فرم «افزودن فرد»
+  let PROFESSORS = [];            // {id, name, city, institution, specialty_id, rank_id, importance, notes}
+  let PROFESSOR_SPECIALTIES = []; // {id, name} — حوزه/رشته‌ی تخصصی، قابل‌مدیریت از پنل
+  let PROFESSOR_RANKS = [];       // {id, name} — مرتبه‌ی علمی/حوزوی، قابل‌مدیریت از پنل
+  const professorsState = { query: '', specialties: [], rank: '', importance: '', page: 1 };
+  const professorFormSpecialties = []; // حوزه‌های تخصصی انتخاب‌شده در فرم «افزودن استاد»
 
   function chById(id){ return CHANNELS.find(c=>c.id===id); }
   function chName(id){ const c=chById(id); return c ? (c.title || c.username) : '؟'; }
@@ -1716,9 +2203,13 @@
       const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
       // کانال بله (تب «ادعاها و شایعات») هیچ‌وقت عکس نداره — به‌جای باکس
       // خالی placeholder، کارت کاملاً متنی (تمام‌عرض) طراحی می‌شه
+      // اگه خودِ پست عکس نداره، عکس پیش‌فرض همون کانال (اگه از پنل «مدیریت
+      // کانال‌ها» آپلود شده باشه) به‌جای باکس خالی placeholder نشون داده می‌شه
       const thumbHtml = isClaims ? '' : hasThumb
         ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
-        : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+        : ch.avatar_url
+          ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+          : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
       return `
       <div class="news-card">
         ${thumbHtml}
@@ -1902,11 +2393,50 @@
     const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
     MAGAZINES = r.ok ? await r.json() : [];
   }
+  async function loadArchiveReports(){
+    const r = await api('/archive_reports?select=*&order=sort_order.asc,uploaded_at.desc');
+    ARCHIVE_REPORTS = r.ok ? await r.json() : [];
+  }
+  async function loadBasiratCourses(){
+    const r = await api('/basirat_courses?select=*&order=sort_order.asc,created_at.desc');
+    BASIRAT_COURSES = r.ok ? await r.json() : [];
+  }
   async function loadNewspapers(){
     // limit=250: با نگه‌داری ۳ روزه (cleanup_media.py) و ~۵۴ روزنامه در روز،
     // این عدد برای پوشش کامل هر ۳ روزی که هنوز پاک نشدن کافیه
     const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=250');
     NEWSPAPERS = r.ok ? await r.json() : [];
+  }
+  async function loadSchoolReports(){
+    const r = await api('/school_reports?select=*&order=sort_order.asc,uploaded_at.desc');
+    SCHOOL_REPORTS = r.ok ? await r.json() : [];
+  }
+  async function loadPeople(){
+    // people_positions(position_id) امبد می‌شه چون سمت چندانتخابیه (جدول واسط)
+    const r = await api('/people?select=*,people_positions(position_id)&order=name.asc&limit=5000');
+    PEOPLE = r.ok ? await r.json() : [];
+  }
+  async function loadPersonPositions(){
+    const r = await api('/person_positions?select=*&order=id.asc');
+    PERSON_POSITIONS = r.ok ? await r.json() : [];
+  }
+  function personPositionIds(p){ return (p.people_positions||[]).map(x=>String(x.position_id)); }
+  function personPositionNames(p){ return personPositionIds(p).map(id=>positionNameOf(Number(id))).join('، ') || '—'; }
+
+  async function loadProfessors(){
+    // professor_specialty_links(specialty_id) امبد می‌شه چون حوزه‌ی تخصصی چندانتخابیه
+    const r = await api('/professors?select=*,professor_specialty_links(specialty_id)&order=name.asc&limit=5000');
+    PROFESSORS = r.ok ? await r.json() : [];
+  }
+  function professorSpecialtyIds(p){ return (p.professor_specialty_links||[]).map(x=>String(x.specialty_id)); }
+  function professorSpecialtyNames(p){ return professorSpecialtyIds(p).map(id=>specialtyNameOf(Number(id))).join('، ') || '—'; }
+  async function loadProfessorSpecialties(){
+    const r = await api('/professor_specialties?select=*&order=id.asc');
+    PROFESSOR_SPECIALTIES = r.ok ? await r.json() : [];
+  }
+  async function loadProfessorRanks(){
+    const r = await api('/professor_ranks?select=*&order=id.asc');
+    PROFESSOR_RANKS = r.ok ? await r.json() : [];
   }
 
   function toFaDigits(n){
@@ -1921,7 +2451,7 @@
     const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
     const personCount = CHANNELS.filter(c=>c.type==='person').length;
     const platformCount = new Set(CHANNELS.map(c=>c.platform)).size;
-    const schoolsCount = 56; // عدد ثابت موقت — هنوز جدول/داده‌ی واقعی مدارس وجود نداره، بعداً با داده‌ی واقعی جایگزین می‌شه
+    const schoolsCount = 126; // عدد واقعی از آخرین گزارش Power BI کاربر (مرداد ۱۴۰۴) — چون تحلیل مدارس الان توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته، منبع زنده‌ای براش نداریم؛ با هر گزارش جدید دستی به‌روز بشه
     const magazinesCount = MAGAZINES.length;
     wrap.innerHTML = `
       <div class="dash-hero-stat"><b>${toFaDigits(total)}</b><span>کانال پایش‌شونده</span></div>
@@ -1933,7 +2463,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadNewspapers()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -1948,10 +2478,722 @@
     renderNewsRegionChips();
     renderChanList();
     renderMagazines();
+    renderArchiveReports();
+    renderBasiratCourses();
     renderNewspapers();
     populateNewsSourceOptions();
     renderNewsFeed();
+    renderSchoolReports();
+    renderPeoplePage();
+    renderProfessorsPage();
+    renderPeopleAnalytics();
   }
+
+  // ---- schools page: گزارش‌های تحلیل Power BI — هر عکس تمام‌عرض، پشت‌سرهم ----
+  function renderSchoolReports(){
+    const list = document.getElementById('school-report-list');
+    const empty = document.getElementById('school-reports-empty');
+    if(!list) return;
+    const isAdmin = currentRole === 'app_admin';
+    empty.style.display = SCHOOL_REPORTS.length ? 'none' : 'block';
+    list.innerHTML = '';
+    SCHOOL_REPORTS.forEach(r => {
+      const el = document.createElement('div'); el.className = 'school-report-block';
+      const isImage = (r.file_type || 'image') === 'image';
+      const dateStr = r.uploaded_at ? new Date(r.uploaded_at).toLocaleDateString('fa-IR') : '';
+      const titleText = escAttr(r.title || 'گزارش بدون عنوان');
+      if(isImage){
+        el.innerHTML = `<img class="school-report-full-img" src="${escAttr(r.image_url)}" alt="${escAttr(r.title||'')}" loading="lazy" />
+          <div class="school-report-caption">
+            <span class="school-report-title">${titleText}</span>
+            <span class="school-report-date">${dateStr}</span>
+          </div>`;
+      }else{
+        el.innerHTML = `
+          <div class="school-report-file-card">
+            <div class="school-report-file-icon">${ICONS.doc}</div>
+            <span class="school-report-title">${titleText}</span>
+            <span class="school-report-date">${dateStr}</span>
+          </div>`;
+        el.querySelector('.school-report-file-card').addEventListener('click', () => window.open(r.image_url, '_blank'));
+      }
+      if(isAdmin){
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف گزارش'; del.setAttribute('aria-label', 'حذف گزارش');
+        del.style.cssText = 'position:absolute;top:8px;left:8px;background:rgba(20,27,36,0.6);color:#fff;';
+        del.addEventListener('click', () => deleteSchoolReport(r));
+        (el.querySelector('.school-report-file-card') || el).style.position = 'relative';
+        (el.querySelector('.school-report-file-card') || el).appendChild(del);
+      }
+      list.appendChild(el);
+    });
+  }
+
+  function detectSchoolReportFileType(file){
+    const name = (file.name || '').toLowerCase();
+    if(/\.pdf$/.test(name)) return 'pdf';
+    if(/\.(xlsx|xls|csv)$/.test(name)) return 'excel';
+    return 'image';
+  }
+
+  async function deleteSchoolReport(r){
+    if(!confirm('این گزارش حذف شود؟')) return;
+    try{
+      if(r.media_storage_path){
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/school-reports', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [r.media_storage_path] }),
+        });
+      }
+      await api('/school_reports?id=eq.'+r.id, {method:'DELETE'});
+      await loadSchoolReports(); renderSchoolReports();
+      showToast('گزارش حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadSchoolReportFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/school-reports/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('upload failed');
+    return { path, url: SUPABASE_URL + '/storage/v1/object/public/school-reports/' + path };
+  }
+
+  document.getElementById('school-report-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('school-report-upload-btn');
+    const titleEl = document.getElementById('school-report-title');
+    const fileEl = document.getElementById('school-report-file');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      const { path, url } = await uploadSchoolReportFile(file);
+      const nextOrder = SCHOOL_REPORTS.length ? Math.max(...SCHOOL_REPORTS.map(r=>r.sort_order||0)) + 1 : 0;
+      const body = { title: titleEl.value.trim() || null, image_url: url, media_storage_path: path, sort_order: nextOrder, file_type: detectSchoolReportFileType(file), file_name: file.name };
+      const r = await api('/school_reports', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; fileEl.value='';
+      await loadSchoolReports(); renderSchoolReports();
+      showToast('گزارش بارگذاری شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری گزارش';
+    }
+  });
+
+  // ---- ابزار عمومی: چک‌باکس‌لیست چندانتخابی (سمت/حوزه‌ی تخصصی) ----
+  // items: آرایه‌ی {id,name} | selectedIds: آرایه‌ی رشته‌ای که این تابع خودش mutate می‌کنه
+  function wireMultiSelect(listElId, summaryElId, items, selectedIds, placeholderText, onChange){
+    const list = document.getElementById(listElId);
+    const summary = document.getElementById(summaryElId);
+    if(!list) return;
+    // آیتم‌هایی که دیگه وجود ندارن (حذف شدن) از انتخاب‌شده‌ها هم پاک بشن
+    const validIds = new Set(items.map(it=>String(it.id)));
+    for(let i=selectedIds.length-1; i>=0; i--){ if(!validIds.has(selectedIds[i])) selectedIds.splice(i,1); }
+    list.innerHTML = items.map(it=>{
+      const id = String(it.id);
+      const checked = selectedIds.includes(id) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${id}" ${checked}> ${escAttr(it.name)}</label>`;
+    }).join('');
+    function updateSummary(){
+      if(!summary) return;
+      const n = selectedIds.length;
+      summary.textContent = n === 0 ? placeholderText : toFaDigits(n) + ' مورد انتخاب‌شده';
+    }
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const id = chk.value;
+        if(chk.checked){ if(!selectedIds.includes(id)) selectedIds.push(id); }
+        else{ const idx = selectedIds.indexOf(id); if(idx>-1) selectedIds.splice(idx,1); }
+        updateSummary();
+        if(onChange) onChange();
+      });
+    });
+    updateSummary();
+  }
+
+  // ---- افراد و مجموعه‌ها: زیرشاخه‌ی «افراد» (فعالان) ----
+  function positionNameOf(id){
+    const p = PERSON_POSITIONS.find(x=>x.id===id);
+    return p ? p.name : '—';
+  }
+
+  function filteredPeople(){
+    const q = peopleState.query.trim().toLowerCase();
+    return PEOPLE.filter(p=>{
+      if(q && !(p.name||'').toLowerCase().includes(q)) return false;
+      if(peopleState.positions.length && !personPositionIds(p).some(id=>peopleState.positions.includes(id))) return false;
+      if(peopleState.importance && p.importance !== peopleState.importance) return false;
+      return true;
+    });
+  }
+
+  function renderPeopleList(){
+    const wrap = document.getElementById('people-list');
+    const empty = document.getElementById('people-empty');
+    if(!wrap) return;
+    const full = filteredPeople();
+    empty.style.display = full.length ? 'none' : 'block';
+    const totalPages = Math.max(1, Math.ceil(full.length / PEOPLE_PAGE_SIZE));
+    if(peopleState.page > totalPages) peopleState.page = totalPages;
+    if(peopleState.page < 1) peopleState.page = 1;
+    const start = (peopleState.page - 1) * PEOPLE_PAGE_SIZE;
+    const list = full.slice(start, start + PEOPLE_PAGE_SIZE);
+    const isAdmin = currentRole === 'app_admin';
+    wrap.innerHTML = list.map(p => `
+      <tr>
+        <td><b>${escAttr(p.name)}</b>${p.importance === 'برجسته' ? ' <span class="person-badge">برجسته</span>' : ''}</td>
+        <td class="mono">${p.national_id ? escAttr(p.national_id) : '—'}</td>
+        <td class="wrap">${escAttr(personPositionNames(p))}</td>
+        <td>${p.city ? escAttr(p.city) : '—'}</td>
+        <td>${p.importance}</td>
+        <td class="wrap">${p.affiliation ? escAttr(p.affiliation) : '—'}</td>
+        <td class="actions">${isAdmin ? `<button class="del-btn" data-person-id="${p.id}" title="حذف فرد" aria-label="حذف ${escAttr(p.name)}">✕</button>` : ''}</td>
+      </tr>`).join('');
+    if(isAdmin){
+      wrap.querySelectorAll('[data-person-id]').forEach(btn=>{
+        btn.addEventListener('click', () => deletePerson(Number(btn.dataset.personId)));
+      });
+    }
+    const sub = document.getElementById('people-count-sub');
+    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
+    renderPeoplePagination(totalPages);
+  }
+
+  function renderPeoplePagination(totalPages){
+    const wrap = document.getElementById('people-pagination');
+    if(!wrap) return;
+    if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+    const cur = peopleState.page;
+    const pages = [...new Set([1, totalPages, cur-1, cur, cur+1].filter(p=>p>=1 && p<=totalPages))].sort((a,b)=>a-b);
+    let html = `<button ${cur===1?'disabled':''} onclick="goPeoplePage(${cur-1})">قبلی</button>`;
+    let prev = 0;
+    pages.forEach(p=>{
+      if(prev && p - prev > 1) html += `<span class="dots">…</span>`;
+      html += `<button class="${p===cur?'active':''}" onclick="goPeoplePage(${p})">${toFaDigits(p)}</button>`;
+      prev = p;
+    });
+    html += `<button ${cur===totalPages?'disabled':''} onclick="goPeoplePage(${cur+1})">بعدی</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goPeoplePage(p){
+    peopleState.page = p;
+    renderPeopleList();
+    document.getElementById('people-list').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  async function deletePerson(id){
+    if(!confirm('این فرد حذف شود؟')) return;
+    await api('/people?id=eq.'+id, {method:'DELETE'});
+    await loadPeople();
+    renderPeopleList();
+  }
+
+  function populatePositionSelects(){
+    wireMultiSelect('people-filter-position-list', 'people-filter-position-summary', PERSON_POSITIONS, peopleState.positions, 'همه‌ی سمت/تخصص/عرصه', ()=>{ peopleState.page = 1; renderPeopleList(); });
+    wireMultiSelect('person-position-list', 'person-position-summary', PERSON_POSITIONS, personFormPositions, 'انتخاب سمت/تخصص/عرصه…');
+  }
+
+  function renderPositionGrid(){
+    const wrap = document.getElementById('position-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PERSON_POSITIONS.forEach(p=>{
+      const count = PEOPLE.filter(x=>personPositionIds(x).includes(String(p.id))).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(p.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف سمت'; del.setAttribute('aria-label', 'حذف سمت ' + p.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این سمت حذف شود؟')) return;
+        await api('/person_positions?id=eq.'+p.id, {method:'DELETE'});
+        await loadPersonPositions();
+        populatePositionSelects(); renderPositionGrid(); renderPeopleList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderPeoplePage(){
+    populatePositionSelects();
+    renderPositionGrid();
+    renderPeopleList();
+  }
+
+  // ---- افراد و مجموعه‌ها: تب‌های سطح‌بالا (فعالان / اساتید / آنالیز) ----
+  const peopleTopTabsEl = document.getElementById('people-top-tabs');
+  if(peopleTopTabsEl) peopleTopTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.disabled || !b.dataset.peopleTab) return;
+    peopleTopTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    ['activists','professors','analytics'].forEach(key=>{
+      const el = document.getElementById('people-tab-'+key);
+      if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
+    });
+  });
+
+  // ---- اساتید سیاسی‌اجتماعی ----
+  function specialtyNameOf(id){
+    const s = PROFESSOR_SPECIALTIES.find(x=>x.id===id);
+    return s ? s.name : '—';
+  }
+  function rankNameOf(id){
+    const r = PROFESSOR_RANKS.find(x=>x.id===id);
+    return r ? r.name : '—';
+  }
+
+  function filteredProfessors(){
+    const q = professorsState.query.trim().toLowerCase();
+    return PROFESSORS.filter(p=>{
+      if(q && !(p.name||'').toLowerCase().includes(q)) return false;
+      if(professorsState.specialties.length && !professorSpecialtyIds(p).some(id=>professorsState.specialties.includes(id))) return false;
+      if(professorsState.rank && p.rank_id !== Number(professorsState.rank)) return false;
+      if(professorsState.importance && p.importance !== professorsState.importance) return false;
+      return true;
+    });
+  }
+
+  function renderProfessorsList(){
+    const wrap = document.getElementById('professors-list');
+    const empty = document.getElementById('professors-empty');
+    if(!wrap) return;
+    const full = filteredProfessors();
+    empty.style.display = full.length ? 'none' : 'block';
+    const totalPages = Math.max(1, Math.ceil(full.length / PEOPLE_PAGE_SIZE));
+    if(professorsState.page > totalPages) professorsState.page = totalPages;
+    if(professorsState.page < 1) professorsState.page = 1;
+    const start = (professorsState.page - 1) * PEOPLE_PAGE_SIZE;
+    const list = full.slice(start, start + PEOPLE_PAGE_SIZE);
+    const isAdmin = currentRole === 'app_admin';
+    wrap.innerHTML = list.map(p => `
+      <tr>
+        <td><b>${escAttr(p.name)}</b>${p.importance === 'برجسته' ? ' <span class="person-badge">برجسته</span>' : ''}</td>
+        <td class="mono">${p.national_id ? escAttr(p.national_id) : '—'}</td>
+        <td>${p.institution ? escAttr(p.institution) : '—'}</td>
+        <td class="wrap">${escAttr(professorSpecialtyNames(p))}</td>
+        <td>${escAttr(rankNameOf(p.rank_id))}</td>
+        <td>${p.city ? escAttr(p.city) : '—'}</td>
+        <td>${p.importance}</td>
+        <td class="actions">${isAdmin ? `<button class="del-btn" data-professor-id="${p.id}" title="حذف استاد" aria-label="حذف ${escAttr(p.name)}">✕</button>` : ''}</td>
+      </tr>`).join('');
+    if(isAdmin){
+      wrap.querySelectorAll('[data-professor-id]').forEach(btn=>{
+        btn.addEventListener('click', () => deleteProfessor(Number(btn.dataset.professorId)));
+      });
+    }
+    const sub = document.getElementById('professors-count-sub');
+    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
+    renderProfessorsPagination(totalPages);
+  }
+
+  function renderProfessorsPagination(totalPages){
+    const wrap = document.getElementById('professors-pagination');
+    if(!wrap) return;
+    if(totalPages <= 1){ wrap.innerHTML = ''; return; }
+    const cur = professorsState.page;
+    const pages = [...new Set([1, totalPages, cur-1, cur, cur+1].filter(p=>p>=1 && p<=totalPages))].sort((a,b)=>a-b);
+    let html = `<button ${cur===1?'disabled':''} onclick="goProfessorsPage(${cur-1})">قبلی</button>`;
+    let prev = 0;
+    pages.forEach(p=>{
+      if(prev && p - prev > 1) html += `<span class="dots">…</span>`;
+      html += `<button class="${p===cur?'active':''}" onclick="goProfessorsPage(${p})">${toFaDigits(p)}</button>`;
+      prev = p;
+    });
+    html += `<button ${cur===totalPages?'disabled':''} onclick="goProfessorsPage(${cur+1})">بعدی</button>`;
+    wrap.innerHTML = html;
+  }
+
+  function goProfessorsPage(p){
+    professorsState.page = p;
+    renderProfessorsList();
+    document.getElementById('professors-list').scrollIntoView({behavior:'smooth', block:'start'});
+  }
+
+  async function deleteProfessor(id){
+    if(!confirm('این استاد حذف شود؟')) return;
+    await api('/professors?id=eq.'+id, {method:'DELETE'});
+    await loadProfessors();
+    renderProfessorsList();
+  }
+
+  function populateSpecialtyRankSelects(){
+    wireMultiSelect('professors-filter-specialty-list', 'professors-filter-specialty-summary', PROFESSOR_SPECIALTIES, professorsState.specialties, 'همه‌ی حوزه‌های تخصصی', ()=>{ professorsState.page = 1; renderProfessorsList(); });
+    wireMultiSelect('professor-specialty-list', 'professor-specialty-summary', PROFESSOR_SPECIALTIES, professorFormSpecialties, 'انتخاب حوزه‌های تخصصی…');
+    const rankFilterSel = document.getElementById('professors-filter-rank');
+    if(rankFilterSel) rankFilterSel.innerHTML = '<option value="">همه‌ی مرتبه‌ها</option>' + PROFESSOR_RANKS.map(r=>`<option value="${r.id}">${escAttr(r.name)}</option>`).join('');
+    const rankAddSel = document.getElementById('professor-rank');
+    if(rankAddSel) rankAddSel.innerHTML = PROFESSOR_RANKS.map(r=>`<option value="${r.id}">${escAttr(r.name)}</option>`).join('');
+  }
+
+  function renderSpecialtyGrid(){
+    const wrap = document.getElementById('specialty-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PROFESSOR_SPECIALTIES.forEach(s=>{
+      const count = PROFESSORS.filter(x=>professorSpecialtyIds(x).includes(String(s.id))).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(s.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف'; del.setAttribute('aria-label', 'حذف ' + s.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این حوزه‌ی تخصصی حذف شود؟')) return;
+        await api('/professor_specialties?id=eq.'+s.id, {method:'DELETE'});
+        await loadProfessorSpecialties();
+        populateSpecialtyRankSelects(); renderSpecialtyGrid(); renderProfessorsList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderRankGrid(){
+    const wrap = document.getElementById('rank-grid');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    PROFESSOR_RANKS.forEach(r=>{
+      const count = PROFESSORS.filter(x=>x.rank_id===r.id).length;
+      const el = document.createElement('div'); el.className = 'cat-card';
+      el.innerHTML = `<span class="name">${escAttr(r.name)}</span><span class="cc-actions"><span class="count mono">${toFaDigits(count)}</span></span>`;
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف'; del.setAttribute('aria-label', 'حذف ' + r.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('این مرتبه حذف شود؟')) return;
+        await api('/professor_ranks?id=eq.'+r.id, {method:'DELETE'});
+        await loadProfessorRanks();
+        populateSpecialtyRankSelects(); renderRankGrid(); renderProfessorsList();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      wrap.appendChild(el);
+    });
+  }
+
+  function renderProfessorsPage(){
+    populateSpecialtyRankSelects();
+    renderSpecialtyGrid();
+    renderRankGrid();
+    renderProfessorsList();
+  }
+
+  const professorsSearchEl = document.getElementById('professors-search-input');
+  if(professorsSearchEl){
+    let professorsSearchTimer;
+    professorsSearchEl.addEventListener('input', e=>{
+      clearTimeout(professorsSearchTimer);
+      const val = e.target.value;
+      professorsSearchTimer = setTimeout(()=>{
+        professorsState.query = val;
+        professorsState.page = 1;
+        renderProfessorsList();
+      }, 300);
+    });
+  }
+  const professorsFilterRankEl = document.getElementById('professors-filter-rank');
+  if(professorsFilterRankEl) professorsFilterRankEl.addEventListener('change', e=>{
+    professorsState.rank = e.target.value; professorsState.page = 1; renderProfessorsList();
+  });
+  const professorsFilterImportanceEl = document.getElementById('professors-filter-importance');
+  if(professorsFilterImportanceEl) professorsFilterImportanceEl.addEventListener('change', e=>{
+    professorsState.importance = e.target.value; professorsState.page = 1; renderProfessorsList();
+  });
+
+  const addProfessorBtn = document.getElementById('add-professor-btn');
+  if(addProfessorBtn) addProfessorBtn.addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('professor-name');
+    const name = nameEl.value.trim();
+    if(!name){ showToast('نام الزامی است'); return; }
+    const body = {
+      name,
+      national_id: document.getElementById('professor-national-id').value.trim() || null,
+      city: document.getElementById('professor-city').value.trim() || null,
+      institution: document.getElementById('professor-institution').value.trim() || null,
+      rank_id: Number(document.getElementById('professor-rank').value) || null,
+      importance: document.getElementById('professor-importance').value,
+      notes: document.getElementById('professor-notes').value.trim() || null,
+    };
+    const r = await api('/professors', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(body)});
+    if(!r.ok){ showToast('افزودن ناموفق بود'); return; }
+    const [inserted] = await r.json();
+    if(professorFormSpecialties.length){
+      const links = professorFormSpecialties.map(sid => ({ professor_id: inserted.id, specialty_id: Number(sid) }));
+      await api('/professor_specialty_links', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+    }
+    nameEl.value = ''; document.getElementById('professor-national-id').value = ''; document.getElementById('professor-city').value = '';
+    document.getElementById('professor-institution').value = ''; document.getElementById('professor-notes').value = '';
+    professorFormSpecialties.length = 0;
+    await loadProfessors(); populateSpecialtyRankSelects(); renderProfessorsList(); renderSpecialtyGrid(); renderRankGrid();
+    showToast('استاد اضافه شد');
+  });
+
+  const addSpecialtyBtn = document.getElementById('add-specialty-btn');
+  if(addSpecialtyBtn) addSpecialtyBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-specialty-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/professor_specialties', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadProfessorSpecialties(); populateSpecialtyRankSelects(); renderSpecialtyGrid(); }
+    else alert('این حوزه‌ی تخصصی از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  const addRankBtn = document.getElementById('add-rank-btn');
+  if(addRankBtn) addRankBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-rank-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/professor_ranks', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadProfessorRanks(); populateSpecialtyRankSelects(); renderRankGrid(); }
+    else alert('این مرتبه از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  // بارگذاری گروهی اساتید از اکسل — ستون‌ها به ترتیب: نام | شهر | دانشگاه/حوزه |
+  // حوزه‌ی تخصصی | مرتبه | اهمیت | یادداشت (ردیف اول = سرستون، نادیده گرفته می‌شود)
+  const professorsBulkBtn = document.getElementById('professors-bulk-upload-btn');
+  if(professorsBulkBtn) professorsBulkBtn.addEventListener('click', async ()=>{
+    const fileEl = document.getElementById('professors-bulk-file');
+    const statusEl = document.getElementById('professors-bulk-status');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
+    professorsBulkBtn.disabled = true; professorsBulkBtn.textContent = 'در حال پردازش…';
+    statusEl.textContent = '';
+    try{
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+      const dataRows = rows.slice(1).filter(r => r.some(c => String(c).trim() !== ''));
+      if(!dataRows.length){ showToast('هیچ ردیفی پیدا نشد'); return; }
+      const otherSpecialty = PROFESSOR_SPECIALTIES.find(s => s.name === 'سایر');
+      const otherRank = PROFESSOR_RANKS.find(r => r.name === 'سایر');
+      const specByName = {}; PROFESSOR_SPECIALTIES.forEach(s => { specByName[s.name.trim()] = s.id; });
+      const rankByName = {}; PROFESSOR_RANKS.forEach(r => { rankByName[r.name.trim()] = r.id; });
+      // ستون «حوزه‌ی تخصصی» می‌تونه چند مقدار با کاما/اسلش جدا از هم داشته باشه (چندانتخابیه)
+      function parseSpecialtyIds(cell){
+        const tokens = String(cell||'').split(/[,،\/]/).map(t=>t.trim()).filter(Boolean);
+        const ids = tokens.map(t=>specByName[t]).filter(Boolean);
+        if(!ids.length && otherSpecialty) ids.push(otherSpecialty.id);
+        return [...new Set(ids)];
+      }
+      const payload = dataRows.map(r=>{
+        const [name, nationalId, city, institution, specialty, rank, importance, notes] = r;
+        const rankId = rankByName[String(rank||'').trim()] || (otherRank ? otherRank.id : null);
+        const imp = String(importance||'').trim() === 'برجسته' ? 'برجسته' : 'عادی';
+        return {
+          name: String(name||'').trim(),
+          national_id: String(nationalId||'').trim() || null,
+          city: String(city||'').trim() || null,
+          institution: String(institution||'').trim() || null,
+          rank_id: rankId,
+          importance: imp,
+          notes: String(notes||'').trim() || null,
+          _specialtyIds: parseSpecialtyIds(specialty),
+        };
+      }).filter(r => r.name);
+      if(!payload.length){ showToast('ردیف معتبری (با نام) پیدا نشد'); return; }
+      const CHUNK = 500;
+      let inserted = 0;
+      for(let i=0; i<payload.length; i+=CHUNK){
+        const chunk = payload.slice(i, i+CHUNK);
+        const rows = chunk.map(({_specialtyIds, ...rest}) => rest);
+        const r = await api('/professors', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(rows)});
+        if(!r.ok) throw new Error('insert failed at chunk ' + i);
+        const insertedRows = await r.json();
+        const links = [];
+        insertedRows.forEach((row, idx) => {
+          chunk[idx]._specialtyIds.forEach(sid => links.push({ professor_id: row.id, specialty_id: sid }));
+        });
+        if(links.length){
+          const lr = await api('/professor_specialty_links', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+          if(!lr.ok) throw new Error('link insert failed at chunk ' + i);
+        }
+        inserted += chunk.length;
+        statusEl.textContent = toFaDigits(inserted) + ' از ' + toFaDigits(payload.length) + ' ردیف بارگذاری شد…';
+      }
+      fileEl.value = '';
+      await loadProfessors(); renderProfessorsPage();
+      showToast(toFaDigits(inserted) + ' نفر با موفقیت بارگذاری شد');
+      statusEl.textContent = '';
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — فرمت فایل یا دیتابیس را بررسی کنید');
+    }finally{
+      professorsBulkBtn.disabled = false; professorsBulkBtn.textContent = 'پردازش و بارگذاری';
+    }
+  });
+
+  // ---- آنالیز: آمار تجمیعی افراد و مجموعه‌ها ----
+  function renderPeopleAnalytics(){
+    const statsWrap = document.getElementById('people-analytics-stats');
+    if(!statsWrap) return;
+    const brilliantCount = PEOPLE.filter(p=>p.importance==='برجسته').length + PROFESSORS.filter(p=>p.importance==='برجسته').length;
+    const cities = new Set([...PEOPLE.map(p=>p.city), ...PROFESSORS.map(p=>p.city)].filter(Boolean));
+    statsWrap.innerHTML = `
+      <div class="stat-card"><div class="label">کل فعالان</div><div class="val">${toFaDigits(PEOPLE.length)}</div></div>
+      <div class="stat-card"><div class="label">کل اساتید</div><div class="val">${toFaDigits(PROFESSORS.length)}</div></div>
+      <div class="stat-card"><div class="label">افراد برجسته</div><div class="val">${toFaDigits(brilliantCount)}</div></div>
+      <div class="stat-card"><div class="label">شهرهای پوشش‌داده‌شده</div><div class="val">${toFaDigits(cities.size)}</div></div>`;
+
+    const posBars = document.getElementById('people-analytics-position-bars');
+    if(posBars){
+      const counts = PERSON_POSITIONS.map(pos => [pos.name, PEOPLE.filter(p=>personPositionIds(p).includes(String(pos.id))).length]).filter(x=>x[1]>0);
+      if(!counts.length){
+        posBars.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ای نیست</span>';
+      }else{
+        const max = Math.max(...counts.map(c=>c[1]));
+        posBars.innerHTML = counts.map(([label,n])=>`
+          <div class="bar-col"><span class="n mono">${toFaDigits(n)}</span><div class="bar" style="height:${(n/max*100).toFixed(0)}%"></div><span class="lbl">${label}</span></div>`).join('');
+      }
+    }
+
+    const specBars = document.getElementById('people-analytics-specialty-bars');
+    if(specBars){
+      const counts = PROFESSOR_SPECIALTIES.map(s => [s.name, PROFESSORS.filter(p=>professorSpecialtyIds(p).includes(String(s.id))).length]).filter(x=>x[1]>0);
+      if(!counts.length){
+        specBars.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ای نیست</span>';
+      }else{
+        const max = Math.max(...counts.map(c=>c[1]));
+        specBars.innerHTML = counts.map(([label,n])=>`
+          <div class="bar-col"><span class="n mono">${toFaDigits(n)}</span><div class="bar" style="height:${(n/max*100).toFixed(0)}%"></div><span class="lbl">${label}</span></div>`).join('');
+      }
+    }
+  }
+
+  const peopleSearchEl = document.getElementById('people-search-input');
+  if(peopleSearchEl){
+    let peopleSearchTimer;
+    peopleSearchEl.addEventListener('input', e=>{
+      clearTimeout(peopleSearchTimer);
+      const val = e.target.value;
+      peopleSearchTimer = setTimeout(()=>{
+        peopleState.query = val;
+        peopleState.page = 1;
+        renderPeopleList();
+      }, 300);
+    });
+  }
+  const peopleFilterImportanceEl = document.getElementById('people-filter-importance');
+  if(peopleFilterImportanceEl) peopleFilterImportanceEl.addEventListener('change', e=>{
+    peopleState.importance = e.target.value;
+    peopleState.page = 1;
+    renderPeopleList();
+  });
+
+  const addPersonBtn = document.getElementById('add-person-btn');
+  if(addPersonBtn) addPersonBtn.addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('person-name');
+    const name = nameEl.value.trim();
+    if(!name){ showToast('نام الزامی است'); return; }
+    const body = {
+      name,
+      national_id: document.getElementById('person-national-id').value.trim() || null,
+      city: document.getElementById('person-city').value.trim() || null,
+      importance: document.getElementById('person-importance').value,
+      affiliation: document.getElementById('person-affiliation').value.trim() || null,
+      notes: document.getElementById('person-notes').value.trim() || null,
+    };
+    const r = await api('/people', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(body)});
+    if(!r.ok){ showToast('افزودن ناموفق بود'); return; }
+    const [inserted] = await r.json();
+    if(personFormPositions.length){
+      const links = personFormPositions.map(pid => ({ person_id: inserted.id, position_id: Number(pid) }));
+      await api('/people_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+    }
+    nameEl.value = ''; document.getElementById('person-national-id').value = ''; document.getElementById('person-city').value = '';
+    document.getElementById('person-affiliation').value = ''; document.getElementById('person-notes').value = '';
+    personFormPositions.length = 0;
+    await loadPeople(); populatePositionSelects(); renderPeopleList(); renderPositionGrid();
+    showToast('فرد اضافه شد');
+  });
+
+  const addPositionBtn = document.getElementById('add-position-btn');
+  if(addPositionBtn) addPositionBtn.addEventListener('click', async ()=>{
+    const el = document.getElementById('new-position-name');
+    const v = el.value.trim();
+    if(!v) return;
+    const r = await api('/person_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
+    if(r.ok){ el.value=''; await loadPersonPositions(); populatePositionSelects(); renderPositionGrid(); }
+    else alert('این سمت از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  // بارگذاری گروهی از اکسل — ستون‌ها به ترتیب: نام | شهر | سمت | اهمیت | تشکل/مجموعه | یادداشت
+  // (ردیف اول = سرستون، نادیده گرفته می‌شود). «سمت» باید دقیقاً با نام یکی از
+  // person_positions یکی باشه، وگرنه به‌صورت خودکار «سایر» ثبت می‌شه.
+  const peopleBulkBtn = document.getElementById('people-bulk-upload-btn');
+  if(peopleBulkBtn) peopleBulkBtn.addEventListener('click', async ()=>{
+    const fileEl = document.getElementById('people-bulk-file');
+    const statusEl = document.getElementById('people-bulk-status');
+    const file = fileEl.files[0];
+    if(!file){ showToast('یک فایل انتخاب کنید'); return; }
+    peopleBulkBtn.disabled = true; peopleBulkBtn.textContent = 'در حال پردازش…';
+    statusEl.textContent = '';
+    try{
+      const buf = await file.arrayBuffer();
+      const wb = XLSX.read(buf, {type:'array'});
+      const sheet = wb.Sheets[wb.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, {header:1, defval:''});
+      const dataRows = rows.slice(1).filter(r => r.some(c => String(c).trim() !== ''));
+      if(!dataRows.length){ showToast('هیچ ردیفی پیدا نشد'); return; }
+      const otherPos = PERSON_POSITIONS.find(p => p.name === 'سایر');
+      const posByName = {};
+      PERSON_POSITIONS.forEach(p => { posByName[p.name.trim()] = p.id; });
+      // ستون «سمت» می‌تونه چند مقدار با کاما/اسلش جدا از هم داشته باشه (سمت چندانتخابیه)
+      function parsePositionIds(cell){
+        const tokens = String(cell||'').split(/[,،\/]/).map(t=>t.trim()).filter(Boolean);
+        const ids = tokens.map(t=>posByName[t]).filter(Boolean);
+        if(!ids.length && otherPos) ids.push(otherPos.id);
+        return [...new Set(ids)];
+      }
+      const payload = dataRows.map(r=>{
+        const [name, nationalId, city, position, importance, affiliation, notes] = r;
+        const imp = String(importance||'').trim() === 'برجسته' ? 'برجسته' : 'عادی';
+        return {
+          name: String(name||'').trim(),
+          national_id: String(nationalId||'').trim() || null,
+          city: String(city||'').trim() || null,
+          importance: imp,
+          affiliation: String(affiliation||'').trim() || null,
+          notes: String(notes||'').trim() || null,
+          _positionIds: parsePositionIds(position),
+        };
+      }).filter(r => r.name);
+      if(!payload.length){ showToast('ردیف معتبری (با نام) پیدا نشد'); return; }
+      const CHUNK = 500;
+      let inserted = 0;
+      for(let i=0; i<payload.length; i+=CHUNK){
+        const chunk = payload.slice(i, i+CHUNK);
+        const rows = chunk.map(({_positionIds, ...rest}) => rest);
+        const r = await api('/people', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify(rows)});
+        if(!r.ok) throw new Error('insert failed at chunk ' + i);
+        const insertedRows = await r.json();
+        // ترتیب ردیف‌های برگشتی با ترتیب درج یکیه (یک دستور INSERT ... VALUES)
+        const links = [];
+        insertedRows.forEach((row, idx) => {
+          chunk[idx]._positionIds.forEach(pid => links.push({ person_id: row.id, position_id: pid }));
+        });
+        if(links.length){
+          const lr = await api('/people_positions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(links)});
+          if(!lr.ok) throw new Error('link insert failed at chunk ' + i);
+        }
+        inserted += chunk.length;
+        statusEl.textContent = toFaDigits(inserted) + ' از ' + toFaDigits(payload.length) + ' ردیف بارگذاری شد…';
+      }
+      fileEl.value = '';
+      await loadPeople(); renderPeoplePage();
+      showToast(toFaDigits(inserted) + ' نفر با موفقیت بارگذاری شد');
+      statusEl.textContent = '';
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — فرمت فایل یا دیتابیس را بررسی کنید');
+    }finally{
+      peopleBulkBtn.disabled = false; peopleBulkBtn.textContent = 'پردازش و بارگذاری';
+    }
+  });
 
   // ---- channels & people page ----
   function activityOf(channelId){
@@ -1981,16 +3223,47 @@
   }
 
   // ---- posts page ----
-  const filterChannelEl = document.getElementById('posts-filter-channel');
   const filterCatEl = document.getElementById('posts-filter-cat');
   const filterTimeEl = document.getElementById('posts-filter-time');
   const searchEl = document.getElementById('posts-search');
   const postsList = document.getElementById('posts-list');
   const postsEmpty = document.getElementById('posts-empty');
+  // به‌جای یه select تک‌انتخابی، مثل «انتخاب رسانه‌ها…» تب شبکه‌های اجتماعی
+  // یه چندانتخابی چک‌باکسیه — بشه چندتا کانال رو هم‌زمان انتخاب کرد
+  let postsSelectedChannels = [];
+
+  function updatePostSourceSummary(){
+    const summary = document.getElementById('posts-source-summary');
+    if(!summary) return;
+    const n = postsSelectedChannels.length;
+    summary.textContent = n === 0 ? 'انتخاب کانال‌ها…' : toFaDigits(n) + ' کانال انتخاب‌شده';
+  }
+
+  function populatePostSourceOptions(){
+    const list = document.getElementById('posts-source-list');
+    if(!list) return;
+    const cyberChannels = CHANNELS.filter(c=>c.show_in_cyberspace);
+    const validIds = new Set(cyberChannels.map(c=>String(c.id)));
+    postsSelectedChannels = postsSelectedChannels.filter(id=>validIds.has(id));
+    list.innerHTML = cyberChannels.map(c=>{
+      const id = String(c.id);
+      const checked = postsSelectedChannels.includes(id) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${id}" ${checked}> ${escAttr(c.title||c.username)}</label>`;
+    }).join('');
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const id = chk.value;
+        if(chk.checked){ if(!postsSelectedChannels.includes(id)) postsSelectedChannels.push(id); }
+        else{ postsSelectedChannels = postsSelectedChannels.filter(x=>x!==id); }
+        updatePostSourceSummary();
+        renderPosts();
+      });
+    });
+    updatePostSourceSummary();
+  }
 
   function populatePostFilters(){
-    filterChannelEl.innerHTML = '<option value="">همه‌ی کانال‌ها</option>' +
-      CHANNELS.filter(c=>c.show_in_cyberspace).map(c=>`<option value="${c.id}">${c.title||c.username}</option>`).join('');
+    populatePostSourceOptions();
     filterCatEl.innerHTML = '<option value="">همه‌ی دسته‌بندی‌ها</option>' +
       CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
   }
@@ -2006,14 +3279,13 @@
   }
 
   function filteredPosts(){
-    const chFilter = filterChannelEl.value;
     const catFilter = filterCatEl.value;
     const timeFilter = filterTimeEl.value;
     const q = searchEl.value.trim();
     return POSTS_CACHE.filter(p=>{
       const ownerCh = chById(p.channel_id);
       if(!ownerCh || !ownerCh.show_in_cyberspace) return false;
-      if(chFilter && String(p.channel_id) !== chFilter) return false;
+      if(postsSelectedChannels.length && !postsSelectedChannels.includes(String(p.channel_id))) return false;
       if(catFilter){
         const ch = chById(p.channel_id);
         if(!ch || String(ch.category_id) !== catFilter) return false;
@@ -2081,26 +3353,75 @@
     return `<div class="pt-media">${mediaIcon}<b>رسانه</b><span>پیش‌نمایش موجود نیست</span></div>`;
   }
 
+  // ظاهر کارت‌های این صفحه دقیقاً همون کارت‌های تب «شبکه‌های اجتماعی» توی
+  // اخبار رسمی‌ه (همون کلاس‌های news-card/news-thumb/news-text و...) —
+  // فقط منبع داده و فیلترها فرق داره (filteredPosts به‌جای filteredNewsPosts)
   function renderPosts(){
     const filtered = filteredPosts();
-    postsList.innerHTML = '';
     postsEmpty.style.display = filtered.length ? 'none' : 'block';
-    filtered.slice(0,150).forEach(p=>{
-      const el=document.createElement('div'); el.className='post-tile';
-      const isMedia = p.media_type && p.media_type!=='none';
-      const mediaBlock = postMediaBlock(p);
-      const time = p.posted_at || p.scraped_at;
-      const timeLabel = time ? new Date(time).toLocaleString('fa-IR',{hour:'2-digit',minute:'2-digit'}) : '';
-      el.innerHTML = `<div class="pt-head">${chAvatar(p.channel_id)}<div class="pt-who"><b>${chName(p.channel_id)}</b></div></div>
-        ${mediaBlock}
-        <div class="pt-text${isMedia?' compact':''}">${(p.text||'').slice(0,500)}</div>
-        <div class="pt-foot"><span class="cat">${catNameOf(p.channel_id)}</span><span class="time mono">${timeLabel}</span></div>`;
-      wireMediaViewerClicks(el);
-      postsList.appendChild(el);
+    const list = filtered.slice(0,150);
+    postsList.innerHTML = list.map(p=>{
+      const ch = chById(p.channel_id) || {};
+      const topic = catNameOf(p.channel_id);
+      const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
+      const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
+      const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
+      const thumbHtml = hasThumb
+        ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
+        : ch.avatar_url
+          ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+          : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+      return `
+      <div class="news-card">
+        ${thumbHtml}
+        <div class="news-body">
+          <div class="news-head">
+            <span class="news-source">${ch.title||ch.username||'؟'}</span>
+            <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+            ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
+            <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
+          </div>
+          <p class="news-text" id="post-text-${p.id}">${p.text||''}</p>
+          <button class="news-more" onclick="togglePostText(${p.id})" id="post-more-${p.id}">
+            نمایش بیشتر
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="news-foot">
+            <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
+              ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    wireMediaViewerClicks(postsList);
+    updatePostMoreButtons(list);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updatePostMoreButtons(list));
+    }
+  }
+
+  function updatePostMoreButtons(list){
+    list.forEach(p=>{
+      const textEl = document.getElementById('post-text-'+p.id);
+      const moreBtn = document.getElementById('post-more-'+p.id);
+      if(!textEl || !moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
     });
   }
 
-  filterChannelEl.addEventListener('change', renderPosts);
+  function togglePostText(postId){
+    const t = document.getElementById('post-text-'+postId);
+    const b = document.getElementById('post-more-'+postId);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
+  }
+
   filterCatEl.addEventListener('change', renderPosts);
   filterTimeEl.addEventListener('change', renderPosts);
   searchEl.addEventListener('input', renderPosts);
@@ -2256,6 +3577,26 @@
     chanListEl.innerHTML = '';
     CHANNELS.forEach(ch=>{
       const row=document.createElement('div'); row.className='chan-row';
+      const avatarBtn=document.createElement('label'); avatarBtn.className='chan-avatar-btn'; avatarBtn.title='عکس پیش‌فرض کانال (برای پست‌های بدون عکس)';
+      avatarBtn.innerHTML = ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" />` : ICONS.photo;
+      const avatarInput=document.createElement('input'); avatarInput.type='file'; avatarInput.accept='image/*';
+      avatarInput.addEventListener('change', async ()=>{
+        const file = avatarInput.files[0];
+        if(!file) return;
+        try{
+          const url = await uploadChannelAvatarFile(file);
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({avatar_url: url})});
+          ch.avatar_url = url;
+          avatarBtn.innerHTML = `<img src="${escAttr(url)}" alt="" />`;
+          avatarBtn.appendChild(avatarInput);
+          renderNewsFeed();
+          showToast('عکس پیش‌فرض کانال ذخیره شد');
+        }catch(e){
+          showToast('بارگذاری عکس ناموفق بود');
+        }
+      });
+      avatarBtn.appendChild(avatarInput);
+      row.appendChild(avatarBtn);
       const nameInput=document.createElement('input');
       nameInput.className='name-edit'; nameInput.value=ch.title||ch.username;
       let saveTimer;
@@ -2432,6 +3773,17 @@
   function scrollMagCarousel(dir){
     const wrap = document.getElementById('mag-carousel-home');
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
+  }
+
+  // دو کارت راهنمای سریع زیر هرو — فقط اسکرول توی همون صفحه‌ی نخست،
+  // نه switchSection (چون هر دو مقصد از قبل توی همین sec-dashboard هستن)
+  function scrollToDomainGrid(){
+    const el = document.querySelector('.section-label');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  function scrollToPackageCard(){
+    const el = document.querySelector('.package-card');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
   // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌ها برای یه تاریخ انتخاب‌شده.
@@ -2611,6 +3963,20 @@
     return SUPABASE_URL + '/storage/v1/object/public/magazine-covers/' + path;
   }
 
+  // عکس پیش‌فرض هر کانال، برای پست‌هایی که خودشون عکس ندارن — دقیقاً
+  // همون الگوی bucket عمومی jpg جلد مجلات (uploadCoverFile بالا)
+  async function uploadChannelAvatarFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/channel-avatars/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('avatar upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/channel-avatars/' + path;
+  }
+
   document.getElementById('mag-upload-btn').addEventListener('click', async () => {
     const btn = document.getElementById('mag-upload-btn');
     const titleEl = document.getElementById('mag-title');
@@ -2640,6 +4006,360 @@
       showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
     }finally{
       btn.disabled = false; btn.textContent = 'بارگذاری مجله';
+    }
+  });
+
+  // ---- تب «دیدن سایر بسته‌های تحلیلی» (بخش تحلیلی) ----
+  // برخلاف مجلات جریان، این‌ها تولیدات نهادهای دیگه‌ست که فقط بایگانی می‌کنیم —
+  // همون الگوی داده/Storage مجلات (bucket خصوصی برای فایل + bucket عمومی برای جلد)،
+  // فقط با یه ستون اضافه‌ی source_org (نهاد تولیدکننده).
+  const reportsPageTabsEl = document.getElementById('reports-page-tabs');
+  if(reportsPageTabsEl) reportsPageTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.reportsTab) return;
+    reportsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    ['own','basirat','archive'].forEach(key=>{
+      const el = document.getElementById('reports-tab-'+key);
+      if(el) el.style.display = key === b.dataset.reportsTab ? '' : 'none';
+    });
+  });
+
+  function renderArchiveReports(){
+    const grid = document.getElementById('archive-report-grid');
+    const empty = document.getElementById('archive-reports-empty');
+    if(!grid) return;
+    const isAdmin = currentRole === 'app_admin';
+    grid.innerHTML = '';
+    empty.style.display = ARCHIVE_REPORTS.length ? 'none' : 'block';
+    ARCHIVE_REPORTS.forEach((m, i)=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const meta = [
+        m.source_org || '',
+        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
+        (MAG_TYPE_LABEL[m.file_type] || m.file_type) + ' · ' + files.length + ' فایل',
+      ].filter(Boolean).join(' · ');
+      const el = document.createElement('div'); el.className = 'magazine-card';
+      el.innerHTML = `<div class="mag-icon">${m.file_type==='images' ? ICONS.photo : ICONS.doc}</div>
+        <div class="mag-title">${m.title}</div>
+        <div class="mag-meta">${meta}</div>
+        <div class="mag-actions"></div>`;
+      const actions = el.querySelector('.mag-actions');
+      files.forEach((path, idx) => {
+        const btn = document.createElement('button');
+        btn.className = 'btn'; btn.textContent = files.length > 1 ? ('مشاهده ' + (idx+1)) : 'مشاهده';
+        btn.addEventListener('click', () => openArchiveReportFile(m, path));
+        actions.appendChild(btn);
+      });
+      if(isAdmin){
+        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
+        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
+        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
+        up.addEventListener('click', () => moveArchiveReport(m, -1));
+        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===ARCHIVE_REPORTS.length-1;
+        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+        down.addEventListener('click', () => moveArchiveReport(m, 1));
+        reorder.appendChild(up); reorder.appendChild(down);
+        actions.appendChild(reorder);
+
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف مورد'; del.setAttribute('aria-label', 'حذف ' + m.title);
+        del.addEventListener('click', () => deleteArchiveReport(m));
+        actions.appendChild(del);
+      }
+      grid.appendChild(el);
+    });
+    renderArchiveHomeGrid();
+  }
+
+  // ویجت گرید صفحه‌ی نخست — برای دیدن سایر بسته‌های تحلیلی؛ بدون قاب/پس‌زمینه
+  // (مستقیم روی بوم تیره، طبق درخواست صریح کاربر)، هر کارت یه عکس نمایشی
+  // واقعی (جلد) بالای عنوان داره. بدون کنترل‌های مدیریتی (جابجایی/حذف) —
+  // این فقط یه پیش‌نمایش کوچیکه، مدیریت واقعی جاش توی خودِ تب آرشیوه
+  function renderArchiveHomeGrid(){
+    const wrap = document.getElementById('archive-grid-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!ARCHIVE_REPORTS.length){
+      wrap.innerHTML = '<p style="color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:20px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>';
+      return;
+    }
+    ARCHIVE_REPORTS.slice(0, 6).forEach(m=>{
+      const files = Array.isArray(m.files) ? m.files : [];
+      const meta = [
+        m.source_org || '',
+        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
+      ].filter(Boolean).join(' · ');
+      const el = document.createElement('div'); el.className = 'home-poster-card';
+      el.innerHTML = `<div class="home-poster-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
+        <div class="home-poster-title">${m.title}</div>
+        <div class="home-poster-meta">${meta}</div>`;
+      el.style.cursor = files.length ? 'pointer' : 'default';
+      el.addEventListener('click', () => { if(files.length) openArchiveReportFile(m, files[0]); });
+      wrap.appendChild(el);
+    });
+  }
+
+  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
+  // و مستقیم تب «دیدن سایر بسته‌های تحلیلی» رو فعال می‌کنه
+  function openReportsArchiveTab(){
+    switchSection('reports');
+    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="archive"]');
+    if(tabBtn) tabBtn.click();
+  }
+
+  async function openArchiveReportFile(report, path){
+    try{
+      const r = await fetch(SUPABASE_URL + '/storage/v1/object/sign/archive-reports/' + path, {
+        method: 'POST',
+        headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+        body: JSON.stringify({ expiresIn: 60 }),
+      });
+      if(!r.ok) throw new Error('sign failed');
+      const data = await r.json();
+      const url = SUPABASE_URL + '/storage/v1' + data.signedURL;
+      window.open(url, '_blank');
+    }catch(e){
+      showToast('باز کردن فایل ممکن نشد — احتمالاً دسترسی Storage هنوز تنظیم نشده');
+    }
+  }
+
+  async function moveArchiveReport(m, direction){
+    const idx = ARCHIVE_REPORTS.findIndex(x=>x.id===m.id);
+    const swapIdx = idx + direction;
+    if(swapIdx < 0 || swapIdx >= ARCHIVE_REPORTS.length) return;
+    const other = ARCHIVE_REPORTS[swapIdx];
+    const aOrder = m.sort_order || 0, bOrder = other.sort_order || 0;
+    await Promise.all([
+      api('/archive_reports?id=eq.'+m.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
+      api('/archive_reports?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
+    ]);
+    await loadArchiveReports(); renderArchiveReports();
+  }
+
+  async function deleteArchiveReport(m){
+    if(!confirm('«' + m.title + '» از آرشیو حذف شود؟ فایل‌هاش هم برای همیشه پاک می‌شن.')) return;
+    try{
+      const files = Array.isArray(m.files) ? m.files : [];
+      if(files.length){
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/archive-reports', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: files }),
+        });
+      }
+      if(m.cover_url && m.cover_url.includes('/archive-report-covers/')){
+        const coverPath = m.cover_url.split('/archive-report-covers/')[1];
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/archive-report-covers', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [coverPath] }),
+        });
+      }
+      await api('/archive_reports?id=eq.'+m.id, {method:'DELETE'});
+      await loadArchiveReports(); renderArchiveReports();
+      showToast('از آرشیو حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadArchiveReportFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/archive-reports/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('upload failed: ' + file.name);
+    return path;
+  }
+
+  async function uploadArchiveCoverFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/archive-report-covers/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('cover upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/archive-report-covers/' + path;
+  }
+
+  document.getElementById('arc-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('arc-upload-btn');
+    const titleEl = document.getElementById('arc-title');
+    const sourceOrgEl = document.getElementById('arc-source-org');
+    const dateEl = document.getElementById('arc-date');
+    const typeEl = document.getElementById('arc-file-type');
+    const filesEl = document.getElementById('arc-files');
+    const coverEl = document.getElementById('arc-cover');
+    const title = titleEl.value.trim();
+    const sourceOrg = sourceOrgEl.value.trim();
+    const files = Array.from(filesEl.files || []);
+    if(!title || !sourceOrg || !files.length){ showToast('عنوان، نهاد تولیدکننده و حداقل یک فایل لازم است'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      const paths = [];
+      for(const f of files){ paths.push(await uploadArchiveReportFile(f)); }
+      let coverUrl = null;
+      const coverFile = coverEl.files[0];
+      if(coverFile) coverUrl = await uploadArchiveCoverFile(coverFile);
+      const nextOrder = ARCHIVE_REPORTS.length ? Math.max(...ARCHIVE_REPORTS.map(m=>m.sort_order||0)) + 1 : 0;
+      const body = { title, source_org: sourceOrg, publish_date: dateEl.value || null, file_type: typeEl.value, files: paths, cover_url: coverUrl, sort_order: nextOrder };
+      const r = await api('/archive_reports', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; sourceOrgEl.value=''; dateEl.value=''; filesEl.value=''; coverEl.value='';
+      await loadArchiveReports(); renderArchiveReports();
+      showToast('به آرشیو اضافه شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری';
+    }
+  });
+
+  // ---- تب «بسته‌های آموزش تحلیلی» (بخش تحلیلی) ----
+  // این بسته‌ها روی خودِ سایت مدرسه مجازی بصیرت میزبانی می‌شن — ما فقط
+  // عنوان + توضیح کوتاه + پوستر (bucket عمومی basirat-course-posters) + یه
+  // لینک بیرونی نگه می‌داریم؛ برخلاف مجلات/آرشیو هیچ فایلی توی Storage
+  // خودمون دانلود/سیو نمی‌شه، چون فایلی برای دانلود وجود نداره.
+  function renderBasiratCourses(){
+    const grid = document.getElementById('basirat-grid');
+    const empty = document.getElementById('basirat-empty');
+    if(!grid) return;
+    const isAdmin = currentRole === 'app_admin';
+    grid.innerHTML = '';
+    empty.style.display = BASIRAT_COURSES.length ? 'none' : 'block';
+    BASIRAT_COURSES.forEach((c, i)=>{
+      const el = document.createElement('div'); el.className = 'magazine-card basirat-card';
+      el.innerHTML = `<div class="basirat-poster">${c.poster_url ? `<img src="${c.poster_url}" alt="${c.title}" draggable="false" oncontextmenu="return false" />` : ICONS.doc}</div>
+        <div class="mag-title">${c.title}</div>
+        ${c.description ? `<div class="mag-meta">${c.description}</div>` : ''}
+        <div class="mag-actions"></div>`;
+      const actions = el.querySelector('.mag-actions');
+      const link = document.createElement('a');
+      link.className = 'btn'; link.textContent = 'مشاهده در بصیرت';
+      link.href = c.external_url; link.target = '_blank'; link.rel = 'noopener';
+      actions.appendChild(link);
+      if(isAdmin){
+        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
+        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
+        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
+        up.addEventListener('click', () => moveBasiratCourse(c, -1));
+        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===BASIRAT_COURSES.length-1;
+        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
+        down.addEventListener('click', () => moveBasiratCourse(c, 1));
+        reorder.appendChild(up); reorder.appendChild(down);
+        actions.appendChild(reorder);
+
+        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+        del.title = 'حذف مورد'; del.setAttribute('aria-label', 'حذف ' + c.title);
+        del.addEventListener('click', () => deleteBasiratCourse(c));
+        actions.appendChild(del);
+      }
+      grid.appendChild(el);
+    });
+    renderBasiratHomeGrid();
+  }
+
+  // ویجت گرید صفحه‌ی نخست — پوستر بسته‌های آموزش تحلیلی؛ کلیک مستقیم لینک
+  // بیرونی رو باز می‌کنه (نه signed URL، چون فایلی توی Storage ما نیست)
+  function renderBasiratHomeGrid(){
+    const wrap = document.getElementById('basirat-grid-home');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!BASIRAT_COURSES.length){
+      wrap.innerHTML = '<p style="color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:20px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>';
+      return;
+    }
+    BASIRAT_COURSES.slice(0, 6).forEach(c=>{
+      const el = document.createElement('div'); el.className = 'home-poster-card';
+      el.innerHTML = `<div class="home-poster-cover is-landscape">${c.poster_url ? `<img src="${c.poster_url}" alt="${c.title}" draggable="false" oncontextmenu="return false" />` : ICONS.doc}</div>
+        <div class="home-poster-title">${c.title}</div>`;
+      el.addEventListener('click', () => window.open(c.external_url, '_blank'));
+      wrap.appendChild(el);
+    });
+  }
+
+  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
+  // و مستقیم تب «بسته‌های آموزش تحلیلی» رو فعال می‌کنه
+  function openReportsBasiratTab(){
+    switchSection('reports');
+    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="basirat"]');
+    if(tabBtn) tabBtn.click();
+  }
+
+  async function moveBasiratCourse(c, direction){
+    const idx = BASIRAT_COURSES.findIndex(x=>x.id===c.id);
+    const swapIdx = idx + direction;
+    if(swapIdx < 0 || swapIdx >= BASIRAT_COURSES.length) return;
+    const other = BASIRAT_COURSES[swapIdx];
+    const aOrder = c.sort_order || 0, bOrder = other.sort_order || 0;
+    await Promise.all([
+      api('/basirat_courses?id=eq.'+c.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
+      api('/basirat_courses?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
+    ]);
+    await loadBasiratCourses(); renderBasiratCourses();
+  }
+
+  async function deleteBasiratCourse(c){
+    if(!confirm('«' + c.title + '» حذف شود؟')) return;
+    try{
+      if(c.poster_url && c.poster_url.includes('/basirat-course-posters/')){
+        const posterPath = c.poster_url.split('/basirat-course-posters/')[1];
+        await fetch(SUPABASE_URL + '/storage/v1/object/remove/basirat-course-posters', {
+          method: 'POST',
+          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
+          body: JSON.stringify({ prefixes: [posterPath] }),
+        });
+      }
+      await api('/basirat_courses?id=eq.'+c.id, {method:'DELETE'});
+      await loadBasiratCourses(); renderBasiratCourses();
+      showToast('حذف شد');
+    }catch(e){
+      showToast('حذف ناموفق بود');
+    }
+  }
+
+  async function uploadBasiratPosterFile(file){
+    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
+    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
+    const r = await fetch(SUPABASE_URL + '/storage/v1/object/basirat-course-posters/' + path, {
+      method: 'POST',
+      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
+      body: file,
+    });
+    if(!r.ok) throw new Error('poster upload failed');
+    return SUPABASE_URL + '/storage/v1/object/public/basirat-course-posters/' + path;
+  }
+
+  document.getElementById('bas-upload-btn').addEventListener('click', async () => {
+    const btn = document.getElementById('bas-upload-btn');
+    const titleEl = document.getElementById('bas-title');
+    const linkEl = document.getElementById('bas-link');
+    const descEl = document.getElementById('bas-desc');
+    const posterEl = document.getElementById('bas-poster');
+    const title = titleEl.value.trim();
+    const link = linkEl.value.trim();
+    if(!title || !link){ showToast('عنوان و لینک صفحه‌ی آموزش لازم است'); return; }
+    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
+    try{
+      let posterUrl = null;
+      const posterFile = posterEl.files[0];
+      if(posterFile) posterUrl = await uploadBasiratPosterFile(posterFile);
+      const nextOrder = BASIRAT_COURSES.length ? Math.max(...BASIRAT_COURSES.map(c=>c.sort_order||0)) + 1 : 0;
+      const body = { title, external_url: link, description: descEl.value.trim() || null, poster_url: posterUrl, sort_order: nextOrder };
+      const r = await api('/basirat_courses', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      titleEl.value=''; linkEl.value=''; descEl.value=''; posterEl.value='';
+      await loadBasiratCourses(); renderBasiratCourses();
+      showToast('بسته‌ی آموزشی اضافه شد');
+    }catch(e){
+      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'بارگذاری';
     }
   });
 
