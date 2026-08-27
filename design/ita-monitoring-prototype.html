@@ -881,6 +881,22 @@
   .supp-icon-label{ font-size:12.5px; font-weight:700; color:#fff; text-align:center; line-height:1.4; }
   .home-poster-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
 
+  /* کارت همیشه‌نمایان «ثبت نظر و پیشنهاد» — ته صفحه‌ی نخست، قبل از فوتر.
+     برخلاف بقیه‌ی بخش‌های صفحه‌ی نخست (بدون قاب، مستقیم روی بوم تیره)،
+     این یکی مثل .panel سطح روشن داره، چون یه فرم واقعیه نه صرفاً محتوای
+     نمایشی — همون قاعده‌ی «کارت روشن شناور روی بوم تیره» برای فرم/ورودی. */
+  .feedback-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card); padding:20px 24px; margin:40px 0 0; box-shadow: var(--shadow); }
+  .feedback-card h3{ font-size:15px; font-weight:800; color: var(--text); margin:0 0 4px; text-align:center; }
+  .feedback-card p{ font-size:12.5px; color: var(--text-dim); margin:0 0 14px; text-align:center; }
+  .feedback-form{ display:flex; flex-direction:column; gap:9px; max-width:560px; margin:0 auto; }
+  .feedback-form input, .feedback-form textarea{
+    font-family:inherit; font-size:13px; padding:9px 13px; border:1px solid var(--border);
+    border-radius: var(--radius-control); background: var(--surface-2); color: var(--text); resize:vertical;
+  }
+  .feedback-form textarea{ min-height:64px; }
+  .feedback-form input:focus, .feedback-form textarea:focus{ outline:none; border-color: var(--accent); }
+  .feedback-form button{ align-self:center; margin-top:4px; }
+
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
   .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
   @media (max-width:900px){ .newspaper-grid{ grid-template-columns: repeat(2,1fr); } }
@@ -1162,6 +1178,16 @@
           <p class="home-widget-desc">محتوای تکمیلی برای تعمیق عرصه‌های رصد و تحلیل</p>
         </div>
         <div class="home-poster-row" id="basirat-grid-home"></div>
+      </div>
+
+      <div class="feedback-card">
+        <h3>برای بهتر شدن بسته‌های جریان به ما کمک کنید</h3>
+        <p>نظر یا پیشنهاد خود را با ما در میان بگذارید.</p>
+        <form class="feedback-form" onsubmit="submitFeedback(event)">
+          <input type="text" id="feedback-name" placeholder="نام (اختیاری)" />
+          <textarea id="feedback-message" placeholder="نظر یا پیشنهاد خود را بنویسید..." required></textarea>
+          <button type="submit" class="btn primary" id="feedback-submit-btn">ارسال</button>
+        </form>
       </div>
     </section>
 
@@ -4348,6 +4374,29 @@
     switchSection('reports');
     const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="basirat"]');
     if(tabBtn) tabBtn.click();
+  }
+
+  // کارت «ثبت نظر و پیشنهاد» ته صفحه‌ی نخست — هم مدیر هم بیننده اجازه‌ی
+  // insert روی جدول feedback دارن (تنها استثنای این پروژه برای بیننده)
+  async function submitFeedback(event){
+    event.preventDefault();
+    const nameEl = document.getElementById('feedback-name');
+    const messageEl = document.getElementById('feedback-message');
+    const btn = document.getElementById('feedback-submit-btn');
+    const message = messageEl.value.trim();
+    if(!message){ showToast('لطفاً متن نظر یا پیشنهاد را وارد کنید'); return; }
+    btn.disabled = true; btn.textContent = 'در حال ارسال…';
+    try{
+      const body = { name: nameEl.value.trim() || null, message };
+      const r = await api('/feedback', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
+      if(!r.ok) throw new Error('insert failed');
+      nameEl.value = ''; messageEl.value = '';
+      showToast('نظر شما با موفقیت ثبت شد، سپاسگزاریم');
+    }catch(e){
+      showToast('خطا در ثبت نظر — دوباره تلاش کنید');
+    }finally{
+      btn.disabled = false; btn.textContent = 'ارسال';
+    }
   }
 
   async function moveBasiratCourse(c, direction){
