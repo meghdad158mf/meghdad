@@ -816,6 +816,14 @@
   .basirat-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
   .basirat-poster svg{ width:26%; height:26%; opacity:.5; }
 
+  /* تب «سایر بسته‌های تحلیلی» (ضمیمه جریان) — عیناً همون تصویر نمایشی/جلدِ
+     کارسول صفحه‌ی نخست (.home-poster-cover، aspect-ratio 5/7)، نه
+     .mag-icon کوچیک، طبق خواسته‌ی صریح کاربر که یکسان باشن */
+  .archive-report-card{ padding-top:14px; }
+  .archive-report-poster{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); margin-bottom:2px; }
+  .archive-report-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
+  .archive-report-poster svg{ width:26%; height:26%; opacity:.5; }
+
   /* کاروسل جلد مجلات — الان داخل کارت واحد .package-card (پایین‌تر) استفاده
      می‌شه، نه یه ویجت جدای خودش */
   .mag-carousel-wrap{ position:relative; display:flex; align-items:center; gap:10px; flex:1; min-width:0; }
@@ -4176,8 +4184,8 @@
         m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
         (MAG_TYPE_LABEL[m.file_type] || m.file_type) + ' · ' + files.length + ' فایل',
       ].filter(Boolean).join(' · ');
-      const el = document.createElement('div'); el.className = 'magazine-card';
-      el.innerHTML = `<div class="mag-icon">${m.file_type==='images' ? ICONS.photo : ICONS.doc}</div>
+      const el = document.createElement('div'); el.className = 'magazine-card archive-report-card';
+      el.innerHTML = `<div class="archive-report-poster">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
         <div class="mag-title">${m.title}</div>
         <div class="mag-meta">${meta}</div>
         <div class="mag-actions"></div>`;
