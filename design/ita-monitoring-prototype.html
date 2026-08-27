@@ -129,6 +129,28 @@
   .login-form-wrap .btn.primary{ width:100%; margin-top:6px; padding:11px; }
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
+  .notify-card{
+    width:100%; max-width:1120px; margin:28px auto 0; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
+    padding:20px 24px; border-radius: var(--radius-card);
+    background: var(--surface); box-shadow: 0 22px 46px -24px rgba(10,15,22,0.5);
+  }
+  .notify-card-text{ flex:1; min-width:220px; }
+  .notify-card-text h3{ font-size:14.5px; font-weight:700; color: var(--text); margin:0 0 4px; }
+  .notify-card-text p{ font-size:12px; color: var(--text-faint); margin:0; line-height:1.7; }
+  .notify-card-form{ display:flex; gap:8px; flex-wrap:wrap; }
+  .notify-card-form input{
+    background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text);
+    padding:10px 12px; border-radius: var(--radius-control); font-size:14px; font-family:inherit;
+    direction:ltr; text-align:center; width:170px; box-sizing:border-box;
+  }
+  .notify-card-form input:focus{ border-color: var(--primary-strong); outline:none; }
+  @media (max-width:480px){
+    .notify-card{ flex-direction:column; align-items:stretch; text-align:center; }
+    .notify-card-form{ justify-content:center; }
+    .notify-card-form input{ width:100%; }
+  }
+
   /* ---------- DASHBOARD SHELL (unified dark canvas, topbar + content float as light cards) ---------- */
   #view-dash{
     display:none; min-height:100vh;
@@ -804,6 +826,13 @@
   .feedback-row-time{ font-size:11px; color: var(--text-faint); }
   .feedback-row-message{ font-size:13px; color: var(--text-dim); line-height:1.8; white-space:pre-wrap; }
 
+  .notify-subs-list{ max-height:280px; overflow-y:auto; }
+  .notify-sub-row{ display:flex; align-items:center; justify-content:space-between; gap:12px; padding:10px 4px; border-bottom:1px solid var(--border); font-size:13px; }
+  .notify-sub-row:last-child{ border-bottom:none; }
+  .notify-sub-time{ color: var(--text-faint); font-size:11.5px; }
+  .notify-sub-status{ font-size:11px; font-weight:700; color: var(--text-dim); background: var(--surface-2); border-radius: var(--radius-pill); padding:3px 10px; flex-shrink:0; }
+  .notify-sub-status.done{ color: var(--accent-strong); background: rgba(234,179,147,0.14); }
+
   /* ---------- magazines library (بخش تحلیلی) ---------- */
   .magazine-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
   .magazine-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:18px; display:flex; flex-direction:column; gap:8px; box-shadow: var(--shadow); }
@@ -995,6 +1024,17 @@
         <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
         <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
       </div>
+    </div>
+  </div>
+
+  <div class="notify-card">
+    <div class="notify-card-text">
+      <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
+      <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
+    </div>
+    <div class="notify-card-form">
+      <input type="tel" id="notify-phone" class="mono" placeholder="09xxxxxxxxx" dir="ltr" maxlength="11" onkeydown="if(event.key==='Enter') subscribeNotify()" />
+      <button type="button" class="btn primary" id="notify-subscribe-btn" onclick="subscribeNotify()">ثبت‌نام</button>
     </div>
   </div>
 </div>
@@ -1807,6 +1847,17 @@
         </div>
         <button class="btn primary" style="margin-top:8px" onclick="exportReport()">دانلود گزارش آنالیز</button>
       </div>
+
+      <div class="panel">
+        <div class="panel-head"><span class="panel-pill">مشترکین اطلاع‌رسانی بسته جریان</span></div>
+        <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">شماره‌های زیر از فرم «اطلاع از انتشار» در صفحه‌ی ورود ثبت شده‌اند. هر وقت شماره‌ی جدید منتشر شد، لیست را خروجی بگیرید و از سامانه‌ی پیامکی خودتان ارسال کنید؛ بعد از ارسال، دکمه‌ی «علامت‌گذاری» را بزنید تا خروجی بعدی فقط شماره‌های جدید را نشان دهد.</p>
+        <p id="notify-subs-summary" style="font-size:13px;font-weight:600;color:var(--text);margin:0 0 12px;">در حال بارگذاری…</p>
+        <div id="notify-subs-list" class="notify-subs-list"></div>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;">
+          <button class="btn primary" onclick="exportNotifySubscribers()">دانلود لیست شماره‌ها (CSV)</button>
+          <button class="btn" onclick="markNotifySubscribersNotified()">علامت‌گذاری به‌عنوان اطلاع‌رسانی‌شده</button>
+        </div>
+      </div>
     </section>
 
     <!-- SETTINGS -->
@@ -2015,6 +2066,42 @@
     goLogin();
   }
 
+  function faDigitsToEn(s){
+    const fa = '۰۱۲۳۴۵۶۷۸۹', ar = '٠١٢٣٤٥٦٧٨٩';
+    return String(s).replace(/[۰-۹٠-٩]/g, ch => {
+      const fi = fa.indexOf(ch); if(fi>-1) return fi;
+      const ai = ar.indexOf(ch); if(ai>-1) return ai;
+      return ch;
+    });
+  }
+
+  async function subscribeNotify(){
+    const input = document.getElementById('notify-phone');
+    const btn = document.getElementById('notify-subscribe-btn');
+    const phone = faDigitsToEn(input.value || '').trim();
+    if(!/^09\d{9}$/.test(phone)){ showToast('شماره موبایل معتبر نیست — مثال: ۰۹۱۲xxxxxxx'); return; }
+    btn.disabled = true;
+    try{
+      const r = await api('/notify_subscribers', {
+        method: 'POST',
+        headers: { Prefer: 'return=minimal' },
+        body: JSON.stringify({ phone }),
+      });
+      if(r.ok){
+        showToast('ثبت شد — به‌محض انتشار بسته جدید به شما پیامک اطلاع‌رسانی ارسال می‌شود');
+        input.value = '';
+      }else if(r.status === 409){
+        showToast('این شماره قبلاً ثبت شده است');
+      }else{
+        showToast('ثبت‌نام ناموفق بود — دوباره امتحان کنید');
+      }
+    }catch(e){
+      showToast('خطا در ارتباط با سرور');
+    }finally{
+      btn.disabled = false;
+    }
+  }
+
   const adminMenuBtn = document.getElementById('admin-menu-btn');
   function toggleAdminMenu(){
     const open = adminLinks.classList.toggle('open');
@@ -2139,6 +2226,7 @@
     if(key === 'overview') renderNewsFeed();
     if(key === 'posts') renderPosts();
     if(key === 'feedback') loadFeedbackList().then(renderFeedbackList);
+    if(key === 'export') loadNotifySubscribers().then(renderNotifySubscribers);
   }
 
   // میان‌برهای کارت‌های صفحه‌ی نخست به زیربخش‌های خودِ همون صفحه
@@ -2201,6 +2289,7 @@
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
   let BASIRAT_COURSES = [];   // {id, title, description, poster_url, external_url, sort_order, created_at}
   let FEEDBACK_LIST = [];     // {id, name, message, created_at} — فقط با ورود مدیر به تب «نظرات کاربران» لود می‌شه
+  let NOTIFY_SUBSCRIBERS = []; // {id, phone, created_at, notified_at} — فقط با ورود مدیر به تب «خروجی‌گیری» لود می‌شه
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
@@ -4708,6 +4797,58 @@
     if(msg) t.textContent = msg;
     t.classList.add('show');
     setTimeout(()=>t.classList.remove('show'),2200);
+  }
+
+  async function loadNotifySubscribers(){
+    const r = await api('/notify_subscribers?select=*&order=created_at.desc');
+    NOTIFY_SUBSCRIBERS = r.ok ? await r.json() : [];
+  }
+
+  function renderNotifySubscribers(){
+    const wrap = document.getElementById('notify-subs-list');
+    const summary = document.getElementById('notify-subs-summary');
+    if(!wrap || !summary) return;
+    const total = NOTIFY_SUBSCRIBERS.length;
+    const pending = NOTIFY_SUBSCRIBERS.filter(s=>!s.notified_at).length;
+    summary.textContent = total
+      ? `${toFaDigits(total)} مشترک ثبت‌نامی — ${toFaDigits(pending)} نفر در انتظار اطلاع‌رسانی`
+      : 'هنوز کسی از صفحه‌ی ورود ثبت‌نام نکرده.';
+    wrap.innerHTML = '';
+    NOTIFY_SUBSCRIBERS.forEach(s=>{
+      const row = document.createElement('div'); row.className = 'notify-sub-row';
+      const phone = document.createElement('span'); phone.className = 'mono'; phone.textContent = s.phone;
+      const time = document.createElement('span'); time.className = 'notify-sub-time'; time.textContent = newsRelTime(s.created_at);
+      const status = document.createElement('span'); status.className = 'notify-sub-status' + (s.notified_at ? ' done' : '');
+      status.textContent = s.notified_at ? 'اطلاع‌رسانی‌شده' : 'در انتظار';
+      row.appendChild(phone); row.appendChild(time); row.appendChild(status);
+      wrap.appendChild(row);
+    });
+  }
+
+  function exportNotifySubscribers(){
+    if(!NOTIFY_SUBSCRIBERS.length){ showToast('هنوز مشترکی ثبت نشده'); return; }
+    const rows = NOTIFY_SUBSCRIBERS.map(s=>({ phone: s.phone, created_at: s.created_at, notified_at: s.notified_at||'' }));
+    downloadBlob('notify-subscribers.csv', toCSV(rows, ['phone','created_at','notified_at']), 'text/csv');
+    showToast('خروجی لیست شماره‌ها آماده شد');
+  }
+
+  async function markNotifySubscribersNotified(){
+    const pending = NOTIFY_SUBSCRIBERS.filter(s=>!s.notified_at);
+    if(!pending.length){ showToast('کسی در انتظار اطلاع‌رسانی نیست'); return; }
+    if(!confirm(`${toFaDigits(pending.length)} مشترک به‌عنوان اطلاع‌رسانی‌شده علامت بخورند؟`)) return;
+    try{
+      const r = await api('/notify_subscribers?notified_at=is.null', {
+        method: 'PATCH',
+        headers: { Prefer: 'return=minimal' },
+        body: JSON.stringify({ notified_at: new Date().toISOString() }),
+      });
+      if(!r.ok) throw new Error('update failed');
+      await loadNotifySubscribers();
+      renderNotifySubscribers();
+      showToast('علامت‌گذاری انجام شد');
+    }catch(e){
+      showToast('علامت‌گذاری ناموفق بود');
+    }
   }
 
   // ---- boot ----
