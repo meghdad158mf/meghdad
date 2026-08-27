@@ -362,9 +362,13 @@
   .why-jarian-item{
     padding:32px 24px; border-radius: var(--radius-card);
     background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.14);
-    transition: transform .25s ease, background .25s ease, border-color .25s ease;
+    box-shadow: 0 24px 44px -26px rgba(234,179,147,0.4);
+    transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
   }
-  .why-jarian-item:hover{ transform:translateY(-4px); background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.24); }
+  .why-jarian-item:hover{
+    transform:translateY(-4px); background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.24);
+    box-shadow: 0 28px 52px -24px rgba(234,179,147,0.55);
+  }
   .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent); margin:0 0 10px; letter-spacing:0.01em; }
   .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent); margin:0 auto 16px; transition: width .25s ease; }
   .why-jarian-item:hover .why-jarian-bar{ width:48px; }
