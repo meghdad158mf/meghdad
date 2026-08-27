@@ -130,7 +130,7 @@
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
   .notify-card{
-    width:100%; max-width:1120px; margin:28px auto 0; box-sizing:border-box;
+    width:100%; margin:64px 0 0; box-sizing:border-box;
     display:flex; align-items:center; justify-content:space-between; gap:20px; flex-wrap:wrap;
     padding:20px 24px; border-radius: var(--radius-card);
     background: var(--surface); box-shadow: 0 22px 46px -24px rgba(10,15,22,0.5);
@@ -1026,17 +1026,6 @@
       </div>
     </div>
   </div>
-
-  <div class="notify-card">
-    <div class="notify-card-text">
-      <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
-      <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
-    </div>
-    <div class="notify-card-form">
-      <input type="tel" id="notify-phone" class="mono" placeholder="09xxxxxxxxx" dir="ltr" maxlength="11" onkeydown="if(event.key==='Enter') subscribeNotify()" />
-      <button type="button" class="btn primary" id="notify-subscribe-btn" onclick="subscribeNotify()">ثبت‌نام</button>
-    </div>
-  </div>
 </div>
 
 <!-- =================== DASHBOARD SHELL (no sidebar — topbar carries admin shortcuts) =================== -->
@@ -1263,6 +1252,17 @@
           <button class="mag-arrow" onclick="scrollMagCarousel(1)" aria-label="قبلی">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M15 6l-6 6 6 6"/></svg>
           </button>
+        </div>
+      </div>
+
+      <div class="notify-card">
+        <div class="notify-card-text">
+          <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
+          <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
+        </div>
+        <div class="notify-card-form">
+          <input type="tel" id="notify-phone" class="mono" placeholder="09xxxxxxxxx" dir="ltr" maxlength="11" onkeydown="if(event.key==='Enter') subscribeNotify()" />
+          <button type="button" class="btn primary" id="notify-subscribe-btn" onclick="subscribeNotify()">ثبت‌نام</button>
         </div>
       </div>
 
