@@ -355,15 +355,16 @@
      مستقیم روی بوم تیره — طبق خواسته‌ی صریح کاربر. بین دو کارت راهنمای
      سریع و گرید ۴تایی عرصه‌های رصد. */
   .why-jarian-card{
-    margin:160px 0 64px; padding:40px 36px; border-radius: var(--radius-card);
-    border:1px solid rgba(255,255,255,0.34);
+    margin:160px 0 64px;
   }
-  .why-jarian-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:0; text-align:center; }
-  @media (max-width:760px){ .why-jarian-grid{ grid-template-columns:1fr; gap:28px; } }
-  .why-jarian-item{ padding:0 28px; border-inline-end:1px solid rgba(255,255,255,0.34); transition: transform .25s ease; }
-  .why-jarian-item:last-child{ border-inline-end:none; }
-  @media (max-width:760px){ .why-jarian-item{ padding:0; border-inline-end:none; } }
-  .why-jarian-item:hover{ transform:translateY(-4px); }
+  .why-jarian-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px; text-align:center; }
+  @media (max-width:760px){ .why-jarian-grid{ grid-template-columns:1fr; } }
+  .why-jarian-item{
+    padding:32px 24px; border-radius: var(--radius-card);
+    background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.14);
+    transition: transform .25s ease, background .25s ease, border-color .25s ease;
+  }
+  .why-jarian-item:hover{ transform:translateY(-4px); background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.24); }
   .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent); margin:0 0 10px; letter-spacing:0.01em; }
   .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent); margin:0 auto 16px; transition: width .25s ease; }
   .why-jarian-item:hover .why-jarian-bar{ width:48px; }
