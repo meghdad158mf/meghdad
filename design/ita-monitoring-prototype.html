@@ -785,6 +785,15 @@
   .kv b{ color: var(--text-faint); font-weight:500; }
   .kv span{ font-family: ui-monospace,monospace; color: var(--text-dim); direction:ltr; }
 
+  /* ---------- نظرات کاربران (کارت «ثبت نظر و پیشنهاد» صفحه نخست) ---------- */
+  .feedback-row{ display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:14px 4px; border-bottom:1px solid var(--border); }
+  .feedback-row:last-child{ border-bottom:none; }
+  .feedback-row-main{ flex:1; min-width:0; }
+  .feedback-row-head{ display:flex; align-items:baseline; gap:8px; margin-bottom:5px; flex-wrap:wrap; }
+  .feedback-row-name{ font-size:13px; font-weight:700; color: var(--text); }
+  .feedback-row-time{ font-size:11px; color: var(--text-faint); }
+  .feedback-row-message{ font-size:13px; color: var(--text-dim); line-height:1.8; white-space:pre-wrap; }
+
   /* ---------- magazines library (بخش تحلیلی) ---------- */
   .magazine-grid{ display:grid; grid-template-columns: repeat(auto-fill,minmax(200px,1fr)); gap:16px; margin-bottom:24px; }
   .magazine-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:18px; display:flex; flex-direction:column; gap:8px; box-shadow: var(--shadow); }
@@ -969,6 +978,10 @@
             <button onclick="switchSection('settings'); closeAdminMenu();">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3"/><path d="M19 12a7 7 0 00-.2-1.6l2-1.5-2-3.4-2.3.9a7 7 0 00-2.8-1.6L13.3 2h-2.6l-.4 2.8a7 7 0 00-2.8 1.6l-2.3-.9-2 3.4 2 1.5A7 7 0 005 12c0 .5 0 1 .2 1.6l-2 1.6 2 3.4 2.3-1a7 7 0 002.8 1.7l.4 2.7h2.6l.4-2.7a7 7 0 002.8-1.7l2.3 1 2-3.4-2-1.6c.2-.6.2-1.1.2-1.6z"/></svg>
               تنظیمات
+            </button>
+            <button onclick="switchSection('feedback'); closeAdminMenu();">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.4 8.4 0 01-1.2 4.4L21 20l-4.3-1.1a8.5 8.5 0 114.3-7.4z"/></svg>
+              نظرات کاربران
             </button>
           </div>
         </div>
@@ -1819,6 +1832,18 @@
       </div>
     </section>
 
+    <!-- نظرات کاربران — فقط مدیر، از کارت «ثبت نظر و پیشنهاد» صفحه‌ی نخست پر می‌شه -->
+    <section class="section" id="sec-feedback">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel">
+        <div class="panel-head"><span class="panel-pill">نظرات و پیشنهادهای ثبت‌شده</span></div>
+        <div id="feedback-list"></div>
+      </div>
+    </section>
+
     <footer class="app-footer">
       <div class="app-footer-top">
         <div class="app-footer-brand">
@@ -1947,7 +1972,7 @@
     if(e.key === 'Escape') closeAdminMenu();
   });
 
-  const ADMIN_ONLY_SECTIONS = ['export','settings'];
+  const ADMIN_ONLY_SECTIONS = ['export','settings','feedback'];
 
   function applyRoleUI(){
     const isAdmin = currentRole === 'app_admin';
@@ -2040,6 +2065,7 @@
     reports: 'بخش تحلیلی',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
+    feedback: 'نظرات کاربران',
   };
 
   function switchSection(key){
@@ -2052,6 +2078,7 @@
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview') renderNewsFeed();
     if(key === 'posts') renderPosts();
+    if(key === 'feedback') loadFeedbackList().then(renderFeedbackList);
   }
 
   // میان‌برهای کارت‌های صفحه‌ی نخست به زیربخش‌های خودِ همون صفحه
@@ -2113,6 +2140,7 @@
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
   let BASIRAT_COURSES = [];   // {id, title, description, poster_url, external_url, sort_order, created_at}
+  let FEEDBACK_LIST = [];     // {id, name, message, created_at} — فقط با ورود مدیر به تب «نظرات کاربران» لود می‌شه
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
   let NEWSPAPER_TODAYS = [];  // زیرمجموعه‌ی NEWSPAPERS مربوط به تاریخ انتخاب‌شده — برای فیلتر بدون rebuild چک‌باکس‌ها
   let NEWSPAPER_DATES = [];   // تاریخ‌های موجود (نزولی) که حداقل یه عکس پاک‌نشده دارن
@@ -4396,6 +4424,54 @@
       showToast('خطا در ثبت نظر — دوباره تلاش کنید');
     }finally{
       btn.disabled = false; btn.textContent = 'ارسال';
+    }
+  }
+
+  // تب مدیریتی «نظرات کاربران» — فقط مدیر (RLS جدول feedback فقط سلکت
+  // مدیر رو اجازه می‌ده)؛ متن نظر همیشه با textContent (نه innerHTML)
+  // نشون داده می‌شه چون ورودی آزاد کاربره و نباید به‌عنوان HTML اجرا بشه
+  async function loadFeedbackList(){
+    const r = await api('/feedback?order=created_at.desc');
+    FEEDBACK_LIST = r.ok ? await r.json() : [];
+  }
+
+  function renderFeedbackList(){
+    const wrap = document.getElementById('feedback-list');
+    if(!wrap) return;
+    wrap.innerHTML = '';
+    if(!FEEDBACK_LIST.length){
+      wrap.innerHTML = '<p style="color:var(--text-faint);font-size:13px;text-align:center;padding:20px 0;">هنوز نظری ثبت نشده.</p>';
+      return;
+    }
+    FEEDBACK_LIST.forEach(f=>{
+      const row = document.createElement('div'); row.className = 'feedback-row';
+      const main = document.createElement('div'); main.className = 'feedback-row-main';
+      const head = document.createElement('div'); head.className = 'feedback-row-head';
+      const name = document.createElement('span'); name.className = 'feedback-row-name';
+      name.textContent = f.name || 'ناشناس';
+      const time = document.createElement('span'); time.className = 'feedback-row-time';
+      time.textContent = newsRelTime(f.created_at);
+      head.appendChild(name); head.appendChild(time);
+      const msg = document.createElement('div'); msg.className = 'feedback-row-message';
+      msg.textContent = f.message;
+      main.appendChild(head); main.appendChild(msg);
+      const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
+      del.title = 'حذف'; del.setAttribute('aria-label', 'حذف این نظر');
+      del.addEventListener('click', () => deleteFeedback(f));
+      row.appendChild(main); row.appendChild(del);
+      wrap.appendChild(row);
+    });
+  }
+
+  async function deleteFeedback(f){
+    if(!confirm('این نظر حذف شود؟')) return;
+    try{
+      const r = await api('/feedback?id=eq.'+f.id, {method:'DELETE'});
+      if(!r.ok) throw new Error('delete failed');
+      FEEDBACK_LIST = FEEDBACK_LIST.filter(x=>x.id!==f.id);
+      renderFeedbackList();
+    }catch(e){
+      showToast('حذف نظر ناموفق بود');
     }
   }
 
