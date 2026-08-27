@@ -832,46 +832,65 @@
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
-  /* ویجت‌های عمومی صفحه‌ی نخست (زیر کارت هلویی «بسته تحلیلی جریان») — الان
-     دوتان: «بسته‌های آموزش تحلیلی» و «دیدن سایر بسته‌های تحلیلی». برخلاف
-     .magazine-card (که خودِ زمینه‌ش روشنه)، این کارت‌ها بدون قاب/پس‌زمینه‌ن
-     (مثل .domain-card)، مستقیم روی بوم تیره، فقط با یه عکس نمایشی واقعی
-     بالای/کنار هر کدوم. عنوانِ هر ویجت هم عمداً از .panel-pill (فونت
-     مونواسپیس JetBrains Mono) استفاده نمی‌کنه چون حروف فارسیِ عبارت طولانی
-     رو به‌هم نمی‌چسبونه (bug واقعاً دیده‌شده) — یه h3 ساده با فونت پیش‌فرض سایت. */
-  .home-widget-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:12px; margin-bottom:16px; flex-wrap:wrap; }
-  .home-widget-logo{ width:34px; height:auto; flex-shrink:0; border-radius:6px; }
+  /* ویجت «ضمیمه جریان» — تنها ویجت عمومی صفحه‌ی نخست زیر کارت هلویی «بسته
+     تحلیلی جریان». برخلاف .magazine-card (که خودِ زمینه‌ش روشنه)، بدون
+     قاب/پس‌زمینه‌ست (مثل .domain-card)، مستقیم روی بوم تیره. عنوان هم عمداً
+     از .panel-pill (فونت مونواسپیس JetBrains Mono) استفاده نمی‌کنه چون
+     حروف فارسیِ عبارت طولانی رو به‌هم نمی‌چسبونه (bug واقعاً دیده‌شده) —
+     یه h3 ساده با فونت پیش‌فرض سایت. «سایر بسته‌های تحلیلی» (کارسول آرشیو)
+     زیرمجموعه‌ی همین ویجته، نه یه بلوک جدای هم‌سطح (به‌خواست صریح کاربر). */
   .home-widget-heading{ font-size:14.5px; font-weight:700; color:#fff; margin:0; }
   .home-widget-desc{ font-size:13px; color: rgba(255,255,255,0.65); margin:7px 0 0; line-height:1.8; }
   .home-poster-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
   .home-poster-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
 
-  /* «بسته‌های آموزش تحلیلی» — طرح دوستونه مثل بالای کارت هلویی: یه ستون
-     باریک با لوگو+عنوان+توضیح+دکمه (سمت راست)، و چند تا پوستر در یه ردیف
-     قابل‌اسکرول کنارش (سمت چپ) — نه گرید تمام‌عرض زیرش */
-  /* ترتیب نمایش این دو ویجت روی صفحه («دیدن سایر بسته‌های تحلیلی» اول،
-     «ضمیمه جریان» دوم) عمداً برعکسِ ترتیب تعریف این دو کلاسه — به همین
-     خاطر فاصله‌ی ۱۶۰px از کارت هلویی بالاش رو .home-widget-block می‌گیره
-     (چون اون همیشه اولیه)، نه .basirat-widget-block */
-  .home-widget-block{ margin:160px 0 56px; }
-  .basirat-widget-block{ display:flex; align-items:flex-start; gap:24px; margin:0; }
-  .home-widget-divider{ height:1px; background: rgba(255,255,255,0.12); margin:0 0 56px; }
-  @media (max-width:760px){ .basirat-widget-block{ flex-direction:column; gap:18px; } }
+  /* .basirat-widget-block حالا عمودیه: یه ردیف بالا (.basirat-widget-top —
+     ستون باریک عنوان+توضیح سمت راست + ردیف آیکون‌های دسته‌بندی کنارش)، و
+     زیرش تمام‌عرض (لبه‌به‌لبه با بقیه‌ی عرض صفحه، نه فقط عرض ستون آیکون‌ها)
+     کارسول واقعیِ «سایر بسته‌های تحلیلی» با کادر دور خودش. */
+  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:160px 0 56px; }
+  .basirat-widget-top{ display:flex; align-items:flex-start; gap:24px; }
+  @media (max-width:760px){ .basirat-widget-top{ flex-direction:column; gap:18px; } }
   .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
   @media (max-width:760px){ .basirat-widget-info{ flex:none; } }
   .basirat-widget-title-row{ display:flex; align-items:center; gap:11px; }
-  .basirat-widget-info .home-widget-logo{ width:64px; }
   .basirat-widget-info .home-widget-heading{ font-size:21px; }
   .basirat-widget-info .home-widget-desc{ font-size:15.5px; line-height:1.85; }
-  .basirat-widget-info .btn{ margin-top:8px; }
   .home-poster-row{ flex:1; min-width:0; width:100%; display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
   .home-poster-row::-webkit-scrollbar{ display:none; }
   .home-poster-row .home-poster-card{ flex-shrink:0; width:190px; }
-  .home-poster-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); }
+  .home-poster-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); transition: transform .2s ease, box-shadow .2s ease; }
   .home-poster-cover.is-landscape{ aspect-ratio: 16/9; }
   .home-poster-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
   .home-poster-cover svg{ width:26%; height:26%; opacity:.5; }
+  .home-poster-card:hover .home-poster-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
   .home-poster-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
+
+  /* زیربخش کارسول «سایر بسته‌های تحلیلی» — تمام‌عرض، با کادر و ته‌رنگ
+     گرادیانی هلویی (به‌جای کادر ساده‌ی تخت) برای جذابیت بصری بیشتر؛ به‌جای
+     عنوان و دکمه‌ی «مشاهده‌ی همه» جدا بالای کارسول، همون عنوان+دکمه به‌شکل
+     یه کارتِ عملی (.supp-archive-viewall-card) ته کارسول (سمت چپ، چون
+     RTLه و آخرین فرزند در DOM چپ‌ترین می‌شه) قرار گرفته و با پوسترها
+     هم‌ردیفه. */
+  .supp-archive-block{
+    background: linear-gradient(160deg, rgba(234,179,147,0.08), rgba(255,255,255,0.015));
+    border:1px solid rgba(234,179,147,0.22); border-radius: var(--radius-card); padding:20px 22px;
+    box-shadow: 0 18px 40px -28px rgba(0,0,0,0.6);
+  }
+  .supp-archive-carousel{ display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
+  .supp-archive-carousel::-webkit-scrollbar{ display:none; }
+  .supp-archive-carousel .home-poster-card{ flex-shrink:0; width:190px; }
+  .supp-archive-viewall-card{
+    flex-shrink:0; width:170px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:20px 14px;
+    background: linear-gradient(160deg, rgba(234,179,147,0.18), rgba(234,179,147,0.05));
+    border:1px solid rgba(234,179,147,0.4); border-radius: var(--radius-control); cursor:pointer;
+    transition: transform .2s ease, background .2s ease, border-color .2s ease;
+  }
+  .supp-archive-viewall-card:hover{ transform:translateY(-5px); background: linear-gradient(160deg, rgba(234,179,147,0.3), rgba(234,179,147,0.1)); border-color: var(--accent); }
+  .supp-archive-viewall-icon{ width:42px; height:42px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.1); color: var(--accent); }
+  .supp-archive-viewall-icon svg{ width:19px; height:19px; }
+  .supp-archive-viewall-label{ font-size:12.5px; font-weight:700; color:#fff; text-align:center; line-height:1.5; }
+  .supp-archive-viewall-cta{ font-size:12px; font-weight:800; color: var(--accent); }
 
   /* «ضمیمه جریان» عمداً پوستر/عنوان واقعی هر بسته رو نشون نمی‌ده — چند
      دسته‌ی کلی محتوا (مقالات/ویدئو/صوت/سخنرانی/مصاحبه) رو با آیکون
@@ -1173,24 +1192,19 @@
         </div>
       </div>
 
-      <div class="home-widget-block">
-        <div class="home-widget-head">
-          <h3 class="home-widget-heading">دیدن سایر بسته‌های تحلیلی</h3>
-          <button class="btn" onclick="openSupplementTab('archive')">مشاهده‌ی همه</button>
-        </div>
-        <div class="home-poster-grid" id="archive-grid-home"></div>
-      </div>
-
-      <div class="home-widget-divider"></div>
-
       <div class="basirat-widget-block">
-        <div class="basirat-widget-info">
-          <div class="basirat-widget-title-row">
-            <h3 class="home-widget-heading">ضمیمه جریان</h3>
+        <div class="basirat-widget-top">
+          <div class="basirat-widget-info">
+            <div class="basirat-widget-title-row">
+              <h3 class="home-widget-heading">ضمیمه جریان</h3>
+            </div>
+            <p class="home-widget-desc">محتوای تکمیلی برای تعمیق عرصه‌های رصد و تحلیل</p>
           </div>
-          <p class="home-widget-desc">محتوای تکمیلی برای تعمیق عرصه‌های رصد و تحلیل</p>
+          <div class="home-poster-row" id="basirat-grid-home"></div>
         </div>
-        <div class="home-poster-row" id="basirat-grid-home"></div>
+        <div class="supp-archive-block">
+          <div class="supp-archive-carousel" id="archive-grid-home"></div>
+        </div>
       </div>
 
       <div class="feedback-card">
@@ -1929,7 +1943,8 @@
     bulb: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.5.4.8 1 .8 1.6v.5h5.4v-.5c0-.6.3-1.2.8-1.6A6 6 0 0 0 12 3z"/></svg>',
     audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="7" rx="2"/><rect x="16.5" y="13" width="5" height="7" rx="2"/></svg>',
     mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4M9 22h6"/></svg>',
-    interview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.4 0-2.7-.3-3.9-.9L3 20l1-4.9A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>'
+    interview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.4 0-2.7-.3-3.9-.9L3 20l1-4.9A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>',
+    newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v13a3 3 0 0 0 3 3H7a3 3 0 0 1-3-3V4z"/><path d="M17 8h3v9a3 3 0 0 1-3 3"/><path d="M7.5 8h6M7.5 11h6M7.5 14h4"/></svg>'
   };
 
   // ---- auth (real Supabase/PostgREST backend) ----
@@ -4190,10 +4205,12 @@
     renderArchiveHomeGrid();
   }
 
-  // ویجت گرید صفحه‌ی نخست — برای دیدن سایر بسته‌های تحلیلی؛ بدون قاب/پس‌زمینه
-  // (مستقیم روی بوم تیره، طبق درخواست صریح کاربر)، هر کارت یه عکس نمایشی
-  // واقعی (جلد) بالای عنوان داره. بدون کنترل‌های مدیریتی (جابجایی/حذف) —
-  // این فقط یه پیش‌نمایش کوچیکه، مدیریت واقعی جاش توی خودِ تب آرشیوه
+  // کارسول واقعی (اسکرول افقی) «سایر بسته‌های تحلیلی» — زیرمجموعه‌ی ویجت
+  // «ضمیمه جریان»، تمام‌عرض و با کادر دور خودش (.supp-archive-block). عنوان
+  // و دکمه‌ی «مشاهده‌ی همه» دیگه سربرگ جدا نیستن، بلکه ته کارسول (آخرین
+  // فرزند DOM → چپ‌ترین آیتم، چون صفحه RTLه) به‌شکل یه کارت عملی میان.
+  // بدون کنترل‌های مدیریتی (جابجایی/حذف) — این فقط یه پیش‌نمایش کوچیکه،
+  // مدیریت واقعی جاش توی خودِ تب آرشیوه
   function renderArchiveHomeGrid(){
     const wrap = document.getElementById('archive-grid-home');
     if(!wrap) return;
@@ -4216,6 +4233,14 @@
       el.addEventListener('click', () => { if(files.length) openArchiveReportFile(m, files[0]); });
       wrap.appendChild(el);
     });
+    // آخرین فرزند DOM، چون صفحه RTLه چپ‌ترین آیتم کارسول می‌شه — طبق
+    // خواسته‌ی کاربر، عنوان+«مشاهده‌ی همه» به‌شکل یه کارت هم‌ردیف پوسترها
+    const viewAll = document.createElement('div'); viewAll.className = 'supp-archive-viewall-card';
+    viewAll.innerHTML = `<div class="supp-archive-viewall-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 6l-6 6 6 6"/></svg></div>
+      <span class="supp-archive-viewall-label">سایر بسته‌های تحلیلی</span>
+      <span class="supp-archive-viewall-cta">مشاهده‌ی همه</span>`;
+    viewAll.addEventListener('click', () => openSupplementTab('archive'));
+    wrap.appendChild(viewAll);
   }
 
   // از میان‌برهای صفحه‌ی نخست (دکمه‌ی «مشاهده‌ی همه» ویجت آرشیو / آیکون‌های
@@ -4389,20 +4414,22 @@
   // کلی محتوا رو با آیکون دایره‌ای معرفی می‌کنه (طبق خواسته‌ی کاربر). داده‌ی
   // واقعی BASIRAT_COURSES دست‌نخورده و همچنان توی تب «بسته‌های آموزش
   // تحلیلی» با پوستر واقعی نمایش داده می‌شه. کلیک هرکدوم مثل دکمه‌ی
-  // «مشاهده‌ی همه» به همون تب می‌بره (نه لینک بیرونیِ یه بسته‌ی خاص).
+  // «مشاهده‌ی همه» به همون تب می‌بره (نه لینک بیرونیِ یه بسته‌ی خاص) —
+  // به‌جز «نشریات» که عمداً به تب/کارسول آرشیو ('archive') وصله، نه بصیرت
+  // ('basirat')، چون قراره حس بده کلیک همین آیکون کارسول پایینش رو باز کرده.
   const SUPP_CONTENT_TYPES = [
     { label: 'کتاب', icon: 'book' },
     { label: 'مقالات', icon: 'doc' },
+    { label: 'نشریات', icon: 'newspaper', tab: 'archive' },
     { label: 'ویدئو', icon: 'video' },
     { label: 'صوت', icon: 'audio' },
     { label: 'سخنرانی', icon: 'mic' },
-    { label: 'مصاحبه', icon: 'interview' },
   ];
   function renderBasiratHomeGrid(){
     const wrap = document.getElementById('basirat-grid-home');
     if(!wrap) return;
     wrap.innerHTML = SUPP_CONTENT_TYPES.map(t => `
-      <div class="supp-icon-card" onclick="openSupplementTab('basirat')">
+      <div class="supp-icon-card" onclick="openSupplementTab('${t.tab || 'basirat'}')">
         <div class="supp-icon-circle">${ICONS[t.icon]}</div>
         <div class="supp-icon-label">${t.label}</div>
       </div>`).join('');
