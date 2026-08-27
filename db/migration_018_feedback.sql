@@ -25,7 +25,9 @@ create policy sel_feedback on feedback for select to app_admin using (true);
 drop policy if exists ins_feedback on feedback;
 create policy ins_feedback on feedback for insert to app_admin, app_viewer with check (true);
 drop policy if exists upd_feedback on feedback;
-create policy upd_feedback on feedback for update, delete to app_admin using (true) with check (true);
+create policy upd_feedback on feedback for update to app_admin using (true) with check (true);
+drop policy if exists del_feedback on feedback;
+create policy del_feedback on feedback for delete to app_admin using (true);
 
 grant select, insert, update, delete on feedback to app_admin;
 grant insert on feedback to app_viewer;
