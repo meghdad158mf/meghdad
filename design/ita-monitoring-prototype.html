@@ -132,7 +132,16 @@
   .notify-card{
     width:100%; max-width:640px; margin:120px auto 0; box-sizing:border-box;
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px;
+    padding:0 36px;
+    border-inline-start:1px solid rgba(255,255,255,0.14);
+    border-inline-end:1px solid rgba(255,255,255,0.14);
   }
+  .notify-card-icon{
+    width:40px; height:40px; border-radius:50%; flex-shrink:0;
+    background: rgba(234,179,147,0.14); color: var(--accent);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .notify-card-icon svg{ width:18px; height:18px; }
   .notify-card-text h3{ font-size:14.5px; font-weight:700; color:#fff; margin:0 0 4px; }
   .notify-card-text p{ font-size:12px; color: rgba(255,255,255,0.62); margin:0; line-height:1.7; }
   .notify-card-form{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; width:100%; }
@@ -1251,6 +1260,9 @@
       </div>
 
       <div class="notify-card">
+        <div class="notify-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
+        </div>
         <div class="notify-card-text">
           <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
           <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
