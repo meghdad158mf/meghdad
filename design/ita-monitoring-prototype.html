@@ -355,21 +355,18 @@
      مستقیم روی بوم تیره — طبق خواسته‌ی صریح کاربر. بین دو کارت راهنمای
      سریع و گرید ۴تایی عرصه‌های رصد. */
   .why-jarian-card{
-    margin:160px 0 64px; padding:40px 36px; border-radius: var(--radius-card);
-    background: linear-gradient(155deg, #fffaf5, #fbe9d7);
-    border:1px solid rgba(181,101,29,0.3);
-    box-shadow: 0 22px 46px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
+    margin:160px 0 64px; padding:40px 36px;
   }
   .why-jarian-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:0; text-align:center; }
   @media (max-width:760px){ .why-jarian-grid{ grid-template-columns:1fr; gap:28px; } }
-  .why-jarian-item{ padding:0 28px; border-inline-end:1px solid rgba(181,101,29,0.18); transition: transform .25s ease; }
+  .why-jarian-item{ padding:0 28px; border-inline-end:1px solid rgba(255,255,255,0.16); transition: transform .25s ease; }
   .why-jarian-item:last-child{ border-inline-end:none; }
   @media (max-width:760px){ .why-jarian-item{ padding:0; border-inline-end:none; } }
   .why-jarian-item:hover{ transform:translateY(-4px); }
-  .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent-strong); margin:0 0 10px; letter-spacing:0.01em; }
-  .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent-strong); margin:0 auto 16px; transition: width .25s ease; }
+  .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent); margin:0 0 10px; letter-spacing:0.01em; }
+  .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent); margin:0 auto 16px; transition: width .25s ease; }
   .why-jarian-item:hover .why-jarian-bar{ width:48px; }
-  .why-jarian-item p{ font-size:13px; color: var(--text-dim); line-height:1.9; margin:0; }
+  .why-jarian-item p{ font-size:13px; color: rgba(255,255,255,0.62); line-height:1.9; margin:0; }
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
