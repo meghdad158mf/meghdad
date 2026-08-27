@@ -848,7 +848,7 @@
      ستون باریک عنوان+توضیح سمت راست + ردیف آیکون‌های دسته‌بندی کنارش)، و
      زیرش تمام‌عرض (لبه‌به‌لبه با بقیه‌ی عرض صفحه، نه فقط عرض ستون آیکون‌ها)
      کارسول واقعیِ «سایر بسته‌های تحلیلی» با کادر دور خودش. */
-  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:160px 0 56px; }
+  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:220px 0 220px; }
   .basirat-widget-top{ display:flex; align-items:flex-start; gap:24px; }
   @media (max-width:760px){ .basirat-widget-top{ flex-direction:column; gap:18px; } }
   .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
@@ -871,7 +871,11 @@
      عنوان و دکمه‌ی «مشاهده‌ی همه» جدا بالای کارسول، همون عنوان+دکمه به‌شکل
      یه کارتِ عملی (.supp-archive-viewall-card) ته کارسول (سمت چپ، چون
      RTLه و آخرین فرزند در DOM چپ‌ترین می‌شه) قرار گرفته و با پوسترها
-     هم‌ردیفه. */
+     هم‌ردیفه. وقتی پوسترهای واقعی زیاد می‌شن، این کارت با اسکرول به چپ
+     می‌رفت زیر لبه‌ی کادر و اصلاً دیده نمی‌شد (باگ واقعاً گزارش‌شده) —
+     به‌همین‌خاطر sticky شده تا همیشه، چه قبل چه بعد از اسکرول، کامل و
+     چسبیده به لبه‌ی چپِ خودِ کادر دیده بشه؛ پس‌زمینه‌ش هم opaque شده تا
+     پوسترهایی که زیرش رد می‌شن دیده نشن. */
   .supp-archive-block{
     background: linear-gradient(160deg, rgba(234,179,147,0.08), rgba(255,255,255,0.015));
     border:1px solid rgba(234,179,147,0.22); border-radius: var(--radius-card); padding:20px 22px;
@@ -879,14 +883,14 @@
   }
   .supp-archive-carousel{ display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
   .supp-archive-carousel::-webkit-scrollbar{ display:none; }
-  .supp-archive-carousel .home-poster-card{ flex-shrink:0; width:190px; }
+  .supp-archive-carousel .home-poster-card{ flex-shrink:0; width:160px; }
   .supp-archive-viewall-card{
-    flex-shrink:0; width:170px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:20px 14px;
-    background: linear-gradient(160deg, rgba(234,179,147,0.18), rgba(234,179,147,0.05));
+    position:sticky; left:0; z-index:2; flex-shrink:0; width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:20px 14px;
+    background: linear-gradient(160deg, rgba(234,179,147,0.24), rgba(234,179,147,0.1)), var(--primary);
     border:1px solid rgba(234,179,147,0.4); border-radius: var(--radius-control); cursor:pointer;
     transition: transform .2s ease, background .2s ease, border-color .2s ease;
   }
-  .supp-archive-viewall-card:hover{ transform:translateY(-5px); background: linear-gradient(160deg, rgba(234,179,147,0.3), rgba(234,179,147,0.1)); border-color: var(--accent); }
+  .supp-archive-viewall-card:hover{ transform:translateY(-5px); background: linear-gradient(160deg, rgba(234,179,147,0.36), rgba(234,179,147,0.14)), var(--primary); border-color: var(--accent); }
   .supp-archive-viewall-icon{ width:42px; height:42px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.1); color: var(--accent); }
   .supp-archive-viewall-icon svg{ width:19px; height:19px; }
   .supp-archive-viewall-label{ font-size:12.5px; font-weight:700; color:#fff; text-align:center; line-height:1.5; }
