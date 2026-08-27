@@ -1176,7 +1176,7 @@
       <div class="home-widget-block">
         <div class="home-widget-head">
           <h3 class="home-widget-heading">دیدن سایر بسته‌های تحلیلی</h3>
-          <button class="btn" onclick="openReportsArchiveTab()">مشاهده‌ی همه</button>
+          <button class="btn" onclick="openSupplementTab('archive')">مشاهده‌ی همه</button>
         </div>
         <div class="home-poster-grid" id="archive-grid-home"></div>
       </div>
@@ -1528,12 +1528,6 @@
       </button>
       <div class="panel-head"><span class="panel-pill">بخش تحلیلی</span></div>
 
-      <div class="news-page-tabs" id="reports-page-tabs">
-        <button class="active" data-reports-tab="own">مجلات جریان</button>
-        <button data-reports-tab="basirat">بسته‌های آموزش تحلیلی</button>
-        <button data-reports-tab="archive">دیدن سایر بسته‌های تحلیلی</button>
-      </div>
-
       <div id="reports-tab-own">
         <p class="magazines-empty" id="magazines-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز مجله‌ای بارگذاری نشده.</p>
         <div class="magazine-grid" id="magazine-grid"></div>
@@ -1564,29 +1558,23 @@
         </div>
       </div>
 
-      <div id="reports-tab-basirat" style="display:none;">
-        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
-        <div class="magazine-grid" id="basirat-grid"></div>
+    </section>
 
-        <div class="panel" id="basirat-upload-panel" style="display:none;">
-          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
-          <div class="form-grid">
-            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
-            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
-          </div>
-          <div class="field">
-            <label>توضیح کوتاه (اختیاری)</label>
-            <input type="text" id="bas-desc" />
-          </div>
-          <div class="field">
-            <label>پوستر (اختیاری)</label>
-            <input type="file" id="bas-poster" accept="image/*" />
-          </div>
-          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
-        </div>
+    <!-- ضمیمه جریان — بخش مستقل (نه زیرمجموعه‌ی «بخش تحلیلی») با دو زیرتب:
+         بسته‌های آموزشی (بصیرت) و سایر بسته‌های تحلیلی (آرشیو نهادهای دیگر) -->
+    <section class="section" id="sec-supplement">
+      <button class="section-back" onclick="switchSection('dashboard')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
+        بازگشت به صفحه نخست
+      </button>
+      <div class="panel-head"><span class="panel-pill">ضمیمه جریان</span></div>
+
+      <div class="news-page-tabs" id="supplement-page-tabs">
+        <button class="active" data-supplement-tab="archive">سایر بسته‌های تحلیلی</button>
+        <button data-supplement-tab="basirat">بسته‌های آموزشی</button>
       </div>
 
-      <div id="reports-tab-archive" style="display:none;">
+      <div id="supplement-tab-archive">
         <p class="magazines-empty" id="archive-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>
         <div class="magazine-grid" id="archive-report-grid"></div>
 
@@ -1613,6 +1601,28 @@
             <input type="file" id="arc-cover" accept="image/*" />
           </div>
           <button class="btn primary" id="arc-upload-btn" style="margin-top:8px">بارگذاری</button>
+        </div>
+      </div>
+
+      <div id="supplement-tab-basirat" style="display:none;">
+        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
+        <div class="magazine-grid" id="basirat-grid"></div>
+
+        <div class="panel" id="basirat-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
+            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
+          </div>
+          <div class="field">
+            <label>توضیح کوتاه (اختیاری)</label>
+            <input type="text" id="bas-desc" />
+          </div>
+          <div class="field">
+            <label>پوستر (اختیاری)</label>
+            <input type="file" id="bas-poster" accept="image/*" />
+          </div>
+          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
         </div>
       </div>
     </section>
@@ -2063,6 +2073,7 @@
     schools: 'برنامه مدارس',
     people: 'افراد و مجموعه‌ها',
     reports: 'بخش تحلیلی',
+    supplement: 'ضمیمه جریان',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
     feedback: 'نظرات کاربران',
@@ -4117,18 +4128,18 @@
     }
   });
 
-  // ---- تب «دیدن سایر بسته‌های تحلیلی» (بخش تحلیلی) ----
-  // برخلاف مجلات جریان، این‌ها تولیدات نهادهای دیگه‌ست که فقط بایگانی می‌کنیم —
-  // همون الگوی داده/Storage مجلات (bucket خصوصی برای فایل + bucket عمومی برای جلد)،
-  // فقط با یه ستون اضافه‌ی source_org (نهاد تولیدکننده).
-  const reportsPageTabsEl = document.getElementById('reports-page-tabs');
-  if(reportsPageTabsEl) reportsPageTabsEl.addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b || !b.dataset.reportsTab) return;
-    reportsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+  // ---- زیرتب‌های «ضمیمه جریان» (بخش مستقل، نه زیرمجموعه‌ی بخش تحلیلی) ----
+  // «سایر بسته‌های تحلیلی»: برخلاف مجلات جریان، این‌ها تولیدات نهادهای دیگه‌ست
+  // که فقط بایگانی می‌کنیم — همون الگوی داده/Storage مجلات (bucket خصوصی برای
+  // فایل + bucket عمومی برای جلد)، فقط با یه ستون اضافه‌ی source_org.
+  const supplementPageTabsEl = document.getElementById('supplement-page-tabs');
+  if(supplementPageTabsEl) supplementPageTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.supplementTab) return;
+    supplementPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    ['own','basirat','archive'].forEach(key=>{
-      const el = document.getElementById('reports-tab-'+key);
-      if(el) el.style.display = key === b.dataset.reportsTab ? '' : 'none';
+    ['basirat','archive'].forEach(key=>{
+      const el = document.getElementById('supplement-tab-'+key);
+      if(el) el.style.display = key === b.dataset.supplementTab ? '' : 'none';
     });
   });
 
@@ -4207,11 +4218,12 @@
     });
   }
 
-  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
-  // و مستقیم تب «دیدن سایر بسته‌های تحلیلی» رو فعال می‌کنه
-  function openReportsArchiveTab(){
-    switchSection('reports');
-    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="archive"]');
+  // از میان‌برهای صفحه‌ی نخست (دکمه‌ی «مشاهده‌ی همه» ویجت آرشیو / آیکون‌های
+  // ویجت «ضمیمه جریان») صدا زده می‌شه — می‌بره به بخش «ضمیمه جریان» و
+  // مستقیم زیرتب موردنظر ('basirat' یا 'archive') رو فعال می‌کنه
+  function openSupplementTab(tab){
+    switchSection('supplement');
+    const tabBtn = document.querySelector('#supplement-page-tabs button[data-supplement-tab="'+tab+'"]');
     if(tabBtn) tabBtn.click();
   }
 
@@ -4390,18 +4402,10 @@
     const wrap = document.getElementById('basirat-grid-home');
     if(!wrap) return;
     wrap.innerHTML = SUPP_CONTENT_TYPES.map(t => `
-      <div class="supp-icon-card" onclick="openReportsBasiratTab()">
+      <div class="supp-icon-card" onclick="openSupplementTab('basirat')">
         <div class="supp-icon-circle">${ICONS[t.icon]}</div>
         <div class="supp-icon-label">${t.label}</div>
       </div>`).join('');
-  }
-
-  // از دکمه‌ی «مشاهده‌ی همه» این ویجت صدا زده می‌شه — می‌بره به «بخش تحلیلی»
-  // و مستقیم تب «بسته‌های آموزش تحلیلی» رو فعال می‌کنه
-  function openReportsBasiratTab(){
-    switchSection('reports');
-    const tabBtn = document.querySelector('#reports-page-tabs button[data-reports-tab="basirat"]');
-    if(tabBtn) tabBtn.click();
   }
 
   // کارت «ثبت نظر و پیشنهاد» ته صفحه‌ی نخست — هم مدیر هم بیننده اجازه‌ی
