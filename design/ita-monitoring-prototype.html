@@ -563,7 +563,7 @@
   .news-page-title{ font-size:20px; font-weight:800; color:#fff; margin:0 0 4px; }
   .news-page-sub{ font-size:13px; color:rgba(255,255,255,0.55); margin:0; }
 
-  .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; }
+  .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; margin-inline-start:auto; }
   .news-view-toggle button{ border:none; background:none; color: rgba(255,255,255,0.55); padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .news-view-toggle button.active{ background: var(--accent); color: var(--primary); }
   .news-view-toggle svg{ width:16px; height:16px; }
@@ -1372,17 +1372,6 @@
       </div>
 
       <div id="news-study-panel">
-        <div class="news-page-head">
-          <div class="news-view-toggle">
-            <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            </button>
-          </div>
-        </div>
-
         <div class="news-filters">
           <div class="news-filter-row">
             <div class="news-search-box" id="news-search-box">
@@ -1418,6 +1407,14 @@
               <summary id="news-source-summary">انتخاب رسانه‌ها…</summary>
               <div class="news-source-list" id="news-source-list"></div>
             </details>
+            <div class="news-view-toggle">
+              <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              </button>
+              <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
