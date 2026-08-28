@@ -1373,10 +1373,6 @@
 
       <div id="news-study-panel">
         <div class="news-page-head">
-          <div>
-            <h1 class="news-page-title" id="news-page-title-text">اخبار رسمی</h1>
-            <p class="news-page-sub" id="news-page-sub-text">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
-          </div>
           <div class="news-view-toggle">
             <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
@@ -2295,10 +2291,6 @@
       document.getElementById('news-region-row').style.display = isClaims ? 'none' : '';
       document.getElementById('news-source-details').style.display = isClaims ? 'none' : '';
       document.getElementById('news-filter-divider-1').style.display = isClaims ? 'none' : '';
-      document.getElementById('news-page-title-text').textContent = isClaims ? 'ادعاها و شایعات' : 'اخبار رسمی';
-      document.getElementById('news-page-sub-text').textContent = isClaims
-        ? 'رصد و پایش ادعاها و شایعات منتشرشده در فضای مجازی'
-        : 'اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام';
       populateNewsSourceOptions();
       renderNewsFeed();
     }
