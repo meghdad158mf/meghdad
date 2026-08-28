@@ -242,6 +242,7 @@
   .chip-btn svg{ width:14px; height:14px; flex-shrink:0; }
   .chip-btn:hover{ color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
   .chip-btn.ghost{ background:none; color: var(--text-faint); }
+  .chip-btn.icon-only{ padding:8px; width:30px; height:30px; justify-content:center; }
   #admin-menu-btn .chev{ transition: transform .15s ease; }
   .admin-menu.open #admin-menu-btn .chev{ transform: rotate(180deg); }
   .admin-menu-list{
@@ -1046,10 +1047,8 @@
         <div class="topbar-brand-text">
           <b>سامانه هوشمند جریان</b>
           <div class="admin-menu" id="nav-menu" onclick="event.stopPropagation()">
-            <button class="chip-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false">
+            <button class="chip-btn icon-only" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-              بخش‌ها
-              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
             </button>
             <div class="admin-menu-list" id="nav-menu-list">
               <button onclick="switchSection('overview'); closeNavMenu();">اخبار رسمی</button>
