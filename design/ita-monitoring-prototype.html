@@ -260,7 +260,6 @@
     max-height: calc(100vh - 90px); overflow-y:auto;
   }
   .nav-menu-col{ display:flex; flex-direction:column; gap:2px; }
-  .admin-menu-list button.nav-menu-standalone{ font-weight:800; color: var(--text); }
   @media (max-width:640px){
     #nav-menu-list.nav-menu-grid{ grid-template-columns:1fr; min-width:220px; gap:2px; padding:6px; }
   }
@@ -269,14 +268,18 @@
     font-size:12.5px; font-weight:600; color: var(--text-dim); background:none; border:none; cursor:pointer;
     padding:9px 10px; border-radius: 6px; transition: background .15s ease, color .15s ease;
   }
-  .nav-menu-group-title{
-    font-size:11px; font-weight:800; color: var(--text-faint); text-align:right;
-    padding:9px 10px 3px; margin-top:6px;
+  .nav-menu-toplevel-title{
+    font-size:12px; font-weight:800; color: var(--accent); text-align:right;
+    padding:9px 10px 7px; margin-bottom:2px; border-bottom:1px solid rgba(255,255,255,0.12);
   }
-  .nav-menu-group-title:first-child{ margin-top:0; }
-  .admin-menu-list button.nav-menu-sub{ position:relative; padding-right:26px; font-weight:500; font-size:12px; }
+  .admin-menu-list button.nav-menu-toplevel-btn{ font-size:12px; font-weight:800; color: var(--accent); }
+  .admin-menu-list button.nav-menu-group-title-btn{
+    font-size:11.5px; font-weight:800; color: var(--text-dim); padding-right:18px; margin-top:6px;
+  }
+  .admin-menu-list button.nav-menu-group-title-btn:first-child{ margin-top:0; }
+  .admin-menu-list button.nav-menu-sub{ position:relative; padding-right:32px; font-weight:500; font-size:12px; }
   .admin-menu-list button.nav-menu-sub::before{
-    content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    content:''; position:absolute; right:20px; top:50%; transform:translateY(-50%);
     width:7px; height:1px; background: rgba(255,255,255,0.28);
   }
   .admin-menu-list button:hover{ background: var(--surface-2); color: var(--text); }
@@ -1069,30 +1072,29 @@
           </button>
           <div class="admin-menu-list nav-menu-grid" id="nav-menu-list">
             <div class="nav-menu-col">
-              <div class="nav-menu-group-title">اخبار رسمی</div>
+              <div class="nav-menu-toplevel-title">عرصه‌های رصد</div>
+
+              <button class="nav-menu-group-title-btn" onclick="goToNewsTab('study'); closeNavMenu();">اخبار رسمی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
-            </div>
-            <div class="nav-menu-col">
-              <div class="nav-menu-group-title">کنشگری مجازی</div>
+
+              <button class="nav-menu-group-title-btn" onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
               <button class="nav-menu-sub" onclick="switchSection('posts'); closeNavMenu();">پست‌های منتشر شده</button>
-            </div>
-            <div class="nav-menu-col">
-              <button class="nav-menu-standalone" onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
-            </div>
-            <div class="nav-menu-col">
-              <div class="nav-menu-group-title">افراد و مجموعه‌ها</div>
+
+              <button class="nav-menu-group-title-btn" onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
+
+              <button class="nav-menu-group-title-btn" onclick="goToPeopleTab('professors'); closeNavMenu();">افراد و مجموعه‌ها</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('professors'); closeNavMenu();">اساتید سیاسی‌اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('activists'); closeNavMenu();">فعالان سیاسی‌اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('analytics'); closeNavMenu();">آنالیز</button>
             </div>
             <div class="nav-menu-col">
-              <button class="nav-menu-standalone" onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
+              <button class="nav-menu-toplevel-btn" onclick="switchSection('reports'); closeNavMenu();">بسته تحلیلی جریان</button>
             </div>
             <div class="nav-menu-col">
-              <div class="nav-menu-group-title">ضمیمه جریان</div>
+              <div class="nav-menu-toplevel-title">ضمیمه جریان</div>
               <button class="nav-menu-sub" onclick="openSupplementTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
               <button class="nav-menu-sub" onclick="openSupplementTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
             </div>
