@@ -267,7 +267,11 @@
     padding:9px 10px 3px; margin-top:6px;
   }
   .nav-menu-group-title:first-child{ margin-top:0; }
-  .admin-menu-list button.nav-menu-sub{ padding-right:24px; font-weight:500; font-size:12px; }
+  .admin-menu-list button.nav-menu-sub{ position:relative; padding-right:26px; font-weight:500; font-size:12px; }
+  .admin-menu-list button.nav-menu-sub::before{
+    content:''; position:absolute; right:12px; top:50%; transform:translateY(-50%);
+    width:7px; height:1px; background: rgba(255,255,255,0.28);
+  }
   .admin-menu-list button:hover{ background: var(--surface-2); color: var(--text); }
   .admin-menu-list svg{ width:14px; height:14px; flex-shrink:0; }
   .topbar-divider{ width:1px; height:18px; background: rgba(255,255,255,0.34); }
