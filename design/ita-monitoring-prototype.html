@@ -4077,7 +4077,7 @@
   function renderNewspaperDateTabs(){
     const wrap = document.getElementById('newspaper-date-tabs');
     if(!wrap) return;
-    if(NEWSPAPER_DATES.length <= 1){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    if(!NEWSPAPER_DATES.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
     wrap.style.display = '';
     wrap.innerHTML = NEWSPAPER_DATES.map(d =>
       `<button class="${d === newspaperState.date ? 'active' : ''}" data-date="${d}">${newspaperDateLabel(d)}</button>`
