@@ -226,6 +226,8 @@
   .topbar-brand{ display:flex; align-items:center; gap:10px; cursor:pointer; }
   .topbar-badge{ width:30px; height:30px; border-radius:9px; background: rgba(234,179,147,0.14); color: var(--accent); display:flex; align-items:center; justify-content:center; flex-shrink:0; }
   .topbar-badge svg{ width:15px; height:15px; }
+  .nav-menu-badge-btn{ border:none; padding:0; cursor:pointer; transition: background .15s ease; }
+  .nav-menu-badge-btn:hover{ background: rgba(234,179,147,0.24); }
   .topbar-brand-text{ display:flex; align-items:baseline; gap:7px; line-height:1.4; font-size:15px; }
   .topbar-brand-text b{ font-weight:600; color: rgba(255,255,255,0.55); }
   .topbar-brand-text .sep{ color: rgba(255,255,255,0.3); }
@@ -242,7 +244,6 @@
   .chip-btn svg{ width:14px; height:14px; flex-shrink:0; }
   .chip-btn:hover{ color: var(--text); border-color: var(--border-strong); background: var(--surface-2); }
   .chip-btn.ghost{ background:none; color: var(--text-faint); }
-  .chip-btn.icon-only{ padding:8px; width:30px; height:30px; justify-content:center; }
   #admin-menu-btn .chev{ transition: transform .15s ease; }
   .admin-menu.open #admin-menu-btn .chev{ transform: rotate(180deg); }
   .admin-menu-list{
@@ -271,9 +272,9 @@
     .topbar-brand-text b, .topbar-brand-text .sep{ display:none; }
     .topbar-brand-text #sec-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .topbar-right{ flex-wrap:nowrap; gap:6px; flex-shrink:0; }
-    .topbar #admin-menu-btn, .topbar #nav-menu-btn{ padding:6px 9px; font-size:0; gap:0; }
-    .topbar #admin-menu-btn svg, .topbar #nav-menu-btn svg{ width:15px; height:15px; }
-    .topbar #admin-menu-btn .chev, .topbar #nav-menu-btn .chev{ display:none; }
+    .topbar #admin-menu-btn{ padding:6px 9px; font-size:0; gap:0; }
+    .topbar #admin-menu-btn svg{ width:15px; height:15px; }
+    .topbar #admin-menu-btn .chev{ display:none; }
     .topbar .chip-btn.ghost{ padding:6px 10px; font-size:11px; }
   }
   .seg-compact{ margin-bottom:0; }
@@ -1047,8 +1048,8 @@
         <div class="topbar-brand-text">
           <b>سامانه هوشمند جریان</b>
           <div class="admin-menu" id="nav-menu" onclick="event.stopPropagation()">
-            <button class="chip-btn icon-only" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+            <button class="topbar-badge nav-menu-badge-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
             </button>
             <div class="admin-menu-list" id="nav-menu-list">
               <button onclick="switchSection('overview'); closeNavMenu();">اخبار رسمی</button>
