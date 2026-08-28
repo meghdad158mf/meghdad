@@ -51,6 +51,7 @@
    loadChannels = async function(){ CHANNELS = []; };
    loadCategories = async function(){ CATEGORIES = []; };
    loadRegions = async function(){ REGIONS = []; };   // اگه فیلترهای اخبار رسمی/منطقه رو تست می‌کنی حتماً پر کن، وگرنه چیپ منطقه خالی می‌مونه
+   loadNewsTopics = async function(){ NEWS_TOPICS = []; };   // اگه چیپ‌های «موضوع» تب وب‌سایت‌ها رو تست می‌کنی حتماً پر کن
    loadPosts = async function(){ POSTS_CACHE = []; };
    loadMagazines = async function(){ MAGAZINES = []; };
    loadArchiveReports = async function(){ ARCHIVE_REPORTS = []; };
@@ -130,6 +131,7 @@ db/migration_016_archive_reports.sql       جدول archive_reports + bucket خ�
 db/migration_017_basirat_courses.sql       جدول basirat_courses + bucket عمومی basirat-course-posters (تب/ویجت «بسته‌های آموزش تحلیلی»)
 db/migration_018_feedback.sql              جدول feedback (کارت «ثبت نظر و پیشنهاد» صفحه‌ی نخست) — تنها جدول با اجازه‌ی insert برای نقش بیننده
 db/migration_019_notify_subscribers.sql    جدول notify_subscribers (کارت «اطلاع از انتشار بسته تحلیلی جریان» صفحه‌ی نخست) — insert برای هر دو نقش app_admin/app_viewer، select/update/delete فقط مدیر
+db/migration_020_news_topics.sql           جدول news_topics (اسم + کلیدواژه‌های جدا با ویرگول) — چیپ‌های «موضوع» تب «وب‌سایت‌ها»ی «اخبار رسمی»؛ select هر دو نقش، insert/update/delete فقط مدیر
 db/seed_telegram_channels.sql              ۴ کانال پیش‌فرض تلگرام
 scripts/requirements.txt                   وابستگی‌های مشترک پایتون همه‌ی اسکریپت‌ها (requests, beautifulsoup4, telethon, python-dotenv, feedparser)
 scripts/collect_eitaa.py                   کالکتور ایتا
@@ -173,6 +175,7 @@ design/images/basirat-logo.webp            لوگوی مدرسه مجازی بص
 - **app_config**: رمزهای هش‌شده‌ی مدیر/بیننده + رمز JWT (فقط از طریق توابع SECURITY DEFINER قابل‌خوندنه)
 - **feedback**: id, name (اختیاری)، message (اجباری)، created_at — کارت «ثبت نظر و پیشنهاد» صفحه‌ی نخست؛ migration_018. ⚠️ **تنها استثنای پروژه**: نقش «بیننده» هم اجازه‌ی insert داره (بقیه‌ی جدول‌ها فقط مدیر می‌نویسه)؛ select/update/delete فقط مدیر.
 - **notify_subscribers**: id, phone (با CHECK فرمت `^09[0-9]{9}$`، یکتا)، created_at، notified_at (nullable — آخرین باری که مدیر برایش پیامک دستی فرستاد) — کارت «اطلاع از انتشار بسته تحلیلی جریان» صفحه‌ی نخست؛ migration_019. insert برای هر دو نقش app_admin/app_viewer بازه (چون این کارت پشت ورود به سامانه‌ست، نه صفحه‌ی عمومی)؛ select/update/delete فقط مدیر، از پنل «مدیریت ← خروجی‌گیری».
+- **news_topics**: id, name, keywords (متن، کلیدواژه‌ها جدا با ویرگول، مثل «انتخابات, دولت, مجلس»)، sort_order، created_at — موضوعات جستجوی ذخیره‌شده برای تب «وب‌سایت‌ها»ی «اخبار رسمی» (چون طبقه‌بندی خودکار موضوعی روی هر پست هنوز نیست، این یه جایگزین سبک‌تره)؛ migration_020. مدیریت (افزودن/حذف) از پنل «مدیریت ← تنظیمات»؛ select هر دو نقش، insert/update/delete فقط مدیر.
 
 ## بخش تحلیلی (`sec-reports`، دیگه تب نداره)
 
@@ -201,6 +204,7 @@ design/images/basirat-logo.webp            لوگوی مدرسه مجازی بص
   - **منطقه** (`#news-region-row`، `renderNewsRegionChips()`): پویا از جدول `regions`.
   - **منابع** (`#news-source-details`/`#news-source-list`، `populateNewsSourceOptions()`): چندانتخابی.
 - **منبع RSS** (`collect_rss.py`، `platform='website'`) هم مثل ایتا/تلگرام/بله پست تولید می‌کنه؛ `posts.title` برای RSS و بله پر می‌شه (ایتا/تلگرام عنوان جدا ندارن).
+- **موضوعات جستجوی ذخیره‌شده** (فقط تب «وب‌سایت‌ها»، `#news-topic-filter-row`/`#news-topic-row`، جدول `news_topics`، migration_020): چون طبقه‌بندی خودکار موضوعی روی هر پست هنوز نیست (اون جزو «تحلیل هوش مصنوعی واقعی»ی کارهای آینده‌ست)، این یه جایگزین سبک‌تره — مدیر از پنل «تنظیمات» چندتا موضوع با اسم + کلیدواژه‌های جدا با ویرگول تعریف می‌کنه (`renderTopicGrid()`)؛ کاربر با کلیک روی چیپ هر موضوع (`renderNewsTopicRow()`)، کلیدواژه‌ها خودکار توی همون جستجوی متنی موجود می‌شینه و `filteredNewsPosts()` با **OR** بین کلیدواژه‌ها (نه AND؛ تشخیص با split روی ویرگول) فیلتر می‌کنه؛ تایپ دستی توی سرچ، انتخاب موضوع رو پاک می‌کنه و به چیپ «همه» برمی‌گرده. کنار دکمه‌ی «جستجوی هوشمند» جا گرفته (همون ردیف سرچ‌باکس)، نه یه ردیف جدا؛ ردیف فقط وقتی نمایش داده می‌شه که `newsState.platform === 'website'` باشه و حداقل یه موضوع ذخیره شده باشه (`updateNewsTopicVisibility()`، از `setNewsPageTab()` و `renderNewsTopicRow()` صدا زده می‌شه) — عمداً توی «شبکه‌های اجتماعی»/«ادعاها و شایعات»/«روزنامه‌ها» نیست، چون این فیچر مخصوص مرور مقالات موضوعی سایت‌های خبریه.
 
 ## تب «روزنامه‌ها» (داخل `sec-overview`)
 
