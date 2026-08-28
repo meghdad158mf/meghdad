@@ -559,11 +559,7 @@
   .news-page-tabs button:disabled{ cursor:default; opacity:.6; }
   .news-soon{ font-size:9.5px; font-weight:600; color: var(--accent); background: rgba(234,179,147,0.14); border-radius:100px; padding:2px 7px; margin-inline-start:6px; }
 
-  .news-page-head{ display:flex; align-items:flex-start; justify-content:space-between; gap:16px; margin-bottom:22px; flex-wrap:wrap; }
-  .news-page-title{ font-size:20px; font-weight:800; color:#fff; margin:0 0 4px; }
-  .news-page-sub{ font-size:13px; color:rgba(255,255,255,0.55); margin:0; }
-
-  .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; }
+  .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; margin-inline-start:auto; }
   .news-view-toggle button{ border:none; background:none; color: rgba(255,255,255,0.55); padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
   .news-view-toggle button.active{ background: var(--accent); color: var(--primary); }
   .news-view-toggle svg{ width:16px; height:16px; }
@@ -1372,21 +1368,6 @@
       </div>
 
       <div id="news-study-panel">
-        <div class="news-page-head">
-          <div>
-            <h1 class="news-page-title" id="news-page-title-text">اخبار رسمی</h1>
-            <p class="news-page-sub" id="news-page-sub-text">اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام</p>
-          </div>
-          <div class="news-view-toggle">
-            <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
-            </button>
-            <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-            </button>
-          </div>
-        </div>
-
         <div class="news-filters">
           <div class="news-filter-row">
             <div class="news-search-box" id="news-search-box">
@@ -1422,6 +1403,14 @@
               <summary id="news-source-summary">انتخاب رسانه‌ها…</summary>
               <div class="news-source-list" id="news-source-list"></div>
             </details>
+            <div class="news-view-toggle">
+              <button id="news-view-list-btn" onclick="setNewsView('list')" title="نمایش فهرستی">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              </button>
+              <button class="active" id="news-view-grid-btn" onclick="setNewsView('grid')" title="نمایش چندستونه">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+              </button>
+            </div>
           </div>
         </div>
 
@@ -1431,12 +1420,6 @@
       </div>
 
       <div id="news-newspapers-panel" style="display:none;">
-        <div class="news-page-head">
-          <div>
-            <h1 class="news-page-title">روزنامه‌ها</h1>
-            <p class="news-page-sub" id="newspapers-date-label">صفحه‌ی اول روزنامه‌های امروز</p>
-          </div>
-        </div>
         <div class="news-filters">
           <div class="news-filter-row news-toolbar-row">
             <div class="news-seg" id="newspaper-date-tabs" style="display:none;"></div>
@@ -1485,12 +1468,6 @@
           <button disabled>مجموعه‌ها<span class="news-soon">به‌زودی</span></button>
         </div>
 
-        <div class="news-page-head">
-          <div>
-            <h1 class="news-page-title">افراد</h1>
-            <p class="news-page-sub" id="people-count-sub"></p>
-          </div>
-        </div>
 
         <div class="news-filters">
           <div class="news-filter-row">
@@ -1561,12 +1538,6 @@
 
       <!-- ===== اساتید سیاسی‌اجتماعی ===== -->
       <div id="people-tab-professors">
-        <div class="news-page-head">
-          <div>
-            <h1 class="news-page-title">اساتید سیاسی‌اجتماعی</h1>
-            <p class="news-page-sub" id="professors-count-sub"></p>
-          </div>
-        </div>
 
         <div class="news-filters">
           <div class="news-filter-row">
@@ -2295,10 +2266,6 @@
       document.getElementById('news-region-row').style.display = isClaims ? 'none' : '';
       document.getElementById('news-source-details').style.display = isClaims ? 'none' : '';
       document.getElementById('news-filter-divider-1').style.display = isClaims ? 'none' : '';
-      document.getElementById('news-page-title-text').textContent = isClaims ? 'ادعاها و شایعات' : 'اخبار رسمی';
-      document.getElementById('news-page-sub-text').textContent = isClaims
-        ? 'رصد و پایش ادعاها و شایعات منتشرشده در فضای مجازی'
-        : 'اخبار سیاسی و اجتماعی از خبرگزاری‌ها، ایتا و تلگرام';
       populateNewsSourceOptions();
       renderNewsFeed();
     }
@@ -2569,7 +2536,8 @@
   function goNewsPage(p){
     newsState.page = p;
     renderNewsFeed();
-    document.querySelector('.news-page-head').scrollIntoView({behavior:'smooth', block:'start'});
+    const anchor = document.querySelector('.news-page-tabs');
+    if(anchor) anchor.scrollIntoView({behavior:'smooth', block:'start'});
   }
 
   function toggleNewsText(postId){
@@ -2953,8 +2921,6 @@
         btn.addEventListener('click', () => deletePerson(Number(btn.dataset.personId)));
       });
     }
-    const sub = document.getElementById('people-count-sub');
-    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
     renderPeoplePagination(totalPages);
   }
 
@@ -3081,8 +3047,6 @@
         btn.addEventListener('click', () => deleteProfessor(Number(btn.dataset.professorId)));
       });
     }
-    const sub = document.getElementById('professors-count-sub');
-    if(sub) sub.textContent = toFaDigits(full.length) + ' نفر';
     renderProfessorsPagination(totalPages);
   }
 
@@ -4083,7 +4047,6 @@
   function renderNewspapers(){
     const grid = document.getElementById('newspaper-grid');
     const empty = document.getElementById('newspapers-empty');
-    const label = document.getElementById('newspapers-date-label');
     if(!grid) return;
     const withImage = NEWSPAPERS.filter(n => n.image_url);
     NEWSPAPER_DATES = [...new Set(withImage.map(n => n.edition_date))].sort().reverse();
@@ -4097,7 +4060,6 @@
     }
     if(!newspaperState.date || !NEWSPAPER_DATES.includes(newspaperState.date)) newspaperState.date = NEWSPAPER_DATES[0];
     renderNewspaperDateTabs();
-    if(label) label.textContent = 'صفحه‌ی اول روزنامه‌های ' + new Date(newspaperState.date).toLocaleDateString('fa-IR');
     NEWSPAPER_TODAYS = withImage.filter(n => n.edition_date === newspaperState.date);
     populateNewspaperSourceOptions();
     renderNewspaperGrid();
