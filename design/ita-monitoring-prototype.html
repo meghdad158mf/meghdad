@@ -253,9 +253,16 @@
     opacity:0; visibility:hidden; transform:translateY(-6px); transition: opacity .15s ease, transform .15s ease, visibility .15s;
   }
   .admin-menu.open .admin-menu-list{ opacity:1; visibility:visible; transform:translateY(0); }
-  #nav-menu-list{
-    inset-inline-end:auto; inset-inline-start:0; min-width:220px;
+  #nav-menu-list.nav-menu-grid{
+    inset-inline-end:auto; inset-inline-start:0;
+    display:grid; grid-template-columns: repeat(3, 1fr); gap:4px 30px;
+    min-width:580px; max-width:90vw; padding:16px;
     max-height: calc(100vh - 90px); overflow-y:auto;
+  }
+  .nav-menu-col{ display:flex; flex-direction:column; gap:2px; }
+  .admin-menu-list button.nav-menu-standalone{ font-weight:800; color: var(--text); }
+  @media (max-width:640px){
+    #nav-menu-list.nav-menu-grid{ grid-template-columns:1fr; min-width:220px; gap:2px; padding:6px; }
   }
   .admin-menu-list button{
     display:flex; align-items:center; gap:8px; width:100%; text-align:right; font-family:inherit;
@@ -1060,28 +1067,35 @@
           <button class="topbar-badge nav-menu-badge-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
           </button>
-          <div class="admin-menu-list" id="nav-menu-list">
-            <div class="nav-menu-group-title">اخبار رسمی</div>
-            <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
-            <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
-            <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
-            <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
-
-            <div class="nav-menu-group-title">کنشگری مجازی</div>
-            <button class="nav-menu-sub" onclick="switchSection('posts'); closeNavMenu();">پست‌های منتشر شده</button>
-
-            <button onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
-
-            <div class="nav-menu-group-title">افراد و مجموعه‌ها</div>
-            <button class="nav-menu-sub" onclick="goToPeopleTab('professors'); closeNavMenu();">اساتید سیاسی‌اجتماعی</button>
-            <button class="nav-menu-sub" onclick="goToPeopleTab('activists'); closeNavMenu();">فعالان سیاسی‌اجتماعی</button>
-            <button class="nav-menu-sub" onclick="goToPeopleTab('analytics'); closeNavMenu();">آنالیز</button>
-
-            <button onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
-
-            <div class="nav-menu-group-title">ضمیمه جریان</div>
-            <button class="nav-menu-sub" onclick="openSupplementTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
-            <button class="nav-menu-sub" onclick="openSupplementTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
+          <div class="admin-menu-list nav-menu-grid" id="nav-menu-list">
+            <div class="nav-menu-col">
+              <div class="nav-menu-group-title">اخبار رسمی</div>
+              <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
+            </div>
+            <div class="nav-menu-col">
+              <div class="nav-menu-group-title">کنشگری مجازی</div>
+              <button class="nav-menu-sub" onclick="switchSection('posts'); closeNavMenu();">پست‌های منتشر شده</button>
+            </div>
+            <div class="nav-menu-col">
+              <button class="nav-menu-standalone" onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
+            </div>
+            <div class="nav-menu-col">
+              <div class="nav-menu-group-title">افراد و مجموعه‌ها</div>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('professors'); closeNavMenu();">اساتید سیاسی‌اجتماعی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('activists'); closeNavMenu();">فعالان سیاسی‌اجتماعی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('analytics'); closeNavMenu();">آنالیز</button>
+            </div>
+            <div class="nav-menu-col">
+              <button class="nav-menu-standalone" onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
+            </div>
+            <div class="nav-menu-col">
+              <div class="nav-menu-group-title">ضمیمه جریان</div>
+              <button class="nav-menu-sub" onclick="openSupplementTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
+              <button class="nav-menu-sub" onclick="openSupplementTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
+            </div>
           </div>
         </div>
         <div class="topbar-brand-text" onclick="switchSection('dashboard')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') switchSection('dashboard')">
