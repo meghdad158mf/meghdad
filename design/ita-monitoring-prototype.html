@@ -255,8 +255,8 @@
   .admin-menu.open .admin-menu-list{ opacity:1; visibility:visible; transform:translateY(0); }
   #nav-menu-list.nav-menu-grid{
     inset-inline-end:auto; inset-inline-start:0;
-    display:grid; grid-template-columns: repeat(3, 1fr); gap:4px 30px;
-    min-width:580px; max-width:90vw; padding:16px;
+    display:grid; grid-template-columns: repeat(2, 1fr); gap:4px 30px;
+    min-width:420px; max-width:90vw; padding:16px;
     max-height: calc(100vh - 90px); overflow-y:auto;
   }
   .nav-menu-col{ display:flex; flex-direction:column; gap:2px; }
@@ -270,8 +270,9 @@
   }
   .nav-menu-toplevel-title{
     font-size:12px; font-weight:800; color: var(--accent); text-align:right;
-    padding:9px 10px 7px; margin-bottom:2px; border-bottom:1px solid rgba(255,255,255,0.12);
+    padding:9px 10px 7px; margin-bottom:2px; margin-top:14px; border-bottom:1px solid rgba(255,255,255,0.12);
   }
+  .nav-menu-toplevel-title:first-child{ margin-top:0; }
   .admin-menu-list button.nav-menu-toplevel-btn{ font-size:12px; font-weight:800; color: var(--accent); }
   .admin-menu-list button.nav-menu-group-title-btn{
     font-size:11.5px; font-weight:800; color: var(--text-dim); padding-right:18px; margin-top:6px;
@@ -1092,8 +1093,7 @@
             </div>
             <div class="nav-menu-col">
               <button class="nav-menu-toplevel-btn" onclick="switchSection('reports'); closeNavMenu();">بسته تحلیلی جریان</button>
-            </div>
-            <div class="nav-menu-col">
+
               <div class="nav-menu-toplevel-title">ضمیمه جریان</div>
               <button class="nav-menu-sub" onclick="openSupplementTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
               <button class="nav-menu-sub" onclick="openSupplementTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
