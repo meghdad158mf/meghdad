@@ -309,11 +309,6 @@
   .seg-compact{ margin-bottom:0; }
   .seg-compact button{ padding:7px 14px; font-size:11.5px; }
 
-  /* back-to-dashboard link at the top of a dedicated page (posts / analytics) */
-  .section-back{ display:inline-flex; align-items:center; gap:6px; font-size:12.5px; color: rgba(255,255,255,0.55); background:none; border:none; cursor:pointer; padding:0; margin-bottom:16px; font-family:inherit; }
-  .section-back svg{ width:14px; height:14px; }
-  .section-back:hover{ color:#fff; }
-
   .section{ display:none; }
   .section.active{ display:block; animation: rise .35s ease both; }
 
@@ -1365,10 +1360,6 @@
 
     <!-- OVERVIEW / SCHOOLS / PEOPLE — placeholders, غیرفعال به‌خواست کاربر -->
     <section class="section" id="sec-overview">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
 
       <div class="news-page-tabs">
         <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
@@ -1462,10 +1453,6 @@
     </section>
 
     <section class="section" id="sec-schools">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <p class="school-reports-empty" id="school-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز گزارشی بارگذاری نشده.</p>
       <div class="school-report-list" id="school-report-list"></div>
 
@@ -1481,10 +1468,6 @@
     </section>
 
     <section class="section" id="sec-people">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
 
       <div class="news-page-tabs" id="people-top-tabs">
         <button class="active" data-people-tab="professors">اساتید سیاسی‌اجتماعی</button>
@@ -1681,10 +1664,6 @@
 
     <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
     <section class="section" id="sec-reports">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="panel-head"><span class="panel-pill">بخش تحلیلی</span></div>
 
       <div id="reports-tab-own">
@@ -1722,10 +1701,6 @@
     <!-- ضمیمه جریان — بخش مستقل (نه زیرمجموعه‌ی «بخش تحلیلی») با دو زیرتب:
          بسته‌های آموزشی (بصیرت) و سایر بسته‌های تحلیلی (آرشیو نهادهای دیگر) -->
     <section class="section" id="sec-supplement">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="panel-head"><span class="panel-pill">ضمیمه جریان</span></div>
 
       <div class="news-page-tabs" id="supplement-page-tabs">
@@ -1788,20 +1763,12 @@
 
     <!-- CHANNELS & PEOPLE (full monitored-channel directory) -->
     <section class="section" id="sec-channels">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="panel-head"><span class="panel-pill">همه‌ی کانال‌ها و مدیران آن‌ها</span></div>
       <div class="channel-cards" id="channel-cards"></div>
     </section>
 
     <!-- POSTS (dedicated reading page) -->
     <section class="section" id="sec-posts">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="news-page-tabs">
         <button class="active">پست‌های منتشر شده</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
@@ -1835,10 +1802,6 @@
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
     <section class="section" id="sec-analytics">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="seg" id="analytics-seg">
         <button class="active" data-tab="stats">آمار و نمودارها</button>
         <button data-tab="ai">تحلیل هوش مصنوعی <span style="opacity:.65">— به‌زودی</span></button>
@@ -1878,10 +1841,6 @@
 
     <!-- EXPORT -->
     <section class="section" id="sec-export">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="panel">
         <div class="panel-head"><span class="panel-pill">خروجی پست‌ها</span></div>
         <div class="form-grid">
@@ -1933,10 +1892,6 @@
 
     <!-- SETTINGS -->
     <section class="section" id="sec-settings">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="settings-grid">
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="panel">
@@ -2014,10 +1969,6 @@
 
     <!-- نظرات کاربران — فقط مدیر، از کارت «ثبت نظر و پیشنهاد» صفحه‌ی نخست پر می‌شه -->
     <section class="section" id="sec-feedback">
-      <button class="section-back" onclick="switchSection('dashboard')">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 18l6-6-6-6"/></svg>
-        بازگشت به صفحه نخست
-      </button>
       <div class="panel">
         <div class="panel-head"><span class="panel-pill">نظرات و پیشنهادهای ثبت‌شده</span></div>
         <div id="feedback-list"></div>
