@@ -580,6 +580,7 @@
   .news-seg{ display:flex; gap:6px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; width:fit-content; }
   .news-seg button{ border:none; background:none; color: rgba(255,255,255,0.65); font-size:12px; font-weight:700; padding:8px 14px; border-radius:6px; cursor:pointer; font-family:inherit; }
   .news-seg button.active{ background: var(--accent); color: var(--primary); }
+  .news-seg button:disabled{ cursor:default; opacity:.4; }
 
   .news-toolbar-row{ row-gap:12px; }
   .news-filter-divider{ width:1px; align-self:stretch; background: rgba(255,255,255,0.12); flex-shrink:0; }
@@ -4077,11 +4078,19 @@
   function renderNewspaperDateTabs(){
     const wrap = document.getElementById('newspaper-date-tabs');
     if(!wrap) return;
-    if(!NEWSPAPER_DATES.length){ wrap.style.display = 'none'; wrap.innerHTML = ''; return; }
+    // همیشه ۳ گزینه‌ی ثابت (امروز/دیروز/۲ روز قبل) نشون داده می‌شه؛ فقط
+    // اونی که واقعاً توی NEWSPAPER_DATES داده داره کلیک‌پذیره، بقیه غیرفعالن
+    const today = new Date();
+    const slots = [0, 1, 2].map(offset => {
+      const d = new Date(today); d.setDate(d.getDate() - offset);
+      return d.toLocaleDateString('en-CA');
+    });
     wrap.style.display = '';
-    wrap.innerHTML = NEWSPAPER_DATES.map(d =>
-      `<button class="${d === newspaperState.date ? 'active' : ''}" data-date="${d}">${newspaperDateLabel(d)}</button>`
-    ).join('');
+    wrap.innerHTML = slots.map(d => {
+      const label = newspaperDateLabel(d);
+      if(!NEWSPAPER_DATES.includes(d)) return `<button disabled>${label}</button>`;
+      return `<button class="${d === newspaperState.date ? 'active' : ''}" data-date="${d}">${label}</button>`;
+    }).join('');
   }
 
   // فقط خودِ گرید رو بازمی‌سازه (نه چک‌باکس‌های فیلتر) — تا با تغییر انتخاب
