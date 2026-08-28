@@ -270,9 +270,9 @@
     .topbar-brand-text b, .topbar-brand-text .sep{ display:none; }
     .topbar-brand-text #sec-title{ overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
     .topbar-right{ flex-wrap:nowrap; gap:6px; flex-shrink:0; }
-    .topbar #admin-menu-btn{ padding:6px 9px; font-size:0; gap:0; }
-    .topbar #admin-menu-btn svg{ width:15px; height:15px; }
-    .topbar #admin-menu-btn .chev{ display:none; }
+    .topbar #admin-menu-btn, .topbar #nav-menu-btn{ padding:6px 9px; font-size:0; gap:0; }
+    .topbar #admin-menu-btn svg, .topbar #nav-menu-btn svg{ width:15px; height:15px; }
+    .topbar #admin-menu-btn .chev, .topbar #nav-menu-btn .chev{ display:none; }
     .topbar .chip-btn.ghost{ padding:6px 10px; font-size:11px; }
   }
   .seg-compact{ margin-bottom:0; }
@@ -1045,6 +1045,21 @@
         </span>
         <div class="topbar-brand-text">
           <b>سامانه هوشمند جریان</b>
+          <div class="admin-menu" id="nav-menu" onclick="event.stopPropagation()">
+            <button class="chip-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+              بخش‌ها
+              <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
+            <div class="admin-menu-list" id="nav-menu-list">
+              <button onclick="switchSection('overview'); closeNavMenu();">اخبار رسمی</button>
+              <button onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
+              <button onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
+              <button onclick="switchSection('people'); closeNavMenu();">افراد و مجموعه‌ها</button>
+              <button onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
+              <button onclick="switchSection('supplement'); closeNavMenu();">ضمیمه جریان</button>
+            </div>
+          </div>
           <span class="sep">/</span>
           <span id="sec-title">صفحه نخست</span>
         </div>
@@ -2121,11 +2136,22 @@
     adminLinks.classList.remove('open');
     adminMenuBtn.setAttribute('aria-expanded', 'false');
   }
+  const navMenuEl = document.getElementById('nav-menu');
+  const navMenuBtn = document.getElementById('nav-menu-btn');
+  function toggleNavMenu(){
+    const open = navMenuEl.classList.toggle('open');
+    navMenuBtn.setAttribute('aria-expanded', open ? 'true' : 'false');
+  }
+  function closeNavMenu(){
+    navMenuEl.classList.remove('open');
+    navMenuBtn.setAttribute('aria-expanded', 'false');
+  }
   document.addEventListener('click', e=>{
     if(adminLinks.classList.contains('open') && !adminLinks.contains(e.target)) closeAdminMenu();
+    if(navMenuEl.classList.contains('open') && !navMenuEl.contains(e.target)) closeNavMenu();
   });
   document.addEventListener('keydown', e=>{
-    if(e.key === 'Escape') closeAdminMenu();
+    if(e.key === 'Escape'){ closeAdminMenu(); closeNavMenu(); }
   });
 
   const ADMIN_ONLY_SECTIONS = ['export','settings','feedback'];
