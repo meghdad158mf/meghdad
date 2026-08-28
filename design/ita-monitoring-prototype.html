@@ -4078,10 +4078,11 @@
   function renderNewspaperDateTabs(){
     const wrap = document.getElementById('newspaper-date-tabs');
     if(!wrap) return;
-    // همیشه ۳ گزینه‌ی ثابت (امروز/دیروز/۲ روز قبل) نشون داده می‌شه؛ فقط
-    // اونی که واقعاً توی NEWSPAPER_DATES داده داره کلیک‌پذیره، بقیه غیرفعالن
+    // همیشه ۲ گزینه‌ی ثابت (امروز/دیروز) نشون داده می‌شه؛ چون RETENTION_DAYS
+    // فعلاً ۱ روزه، «۲ روز قبل» همیشه خالیه و حذف شد. فقط اونی که واقعاً
+    // توی NEWSPAPER_DATES داده داره کلیک‌پذیره، بقیه غیرفعالن
     const today = new Date();
-    const slots = [0, 1, 2].map(offset => {
+    const slots = [0, 1].map(offset => {
       const d = new Date(today); d.setDate(d.getDate() - offset);
       return d.toLocaleDateString('en-CA');
     });
