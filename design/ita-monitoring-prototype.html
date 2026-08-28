@@ -1041,25 +1041,22 @@
 <div id="view-dash" class="view">
   <main class="main">
     <div class="topbar">
-      <div class="topbar-brand" onclick="switchSection('dashboard')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') switchSection('dashboard')">
-        <span class="topbar-badge">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-        </span>
-        <div class="topbar-brand-text">
-          <b>سامانه هوشمند جریان</b>
-          <div class="admin-menu" id="nav-menu" onclick="event.stopPropagation()">
-            <button class="topbar-badge nav-menu-badge-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20V10M12 20V4M20 20v-7"/></svg>
-            </button>
-            <div class="admin-menu-list" id="nav-menu-list">
-              <button onclick="switchSection('overview'); closeNavMenu();">اخبار رسمی</button>
-              <button onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
-              <button onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
-              <button onclick="switchSection('people'); closeNavMenu();">افراد و مجموعه‌ها</button>
-              <button onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
-              <button onclick="switchSection('supplement'); closeNavMenu();">ضمیمه جریان</button>
-            </div>
+      <div class="topbar-brand">
+        <div class="admin-menu" id="nav-menu" onclick="event.stopPropagation()">
+          <button class="topbar-badge nav-menu-badge-btn" id="nav-menu-btn" onclick="toggleNavMenu()" aria-haspopup="true" aria-expanded="false" aria-label="بخش‌ها">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
+          </button>
+          <div class="admin-menu-list" id="nav-menu-list">
+            <button onclick="switchSection('overview'); closeNavMenu();">اخبار رسمی</button>
+            <button onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
+            <button onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
+            <button onclick="switchSection('people'); closeNavMenu();">افراد و مجموعه‌ها</button>
+            <button onclick="switchSection('reports'); closeNavMenu();">بخش تحلیلی</button>
+            <button onclick="switchSection('supplement'); closeNavMenu();">ضمیمه جریان</button>
           </div>
+        </div>
+        <div class="topbar-brand-text" onclick="switchSection('dashboard')" role="button" tabindex="0" onkeydown="if(event.key==='Enter') switchSection('dashboard')">
+          <b>سامانه هوشمند جریان</b>
           <span class="sep">/</span>
           <span id="sec-title">صفحه نخست</span>
         </div>
