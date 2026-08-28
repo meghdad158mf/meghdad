@@ -588,6 +588,12 @@
   .news-region-chip{ font-size:11.5px; font-weight:600; padding:8px 15px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); cursor:pointer; }
   .news-region-chip.active{ background: rgba(142,163,184,0.28); border-color: rgba(142,163,184,0.5); color:#fff; }
 
+  .news-topic-group{ display:flex; align-items:center; gap:10px; flex-wrap:wrap; }
+  .news-topic-label{ font-size:11.5px; font-weight:700; color: rgba(255,255,255,0.45); flex-shrink:0; }
+  .news-topic-chips{ display:flex; gap:10px; flex-wrap:wrap; align-items:center; }
+  .news-topic-chip{ font-size:11.5px; font-weight:600; padding:8px 15px; border-radius: var(--radius-pill); background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); color: rgba(255,255,255,0.65); cursor:pointer; }
+  .news-topic-chip.active{ background: rgba(234,179,147,0.24); border-color: rgba(234,179,147,0.45); color:#fff; }
+
   .news-daterange-details{ position:relative; }
   .news-daterange-details summary{
     display:inline-flex; align-items:center; list-style:none; cursor:pointer; font-family:inherit;
@@ -1380,6 +1386,12 @@
               جستجوی هوشمند
               <span class="sw"></span>
             </div>
+            <div class="news-topic-group" id="news-topic-filter-row" style="display:none;">
+              <span class="news-topic-label">موضوع:</span>
+              <div class="news-topic-chips" id="news-topic-row">
+                <span class="news-topic-chip active" data-kw="">همه</span>
+              </div>
+            </div>
           </div>
           <div class="news-filter-row news-toolbar-row">
             <div class="news-seg" id="news-time-seg">
@@ -1908,6 +1920,16 @@
             </div>
             <div class="cat-grid" id="region-grid"></div>
           </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">موضوعات جستجوی ذخیره‌شده</span></div>
+            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">هر موضوع یه اسم و یه لیست کلیدواژه (جدا با ویرگول) داره؛ توی تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها»/«ادعاها و شایعات» با کلیک روی موضوع، پست‌هایی که حداقل یکی از کلیدواژه‌ها رو توی عنوان/متنشون دارن نشون داده می‌شن.</p>
+            <div class="add-row">
+              <input type="text" id="new-topic-name" placeholder="نام موضوع (مثل سیاسی)" />
+              <input type="text" id="new-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
+              <button class="btn primary" id="add-topic-btn">افزودن موضوع</button>
+            </div>
+            <div class="cat-grid" id="topic-grid"></div>
+          </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;">
           <div class="panel">
@@ -2267,6 +2289,7 @@
       document.getElementById('news-region-row').style.display = isClaims ? 'none' : '';
       document.getElementById('news-source-details').style.display = isClaims ? 'none' : '';
       document.getElementById('news-filter-divider-1').style.display = isClaims ? 'none' : '';
+      updateNewsTopicVisibility();
       populateNewsSourceOptions();
       renderNewsFeed();
     }
@@ -2285,6 +2308,7 @@
   let CHANNELS = [];    // {id, platform, username, title, type, category_id, active}
   let CATEGORIES = [];  // {id, name, color}
   let REGIONS = [];     // {id, name}
+  let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
@@ -2373,6 +2397,22 @@
     newsState.region = '';
   }
 
+  function renderNewsTopicRow(){
+    const row = document.getElementById('news-topic-row');
+    if(!row) return;
+    row.innerHTML = '<span class="news-topic-chip active" data-kw="">همه</span>' +
+      NEWS_TOPICS.map(t=>`<span class="news-topic-chip" data-kw="${escAttr(t.keywords)}">${escAttr(t.name)}</span>`).join('');
+    updateNewsTopicVisibility();
+  }
+  // ردیف موضوعات فقط توی تب «وب‌سایت‌ها» معنا داره (جایی که این فیچر برای
+  // مرور مقالات موضوعی سایت‌های خبری ساخته شده) — توی «شبکه‌های اجتماعی»
+  // و «ادعاها و شایعات» عمداً مخفیه
+  function updateNewsTopicVisibility(){
+    const wrap = document.getElementById('news-topic-filter-row');
+    if(!wrap) return;
+    wrap.style.display = (newsState.platform === 'website' && NEWS_TOPICS.length) ? '' : 'none';
+  }
+
   function updateNewsSourceSummary(){
     const summary = document.getElementById('news-source-summary');
     if(!summary) return;
@@ -2422,9 +2462,12 @@
         if(newsState.time === 'week' && diffDays > 7) return false;
       }
       if(newsState.query){
-        const q = newsState.query.toLowerCase();
+        // یه موضوعِ ذخیره‌شده چندتا کلیدواژه‌ی جدا با ویرگول می‌فرسته — این‌ها
+        // با OR چک می‌شن (کافیه پست حداقل یکی رو داشته باشه)، نه AND؛ برای
+        // جستجوی دستی معمولی (بدون ویرگول) رفتار قبلی (تطبیق کامل عبارت) حفظ می‌شه.
         const hay = ((p.title||'')+' '+(p.text||'')).toLowerCase();
-        if(!hay.includes(q)) return false;
+        const terms = newsState.query.split(',').map(t=>t.trim().toLowerCase()).filter(Boolean);
+        if(terms.length && !terms.some(t=>hay.includes(t))) return false;
       }
       return true;
     }).sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
@@ -2560,6 +2603,9 @@
   document.getElementById('news-search-input').addEventListener('input', e=>{
     newsState.query = e.target.value.trim();
     newsState.page = 1;
+    document.querySelectorAll('.news-topic-chip').forEach(c=>c.classList.remove('active'));
+    const allTopicChip = document.querySelector('.news-topic-chip[data-kw=""]');
+    if(allTopicChip) allTopicChip.classList.add('active');
     renderNewsFeed();
   });
   function updateDateRangeSummary(){
@@ -2626,6 +2672,15 @@
     newsState.page = 1;
     renderNewsFeed();
   });
+  document.getElementById('news-topic-row').addEventListener('click', e=>{
+    const chip = e.target.closest('.news-topic-chip'); if(!chip) return;
+    document.querySelectorAll('.news-topic-chip').forEach(c=>c.classList.remove('active'));
+    chip.classList.add('active');
+    newsState.query = chip.dataset.kw;
+    document.getElementById('news-search-input').value = chip.dataset.kw;
+    newsState.page = 1;
+    renderNewsFeed();
+  });
   document.getElementById('newspaper-date-tabs').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b || !b.dataset.date) return;
     newspaperState.date = b.dataset.date;
@@ -2643,6 +2698,10 @@
   async function loadRegions(){
     const r = await api('/regions?select=*&order=id.asc');
     REGIONS = r.ok ? await r.json() : [];
+  }
+  async function loadNewsTopics(){
+    const r = await api('/news_topics?select=*&order=sort_order.asc');
+    NEWS_TOPICS = r.ok ? await r.json() : [];
   }
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
@@ -2722,7 +2781,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadPeople(), loadPersonPositions(), loadProfessors(), loadProfessorSpecialties(), loadProfessorRanks()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -2735,6 +2794,8 @@
     refreshRegionOptions();
     renderRegionGrid();
     renderNewsRegionChips();
+    renderNewsTopicRow();
+    renderTopicGrid();
     renderChanList();
     renderMagazines();
     renderArchiveReports();
@@ -3768,6 +3829,7 @@
   // ---- settings: categories & channels (real CRUD against Postgres) ----
   const catGridEl = document.getElementById('cat-grid');
   const regionGridEl = document.getElementById('region-grid');
+  const topicGridEl = document.getElementById('topic-grid');
   const chanListEl = document.getElementById('chan-list');
   const newChanCatEl = document.getElementById('new-chan-cat');
   const newChanRegionEl = document.getElementById('new-chan-region');
@@ -3927,6 +3989,39 @@
     const r = await api('/regions', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name:v})});
     if(r.ok){ el.value=''; await loadRegions(); refreshRegionOptions(); renderRegionGrid(); renderNewsRegionChips(); renderChanList(); }
     else alert('این منطقه از قبل وجود دارد یا خطایی رخ داد.');
+  });
+
+  function renderTopicGrid(){
+    topicGridEl.innerHTML = '';
+    NEWS_TOPICS.forEach(t=>{
+      const el=document.createElement('div'); el.className='cat-card';
+      el.innerHTML = `<span class="name"><b>${escAttr(t.name)}</b><div style="font-size:11px;font-weight:500;color:var(--text-faint);margin-top:2px;">${escAttr(t.keywords)}</div></span><span class="cc-actions"></span>`;
+      const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف موضوع'; del.setAttribute('aria-label','حذف موضوع‌ی '+t.name);
+      del.addEventListener('click', async ()=>{
+        if(!confirm('موضوع «' + t.name + '» حذف شود؟')) return;
+        await api('/news_topics?id=eq.'+t.id, {method:'DELETE'});
+        await loadNewsTopics();
+        renderTopicGrid(); renderNewsTopicRow();
+      });
+      el.querySelector('.cc-actions').appendChild(del);
+      topicGridEl.appendChild(el);
+    });
+  }
+
+  document.getElementById('add-topic-btn').addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('new-topic-name');
+    const kwEl = document.getElementById('new-topic-keywords');
+    const name = nameEl.value.trim();
+    const keywords = kwEl.value.trim();
+    if(!name || !keywords) return;
+    const r = await api('/news_topics', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name, keywords, sort_order: NEWS_TOPICS.length})});
+    if(r.ok){
+      nameEl.value=''; kwEl.value='';
+      await loadNewsTopics();
+      renderTopicGrid(); renderNewsTopicRow();
+    }else{
+      alert('خطایی رخ داد.');
+    }
   });
 
   document.getElementById('add-chan-btn').addEventListener('click', async ()=>{
