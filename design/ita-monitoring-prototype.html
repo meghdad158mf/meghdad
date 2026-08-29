@@ -627,6 +627,9 @@
      چپ پاپ‌آپ رو ثابت نگه می‌داره و به سمت راست باز می‌شه)، پاپ‌آپ از لبه‌ی راست
      صفحه بیرون می‌زد. اینجا برعکسش می‌کنیم: لبه‌ی راست ثابت می‌مونه، به چپ باز می‌شه */
   #posts-source-list{ inset-inline-end:auto; inset-inline-start:0; }
+  /* همون مشکل دقیقاً برای تب‌های «وب‌سایت‌ها» و «روزنامه‌ها» هم پیش میاد —
+     دکمه‌شون هم با margin-inline-start:auto به همون لبه چسبیده */
+  #news-source-list, #newspaper-source-list{ inset-inline-end:auto; inset-inline-start:0; }
   /* وقتی این دراپ‌داون داخل .toolbar تو در توئه (مثل صفحه‌ی کنشگری مجازی)،
      قانون عمومی «.toolbar input» (که برای اینپوت متنی جست‌وجوئه) رو چک‌باکس‌ها
      هم به ارث می‌برن — flex:1/min-width بزرگ باعث می‌شه چک‌باکس عملاً نامرئی
@@ -2145,6 +2148,12 @@
   document.addEventListener('click', e=>{
     if(adminLinks.classList.contains('open') && !adminLinks.contains(e.target)) closeAdminMenu();
     if(navMenuEl.classList.contains('open') && !navMenuEl.contains(e.target)) closeNavMenu();
+    // دراپ‌داون‌های <details> (انتخاب رسانه‌ها/سمت/تخصص و بازه‌ی زمانی) پیش‌فرض
+    // مرورگر فقط با کلیک دوباره روی summary بسته می‌شن — با کلیک بیرونشون هم
+    // ببندشون، مثل بقیه‌ی منوهای سفارشی سایت
+    document.querySelectorAll('details.news-source-details[open], details.news-daterange-details[open]').forEach(d=>{
+      if(!d.contains(e.target)) d.removeAttribute('open');
+    });
   });
   document.addEventListener('keydown', e=>{
     if(e.key === 'Escape'){ closeAdminMenu(); closeNavMenu(); }
