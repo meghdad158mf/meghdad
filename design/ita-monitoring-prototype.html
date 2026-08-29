@@ -2566,16 +2566,21 @@
     });
   }
 
-  // ترجمه‌ی اختیاری/به‌درخواست هر پست به فارسی — با MyMemory (رایگان، بدون
-  // نیاز به کلید API، مستقیم از مرورگر قابل‌فراخوانیه) چون این پروژه بک‌اند
-  // سفارشی نداره و نمی‌شه کلید یه سرویس پولی رو امن توی فرانت‌اند نگه داشت.
-  async function myMemoryTranslate(text){
-    if(!text) return '';
-    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=en|fa';
-    const r = await fetch(url);
+  // ترجمه‌ی اختیاری/به‌درخواست هر پست به فارسی — با هوش مصنوعی (لیارا AI
+  // Gateway، مدل openai/gpt-4o-mini) از طریق یه Supabase Edge Function
+  // (`supabase/functions/translate`) که کلید API لیارا رو سمت سرور نگه
+  // می‌داره؛ فرانت‌اند مستقیم به لیارا وصل نمی‌شه چون اون کلید (برخلاف anon
+  // key) پولیه و هیچ RLSای ازش محافظت نمی‌کنه. توکن ورود خودِ کاربر
+  // (`authToken`) برای Edge Function فرستاده می‌شه تا فقط کاربر واردشده
+  // (مدیر/بیننده) بتونه ازش استفاده کنه.
+  async function aiTranslate(title, text){
+    const r = await fetch(SUPABASE_URL + '/functions/v1/translate', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
+      body: JSON.stringify({ title: title || '', text: text || '' }),
+    });
     if(!r.ok) throw new Error('translate request failed');
-    const data = await r.json();
-    return (data && data.responseData && data.responseData.translatedText) || text;
+    return await r.json(); // { title, text }
   }
 
   const NEWS_TRANSLATION_CACHE = {}; // id -> {title, text} — تا با toggle رفت‌وبرگشت دوباره درخواست نزنیم
@@ -2622,8 +2627,7 @@
     btn.textContent = 'در حال ترجمه…';
     btn.disabled = true;
     try{
-      const textFa = await myMemoryTranslate(p.text || '');
-      const titleFa = p.title ? await myMemoryTranslate(p.title) : '';
+      const { title: titleFa, text: textFa } = await aiTranslate(p.title, p.text);
       NEWS_TRANSLATION_CACHE[id] = { title: titleFa, text: textFa };
       textEl.innerHTML = textFa;
       textEl.classList.add('is-translated');
