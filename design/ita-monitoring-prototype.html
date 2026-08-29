@@ -688,6 +688,11 @@
   .news-topic{ font-size:11px; font-weight:600; color: var(--accent-strong); }
   .news-link{ font-size:11px; font-weight:600; color: var(--text-faint); }
   .news-link:hover{ color: var(--accent-strong); }
+  .news-translate-btn{ font-size:11px; font-weight:600; color: var(--accent-strong); background:none; border:none; padding:0; cursor:pointer; font-family:inherit; }
+  .news-translate-btn:hover{ text-decoration:underline; }
+  .news-translate-btn:disabled{ cursor:default; opacity:.6; text-decoration:none; }
+  .news-title.is-translated,
+  .news-text.is-translated{ color: var(--accent-strong); }
   .news-empty{ text-align:center; color: rgba(255,255,255,0.5); font-size:13px; padding:40px 0; }
   .news-pagination{ display:flex; align-items:center; justify-content:center; gap:6px; margin-top:24px; flex-wrap:wrap; }
   .news-pagination button{
@@ -2521,7 +2526,7 @@
             ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
             <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
           </div>
-          ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
+          ${p.title ? `<h3 class="news-title" id="news-title-${p.id}">${p.title}</h3>` : ''}
           <p class="news-text${isClaims ? ' claims-text' : ''}" id="news-text-${p.id}">${claimsTextDisplay(p.text)}</p>
           <button class="news-more" onclick="toggleNewsText(${p.id})" id="news-more-${p.id}">
             نمایش بیشتر
@@ -2530,6 +2535,7 @@
           <div class="news-foot">
             <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
             <div style="display:flex; gap:10px; align-items:center;">
+              ${ch.platform === 'website' ? `<button type="button" class="news-translate-btn" id="news-translate-btn-${p.id}" onclick="translatePost(${p.id})">ترجمه به فارسی</button>` : ''}
               ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
               ${(!isClaims && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
             </div>
@@ -2558,6 +2564,79 @@
       const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
       moreBtn.style.display = overflowing ? '' : 'none';
     });
+  }
+
+  // ترجمه‌ی اختیاری/به‌درخواست هر پست به فارسی — با MyMemory (رایگان، بدون
+  // نیاز به کلید API، مستقیم از مرورگر قابل‌فراخوانیه) چون این پروژه بک‌اند
+  // سفارشی نداره و نمی‌شه کلید یه سرویس پولی رو امن توی فرانت‌اند نگه داشت.
+  async function myMemoryTranslate(text){
+    if(!text) return '';
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(text) + '&langpair=en|fa';
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('translate request failed');
+    const data = await r.json();
+    return (data && data.responseData && data.responseData.translatedText) || text;
+  }
+
+  const NEWS_TRANSLATION_CACHE = {}; // id -> {title, text} — تا با toggle رفت‌وبرگشت دوباره درخواست نزنیم
+
+  function resetNewsTextExpand(id){
+    const t = document.getElementById('news-text-'+id);
+    const b = document.getElementById('news-more-'+id);
+    if(!t || !b) return;
+    t.classList.remove('expanded');
+    b.classList.remove('open');
+    b.firstChild.textContent = 'نمایش بیشتر ';
+  }
+
+  async function translatePost(id){
+    const p = POSTS_CACHE.find(x=>x.id===id);
+    const btn = document.getElementById('news-translate-btn-'+id);
+    const textEl = document.getElementById('news-text-'+id);
+    const titleEl = document.getElementById('news-title-'+id);
+    if(!p || !btn || !textEl) return;
+
+    // چون ترجمه به‌جای متن اصلی می‌شینه (نه زیرش)، طول کارت عوض نمی‌شه —
+    // برای همینم بعد از هر جایگزینی باید هم حالت «نمایش بیشتر» ریست بشه هم
+    // سرریز متن با اندازه‌ی جدید دوباره چک بشه
+    if(textEl.classList.contains('is-translated')){
+      textEl.innerHTML = claimsTextDisplay(p.text);
+      textEl.classList.remove('is-translated');
+      if(titleEl){ titleEl.textContent = p.title; titleEl.classList.remove('is-translated'); }
+      btn.textContent = 'ترجمه به فارسی';
+      resetNewsTextExpand(id);
+      updateNewsMoreButtons([p]);
+      return;
+    }
+    const cached = NEWS_TRANSLATION_CACHE[id];
+    if(cached){
+      textEl.innerHTML = cached.text;
+      textEl.classList.add('is-translated');
+      if(titleEl && cached.title){ titleEl.textContent = cached.title; titleEl.classList.add('is-translated'); }
+      btn.textContent = 'بازگشت به متن اصلی';
+      resetNewsTextExpand(id);
+      updateNewsMoreButtons([p]);
+      return;
+    }
+    const originalLabel = btn.textContent;
+    btn.textContent = 'در حال ترجمه…';
+    btn.disabled = true;
+    try{
+      const textFa = await myMemoryTranslate(p.text || '');
+      const titleFa = p.title ? await myMemoryTranslate(p.title) : '';
+      NEWS_TRANSLATION_CACHE[id] = { title: titleFa, text: textFa };
+      textEl.innerHTML = textFa;
+      textEl.classList.add('is-translated');
+      if(titleEl && titleFa){ titleEl.textContent = titleFa; titleEl.classList.add('is-translated'); }
+      btn.textContent = 'بازگشت به متن اصلی';
+      resetNewsTextExpand(id);
+      updateNewsMoreButtons([p]);
+    }catch(e){
+      btn.textContent = originalLabel;
+      showToast('ترجمه ناموفق بود، دوباره امتحان کنید');
+    }finally{
+      btn.disabled = false;
+    }
   }
 
   function renderNewsPagination(totalPages){
