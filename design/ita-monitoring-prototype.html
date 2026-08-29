@@ -2573,11 +2573,14 @@
   // key) پولیه و هیچ RLSای ازش محافظت نمی‌کنه. توکن ورود خودِ کاربر
   // (`authToken`) برای Edge Function فرستاده می‌شه تا فقط کاربر واردشده
   // (مدیر/بیننده) بتونه ازش استفاده کنه.
-  async function aiTranslate(title, text){
+  async function aiTranslate(postId){
+    // فقط شناسه‌ی پست فرستاده می‌شه، نه خودِ متن — تابع سمت سرور خودش متن
+    // واقعی رو با توکن همون کاربر از دیتابیس می‌خونه (نگاه کن به توضیح
+    // بالای supabase/functions/translate/index.ts)
     const r = await fetch(SUPABASE_URL + '/functions/v1/translate', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + authToken },
-      body: JSON.stringify({ title: title || '', text: text || '' }),
+      body: JSON.stringify({ postId }),
     });
     if(!r.ok) throw new Error('translate request failed');
     return await r.json(); // { title, text }
@@ -2627,7 +2630,7 @@
     btn.textContent = 'در حال ترجمه…';
     btn.disabled = true;
     try{
-      const { title: titleFa, text: textFa } = await aiTranslate(p.title, p.text);
+      const { title: titleFa, text: textFa } = await aiTranslate(id);
       NEWS_TRANSLATION_CACHE[id] = { title: titleFa, text: textFa };
       textEl.innerHTML = textFa;
       textEl.classList.add('is-translated');
