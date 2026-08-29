@@ -1,17 +1,22 @@
 // ترجمه‌ی تیتر و متن پست‌های تب «وب‌سایت‌ها» به فارسی، از طریق درگاه هوش
 // مصنوعی لیارا (Liara AI Gateway، فرمت سازگار با OpenAI). کلید API لیارا
 // فقط اینجا (سمت سرور، به‌صورت secret) نگه داشته می‌شه و هیچ‌وقت به
-// فرانت‌اند فرستاده نمی‌شه — چون برخلاف anon key سوپابیس، این کلید پولیه
-// و هیچ RLSای ازش محافظت نمی‌کنه.
+// فرانت‌اند فرستاده نمی‌شه.
 //
-// چون این پروژه از یه سیستم لاگین سفارشی (public.login()) با JWT خودش
-// استفاده می‌کنه، نه Auth استاندارد سوپابیس، اعتبارسنجی توکن ورودی رو
-// به‌جای پیاده‌سازی جدا، با یه کوئری سبک به PostgREST انجام می‌دیم — اگه
-// PostgREST توکن رو قبول کنه (یعنی نقش app_admin/app_viewer داره)، معتبره.
+// ورودی فقط `postId`ه، نه خودِ متن — چون اگه فرانت‌اند خودش متن دلخواه
+// می‌فرستاد، هر کاربر واردشده می‌تونست از این تابع به‌عنوان یه دروازه‌ی
+// آزاد به هوش مصنوعی (برای هر متنی، نه فقط ترجمه‌ی پست‌های واقعی) سوءاستفاده
+// کنه. با گرفتن فقط شناسه، خودِ تابع متن رو مستقیم از دیتابیس (با توکن
+// همون کاربر) می‌خونه — همین یه کوئری هم اعتبارسنجی ورود کاربر رو انجام
+// می‌ده، هم متن واقعی و دست‌نخورده رو تضمین می‌کنه (fetchPostForUser در
+// _shared/auth.ts، مشترک بین همه‌ی Edge Functionهای آینده‌ی این پروژه).
 //
-// دیپلوی: `supabase functions deploy translate --no-verify-jwt`
-// (--no-verify-jwt لازمه چون توکن ورودی، JWT استاندارد Auth سوپابیس نیست)
-// سکرت لازم: LIARA_API_KEY (از Project Settings → Edge Functions → Secrets)
+// دیپلوی خودکاره (نگاه کن به .github/workflows/deploy-edge-functions.yml)
+// — نیازی به اجرای دستی نیست، فقط یه‌بار باید سکرت‌های زیر تنظیم بشن:
+//   - LIARA_API_KEY (از Project Settings → Edge Functions → Secrets در سوپابیس)
+//   - SUPABASE_ACCESS_TOKEN (به‌عنوان GitHub Secret، برای دیپلوی خودکار)
+
+import { fetchPostForUser } from "../_shared/auth.ts";
 
 const LIARA_BASE_URL = "https://ai.liara.ir/api/6a9271a1d6564b043acdefe1/v1";
 const LIARA_MODEL = "openai/gpt-4o-mini";
@@ -34,18 +39,13 @@ Deno.serve(async (req) => {
   }
 
   try {
-    const authHeader = req.headers.get("Authorization") || "";
-    const token = authHeader.replace(/^Bearer\s+/i, "");
-    if (!token) return jsonResponse({ error: "unauthorized" }, 401);
+    const { postId } = await req.json();
+    if (!postId) return jsonResponse({ error: "postId is required" }, 400);
 
-    const supabaseUrl = Deno.env.get("SUPABASE_URL");
-    const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
-    const authCheck = await fetch(`${supabaseUrl}/rest/v1/categories?select=id&limit=1`, {
-      headers: { apikey: anonKey ?? "", Authorization: `Bearer ${token}` },
-    });
-    if (!authCheck.ok) return jsonResponse({ error: "unauthorized" }, 401);
+    const post = await fetchPostForUser(req, postId);
+    if (!post) return jsonResponse({ error: "unauthorized or post not found" }, 401);
 
-    const { title, text } = await req.json();
+    const { title, text } = post;
     if (!title && !text) return jsonResponse({ title: "", text: "" });
 
     const liaraKey = Deno.env.get("LIARA_API_KEY");
@@ -59,7 +59,7 @@ Deno.serve(async (req) => {
           {
             role: "system",
             content:
-              'You translate news titles and bodies into fluent, natural Persian (Farsi). ' +
+              "You translate news titles and bodies into fluent, natural Persian (Farsi). " +
               'Respond with ONLY a raw JSON object like {"title":"...","text":"..."} and nothing else ' +
               "— no markdown fences, no extra commentary. Keep the same meaning and tone; do not summarize.",
           },
