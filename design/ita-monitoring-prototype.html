@@ -352,7 +352,7 @@
      پایین کادر هرو می‌شینه — چون کادر مشترکی در کار نیست، دیگه چیزی از
      پشت نوار دیده نمی‌شه. ورود با یه فید+بالا آمدن ملایم و پلکانی. */
   .dash-hero-stats{
-    display:grid; grid-template-columns: repeat(5,1fr); gap:10px; max-width:700px; margin:-46px auto 8px; position:relative; z-index:1;
+    display:grid; grid-template-columns: repeat(6,1fr); gap:10px; max-width:820px; margin:-46px auto 8px; position:relative; z-index:1;
   }
   @media (max-width:760px){ .dash-hero-stats{ grid-template-columns: repeat(3,1fr); max-width:460px; margin-top:-30px; } }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
@@ -374,6 +374,7 @@
   .dash-hero-stat:nth-child(3){ animation-delay:.12s; }
   .dash-hero-stat:nth-child(4){ animation-delay:.17s; }
   .dash-hero-stat:nth-child(5){ animation-delay:.22s; }
+  .dash-hero-stat:nth-child(6){ animation-delay:.27s; }
   @keyframes heroStatIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
   @media (prefers-reduced-motion: reduce){ .dash-hero-stat{ animation:none; } }
   .dash-hero-stat b{
@@ -2722,6 +2723,10 @@
 
     const schoolsCount = 126; // عدد واقعی از آخرین گزارش Power BI کاربر (مرداد ۱۴۰۴) — چون تحلیل مدارس الان توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته، منبع زنده‌ای براش نداریم؛ با هر گزارش جدید دستی به‌روز بشه
 
+    // «کنشگر مجازی» — تعداد کانال‌هایی که توی دراپ‌داون «بخش‌ها»ی پنل مدیریت کانال‌ها
+    // تیک «کنشگری مجازی» (show_in_cyberspace) روشون خورده
+    const cyberspaceChannels = CHANNELS.filter(c=>c.show_in_cyberspace).length;
+
     // «محتوای ضمیمه» — مجموع دو زیرتب بخش «ضمیمه جریان» (سایر بسته‌های تحلیلی + بسته‌های آموزشی)
     const supplementCount = ARCHIVE_REPORTS.length + BASIRAT_COURSES.length;
 
@@ -2732,6 +2737,7 @@
       <div class="dash-hero-stat"><b data-value="${trackedContentCount}">۰</b>${bar}<span>محتوای رصد شده</span></div>
       <div class="dash-hero-stat"><b data-value="${newsSourceCount}">۰</b>${bar}<span>خبرگزاری</span></div>
       <div class="dash-hero-stat"><b data-value="${schoolsCount}">۰</b>${bar}<span>مدارس علمیه</span></div>
+      <div class="dash-hero-stat"><b data-value="${cyberspaceChannels}">۰</b>${bar}<span>کنشگر مجازی</span></div>
       <div class="dash-hero-stat"><b data-value="${supplementCount}">۰</b>${bar}<span>محتوای ضمیمه</span></div>
       <div class="dash-hero-stat"><b data-value="${magazinesCount}">۰</b>${bar}<span>بسته تحلیل</span></div>`;
     animateHeroStatCounters(wrap);
