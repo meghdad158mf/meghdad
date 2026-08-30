@@ -2709,10 +2709,14 @@
     ]);
     const trackedContentCount = postsTotal + newspapersTotal;
 
-    // «خبرگزاری» — وبسایت‌های خبری + کانال‌های شبکه‌های اجتماعی (هر دو توی channels با
-    // type='news_agency') به‌علاوه‌ی عنوان‌های یکتای روزنامه (هر روزنامه فقط یک‌بار
-    // حساب می‌شه، حتی اگه توی چندین روز مختلف منتشر شده باشه)
-    const newsAgencyChannels = CHANNELS.filter(c=>c.type==='news_agency').length;
+    // «خبرگزاری» — کانال‌هایی که واقعاً توی صفحه‌ی «اخبار و رویدادها» نمایش داده
+    // می‌شن (show_in_news=true)، به‌علاوه‌ی عنوان‌های یکتای روزنامه (هر روزنامه
+    // فقط یک‌بار حساب می‌شه، حتی اگه توی چندین روز مختلف منتشر شده باشه).
+    // ⚠️ عمداً از روی show_in_news حساب می‌شه، نه ستون type — چون طبق خودِ
+    // migration_007، مقدار type برای خیلی از کانال‌های قدیمی (کنشگر/چهره‌ی
+    // سیاسی) هم پیش‌فرض news_agency مونده و معیار قابل‌اعتمادی نیست؛
+    // show_in_news همون تیکیه که مدیر دستی از پنل «مدیریت کانال‌ها» می‌زنه
+    const newsAgencyChannels = CHANNELS.filter(c=>c.show_in_news).length;
     const newspaperTitles = new Set(allNewspaperSlugs.map(n=>n.slug)).size;
     const newsSourceCount = newsAgencyChannels + newspaperTitles;
 
