@@ -1942,6 +1942,16 @@
     }catch(e){ return 0; }
   }
 
+  // برای شمارش «خبرگزاری» توی هرو صفحه‌ی نخست — عنوان‌های یکتای روزنامه رو از کل
+  // جدول می‌گیره (نه فقط چند روز اخیر مثل NEWSPAPERS نمایشی)، تا هر روزنامه فقط
+  // یک‌بار حساب بشه حتی اگه توی چندین روز مختلف منتشر شده باشه
+  async function fetchAllNewspaperSlugs(){
+    try{
+      const r = await api('/newspapers?select=slug&limit=5000');
+      return r.ok ? await r.json() : [];
+    }catch(e){ return []; }
+  }
+
   async function doLogin(password){
     const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/login', {
       method: 'POST',
@@ -2663,9 +2673,12 @@
     BASIRAT_COURSES = r.ok ? await r.json() : [];
   }
   async function loadNewspapers(){
-    // limit=250: با نگه‌داری ۳ روزه (cleanup_media.py) و ~۵۴ روزنامه در روز،
-    // این عدد برای پوشش کامل هر ۳ روزی که هنوز پاک نشدن کافیه
-    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=250');
+    // limit=500: تعداد واقعی روزنامه‌های کیوسک جار الان حدود ۱۶۵ عنوان در روزه (نه
+    // ۵۴ تایی که فرض اولیه بود) — با نگه‌داری فعلاً ۱ روزه (RETENTION_DAYS، نگاه کن
+    // به «نکات عملیاتی» در CLAUDE.md) تب «روزنامه‌ها» به «امروز»+«دیروز» یعنی حداکثر
+    // ۲ روز نیاز داره (~۳۳۰ ردیف)؛ ۵۰۰ یه حاشیه‌ی امن براش می‌ذاره. وقتی RETENTION_DAYS
+    // به ۳ برگرده، این عدد هم باید متناسب (~۵۰۰+) بازبینی بشه
+    const r = await api('/newspapers?select=*&order=edition_date.desc,title.asc&limit=500');
     NEWSPAPERS = r.ok ? await r.json() : [];
   }
   async function loadSchoolReports(){
@@ -2682,19 +2695,29 @@
     if(!wrap) return;
 
     // «محتوای رصد شده» — از ابتدا تا الان، هر پست دریافت‌شده و هر روزنامه یک مورد؛
-    // چون POSTS_CACHE/NEWSPAPERS برای کارکرد عادی صفحه سقف limit دارن (۱۰۰۰/۲۵۰)، عدد واقعیِ
+    // چون POSTS_CACHE/NEWSPAPERS برای کارکرد عادی صفحه سقف limit دارن (۱۰۰۰/۵۰۰)، عدد واقعیِ
     // تاریخی رو مستقیم با count=exact از خودِ جدول می‌گیریم، نه از کش محلی
-    const [postsTotal, newspapersTotal] = await Promise.all([
+    // «خبرگزاری» — تعداد عنوان‌های یکتای روزنامه هم از یه کوئری سبک و جدا (فقط ستون
+    // slug، بدون سقف عملیِ مزاحم) گرفته می‌شه، نه از آرایه‌ی NEWSPAPERS که برای نمایش
+    // تب «روزنامه‌ها» با limit=500 محدود شده — چون اون سقف فقط چند روز اخیر رو پوشش
+    // می‌ده و همون روزنامه‌ی تکراری در روزهای مختلف رو کامل نمی‌بینه، شمارش یکتاش هم
+    // ناپایدار می‌شد (بعضی روزنامه‌های قدیمی‌تر که همون slug رو دارن جا می‌موندن)
+    const [postsTotal, newspapersTotal, allNewspaperSlugs] = await Promise.all([
       fetchExactCount('/posts'),
       fetchExactCount('/newspapers'),
+      fetchAllNewspaperSlugs(),
     ]);
     const trackedContentCount = postsTotal + newspapersTotal;
 
-    // «خبرگزاری» — وبسایت‌های خبری + کانال‌های شبکه‌های اجتماعی (هر دو توی channels با
-    // type='news_agency') به‌علاوه‌ی عنوان‌های یکتای روزنامه (NEWSPAPERS همینجا با limit=250
-    // لود شده که برای پوشش عناوین فعلی کافیه، پس نیازی به کوئری جدا نیست)
-    const newsAgencyChannels = CHANNELS.filter(c=>c.type==='news_agency').length;
-    const newspaperTitles = new Set(NEWSPAPERS.map(n=>n.slug)).size;
+    // «خبرگزاری» — کانال‌هایی که واقعاً توی صفحه‌ی «اخبار و رویدادها» نمایش داده
+    // می‌شن (show_in_news=true)، به‌علاوه‌ی عنوان‌های یکتای روزنامه (هر روزنامه
+    // فقط یک‌بار حساب می‌شه، حتی اگه توی چندین روز مختلف منتشر شده باشه).
+    // ⚠️ عمداً از روی show_in_news حساب می‌شه، نه ستون type — چون طبق خودِ
+    // migration_007، مقدار type برای خیلی از کانال‌های قدیمی (کنشگر/چهره‌ی
+    // سیاسی) هم پیش‌فرض news_agency مونده و معیار قابل‌اعتمادی نیست؛
+    // show_in_news همون تیکیه که مدیر دستی از پنل «مدیریت کانال‌ها» می‌زنه
+    const newsAgencyChannels = CHANNELS.filter(c=>c.show_in_news).length;
+    const newspaperTitles = new Set(allNewspaperSlugs.map(n=>n.slug)).size;
     const newsSourceCount = newsAgencyChannels + newspaperTitles;
 
     const schoolsCount = 126; // عدد واقعی از آخرین گزارش Power BI کاربر (مرداد ۱۴۰۴) — چون تحلیل مدارس الان توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته، منبع زنده‌ای براش نداریم؛ با هر گزارش جدید دستی به‌روز بشه
