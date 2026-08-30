@@ -60,17 +60,27 @@ def auth_headers(token: str) -> dict:
     }
 
 
-def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> None:
+def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> bool:
+    """حذف واقعی فایل‌ها از Storage. مسیر درست حذف گروهی متد DELETE روی
+    /object/{bucket} است (نه POST به /object/remove/{bucket} — اون یه
+    مسیر نامعتبره که «remove» رو به‌جای اسم باکت تفسیر می‌کنه و همیشه
+    با «Bucket not found» شکست می‌خوره، بدون این‌که چیزی واقعاً حذف بشه).
+    خروجی bool تا caller بدونه واقعاً حذف انجام شده یا نه — چون اگه این
+    حذف fail بشه ولی رکورد دیتابیس پاک بشه، فایل برای همیشه orphan
+    می‌مونه (رد دیتابیسی‌اش از دست می‌ره ولی خودش توی Storage جا می‌مونه).
+    """
     if not paths:
-        return
-    r = requests.post(
-        f"{SUPABASE_URL}/storage/v1/object/remove/{bucket}",
+        return True
+    r = requests.delete(
+        f"{SUPABASE_URL}/storage/v1/object/{bucket}",
         headers=auth_headers(token),
         json={"prefixes": paths},
         timeout=REQUEST_TIMEOUT,
     )
     if not r.ok:
         print(f"[!] storage remove failed ({bucket}): {r.status_code} {r.text[:300]}", file=sys.stderr)
+        return False
+    return True
 
 
 def fetch_expired_posts(token: str) -> list[dict]:
@@ -112,7 +122,9 @@ def cleanup_post_media(token: str) -> None:
         return
     paths = [p["media_storage_path"] for p in expired if p.get("media_storage_path")]
     ids = [p["id"] for p in expired]
-    remove_storage_objects(token, MEDIA_BUCKET, paths)
+    if not remove_storage_objects(token, MEDIA_BUCKET, paths):
+        print("[!] skipping DB cleanup for this batch — storage delete failed, retry next run", file=sys.stderr)
+        return
     clear_post_media(token, ids)
     print(f"[done] cleaned up {len(expired)} post(s)")
 
@@ -156,7 +168,9 @@ def cleanup_newspaper_covers(token: str) -> None:
         return
     paths = [p["media_storage_path"] for p in expired if p.get("media_storage_path")]
     ids = [p["id"] for p in expired]
-    remove_storage_objects(token, NEWSPAPER_BUCKET, paths)
+    if not remove_storage_objects(token, NEWSPAPER_BUCKET, paths):
+        print("[!] skipping DB cleanup for this batch — storage delete failed, retry next run", file=sys.stderr)
+        return
     clear_newspaper_media(token, ids)
     print(f"[done] cleaned up {len(expired)} newspaper edition(s)")
 
