@@ -343,15 +343,15 @@
 
   .dash-hero-img{ width:100%; max-width:480px; margin:0 auto; display:block; aspect-ratio: 3/2; object-fit:contain; }
 
-  /* پنل آماری ۶تایی — قبلاً یک نوار مستطیلی یکپارچه بود (که لبه‌ی
+  /* پنل آماری ۵تایی — قبلاً یک نوار مستطیلی یکپارچه بود (که لبه‌ی
      مستطیلش کنار نوار باریک‌تر اعداد از پشت دیده می‌شد)؛ حالا هر عدد
      یه کارت شناور مجزاست (بدون کادر پیوسته‌ی مشترک) که نیمی‌شون روی
      پایین کادر هرو می‌شینه — چون کادر مشترکی در کار نیست، دیگه چیزی از
      پشت نوار دیده نمی‌شه. ورود با یه فید+بالا آمدن ملایم و پلکانی. */
   .dash-hero-stats{
-    display:grid; grid-template-columns: repeat(6,1fr); gap:10px; max-width:800px; margin:-46px auto 8px; position:relative; z-index:1;
+    display:grid; grid-template-columns: repeat(5,1fr); gap:10px; max-width:700px; margin:-46px auto 8px; position:relative; z-index:1;
   }
-  @media (max-width:760px){ .dash-hero-stats{ grid-template-columns: repeat(3,1fr); max-width:520px; margin-top:-30px; } }
+  @media (max-width:760px){ .dash-hero-stats{ grid-template-columns: repeat(3,1fr); max-width:460px; margin-top:-30px; } }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
   .dash-hero-stat{
     position:relative;
@@ -371,7 +371,6 @@
   .dash-hero-stat:nth-child(3){ animation-delay:.12s; }
   .dash-hero-stat:nth-child(4){ animation-delay:.17s; }
   .dash-hero-stat:nth-child(5){ animation-delay:.22s; }
-  .dash-hero-stat:nth-child(6){ animation-delay:.27s; }
   @keyframes heroStatIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
   @media (prefers-reduced-motion: reduce){ .dash-hero-stat{ animation:none; } }
   .dash-hero-stat b{
@@ -2099,6 +2098,20 @@
     return fetch(SUPABASE_URL + '/rest/v1' + path, Object.assign({}, opts, { headers }));
   }
 
+  // شمارش دقیق و تاریخی (نه محدود به limit صفحه‌بندی‌شده‌ی کش‌های محلی مثل POSTS_CACHE) —
+  // با هدر count=exact پستگرست، بدون نیاز به دانلود واقعی ردیف‌ها، از Content-Range می‌خونیم
+  async function fetchExactCount(path){
+    try{
+      const sep = path.includes('?') ? '&' : '?';
+      const r = await api(path + sep + 'select=id&limit=1', { headers: { Prefer: 'count=exact', Range: '0-0' } });
+      if(!r.ok) return 0;
+      const cr = r.headers.get('content-range');
+      if(!cr) return 0;
+      const total = cr.split('/')[1];
+      return total === '*' ? 0 : (parseInt(total, 10) || 0);
+    }catch(e){ return 0; }
+  }
+
   async function doLogin(password){
     const r = await fetch(SUPABASE_URL + '/rest/v1/rpc/login', {
       method: 'POST',
@@ -2885,22 +2898,39 @@
     return String(n).replace(/[0-9]/g, d => fa[d]);
   }
 
-  function renderDashHeroStats(){
+  async function renderDashHeroStats(){
     const wrap = document.getElementById('dash-hero-stats');
     if(!wrap) return;
-    const total = CHANNELS.length;
-    const newsCount = CHANNELS.filter(c=>c.type==='news_agency').length;
-    const personCount = CHANNELS.filter(c=>c.type==='person').length;
-    const platformCount = new Set(CHANNELS.map(c=>c.platform)).size;
+
+    // «محتوای رصد شده» — از ابتدا تا الان، هر پست دریافت‌شده و هر روزنامه یک مورد؛
+    // چون POSTS_CACHE/NEWSPAPERS برای کارکرد عادی صفحه سقف limit دارن (۱۰۰۰/۲۵۰)، عدد واقعیِ
+    // تاریخی رو مستقیم با count=exact از خودِ جدول می‌گیریم، نه از کش محلی
+    const [postsTotal, newspapersTotal] = await Promise.all([
+      fetchExactCount('/posts'),
+      fetchExactCount('/newspapers'),
+    ]);
+    const trackedContentCount = postsTotal + newspapersTotal;
+
+    // «خبرگزاری» — وبسایت‌های خبری + کانال‌های شبکه‌های اجتماعی (هر دو توی channels با
+    // type='news_agency') به‌علاوه‌ی عنوان‌های یکتای روزنامه (NEWSPAPERS همینجا با limit=250
+    // لود شده که برای پوشش عناوین فعلی کافیه، پس نیازی به کوئری جدا نیست)
+    const newsAgencyChannels = CHANNELS.filter(c=>c.type==='news_agency').length;
+    const newspaperTitles = new Set(NEWSPAPERS.map(n=>n.slug)).size;
+    const newsSourceCount = newsAgencyChannels + newspaperTitles;
+
     const schoolsCount = 126; // عدد واقعی از آخرین گزارش Power BI کاربر (مرداد ۱۴۰۴) — چون تحلیل مدارس الان توی خودِ Power BI انجام می‌شه و اینجا فقط گالری اسکرین‌شاته، منبع زنده‌ای براش نداریم؛ با هر گزارش جدید دستی به‌روز بشه
-    const magazinesCount = MAGAZINES.length;
+
+    // «محتوای ضمیمه» — مجموع دو زیرتب بخش «ضمیمه جریان» (سایر بسته‌های تحلیلی + بسته‌های آموزشی)
+    const supplementCount = ARCHIVE_REPORTS.length + BASIRAT_COURSES.length;
+
+    const magazinesCount = MAGAZINES.length; // «بسته تحلیل» — مجلات خودِ جریان
+
     const bar = '<div class="dash-hero-stat-bar"></div>';
     wrap.innerHTML = `
-      <div class="dash-hero-stat"><b data-value="${total}">۰</b>${bar}<span>کانال پایش‌شونده</span></div>
-      <div class="dash-hero-stat"><b data-value="${newsCount}">۰</b>${bar}<span>خبرگزاری</span></div>
-      <div class="dash-hero-stat"><b data-value="${personCount}">۰</b>${bar}<span>شخصیت</span></div>
-      <div class="dash-hero-stat"><b data-value="${platformCount}">۰</b>${bar}<span>پلتفرم</span></div>
-      <div class="dash-hero-stat"><b data-value="${schoolsCount}">۰</b>${bar}<span>مدرسه</span></div>
+      <div class="dash-hero-stat"><b data-value="${trackedContentCount}">۰</b>${bar}<span>محتوای رصد شده</span></div>
+      <div class="dash-hero-stat"><b data-value="${newsSourceCount}">۰</b>${bar}<span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b data-value="${schoolsCount}">۰</b>${bar}<span>مدارس علمیه</span></div>
+      <div class="dash-hero-stat"><b data-value="${supplementCount}">۰</b>${bar}<span>محتوای ضمیمه</span></div>
       <div class="dash-hero-stat"><b data-value="${magazinesCount}">۰</b>${bar}<span>بسته تحلیل</span></div>`;
     animateHeroStatCounters(wrap);
   }
