@@ -977,7 +977,7 @@
      ستون باریک عنوان+توضیح سمت راست + ردیف آیکون‌های دسته‌بندی کنارش)، و
      زیرش تمام‌عرض (لبه‌به‌لبه با بقیه‌ی عرض صفحه، نه فقط عرض ستون آیکون‌ها)
      کارسول واقعیِ «سایر بسته‌های تحلیلی» با کادر دور خودش. */
-  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:220px 0 220px; }
+  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:220px 0 220px; scroll-margin-top: 90px; }
   .basirat-widget-top{ display:flex; align-items:flex-start; gap:24px; }
   @media (max-width:760px){ .basirat-widget-top{ flex-direction:column; gap:18px; } }
   .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
@@ -1222,7 +1222,7 @@
               <h3>بسته‌های تحلیلی</h3>
               <span class="quicknav-arrow">↓</span>
             </div>
-            <div class="quicknav-card" onclick="openSupplementTab('archive')">
+            <div class="quicknav-card" onclick="scrollToSupplementWidget()">
               <h3>ضمیمه جریان</h3>
               <span class="quicknav-arrow">↓</span>
             </div>
@@ -4303,14 +4303,18 @@
     if(wrap) wrap.scrollBy({ left: dir * 320, behavior: 'smooth' });
   }
 
-  // دو کارت راهنمای سریع زیر هرو — فقط اسکرول توی همون صفحه‌ی نخست،
-  // نه switchSection (چون هر دو مقصد از قبل توی همین sec-dashboard هستن)
+  // سه کارت راهنمای سریع زیر هرو — فقط اسکرول توی همون صفحه‌ی نخست،
+  // نه switchSection (چون هر سه مقصد از قبل توی همین sec-dashboard هستن)
   function scrollToDomainGrid(){
     const el = document.querySelector('.section-label');
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
   function scrollToPackageCard(){
     const el = document.querySelector('.package-card');
+    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
+  }
+  function scrollToSupplementWidget(){
+    const el = document.querySelector('.basirat-widget-block');
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
 
