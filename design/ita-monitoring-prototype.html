@@ -337,7 +337,7 @@
   @media (max-width:860px){ .dash-hero-grid{ grid-template-columns:1fr; } }
   .dash-hero-text{ text-align:right; }
   .dash-hero-text h2{ font-size: clamp(22px,3vw,32px); font-weight:700; color:#fff; line-height:1.55; text-wrap:balance; text-align:center; }
-  .dash-hero-text h2 .hl{ color: var(--accent); }
+  .dash-hero-text h2 .hl{ color: var(--accent); text-shadow: 0 0 26px rgba(234,179,147,0.55); }
   .dash-hero-text h2 .hero-subline{ display:inline-block; margin-top:6px; font-size:0.62em; font-weight:600; color: rgba(255,255,255,0.72); }
   .dash-hero-text p{ font-size:14.5px; color: rgba(255,255,255,0.62); line-height:1.85; margin-top:14px; max-width:440px; }
 
@@ -354,26 +354,18 @@
   @media (max-width:760px){ .dash-hero-stats{ grid-template-columns: repeat(3,1fr); max-width:520px; margin-top:-30px; } }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
   .dash-hero-stat{
-    position:relative; overflow:hidden;
+    position:relative;
     display:flex; flex-direction:column; align-items:center; padding:18px 6px 14px; text-align:center;
-    background: #212c38; /* opaque solid — چون کارت نیمی‌شون روی لبه‌ی هرو می‌شینه، پس‌زمینه‌ی
-      نیمه‌شفاف قبلی باعث می‌شد خط حاشیه‌ی خودِ کادر هرو از پشت کارت دیده بشه */
+    background: linear-gradient(165deg, #29343f, #1a222b); /* گرادیان دوتُنی به‌جای رنگ تخت، برای عمق — همچنان کاملاً
+      غیرشفاف چون کارت نیمی‌شون روی لبه‌ی هرو می‌شینه و پس‌زمینه‌ی نیمه‌شفاف باعث می‌شد خط حاشیه‌ی
+      خودِ کادر هرو از پشت کارت دیده بشه */
     border:1px solid rgba(234,179,147,0.22); border-radius:14px;
-    box-shadow: 0 18px 34px -20px rgba(0,0,0,0.6);
+    box-shadow: 0 18px 34px -20px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
     transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
     animation: heroStatIn .5s cubic-bezier(.16,1,.3,1) both;
   }
-  .dash-hero-stat::before{ /* نوار باریک تزئینی بالای کارت — هم‌خانواده‌ی زبان بصری «چرا جریان» */
-    content:''; position:absolute; top:0; right:0; left:0; height:2.5px;
-    background: linear-gradient(90deg, transparent, var(--accent), transparent);
-    opacity:.75;
-  }
-  .dash-hero-stat::after{ /* درخشش ملایم پشت عدد */
-    content:''; position:absolute; top:-46px; left:50%; translate:-50% 0; width:110px; height:110px;
-    border-radius:50%; background: radial-gradient(circle, rgba(234,179,147,0.16), transparent 68%); pointer-events:none;
-  }
-  .dash-hero-stat:hover{ transform:translateY(-4px); box-shadow: 0 20px 38px -16px rgba(234,179,147,0.32); border-color: rgba(234,179,147,0.5); }
-  .dash-hero-stat:hover .dash-hero-stat-bar{ width:28px; }
+  .dash-hero-stat:hover{ transform:translateY(-4px); box-shadow: 0 20px 38px -16px rgba(234,179,147,0.32), inset 0 1px 0 rgba(255,255,255,0.08); border-color: rgba(234,179,147,0.5); }
+  .dash-hero-stat:hover .dash-hero-stat-bar{ width:28px; background: rgba(234,179,147,0.7); }
   .dash-hero-stat:nth-child(1){ animation-delay:.02s; }
   .dash-hero-stat:nth-child(2){ animation-delay:.07s; }
   .dash-hero-stat:nth-child(3){ animation-delay:.12s; }
@@ -382,22 +374,33 @@
   .dash-hero-stat:nth-child(6){ animation-delay:.27s; }
   @keyframes heroStatIn{ from{ opacity:0; transform:translateY(14px); } to{ opacity:1; transform:translateY(0); } }
   @media (prefers-reduced-motion: reduce){ .dash-hero-stat{ animation:none; } }
-  .dash-hero-stat b{ position:relative; font-size:25px; font-family: 'IRANSansX', ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; color: var(--accent); }
-  .dash-hero-stat-bar{ width:16px; height:2px; border-radius:2px; background: rgba(234,179,147,0.45); margin:7px 0; transition: width .25s ease; }
-  .dash-hero-stat span{ position:relative; font-size:10.5px; color: rgba(255,255,255,0.62); }
+  .dash-hero-stat b{
+    font-size:25px; font-family: 'IRANSansX', ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums;
+    color: var(--accent); text-shadow: 0 0 22px rgba(234,179,147,0.4); /* درخشش مستقیم روی خودِ عدد، به‌جای یه بلاب پشت‌زمینه */
+  }
+  .dash-hero-stat-bar{ width:16px; height:2px; border-radius:2px; background: rgba(234,179,147,0.4); margin:7px 0; transition: width .25s ease, background .25s ease; }
+  .dash-hero-stat span{ font-size:10.5px; color: rgba(255,255,255,0.62); }
 
   /* دو کارت راهنمای سریع — حالا داخل ستون متن هرو، کنار تیتر (جای پنل
      آماری قدیم)، فشرده و بدون توضیح تا کوچک بمونن */
   .quicknav-grid{ display:flex; justify-content:center; gap:10px; margin-top:22px; }
   @media (max-width:520px){ .quicknav-grid{ flex-direction:column; align-items:center; } }
   .quicknav-card{
-    width:fit-content;
+    width:fit-content; display:flex; align-items:center; gap:7px;
     background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card);
-    padding:6px 14px; box-shadow: var(--shadow); cursor:pointer;
+    padding:6px 10px 6px 14px; box-shadow: var(--shadow); cursor:pointer;
+    transition: transform .2s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .quicknav-card:hover{ transform:translateY(-3px); box-shadow: var(--shadow-hover); border-color: var(--accent); }
+  .quicknav-card:active{ transform:translateY(-1px); }
+  .quicknav-card h3{ font-size:11px; font-weight:800; color: var(--navy); margin:0; text-align:center; }
+  .quicknav-arrow{ /* نشونه‌ی بصری کلیک‌پذیر بودن کارت — یه دایره‌ی هلویی‌رنگ با فلش رو به پایین (چون کلیک، توی همون صفحه اسکرول می‌کنه) */
+    display:flex; align-items:center; justify-content:center; flex-shrink:0;
+    width:17px; height:17px; border-radius:50%; background: var(--accent); color:#fff; font-size:9px; line-height:1;
+    box-shadow: 0 0 9px 1px rgba(234,179,147,0.55);
     transition: transform .2s ease, box-shadow .2s ease;
   }
-  .quicknav-card:hover{ transform:translateY(-3px); box-shadow: var(--shadow-hover); }
-  .quicknav-card h3{ font-size:11px; font-weight:800; color: var(--navy); margin:0; text-align:center; }
+  .quicknav-card:hover .quicknav-arrow{ transform: translateY(2px); box-shadow: 0 0 13px 2px rgba(234,179,147,0.75); }
 
   /* «چرا جریان» — سه ستون معرفی مزیت اصلی، این‌بار داخل یه کادر یکپارچه‌ی
      تمام‌عرض با زمینه‌ی رنگی (عیناً همون ته‌رنگ هلویی .package-card)، نه
@@ -1211,9 +1214,11 @@
           <div class="quicknav-grid">
             <div class="quicknav-card" onclick="scrollToDomainGrid()">
               <h3>عرصه‌های رصد</h3>
+              <span class="quicknav-arrow">↓</span>
             </div>
             <div class="quicknav-card" onclick="scrollToPackageCard()">
               <h3>بسته‌های تحلیلی</h3>
+              <span class="quicknav-arrow">↓</span>
             </div>
           </div>
         </div>
@@ -2027,6 +2032,8 @@
 
 <!-- برای پردازش اکسل بارگذاری‌شده در بخش «افراد و مجموعه‌ها» (بارگذاری گروهی) -->
 <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<!-- برای انیمیشن شمارش اعداد در پنل آماری هرو صفحه‌ی نخست -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -2889,12 +2896,29 @@
     const magazinesCount = MAGAZINES.length;
     const bar = '<div class="dash-hero-stat-bar"></div>';
     wrap.innerHTML = `
-      <div class="dash-hero-stat"><b>${toFaDigits(total)}</b>${bar}<span>کانال پایش‌شونده</span></div>
-      <div class="dash-hero-stat"><b>${toFaDigits(newsCount)}</b>${bar}<span>خبرگزاری</span></div>
-      <div class="dash-hero-stat"><b>${toFaDigits(personCount)}</b>${bar}<span>شخصیت</span></div>
-      <div class="dash-hero-stat"><b>${toFaDigits(platformCount)}</b>${bar}<span>پلتفرم</span></div>
-      <div class="dash-hero-stat"><b>${toFaDigits(schoolsCount)}</b>${bar}<span>مدرسه</span></div>
-      <div class="dash-hero-stat"><b>${toFaDigits(magazinesCount)}</b>${bar}<span>بسته تحلیل</span></div>`;
+      <div class="dash-hero-stat"><b data-value="${total}">۰</b>${bar}<span>کانال پایش‌شونده</span></div>
+      <div class="dash-hero-stat"><b data-value="${newsCount}">۰</b>${bar}<span>خبرگزاری</span></div>
+      <div class="dash-hero-stat"><b data-value="${personCount}">۰</b>${bar}<span>شخصیت</span></div>
+      <div class="dash-hero-stat"><b data-value="${platformCount}">۰</b>${bar}<span>پلتفرم</span></div>
+      <div class="dash-hero-stat"><b data-value="${schoolsCount}">۰</b>${bar}<span>مدرسه</span></div>
+      <div class="dash-hero-stat"><b data-value="${magazinesCount}">۰</b>${bar}<span>بسته تحلیل</span></div>`;
+    animateHeroStatCounters(wrap);
+  }
+
+  function animateHeroStatCounters(wrap){
+    const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    wrap.querySelectorAll('.dash-hero-stat b').forEach((el, i) => {
+      const target = Number(el.dataset.value) || 0;
+      if(reduceMotion || typeof gsap === 'undefined' || !target){
+        el.textContent = toFaDigits(target);
+        return;
+      }
+      const counter = { val: 0 };
+      gsap.to(counter, {
+        val: target, duration: 1.1, delay: 0.15 + i * 0.05, ease: 'power2.out',
+        onUpdate: () => { el.textContent = toFaDigits(Math.round(counter.val)); },
+      });
+    });
   }
 
   async function loadAll(){
