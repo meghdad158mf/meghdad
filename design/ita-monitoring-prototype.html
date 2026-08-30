@@ -1127,6 +1127,7 @@
               <button class="nav-menu-group-title-btn" onclick="goToPeopleTab('professors'); closeNavMenu();">یادداشت‌ها</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('professors'); closeNavMenu();">اساتید سیاسی‌اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('activists'); closeNavMenu();">فعالان سیاسی‌اجتماعی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('political-figures'); closeNavMenu();">چهره‌های سیاسی</button>
               <button class="nav-menu-sub" onclick="goToPeopleTab('analytics'); closeNavMenu();">آنالیز</button>
             </div>
             <div class="nav-menu-col">
@@ -1284,6 +1285,7 @@
         <span class="domain-shortcut-disabled">آنالیز اخبار<span class="news-soon">به‌زودی</span></span>
         <a onclick="goToPeopleTab('professors')">اساتید سیاسی‌اجتماعی</a>
         <a onclick="goToPeopleTab('activists')">فعالان</a>
+        <a onclick="goToPeopleTab('political-figures')">چهره‌های سیاسی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
         <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
         <a onclick="goToPeopleTab('analytics')">آنالیز افراد</a>
@@ -1508,6 +1510,7 @@
       <div class="news-page-tabs" id="people-top-tabs">
         <button class="active" data-people-tab="professors">اساتید سیاسی‌اجتماعی</button>
         <button data-people-tab="activists">فعالان سیاسی‌اجتماعی</button>
+        <button data-people-tab="political-figures">چهره‌های سیاسی</button>
         <button disabled>شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></button>
         <button disabled>جامعه مخاطب<span class="news-soon">به‌زودی</span></button>
         <button data-people-tab="analytics">آنالیز</button>
@@ -1668,6 +1671,31 @@
           </div>
           <div class="cat-grid" id="rank-grid"></div>
         </div>
+      </div>
+
+      <!-- ===== چهره‌های سیاسی: فید یادداشت‌های کانال‌های تگ‌شده (همون
+           کانال‌های type='person' موجود، فقط اونایی که show_in_political_figures
+           فعاله) — دقیقاً هم‌الگو با فید «کنشگری مجازی» (sec-posts) ===== -->
+      <div id="people-tab-political-figures" style="display:none;">
+        <div class="toolbar">
+          <details class="news-source-details" id="political-figures-source-details">
+            <summary id="political-figures-source-summary">انتخاب کانال‌ها…</summary>
+            <div class="news-source-list" id="political-figures-source-list"></div>
+          </details>
+          <select id="political-figures-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
+          <select id="political-figures-filter-time">
+            <option value="">همه‌ی زمان‌ها</option>
+            <option value="today">امروز</option>
+            <option value="yesterday">دیروز</option>
+            <option value="week">این هفته</option>
+          </select>
+          <div class="news-search-box" id="political-figures-search-box">
+            <input type="text" id="political-figures-search" placeholder="جست‌وجو در متن یادداشت‌ها…" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </div>
+        </div>
+        <p class="posts-empty" id="political-figures-empty" style="display:none;">یادداشتی با این فیلتر پیدا نشد.</p>
+        <div class="news-feed grid-view social-tab" id="political-figures-list"></div>
       </div>
 
       <!-- ===== آنالیز: آمار تجمیعی افراد و مجموعه‌ها ===== -->
@@ -1938,6 +1966,7 @@
                   <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-news" /> اخبار و رویدادها</label>
                   <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-cyberspace" /> کنشگری مجازی</label>
                   <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-people" /> افراد و شخصیت‌ها</label>
+                  <label class="chan-news-toggle"><input type="checkbox" id="new-chan-show-political-figures" /> چهره‌های سیاسی</label>
                 </div>
               </details>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
@@ -2965,6 +2994,8 @@
     renderChannelCards();
     populatePostFilters();
     renderPosts();
+    populatePoliticalFiguresSourceOptions();
+    renderPoliticalFigures();
     renderAnalytics();
     populateExportFilters();
     refreshCatOptions();
@@ -3232,7 +3263,7 @@
     const b = e.target.closest('button'); if(!b || b.disabled || !b.dataset.peopleTab) return;
     peopleTopTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
-    ['activists','professors','analytics'].forEach(key=>{
+    ['activists','professors','political-figures','analytics'].forEach(key=>{
       const el = document.getElementById('people-tab-'+key);
       if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
     });
@@ -3920,6 +3951,143 @@
   filterTimeEl.addEventListener('change', renderPosts);
   searchEl.addEventListener('input', renderPosts);
 
+  // ---- چهره‌های سیاسی (تب جدید بخش «یادداشت‌ها») ----
+  // عیناً هم‌الگو با فید «کنشگری مجازی» بالا (همون POSTS_CACHE، فقط فیلتر
+  // عضویت show_in_political_figures به‌جای show_in_cyberspace)؛ چون یه
+  // پست ممکنه هم‌زمان توی هر دو فید ظاهر بشه (کانالش هر دو عضویت رو
+  // داشته باشه)، آی‌دی‌های DOM این فید با پیشوند pf- جدا شدن تا با
+  // آی‌دی‌های post-text-{id}/post-more-{id} فید کنشگری مجازی تصادم نکنن.
+  const pfFilterCatEl = document.getElementById('political-figures-filter-cat');
+  const pfFilterTimeEl = document.getElementById('political-figures-filter-time');
+  const pfSearchEl = document.getElementById('political-figures-search');
+  const pfList = document.getElementById('political-figures-list');
+  const pfEmpty = document.getElementById('political-figures-empty');
+  let pfSelectedChannels = [];
+
+  function politicalFigureChannels(){
+    return CHANNELS.filter(c=>c.show_in_political_figures);
+  }
+
+  function updatePfSourceSummary(){
+    const summary = document.getElementById('political-figures-source-summary');
+    if(!summary) return;
+    const n = pfSelectedChannels.length;
+    summary.textContent = n === 0 ? 'انتخاب کانال‌ها…' : toFaDigits(n) + ' کانال انتخاب‌شده';
+  }
+
+  function populatePoliticalFiguresSourceOptions(){
+    const list = document.getElementById('political-figures-source-list');
+    if(!list) return;
+    const pfChannels = politicalFigureChannels();
+    const validIds = new Set(pfChannels.map(c=>String(c.id)));
+    pfSelectedChannels = pfSelectedChannels.filter(id=>validIds.has(id));
+    list.innerHTML = pfChannels.map(c=>{
+      const id = String(c.id);
+      const checked = pfSelectedChannels.includes(id) ? 'checked' : '';
+      return `<label><input type="checkbox" value="${id}" ${checked}> ${escAttr(c.title||c.username)}</label>`;
+    }).join('');
+    list.querySelectorAll('input[type=checkbox]').forEach(chk=>{
+      chk.addEventListener('change', ()=>{
+        const id = chk.value;
+        if(chk.checked){ if(!pfSelectedChannels.includes(id)) pfSelectedChannels.push(id); }
+        else{ pfSelectedChannels = pfSelectedChannels.filter(x=>x!==id); }
+        updatePfSourceSummary();
+        renderPoliticalFigures();
+      });
+    });
+    updatePfSourceSummary();
+    if(pfFilterCatEl){
+      pfFilterCatEl.innerHTML = '<option value="">همه‌ی دسته‌بندی‌ها</option>' +
+        CATEGORIES.map(c=>`<option value="${c.id}">${c.name}</option>`).join('');
+    }
+  }
+
+  function filteredPoliticalFigurePosts(){
+    const catFilter = pfFilterCatEl ? pfFilterCatEl.value : '';
+    const timeFilter = pfFilterTimeEl ? pfFilterTimeEl.value : '';
+    const q = pfSearchEl ? pfSearchEl.value.trim() : '';
+    return POSTS_CACHE.filter(p=>{
+      const ownerCh = chById(p.channel_id);
+      if(!ownerCh || !ownerCh.show_in_political_figures) return false;
+      if(pfSelectedChannels.length && !pfSelectedChannels.includes(String(p.channel_id))) return false;
+      if(catFilter && String(ownerCh.category_id) !== catFilter) return false;
+      if(!matchesTime(p.scraped_at, timeFilter)) return false;
+      if(q && !(p.text||'').includes(q) && !chName(p.channel_id).includes(q)) return false;
+      return true;
+    });
+  }
+
+  function renderPoliticalFigures(){
+    if(!pfList) return;
+    const filtered = filteredPoliticalFigurePosts();
+    pfEmpty.style.display = filtered.length ? 'none' : 'block';
+    const list = filtered.slice(0,150);
+    pfList.innerHTML = list.map(p=>{
+      const ch = chById(p.channel_id) || {};
+      const topic = catNameOf(p.channel_id);
+      const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
+      const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
+      const thumbBadge = p.media_type === 'video' ? `<span class="pt-media-badge">${ICONS.video}</span>` : '';
+      const thumbHtml = hasThumb
+        ? `<div class="news-thumb" style="position:relative">${thumbBadge}<img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
+        : ch.avatar_url
+          ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+          : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+      return `
+      <div class="news-card">
+        ${thumbHtml}
+        <div class="news-body">
+          <div class="news-head">
+            <span class="news-source">${ch.title||ch.username||'؟'}</span>
+            <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+            ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
+            <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
+          </div>
+          <p class="news-text" id="pf-post-text-${p.id}">${p.text||''}</p>
+          <button class="news-more" onclick="togglePoliticalFigureText(${p.id})" id="pf-post-more-${p.id}">
+            نمایش بیشتر
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="news-foot">
+            <div>${topic ? `<span class="news-topic">${topic}</span>` : ''}</div>
+            <div style="display:flex; gap:10px; align-items:center;">
+              ${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}
+              ${p.link ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
+            </div>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    wireMediaViewerClicks(pfList);
+    updatePoliticalFigureMoreButtons(list);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updatePoliticalFigureMoreButtons(list));
+    }
+  }
+
+  function updatePoliticalFigureMoreButtons(list){
+    list.forEach(p=>{
+      const textEl = document.getElementById('pf-post-text-'+p.id);
+      const moreBtn = document.getElementById('pf-post-more-'+p.id);
+      if(!textEl || !moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
+    });
+  }
+
+  function togglePoliticalFigureText(postId){
+    const t = document.getElementById('pf-post-text-'+postId);
+    const b = document.getElementById('pf-post-more-'+postId);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
+  }
+
+  if(pfFilterCatEl) pfFilterCatEl.addEventListener('change', renderPoliticalFigures);
+  if(pfFilterTimeEl) pfFilterTimeEl.addEventListener('change', renderPoliticalFigures);
+  if(pfSearchEl) pfSearchEl.addEventListener('input', renderPoliticalFigures);
+
   // ---- analytics ----
   const STOPWORDS = new Set(['و','در','به','از','که','این','را','با','است','می','یک','آن','هم','ها','های','برای','تا','هر','خود','ما','یا','او','وی','شد','شده','شود','کرد','کرده','کند','باید','اما','اگر','هست','نیست','بود','بودن','بوده','بودند','بر','مورد','چه','همه','همین','همان','چند','بین','پس','هنوز','حتی','نه','نیز','دیگر','بعد','قبل','دارد','دارند','داشت','روی','زیر','آنها','ولی','پیش','چون','چرا','کجا','کدام','مثل','مانند','شما','تو','من']);
 
@@ -4015,6 +4183,7 @@
     { field: 'show_in_news', label: 'اخبار و رویدادها', onChange: () => renderNewsFeed() },
     { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => renderPosts() },
     { field: 'show_in_people', label: 'افراد و شخصیت‌ها' },
+    { field: 'show_in_political_figures', label: 'چهره‌های سیاسی', onChange: () => renderPoliticalFigures() },
   ];
 
   const newChanPlatformEl = document.getElementById('new-chan-platform');
@@ -4210,6 +4379,7 @@
     const showNewsEl = document.getElementById('new-chan-show-news');
     const showCyberspaceEl = document.getElementById('new-chan-show-cyberspace');
     const showPeopleEl = document.getElementById('new-chan-show-people');
+    const showPoliticalFiguresEl = document.getElementById('new-chan-show-political-figures');
     const name = nameEl.value.trim();
     const rawHandle = handleEl.value.trim();
     const handle = platformEl.value === 'website' ? rawHandle : rawHandle.replace(/^@/,'');
@@ -4218,13 +4388,14 @@
     const body = {
       username: handle, title: name, platform: platformEl.value, region_id: regionEl.value ? Number(regionEl.value) : null, category_id: catVal ? Number(catVal) : null,
       show_in_news: showNewsEl.checked, show_in_cyberspace: showCyberspaceEl.checked, show_in_people: showPeopleEl.checked,
+      show_in_political_figures: showPoliticalFiguresEl.checked,
     };
     const r = await api('/channels', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
     if(r.ok){
       nameEl.value=''; handleEl.value=''; regionEl.value='';
-      showNewsEl.checked=false; showCyberspaceEl.checked=false; showPeopleEl.checked=false;
+      showNewsEl.checked=false; showCyberspaceEl.checked=false; showPeopleEl.checked=false; showPoliticalFiguresEl.checked=false;
       await loadChannels();
-      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts();
+      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderPoliticalFigures();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
     }
