@@ -130,7 +130,10 @@
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
   .notify-card{
-    width:100%; max-width:460px; margin:120px auto 0; box-sizing:border-box;
+    width:100%; max-width:460px; margin:220px auto 0; box-sizing:border-box; /* قبلاً ۱۲۰px بود؛ چون کارت بعدی
+      (.basirat-widget-block) margin-top:220px داره و margin بین دو المان خواهر همجوار همیشه
+      بزرگ‌ترین مقدار رو می‌گیره نه جمعشون، فاصله‌ی بالای این کارت (بین این و .package-card که
+      margin-bottom:40px داره) با فاصله‌ی پایینش (بین این و .basirat-widget-block) برابر نبود */
     display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px;
     padding:0 20px;
     border-inline-start:1px solid rgba(255,255,255,0.32);
