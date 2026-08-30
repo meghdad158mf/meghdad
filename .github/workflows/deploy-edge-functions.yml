@@ -1,0 +1,26 @@
+name: Deploy Supabase Edge Functions
+
+# فقط وقتی چیزی زیر supabase/functions تغییر کنه (یا دستی از تب Actions)
+# دیپلوی می‌شه. برخلاف کالکتورهای cron که فقط از شاخه‌ی main اجرا می‌شن،
+# این ورک‌فلو push-based‌ه، پس مستقیم روی همین شاخه هم کار می‌کنه — نیازی
+# به sync جدا با main نیست.
+on:
+  push:
+    branches: [claude/new-project-8ekywm]
+    paths:
+      - "supabase/functions/**"
+  workflow_dispatch: {}
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: supabase/setup-cli@v1
+        with:
+          version: latest
+
+      - run: supabase functions deploy translate --no-verify-jwt --project-ref tfppjveupcxisepteibn
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
