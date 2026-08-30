@@ -655,9 +655,9 @@
      چپ پاپ‌آپ رو ثابت نگه می‌داره و به سمت راست باز می‌شه)، پاپ‌آپ از لبه‌ی راست
      صفحه بیرون می‌زد. اینجا برعکسش می‌کنیم: لبه‌ی راست ثابت می‌مونه، به چپ باز می‌شه */
   #posts-source-list{ inset-inline-end:auto; inset-inline-start:0; }
-  /* همون مشکل دقیقاً برای تب‌های «وب‌سایت‌ها» و «روزنامه‌ها» هم پیش میاد —
-     دکمه‌شون هم با margin-inline-start:auto به همون لبه چسبیده */
-  #news-source-list, #newspaper-source-list{ inset-inline-end:auto; inset-inline-start:0; }
+  /* همون مشکل دقیقاً برای تب‌های «وب‌سایت‌ها»، «روزنامه‌ها» و «چهره‌های سیاسی»
+     هم پیش میاد — دکمه‌شون هم با margin-inline-start:auto به همون لبه چسبیده */
+  #news-source-list, #newspaper-source-list, #political-figures-source-list{ inset-inline-end:auto; inset-inline-start:0; }
   /* وقتی این دراپ‌داون داخل .toolbar تو در توئه (مثل صفحه‌ی کنشگری مجازی)،
      قانون عمومی «.toolbar input» (که برای اینپوت متنی جست‌وجوئه) رو چک‌باکس‌ها
      هم به ارث می‌برن — flex:1/min-width بزرگ باعث می‌شه چک‌باکس عملاً نامرئی
@@ -2022,7 +2022,7 @@
     // دراپ‌داون‌های <details> (انتخاب رسانه‌ها/سمت/تخصص و بازه‌ی زمانی) پیش‌فرض
     // مرورگر فقط با کلیک دوباره روی summary بسته می‌شن — با کلیک بیرونشون هم
     // ببندشون، مثل بقیه‌ی منوهای سفارشی سایت
-    document.querySelectorAll('details.news-source-details[open], details.news-daterange-details[open]').forEach(d=>{
+    document.querySelectorAll('details.news-source-details[open], details.news-daterange-details[open], details.chan-domains-details[open], details.chan-row-domains-details[open]').forEach(d=>{
       if(!d.contains(e.target)) d.removeAttribute('open');
     });
   });
