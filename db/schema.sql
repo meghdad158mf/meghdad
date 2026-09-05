@@ -185,7 +185,8 @@ insert into categories (name, color) values
   ('بین‌الملل',       '#EAB393')
 on conflict (name) do nothing;
 
--- ---------- داده‌ی اولیه: ۲۲ کانال ایتا (از طرح فعلی) ----------
+-- ---------- داده‌ی اولیه: ۲۲ کانال ایتا (از طرح فعلی) + ۳ کانال تلگرام
+-- که بعداً از پنل مدیریت اضافه شده بودن (به‌روز شده در migration_021) ----------
 insert into channels (platform, username, title, type, active) values
   ('eitaa', 'soada_ir',                 'سعداء',                                  'news_agency', true),
   ('eitaa', 'levayar_ir',               'افکاری | سواد رسانه',                    'person',      true),
@@ -208,5 +209,8 @@ insert into channels (platform, username, title, type, active) values
   ('eitaa', 'h_ebrahimiavval',          'حسین ابراهیمی اول',                      'person',      true),
   ('eitaa', 'm_a_tavallaie',            'تأملات | تولايی',                        'person',      true),
   ('eitaa', 'mohsendoaei',              'سید محمدمحسن دعایی',                     'person',      true),
-  ('eitaa', 'seyyed_kazem_roohbakhsh',  'سید کاظم روح بخش',                       'person',      true)
+  ('eitaa', 'seyyed_kazem_roohbakhsh',  'سید کاظم روح بخش',                       'person',      true),
+  ('telegram', 'MostafaTajzadeh',       'مصطفی تاجزاده',                          'news_agency', true),
+  ('telegram', 'iranintltv',            'ایران اینترنشنال',                       'news_agency', true),
+  ('telegram', 'farsivoa',              'صدای آمریکا',                            'news_agency', true)
 on conflict (platform, username) do nothing;

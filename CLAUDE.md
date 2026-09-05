@@ -153,6 +153,7 @@ db/migration_017_basirat_courses.sql       جدول basirat_courses + bucket ع�
 db/migration_018_feedback.sql              جدول feedback (کارت «ثبت نظر و پیشنهاد» صفحه‌ی نخست) — تنها جدول با اجازه‌ی insert برای نقش بیننده
 db/migration_019_notify_subscribers.sql    جدول notify_subscribers (کارت «اطلاع از انتشار بسته تحلیلی جریان» صفحه‌ی نخست) — insert برای هر دو نقش app_admin/app_viewer، select/update/delete فقط مدیر
 db/migration_020_news_topics.sql           جدول news_topics (اسم + کلیدواژه‌های جدا با ویرگول) — چیپ‌های «موضوع» تب «وب‌سایت‌ها»ی «اخبار رسمی»؛ select هر دو نقش، insert/update/delete فقط مدیر
+db/migration_021_current_channel_defaults.sql  به‌روزرسانی لیست کانال‌های پیش‌فرض مطابق وضعیت واقعی (بعد از مهاجرت به پروژه‌ی جدید سوپابیس) — حذف کانال‌های قدیمی migration_006 که دیگه استفاده نمی‌شن + اضافه‌کردن کانال‌های خبری وب‌سایتی/تلگرامی که بعداً از پنل اضافه شده بودن؛ باید بعد از migration_009 (regions) و migration_012 (avatar_url) اجرا بشه
 db/seed_telegram_channels.sql              ۴ کانال پیش‌فرض تلگرام
 scripts/requirements.txt                   وابستگی‌های مشترک پایتون همه‌ی اسکریپت‌ها (requests, beautifulsoup4, telethon, python-dotenv, feedparser)
 scripts/collect_eitaa.py                   کالکتور ایتا
