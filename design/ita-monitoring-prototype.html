@@ -3279,6 +3279,16 @@
   // می‌شمریم — نه هوش مصنوعی واقعی، فقط شمارش تکرار عبارت، ولی چون
   // عبارت‌های دوکلمه‌ای («بازار ارز»، «انتخابات مجلس») نسبت به تک‌کلمه‌های
   // ابرکلمات بالاتر معنای موضوعی بیشتری دارن، حس «موضوع ترند» می‌ده
+  // این‌ها موضوع خبری نیستن ولی به‌خاطر تکرار زیاد (تاریخ توی خیلی پست‌ها،
+  // یا متن‌های تکراری خودِ سایت‌های خبری) قبلاً قاطی «موضوعات ترند» می‌شدن
+  const PHRASE_DAYS = new Set(['شنبه','یکشنبه','دوشنبه','سه‌شنبه','سه شنبه','چهارشنبه','پنجشنبه','جمعه']);
+  const PHRASE_MONTHS = new Set(['فروردین','اردیبهشت','خرداد','تیر','مرداد','شهریور','مهر','آبان','آذر','دی','بهمن','اسفند']);
+  const PHRASE_BOILERPLATE = new Set(['بیشتر','بخوانید','ادامه','مطلب','کلیک','کنید','منبع','لینک','مشاهده']);
+  function isPhraseJunkWord(w){
+    if(/^[0-9۰-۹]+$/.test(w)) return true; // عدد خالص (روز ماه، شماره و مشابه)
+    return PHRASE_DAYS.has(w) || PHRASE_MONTHS.has(w) || PHRASE_BOILERPLATE.has(w);
+  }
+
   function phraseFrequency(list){
     const counts = {};
     list.forEach(p=>{
@@ -3287,6 +3297,7 @@
       for(let i=0;i<words.length-1;i++){
         const a = words[i], b = words[i+1];
         if(a.length<2 || b.length<2 || STOPWORDS.has(a) || STOPWORDS.has(b)) continue;
+        if(isPhraseJunkWord(a) || isPhraseJunkWord(b)) continue;
         const phrase = a+' '+b;
         counts[phrase] = (counts[phrase]||0)+1;
       }
