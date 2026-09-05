@@ -724,17 +724,23 @@
   .words{ display:flex; flex-wrap:wrap; gap:8px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
 
-  /* نمودارهای Chart.js تب «آنالیز» — کانتینر با ارتفاع ثابت (نه attribute
-     height خودِ canvas) چون به همراه maintainAspectRatio:false توی JS،
-     اندازه‌ی قابل‌پیش‌بینی و یکسان روی هر عرض صفحه می‌ده */
+  /* چهار ویجت تب «آنالیز» به‌صورت گرید دوستونه (چپ‌وراست)، نه زیر هم —
+     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه */
+  .news-analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .news-analytics-grid .panel{ margin-bottom:0; }
+  @media (max-width:900px){ .news-analytics-grid{ grid-template-columns:1fr; } }
+
+  /* نمودارهای Chart.js — کانتینر با ارتفاع ثابت (نه attribute height خودِ
+     canvas) چون به همراه maintainAspectRatio:false توی JS، اندازه‌ی
+     قابل‌پیش‌بینی و یکسان روی هر عرض صفحه می‌ده */
   .chart-box{ position:relative; width:100%; }
-  .chart-box-line{ height:280px; }
-  .chart-box-bar-8{ height:320px; }
-  .chart-box-bar-6{ height:260px; }
+  .chart-box-line{ height:260px; }
+  .chart-box-bar-8{ height:300px; }
+  .chart-box-donut{ height:300px; }
   @media (max-width:640px){
     .chart-box-line{ height:220px; }
     .chart-box-bar-8{ height:280px; }
-    .chart-box-bar-6{ height:230px; }
+    .chart-box-donut{ height:280px; }
   }
 
   /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
@@ -1439,22 +1445,24 @@
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
            (یعنی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»)، بدون «روزنامه‌ها»/«ادعاها و شایعات» -->
       <div id="news-analytics-panel" style="display:none;">
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">روند حجم اخبار در طول زمان (۱۴ روز اخیر)</span></div>
-          <div class="chart-box chart-box-line"><canvas id="news-trend-chart"></canvas></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع (۸ منبع برتر)</span></div>
-          <div class="chart-box chart-box-bar-8"><canvas id="news-sources-chart"></canvas></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">ابرکلمات — پرتکرارترین کلمات متن اخبار</span></div>
-          <div class="words" id="news-analytics-words"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">موضوعات پرتکرار (۶ موضوع برتر)</span></div>
-          <div class="chart-box chart-box-bar-6" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
-          <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.</p>
+        <div class="news-analytics-grid">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
+            <div class="chart-box chart-box-line"><canvas id="news-trend-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر (۸ منبع برتر)</span></div>
+            <div class="chart-box chart-box-bar-8"><canvas id="news-sources-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">ابرکلمات — پرتکرارترین کلمات (۲۴ ساعت اخیر)</span></div>
+            <div class="words" id="news-analytics-words"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">موضوعات پرتکرار — ۲۴ ساعت اخیر (۶ موضوع برتر)</span></div>
+            <div class="chart-box chart-box-donut" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
+            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.</p>
+          </div>
         </div>
       </div>
     </section>
@@ -3233,9 +3241,17 @@
   function newsAnalyticsChannels(){
     return CHANNELS.filter(c => c.show_in_news && c.platform !== 'bale');
   }
-  function newsAnalyticsPosts(){
+  // معیار محاسبات تب «آنالیز» ۲۴ ساعت اخیره — hours رو خالی بذار برای
+  // بدون محدودیت زمانی (فعلاً همه‌جا با hours=24 صدا زده می‌شه)
+  function newsAnalyticsPosts(hours){
     const ids = new Set(newsAnalyticsChannels().map(c=>c.id));
-    return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
+    const cutoff = hours ? Date.now() - hours*3600*1000 : 0;
+    return POSTS_CACHE.filter(p=>{
+      if(!ids.has(p.channel_id)) return false;
+      if(!hours) return true;
+      const t = new Date(p.posted_at || p.scraped_at).getTime();
+      return t >= cutoff;
+    });
   }
 
   // شمارش پست‌های منطبق با هر موضوعِ ذخیره‌شده (news_topics) — همون منطق
@@ -3280,8 +3296,12 @@
     };
   }
 
+  // پالت ۶رنگه‌ی هم‌خانواده با برند برای نمودار دونات موضوعات پرتکرار
+  const TOPIC_DONUT_COLORS = ['#b5651d', '#EAB393', '#16202a', '#5b6472', '#d98a4f', '#3a4756'];
+
   function renderNewsAnalytics(){
-    const posts = newsAnalyticsPosts();
+    // معیار محاسبات همه‌ی ویجت‌های این تب: ۲۴ ساعت اخیر
+    const posts = newsAnalyticsPosts(24);
     const hasChart = typeof Chart !== 'undefined';
 
     // ابرکلمات — تنها ویجتی که به Chart.js نیاز نداره، همیشه رندر می‌شه
@@ -3302,23 +3322,23 @@
     if(!hasChart) return; // بارگذاری Chart.js از CDN شکست خورده — بقیه‌ی نمودارها رو رد کن
     applyChartDefaultsOnce();
 
-    // روند حجم اخبار — ۱۴ روز اخیر
-    const dayLabels = [], dayCounts = [];
-    for(let i=13;i>=0;i--){
-      const d = new Date(); d.setHours(0,0,0,0); d.setDate(d.getDate()-i);
-      const next = new Date(d); next.setDate(d.getDate()+1);
+    // روند حجم اخبار — ۲۴ ساعت اخیر، به تفکیک ساعت
+    const hourLabels = [], hourCounts = [];
+    for(let i=23;i>=0;i--){
+      const d = new Date(); d.setMinutes(0,0,0); d.setHours(d.getHours()-i);
+      const next = new Date(d); next.setHours(d.getHours()+1);
       const n = posts.filter(p=>{
         const t = new Date(p.posted_at || p.scraped_at).getTime();
         return t>=d.getTime() && t<next.getTime();
       }).length;
-      dayLabels.push(d.toLocaleDateString('fa-IR', {month:'short', day:'numeric'}));
-      dayCounts.push(n);
+      hourLabels.push(d.toLocaleTimeString('fa-IR', {hour:'2-digit'}));
+      hourCounts.push(n);
     }
     if(newsTrendChart) newsTrendChart.destroy();
     newsTrendChart = new Chart(document.getElementById('news-trend-chart'), {
       type: 'line',
-      data: { labels: dayLabels, datasets: [{
-        data: dayCounts,
+      data: { labels: hourLabels, datasets: [{
+        data: hourCounts,
         borderColor: '#b5651d',
         borderWidth: 2.5,
         backgroundColor: (context)=>{
@@ -3329,7 +3349,7 @@
           return g;
         },
         fill: true, tension: 0.35,
-        pointRadius: 3, pointBackgroundColor: '#b5651d', pointBorderColor: '#fff', pointBorderWidth: 1.5,
+        pointRadius: 2, pointBackgroundColor: '#b5651d', pointBorderColor: '#fff', pointBorderWidth: 1.5,
         pointHoverRadius: 6, pointHoverBackgroundColor: '#b5651d', pointHoverBorderWidth: 2,
       }] },
       options: {
@@ -3337,12 +3357,12 @@
         plugins: { legend: { display:false } },
         scales: {
           y: { beginAtZero:true, ticks:{ precision:0 }, grid:{ color:'rgba(20,27,36,0.06)' } },
-          x: { grid:{ display:false } },
+          x: { grid:{ display:false }, ticks:{ maxRotation:0, autoSkip:true, maxTicksLimit:8 } },
         },
       },
     });
 
-    // حجم تولید محتوا به تفکیک منبع — ۸ منبع برتر
+    // حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر، ۸ منبع برتر
     const topSources = topChannelsByCount(posts).slice(0,8);
     if(newsSourcesChart) newsSourcesChart.destroy();
     newsSourcesChart = new Chart(document.getElementById('news-sources-chart'), {
@@ -3365,7 +3385,9 @@
       },
     });
 
-    // موضوعات پرتکرار — از روی news_topics تعریف‌شده در پنل «تنظیمات»
+    // موضوعات پرتکرار — از روی news_topics تعریف‌شده در پنل «تنظیمات»،
+    // به‌جای نمودار میله‌ای (که شبیه ویجت منابع می‌شد) این‌بار دونات —
+    // چون این ویجت درباره‌ی «سهم» موضوعات از هم‌دیگه‌ست، نه رتبه‌بندی مطلق
     const topicCounts = topicMatchCounts(posts).filter(([,n])=>n>0).slice(0,6);
     const topicsBox = document.getElementById('news-topics-chart-box');
     const topicsCanvas = document.getElementById('news-topics-chart');
@@ -3377,28 +3399,24 @@
       topicsEmpty.style.display = '';
     }else if(!topicCounts.length){
       topicsBox.style.display = 'none';
-      topicsEmpty.textContent = 'هیچ‌کدام از موضوعات تعریف‌شده در پست‌های فعلی یافت نشد.';
+      topicsEmpty.textContent = 'هیچ‌کدام از موضوعات تعریف‌شده در پست‌های ۲۴ ساعت اخیر یافت نشد.';
       topicsEmpty.style.display = '';
     }else{
       topicsBox.style.display = '';
       topicsEmpty.style.display = 'none';
       newsTopicsChart = new Chart(topicsCanvas, {
-        type: 'bar',
+        type: 'doughnut',
         data: {
           labels: topicCounts.map(([name])=>name),
           datasets: [{
             data: topicCounts.map(([,n])=>n),
-            backgroundColor: horizontalBarGradient('#16202a', '#3a4756'),
-            borderRadius: 6, maxBarThickness: 30, barPercentage: 0.65, categoryPercentage: 0.75,
+            backgroundColor: TOPIC_DONUT_COLORS.slice(0, topicCounts.length),
+            borderColor: '#fff', borderWidth: 2, hoverOffset: 6,
           }],
         },
         options: {
-          indexAxis: 'y', responsive: true, maintainAspectRatio: false,
-          plugins: { legend: { display:false } },
-          scales: {
-            x: { beginAtZero:true, ticks:{ precision:0 }, grid:{ color:'rgba(20,27,36,0.06)' } },
-            y: { grid:{ display:false } },
-          },
+          responsive: true, maintainAspectRatio: false, cutout: '62%',
+          plugins: { legend: { display:true, position:'bottom', rtl:true, labels:{ boxWidth:11, padding:12, font:{ size:11.5 } } } },
         },
       });
     }
