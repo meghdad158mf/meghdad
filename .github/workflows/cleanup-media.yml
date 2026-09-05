@@ -3,7 +3,12 @@ name: Cleanup old post media
 on:
   schedule:
     - cron: "0 3 * * *"   # هر روز ساعت ۳ بامداد UTC
-  workflow_dispatch: {}    # امکان اجرای دستی از تب Actions
+  workflow_dispatch:       # امکان اجرای دستی از تب Actions
+    inputs:
+      retention_days_override:
+        description: "پاک‌سازی فوری: عدد روز جایگزین (مثلاً 0.02 ~ نیم ساعت) فقط برای همین یه اجرا — RETENTION_DAYS دائمی توی کد دست‌نخورده می‌مونه. خالی بذار برای رفتار عادی."
+        required: false
+        type: string
 
 jobs:
   cleanup:
@@ -23,3 +28,4 @@ jobs:
           SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
           SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
           ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          RETENTION_DAYS_OVERRIDE: ${{ github.event.inputs.retention_days_override }}
