@@ -1458,11 +1458,11 @@
       <div id="news-analytics-panel" style="display:none;">
         <div class="panel">
           <div class="panel-head">
-            <span class="panel-pill">اخبار منتخب — تشخیص هوش مصنوعی (۱۰ خبر مهم‌تر)</span>
+            <span class="panel-pill">اخبار منتخب</span>
             <span class="ai-updated-note" id="news-selected-updated"></span>
           </div>
           <div class="rank-list" id="news-analytics-selected-list"></div>
-          <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی دو بار (۸ و ۲۰) به‌روز می‌شه.</p>
+          <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
         </div>
         <div class="news-analytics-grid">
           <div class="panel">
@@ -1479,11 +1479,11 @@
           </div>
           <div class="panel">
             <div class="panel-head">
-              <span class="panel-pill">موضوعات ترند — تشخیص هوش مصنوعی</span>
+              <span class="panel-pill">موضوعات پرتکرار</span>
               <span class="ai-updated-note" id="news-topics-updated"></span>
             </div>
             <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
-            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی دو بار (۸ و ۲۰) به‌روز می‌شه.</p>
+            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
           </div>
         </div>
       </div>
@@ -3326,32 +3326,36 @@
 
   function renderNewsAnalytics(){
     // معیار محاسبات ۳ ویجت آماری این تب (روند/منابع/ابرکلمات): ۲۴ ساعت
-    // اخیر، سمت کلاینت. دو ویجت دیگه («اخبار منتخب»/«موضوعات ترند») از
+    // اخیر، سمت کلاینت. دو ویجت دیگه («اخبار منتخب»/«موضوعات پرتکرار») از
     // هوش مصنوعی میان و مستقل از این متغیرن — NEWS_AI_INSIGHTS رو
-    // می‌خونن که سمت سرور، روی پنجره‌ی ۱۲ساعته‌ی خودش، روزی ۲ بار
+    // می‌خونن که سمت سرور، روی پنجره‌ی ۶ساعته‌ی خودش، روزی ۴ بار
     // (نه هر بار بازکردن این تب) محاسبه شده
     const posts = newsAnalyticsPosts(24);
     const hasChart = typeof Chart !== 'undefined';
 
     // اخبار منتخب — تشخیص هوش مصنوعی (نه صرفاً جدیدترین). این خودِ
     // renderNewsAnalytics() هیچی محاسبه نمی‌کنه — فقط آخرین ردیف
-    // news_ai_insights (که روزی ۲ بار از GitHub Actions پر می‌شه) رو نشون
-    // می‌ده؛ اگه هنوز هیچ تحلیلی اجرا نشده باشه، پیام «هنوز آماده نشده» میاد
+    // news_ai_insights (که روزی ۴ بار از GitHub Actions پر می‌شه) رو نشون
+    // می‌ده؛ اگه هنوز هیچ تحلیلی اجرا نشده باشه، پیام «هنوز آماده نشده» میاد.
+    // headline از سمت هوش مصنوعی میاد (نه اسلایس خام متن پست) — یه جمله‌ی
+    // کامل و فارسی (اگه منبع انگلیسی بود، ترجمه‌شده)، نه نصفه‌رهاشده؛ لیبل
+    // «دلیل انتخاب» (تکرار در چند منبع/موضوع حساس و ...) دیگه نمایش داده
+    // نمی‌شه، طبق درخواست کاربر.
     const selectedList = document.getElementById('news-analytics-selected-list');
     const selectedEmpty = document.getElementById('news-analytics-selected-empty');
     const selectedUpdatedEl = document.getElementById('news-selected-updated');
     selectedUpdatedEl.textContent = NEWS_AI_INSIGHTS ? ('به‌روزرسانی: ' + newsRelTime(NEWS_AI_INSIGHTS.computed_at)) : '';
     const aiSelected = (NEWS_AI_INSIGHTS?.selected_posts || [])
-      .map(sp => ({ post: POSTS_CACHE.find(p=>p.id===sp.id), reason: sp.reason }))
+      .map(sp => ({ post: POSTS_CACHE.find(p=>p.id===sp.id), headline: sp.headline }))
       .filter(x => x.post);
     selectedList.innerHTML = '';
     selectedEmpty.style.display = aiSelected.length ? 'none' : '';
-    aiSelected.forEach(({post:p, reason}, i)=>{
-      const headline = p.title || (p.text||'').slice(0,140);
+    aiSelected.forEach(({post:p, headline}, i)=>{
+      const text = headline || p.title || (p.text||'').slice(0,140);
       const el = document.createElement('div'); el.className = 'rank-item';
       el.innerHTML = `<span class="rank-num">${toFaDigits(i+1)}</span>
-        <div class="rc"><p>${headline}</p>
-        <div class="rmeta">${reason?`<span class="cat">${escHtml(reason)}</span> · `:''}${chName(p.channel_id)} · ${newsRelTime(p.posted_at||p.scraped_at)}</div></div>`;
+        <div class="rc"><p>${escHtml(text)}</p>
+        <div class="rmeta">${chName(p.channel_id)} · ${newsRelTime(p.posted_at||p.scraped_at)}</div></div>`;
       selectedList.appendChild(el);
     });
 
@@ -3436,7 +3440,7 @@
       },
     });
 
-    // موضوعات ترند — تشخیص هوش مصنوعی (همون news_ai_insights بالا)؛ دونات
+    // موضوعات پرتکرار — تشخیص هوش مصنوعی (همون news_ai_insights بالا)؛ دونات
     // چون درباره‌ی «سهم» موضوعات از هم‌دیگه‌ست، نه رتبه‌بندی مطلق
     const topicCounts = (NEWS_AI_INSIGHTS?.topics || []).map(t=>[t.name, t.weight]);
     const topicsBox = document.getElementById('news-topics-chart-box');

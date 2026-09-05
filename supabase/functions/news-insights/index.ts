@@ -1,9 +1,11 @@
 // تحلیل هوش مصنوعی دو ویجت تب «آنالیز» بخش «اخبار و رویدادها»:
 //   ۱) «اخبار منتخب» — ۱۰ خبر مهم‌تر (نه صرفاً جدیدترین)، بر اساس تکرار
-//      زیاد بین منابع یا حساسیت موضوع، به تشخیص هوش مصنوعی
-//   ۲) «موضوعات ترند» — موضوعات پرتکرار واقعی متن پست‌ها
+//      زیاد بین منابع یا حساسیت موضوع، به تشخیص هوش مصنوعی — برای هرکدوم
+//      هوش مصنوعی یه «headline» فارسی و جمله‌واره‌ی کامل (نه نصفه‌رهاشده)
+//      تولید می‌کنه؛ اگه پست اصلی انگلیسی باشه همین headline ترجمه‌شه‌ست
+//   ۲) «موضوعات پرتکرار» — موضوعات پرتکرار واقعی متن پست‌ها
 //
-// روزی دو بار (هر ۱۲ ساعت) از GitHub Actions (scripts/analyze_news_insights.py،
+// روزی چهار بار (هر ۶ ساعت) از GitHub Actions (scripts/analyze_news_insights.py،
 // با توکن مدیر) صدا زده می‌شه، نه با هر بار بازکردن تب توسط کاربر — چون
 // هر درخواست هزینه‌ی هوش مصنوعی داره. نتیجه توی جدول news_ai_insights کش
 // می‌شه؛ فرانت‌اند فقط آخرین ردیف رو می‌خونه (هیچ‌وقت مستقیم این تابع رو
@@ -21,7 +23,7 @@ import { fetchRecentNewsPostsForUser } from "../_shared/auth.ts";
 
 const LIARA_BASE_URL = "https://ai.liara.ir/api/6a9271a1d6564b043acdefe1/v1";
 const LIARA_MODEL = "openai/gpt-4o-mini";
-const DEFAULT_WINDOW_HOURS = 12;
+const DEFAULT_WINDOW_HOURS = 6;
 const MAX_POSTS_TO_MODEL = 150;
 const TEXT_TRUNCATE = 220;
 
@@ -75,12 +77,14 @@ Deno.serve(async (req) => {
           {
             role: "system",
             content:
-              "You analyze a batch of Persian news posts (each with an id, source, title, text) from the last " +
-              `${windowHours} hours and produce two things:\n` +
+              "You analyze a batch of Persian/English news posts (each with an id, source, title, text) from the " +
+              `last ${windowHours} hours and produce two things:\n` +
               "1) selected_posts: up to 10 of the MOST IMPORTANT posts (importance = the same story repeated " +
               "across multiple sources, OR a sensitive/high-impact political-social topic) — NOT simply the most " +
-              "recent. Each item is {\"id\": <one of the given post ids, exactly>, \"reason\": \"<short Persian " +
-              "one-line reason, e.g. تکرار در چند منبع or موضوع حساس سیاسی>\"}.\n" +
+              "recent. Each item is {\"id\": <one of the given post ids, exactly>, \"headline\": \"<a single " +
+              "complete Persian sentence summarizing this specific post — never cut off mid-sentence/mid-word. " +
+              "If the post's original title/text is in English or any non-Persian language, this headline MUST " +
+              "be its Persian translation, not the original language>\"}.\n" +
               "2) topics: up to 6 real recurring topics/themes across the batch, each {\"name\": \"<short Persian " +
               "topic label, 1-3 words>\", \"weight\": <integer count of posts about it>}. Do NOT include dates, " +
               "weekday/month names, or generic website boilerplate as topics.\n" +
@@ -101,7 +105,7 @@ Deno.serve(async (req) => {
     let content: string = aiData?.choices?.[0]?.message?.content || "{}";
     content = content.trim().replace(/^```json\s*/i, "").replace(/^```\s*/, "").replace(/```\s*$/, "");
 
-    let parsed: { selected_posts?: Array<{ id: number; reason?: string }>; topics?: Array<{ name: string; weight?: number }> };
+    let parsed: { selected_posts?: Array<{ id: number; headline?: string }>; topics?: Array<{ name: string; weight?: number }> };
     try {
       parsed = JSON.parse(content);
     } catch {
@@ -113,7 +117,7 @@ Deno.serve(async (req) => {
     const selectedPosts = (parsed.selected_posts || [])
       .filter((sp) => validIds.has(Number(sp.id)))
       .slice(0, 10)
-      .map((sp) => ({ id: Number(sp.id), reason: String(sp.reason || "").slice(0, 200) }));
+      .map((sp) => ({ id: Number(sp.id), headline: String(sp.headline || "").slice(0, 300) }));
     const topics = (parsed.topics || [])
       .filter((t) => t && t.name)
       .slice(0, 6)
