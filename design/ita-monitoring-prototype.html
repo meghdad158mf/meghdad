@@ -1842,8 +1842,12 @@
 
 <!-- برای انیمیشن شمارش اعداد در پنل آماری هرو صفحه‌ی نخست -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
-<!-- برای نمودارهای تب «آنالیز» بخش «اخبار و رویدادها» -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
+<!-- برای نمودارهای تب «آنالیز» بخش «اخبار و رویدادها». عمداً از CDN نمی‌گیریمش
+     (برخلاف GSAP بالا) — خیلی از افزونه‌های ad-blocker قانون عمومی دارن که
+     هر اسکریپتی با کلمه‌ی «chart» توی آدرسش رو مسدود می‌کنن (فکر می‌کنن
+     ردیابی/آنالیز تبلیغاتیه)، حتی اگه از یه CDN معتبر مثل cdnjs بیاد. فایل
+     محلی از همون دامنه‌ی خودِ سایت لود می‌شه، پس این مشکل رو نداره. -->
+<script src="vendor/chart.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
