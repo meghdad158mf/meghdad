@@ -1,0 +1,27 @@
+name: Analyze news insights (AI)
+
+# روزی دو بار — ۰۸:۰۰ و ۲۰:۰۰ به وقت ایران (UTC+03:30) — یعنی هر ۱۲ ساعت،
+# دقیقاً هم‌راستا با WINDOW_HOURS توی scripts/analyze_news_insights.py
+on:
+  schedule:
+    - cron: "30 4,16 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  analyze:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r scripts/requirements.txt
+
+      - run: python scripts/analyze_news_insights.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
