@@ -324,11 +324,6 @@
   .dot-item::before{ content:''; width:6px; height:6px; border-radius:50%; background: var(--accent); flex-shrink:0; margin-top:6px; }
   .dot-item span{ color: var(--text-faint); font-size:11.5px; }
 
-  /* dashboard: sidebar + 2 columns, flowing (no boxed panels) */
-  .dash-layout{ display:grid; grid-template-columns: 260px 1fr; gap:16px; align-items:stretch; margin-bottom:20px; }
-  @media (max-width: 760px){ .dash-layout{ grid-template-columns: 1fr; gap:16px; } }
-  .dash-panel{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:20px; box-shadow: var(--shadow); height:100%; box-sizing:border-box; display:flex; flex-direction:column; }
-  .dash-panel .panel-head{ flex-shrink:0; }
   .dash-half{ margin-top:32px; padding-top:32px; border-top:1px solid var(--border); }
 
   /* dashboard landing: two-column hero (pitch + illustration) + a feature-card grid to the three sections */
@@ -478,21 +473,6 @@
   .guest-line a{ color: var(--primary-strong); font-weight:700; cursor:pointer; }
   .guest-line a:hover{ text-decoration:underline; }
 
-  .kv-flow{ display:flex; flex-direction:column; }
-  .kv-flow div{ display:flex; justify-content:space-between; gap:10px; padding:9px 0; border-bottom:1px solid var(--border); font-size:12.5px; }
-  .kv-flow div:last-child{ border-bottom:none; }
-  .kv-flow b{ color: var(--text-faint); font-weight:500; }
-  .kv-flow span{ font-family: ui-monospace,monospace; color: var(--text); direction:ltr; font-weight:600; }
-
-  .rank-list{ display:flex; flex-direction:column; }
-  .rank-item{ display:flex; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
-  .rank-item:last-child{ border-bottom:none; }
-  .rank-num{ width:24px; height:24px; border-radius:7px; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; font-family: ui-monospace,monospace; margin-top:1px; }
-  .rank-item .rc{ min-width:0; }
-  .rank-item .rc p{ margin:0; font-size:13.5px; color: var(--text); }
-  .rank-item .rc .rmeta{ margin-top:6px; font-size:11px; color: var(--text-faint); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
-  .rank-item .rc .rmeta .cat{ color: var(--accent-strong); font-weight:600; }
-  .rank-item .rc .rmeta .repeat-badge{ font-size:10.5px; font-weight:700; color: var(--primary-strong); background: var(--primary-soft); padding:2px 9px; border-radius: var(--radius-pill); }
 
   /* channel product cards (bottom half of dashboard) */
   /* horizontal channel card: photo on the right (first in RTL flow), text on the left */
@@ -741,20 +721,37 @@
   .seg button{ border:none; background:none; color: var(--text-dim); font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; }
   .seg button.active{ background: var(--navy); color:#fff; }
 
-  .cards-row{ display:grid; grid-template-columns: repeat(3,1fr); gap:16px; margin-bottom:16px; }
-  @media (max-width:900px){ .cards-row{ grid-template-columns:1fr; } }
-  .stat-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:24px; box-shadow: var(--shadow); }
-  .stat-card .label{ font-size:12px; color: var(--text-faint); margin-bottom:6px; }
-  .stat-card .val{ font-size:23px; font-weight:700; font-family: ui-monospace,'JetBrains Mono',monospace; font-variant-numeric: tabular-nums; }
-  .stat-card .delta{ font-size:11.5px; color: var(--ok); margin-top:4px; font-weight:600; }
+  .words{ display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; min-height:280px; }
+  .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); align-self:flex-start; }
 
-  .bars{ display:flex; align-items:flex-end; gap:14px; height:140px; }
-  .bar-col{ flex:1; display:flex; flex-direction:column; align-items:center; gap:8px; height:100%; justify-content:flex-end; }
-  .bar{ width:100%; max-width:34px; border-radius:5px 5px 0 0; background: linear-gradient(180deg,var(--accent-strong),var(--accent)); }
-  .bar-col .n{ font-size:10.5px; color: var(--text-faint); font-family: ui-monospace,monospace; }
-  .bar-col .lbl{ font-size:10px; color: var(--text-faint); direction:ltr; }
-  .words{ display:flex; flex-wrap:wrap; gap:8px; }
-  .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
+  /* لیست «اخبار منتخب» بالای تب «آنالیز» */
+  .rank-list{ display:flex; flex-direction:column; }
+  .rank-item{ display:flex; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
+  .rank-item:last-child{ border-bottom:none; }
+  .rank-num{ width:24px; height:24px; border-radius:7px; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; font-family: ui-monospace,monospace; margin-top:1px; }
+  .rank-item .rc{ min-width:0; }
+  .rank-item .rc p{ margin:0; font-size:13.5px; color: var(--text); }
+  .rank-item .rc .rmeta{ margin-top:6px; font-size:11px; color: var(--text-faint); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .rank-item .rc .rmeta .cat{ color: var(--accent-strong); font-weight:600; }
+
+  /* چهار ویجت تب «آنالیز» به‌صورت گرید دوستونه (چپ‌وراست)، نه زیر هم —
+     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه.
+     align-items پیش‌فرض (stretch) + panel به‌صورت flex-column باعث می‌شه
+     دو کارت هم‌ردیف همیشه هم‌ارتفاع بمونن (لبه‌ی پایین هم‌تراز، نه پلکانی) */
+  .news-analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .news-analytics-grid .panel{ margin-bottom:0; display:flex; flex-direction:column; }
+  .news-analytics-grid .panel > .chart-box,
+  .news-analytics-grid .panel > .words{ flex:1 1 auto; }
+  @media (max-width:900px){ .news-analytics-grid{ grid-template-columns:1fr; } }
+
+  /* نمودارهای Chart.js — کانتینر با ارتفاع کمینه‌ی یکسان (نه attribute
+     height خودِ canvas) چون به همراه maintainAspectRatio:false توی JS،
+     اندازه‌ی قابل‌پیش‌بینی می‌ده؛ flex:1 بالا باعث می‌شه اگه کارت هم‌ردیف
+     بلندتر بود، این‌یکی هم به همون اندازه کشیده بشه */
+  .chart-box{ position:relative; width:100%; min-height:280px; }
+  @media (max-width:640px){
+    .chart-box, .words{ min-height:230px; }
+  }
 
   /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
   .school-report-list{ display:flex; flex-direction:column; gap:32px; margin-bottom:20px; }
@@ -774,16 +771,6 @@
   .field .news-source-details summary{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); width:100%; box-sizing:border-box; justify-content:space-between; }
   .field .news-source-list{ inset-inline-end:0; color-scheme:light; }
   .field .news-source-list label{ color: var(--text-dim); }
-
-  .ai-note{ display:flex; gap:10px; align-items:flex-start; background: rgba(255,255,255,0.07); border:1px solid rgba(255,255,255,0.34); border-radius: var(--radius); padding:12px 14px; margin-bottom:16px; font-size:12.5px; color: rgba(255,255,255,0.7); }
-  .ai-note b{ color: var(--accent); }
-  .ai-post{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:14px 16px; margin-bottom:10px; }
-  .ai-row{ display:flex; gap:8px; margin-top:10px; flex-wrap:wrap; }
-  .sentiment{ font-size:11px; padding:3px 9px; border-radius: var(--radius-pill); font-weight:600; }
-  .sentiment.pos{ color: var(--ok); background: var(--ok-soft); }
-  .sentiment.neu{ color: var(--text-faint); background: var(--surface-2); border:1px solid var(--border-strong); }
-  .sentiment.neg{ color: var(--danger); background: var(--danger-soft); }
-  .ai-summary{ font-size:11px; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; }
 
   /* categories (managed inside settings now) */
   .cat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
@@ -1389,7 +1376,7 @@
         <button id="news-tab-claims" onclick="setNewsPageTab('claims')">ادعاها و شایعات</button>
         <button disabled>پرونده ویژه<span class="news-soon">به‌زودی</span></button>
         <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
-        <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
+        <button id="news-tab-analytics" onclick="setNewsPageTab('analytics')">آنالیز</button>
       </div>
 
       <div id="news-study-panel">
@@ -1463,6 +1450,35 @@
         </div>
         <div class="newspaper-grid" id="newspaper-grid"></div>
         <p class="news-empty" id="newspapers-empty" style="display:none;">هنوز روزنامه‌ای دریافت نشده.</p>
+      </div>
+
+      <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
+           (یعنی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»)، بدون «روزنامه‌ها»/«ادعاها و شایعات» -->
+      <div id="news-analytics-panel" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-pill">اخبار منتخب — ۲۴ ساعت اخیر (۱۰ خبر برتر)</span></div>
+          <div class="rank-list" id="news-analytics-selected-list"></div>
+          <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز خبری در ۲۴ ساعت اخیر ثبت نشده.</p>
+        </div>
+        <div class="news-analytics-grid">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
+            <div class="chart-box"><canvas id="news-trend-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر (۸ منبع برتر)</span></div>
+            <div class="chart-box"><canvas id="news-sources-chart"></canvas></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">ابرکلمات — پرتکرارترین کلمات (۲۴ ساعت اخیر)</span></div>
+            <div class="words" id="news-analytics-words"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">موضوعات پرتکرار — ۲۴ ساعت اخیر (۶ موضوع برتر)</span></div>
+            <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
+            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.</p>
+          </div>
+        </div>
       </div>
     </section>
 
@@ -1651,44 +1667,6 @@
     </section>
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
-    <section class="section" id="sec-analytics">
-      <div class="seg" id="analytics-seg">
-        <button class="active" data-tab="stats">آمار و نمودارها</button>
-        <button data-tab="ai">تحلیل هوش مصنوعی <span style="opacity:.65">— به‌زودی</span></button>
-      </div>
-
-      <div id="tab-stats">
-        <div class="dash-layout">
-          <div class="dash-panel">
-            <div class="panel-head"><span class="panel-pill">خلاصه‌ی امروز</span></div>
-            <div class="kv-flow" id="today-kv"></div>
-          </div>
-          <div class="dash-panel">
-            <div class="panel-head"><span class="panel-pill">روایت‌های پرتکرار امروز</span></div>
-            <div class="rank-list" id="rank-list"></div>
-          </div>
-        </div>
-        <div class="cards-row">
-          <div class="stat-card"><div class="label">پست امروز</div><div class="val mono" id="stat-today">۰</div><div class="delta" id="stat-today-delta"></div></div>
-          <div class="stat-card"><div class="label">میانگین روزانه</div><div class="val mono" id="stat-avg">۰</div><div class="delta" id="stat-avg-delta"></div></div>
-          <div class="stat-card"><div class="label">کانال پرفعالیت</div><div class="val" id="stat-topchannel" style="font-size:16px;">—</div><div class="delta" id="stat-topchannel-delta" style="color:var(--text-faint)"></div></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">تعداد پست به ازای کانال (۶ کانال برتر)</span></div>
-          <div class="bars" id="bars"></div>
-        </div>
-        <div class="panel">
-          <div class="panel-head"><span class="panel-pill">کلمات پرتکرار هفته</span></div>
-          <div class="words" id="words"></div>
-        </div>
-      </div>
-
-      <div id="tab-ai" style="display:none;">
-        <div class="ai-note"><span><b>در انتظار توسعه.</b> نمونه‌ی زیر برای تصمیم‌گیری درباره‌ی نمایش خلاصه، دسته‌بندی و تحلیل احساسات است.</span></div>
-        <div id="ai-list"></div>
-      </div>
-    </section>
-
     <!-- EXPORT -->
     <section class="section" id="sec-export">
       <div class="panel">
@@ -1864,6 +1842,8 @@
 
 <!-- برای انیمیشن شمارش اعداد در پنل آماری هرو صفحه‌ی نخست -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+<!-- برای نمودارهای تب «آنالیز» بخش «اخبار و رویدادها» -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.4/chart.umd.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -2155,6 +2135,7 @@
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
+    document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
     // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
     // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
@@ -2163,6 +2144,7 @@
     const showStudy = tab==='study' || tab==='website' || tab==='claims';
     document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
+    document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
     if(showStudy){
       newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
@@ -2177,15 +2159,8 @@
       renderNewsFeed();
     }
     if(tab==='newspapers') renderNewspapers();
+    if(tab==='analytics') renderNewsAnalytics();
   }
-
-  document.getElementById('analytics-seg').addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b) return;
-    document.querySelectorAll('#analytics-seg button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    document.getElementById('tab-stats').style.display = b.dataset.tab==='stats' ? '' : 'none';
-    document.getElementById('tab-ai').style.display = b.dataset.tab==='ai' ? '' : 'none';
-  });
 
   // ---- real data state ----
   let CHANNELS = [];    // {id, platform, username, title, type, category_id, active}
@@ -2768,7 +2743,6 @@
     renderPosts();
     populatePoliticalFiguresSourceOptions();
     renderPoliticalFigures();
-    renderAnalytics();
     populateExportFilters();
     refreshCatOptions();
     renderCatGrid();
@@ -3276,65 +3250,206 @@
     return Object.entries(counts).sort((a,b)=>b[1]-a[1]).slice(0,20);
   }
 
-  function renderAnalytics(){
-    const dayAgo = Date.now() - 24*3600*1000;
-    const postsToday = POSTS_CACHE.filter(p=>new Date(p.scraped_at).getTime()>=dayAgo);
-    const topToday = topChannelsByCount(postsToday)[0];
+  // «آنالیز» تب «اخبار و رویدادها» فقط روی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»
+  // تعریف شده — نه «روزنامه‌ها» (جدول جدایی داره، posts نیست) و نه «ادعاها
+  // و شایعات» (کانال بله، محتوایی متفاوته)
+  function newsAnalyticsChannels(){
+    return CHANNELS.filter(c => c.show_in_news && c.platform !== 'bale');
+  }
+  // معیار محاسبات تب «آنالیز» ۲۴ ساعت اخیره — hours رو خالی بذار برای
+  // بدون محدودیت زمانی (فعلاً همه‌جا با hours=24 صدا زده می‌شه)
+  function newsAnalyticsPosts(hours){
+    const ids = new Set(newsAnalyticsChannels().map(c=>c.id));
+    const cutoff = hours ? Date.now() - hours*3600*1000 : 0;
+    return POSTS_CACHE.filter(p=>{
+      if(!ids.has(p.channel_id)) return false;
+      if(!hours) return true;
+      const t = new Date(p.posted_at || p.scraped_at).getTime();
+      return t >= cutoff;
+    });
+  }
 
-    document.getElementById('today-kv').innerHTML = '';
-    [
-      ['پست در ۲۴ ساعت گذشته', String(postsToday.length)],
-      ['کانال پرفعالیت (۲۴ ساعت)', topToday ? chName(Number(topToday[0])) : '—'],
-      ['تعداد کانال‌های پایش‌شونده', String(CHANNELS.length)],
-      ['کل پست‌های بارگذاری‌شده', String(POSTS_CACHE.length)],
-    ].forEach(([k,v])=>{
-      const el=document.createElement('div'); el.innerHTML=`<b>${k}</b><span>${v}</span>`;
-      document.getElementById('today-kv').appendChild(el);
+  // شمارش پست‌های منطبق با هر موضوعِ ذخیره‌شده (news_topics) — همون منطق
+  // OR-بین-کلیدواژه‌ها که filteredNewsPosts() برای فیلتر جستجو استفاده می‌کنه
+  function topicMatchCounts(posts){
+    return NEWS_TOPICS.map(t=>{
+      const terms = (t.keywords||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
+      const count = terms.length ? posts.filter(p=>{
+        const hay = ((p.title||'')+' '+(p.text||'')).toLowerCase();
+        return terms.some(term=>hay.includes(term));
+      }).length : 0;
+      return [t.name, count];
+    }).sort((a,b)=>b[1]-a[1]);
+  }
+
+  let newsTrendChart, newsSourcesChart, newsTopicsChart;
+  let chartDefaultsApplied = false;
+  function applyChartDefaultsOnce(){
+    if(chartDefaultsApplied || typeof Chart === 'undefined') return;
+    Chart.defaults.font.family = "'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif";
+    Chart.defaults.color = '#5b6472';
+    Chart.defaults.plugins.tooltip.backgroundColor = '#16202a';
+    Chart.defaults.plugins.tooltip.titleColor = '#fff';
+    Chart.defaults.plugins.tooltip.bodyColor = 'rgba(255,255,255,0.85)';
+    Chart.defaults.plugins.tooltip.padding = 10;
+    Chart.defaults.plugins.tooltip.cornerRadius = 8;
+    Chart.defaults.plugins.tooltip.displayColors = false;
+    Chart.defaults.plugins.tooltip.rtl = true;
+    Chart.defaults.plugins.tooltip.titleFont = { weight: '700' };
+    chartDefaultsApplied = true;
+  }
+
+  // گرادیان افقی برای میله‌های چارت‌های indexAxis:'y' — دقیقاً همون
+  // گرادیان برند (accent-strong → accent) که قبلاً روی .bar استفاده می‌شد
+  function horizontalBarGradient(from, to){
+    return (context)=>{
+      const { ctx, chartArea } = context.chart;
+      if(!chartArea) return from;
+      const g = ctx.createLinearGradient(chartArea.left, 0, chartArea.right, 0);
+      g.addColorStop(0, to); g.addColorStop(1, from);
+      return g;
+    };
+  }
+
+  // پالت ۶رنگه‌ی هم‌خانواده با برند برای نمودار دونات موضوعات پرتکرار
+  const TOPIC_DONUT_COLORS = ['#b5651d', '#EAB393', '#16202a', '#5b6472', '#d98a4f', '#3a4756'];
+
+  function renderNewsAnalytics(){
+    // معیار محاسبات همه‌ی ویجت‌های این تب: ۲۴ ساعت اخیر
+    const posts = newsAnalyticsPosts(24);
+    const hasChart = typeof Chart !== 'undefined';
+
+    // اخبار منتخب — ۱۰ خبر برتر (پرتکرارترین/جدیدترین پست‌های ۲۴ ساعت اخیر)
+    const selectedList = document.getElementById('news-analytics-selected-list');
+    const selectedEmpty = document.getElementById('news-analytics-selected-empty');
+    const selectedPosts = [...posts]
+      .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at))
+      .slice(0,10);
+    selectedList.innerHTML = '';
+    selectedEmpty.style.display = selectedPosts.length ? 'none' : '';
+    selectedPosts.forEach((p,i)=>{
+      const headline = p.title || (p.text||'').slice(0,140);
+      const el = document.createElement('div'); el.className = 'rank-item';
+      el.innerHTML = `<span class="rank-num">${toFaDigits(i+1)}</span>
+        <div class="rc"><p>${headline}</p>
+        <div class="rmeta">${catNameOf(p.channel_id)?`<span class="cat">${catNameOf(p.channel_id)}</span> · `:''}${chName(p.channel_id)} · ${newsRelTime(p.posted_at||p.scraped_at)}</div></div>`;
+      selectedList.appendChild(el);
     });
 
-    const rankList = document.getElementById('rank-list');
-    rankList.innerHTML = '';
-    POSTS_CACHE.slice(0,6).forEach((p,i)=>{
-      const el=document.createElement('div'); el.className='rank-item';
-      el.innerHTML = `<span class="rank-num">${i+1}</span>
-        <div class="rc"><p>${(p.text||'').slice(0,140)}</p>
-        <div class="rmeta">${catNameOf(p.channel_id)?`<span class="cat">${catNameOf(p.channel_id)}</span> · `:''}${chName(p.channel_id)}</div></div>`;
-      rankList.appendChild(el);
-    });
-
-    document.getElementById('stat-today').textContent = postsToday.length;
-    document.getElementById('stat-today-delta').textContent = CHANNELS.length + ' کانال پایش می‌شود';
-    const days = new Set(POSTS_CACHE.map(p=>new Date(p.scraped_at).toDateString()));
-    document.getElementById('stat-avg').textContent = days.size ? Math.round(POSTS_CACHE.length/days.size) : 0;
-    document.getElementById('stat-avg-delta').textContent = 'بر اساس داده‌ی بارگذاری‌شده';
-    document.getElementById('stat-topchannel').textContent = topToday ? chName(Number(topToday[0])) : '—';
-    document.getElementById('stat-topchannel-delta').textContent = topToday ? topToday[1] + ' پست در ۲۴ ساعت گذشته' : '';
-
-    const topAll = topChannelsByCount(POSTS_CACHE).slice(0,6);
-    const bars = document.getElementById('bars');
-    bars.innerHTML = '';
-    if(!topAll.length){
-      bars.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ی کافی نیست</span>';
-    }
-    const maxN = Math.max(1, ...topAll.map(c=>c[1]));
-    topAll.forEach(([id,n])=>{
-      const ch = chById(Number(id));
-      const col=document.createElement('div'); col.className='bar-col';
-      col.innerHTML = `<span class="n mono">${n}</span><div class="bar" style="height:${(n/maxN*100).toFixed(0)}%"></div><span class="lbl">@${ch?ch.username:id}</span>`;
-      bars.appendChild(col);
-    });
-
-    const words = document.getElementById('words');
-    const freq = wordFrequency(POSTS_CACHE);
-    words.innerHTML = '';
+    // ابرکلمات — تنها ویجتی که به Chart.js نیاز نداره، همیشه رندر می‌شه
+    const wordsEl = document.getElementById('news-analytics-words');
+    const freq = wordFrequency(posts);
+    wordsEl.innerHTML = '';
     if(!freq.length){
-      words.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ی کافی نیست</span>';
+      wordsEl.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ی کافی نیست</span>';
     }else{
       const maxF = freq[0][1];
       freq.forEach(([w,f])=>{
         const el=document.createElement('span'); el.className='word';
         el.style.fontSize = (12+f/maxF*10)+'px'; el.style.opacity = (0.6+f/maxF*0.4);
-        el.textContent = w; words.appendChild(el);
+        el.textContent = w; wordsEl.appendChild(el);
+      });
+    }
+
+    if(!hasChart) return; // بارگذاری Chart.js از CDN شکست خورده — بقیه‌ی نمودارها رو رد کن
+    applyChartDefaultsOnce();
+
+    // روند حجم اخبار — ۲۴ ساعت اخیر، به تفکیک ساعت
+    const hourLabels = [], hourCounts = [];
+    for(let i=23;i>=0;i--){
+      const d = new Date(); d.setMinutes(0,0,0); d.setHours(d.getHours()-i);
+      const next = new Date(d); next.setHours(d.getHours()+1);
+      const n = posts.filter(p=>{
+        const t = new Date(p.posted_at || p.scraped_at).getTime();
+        return t>=d.getTime() && t<next.getTime();
+      }).length;
+      hourLabels.push(d.toLocaleTimeString('fa-IR', {hour:'2-digit'}));
+      hourCounts.push(n);
+    }
+    if(newsTrendChart) newsTrendChart.destroy();
+    newsTrendChart = new Chart(document.getElementById('news-trend-chart'), {
+      type: 'line',
+      data: { labels: hourLabels, datasets: [{
+        data: hourCounts,
+        borderColor: '#b5651d',
+        borderWidth: 2.5,
+        backgroundColor: (context)=>{
+          const { ctx, chartArea } = context.chart;
+          if(!chartArea) return 'rgba(234,179,147,0.25)';
+          const g = ctx.createLinearGradient(0, chartArea.top, 0, chartArea.bottom);
+          g.addColorStop(0, 'rgba(234,179,147,0.5)'); g.addColorStop(1, 'rgba(234,179,147,0.02)');
+          return g;
+        },
+        fill: true, tension: 0.35,
+        pointRadius: 2, pointBackgroundColor: '#b5651d', pointBorderColor: '#fff', pointBorderWidth: 1.5,
+        pointHoverRadius: 6, pointHoverBackgroundColor: '#b5651d', pointHoverBorderWidth: 2,
+      }] },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display:false } },
+        scales: {
+          y: { beginAtZero:true, ticks:{ precision:0 }, grid:{ color:'rgba(20,27,36,0.06)' } },
+          x: { grid:{ display:false }, ticks:{ maxRotation:0, autoSkip:true, maxTicksLimit:8 } },
+        },
+      },
+    });
+
+    // حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر، ۸ منبع برتر
+    const topSources = topChannelsByCount(posts).slice(0,8);
+    if(newsSourcesChart) newsSourcesChart.destroy();
+    newsSourcesChart = new Chart(document.getElementById('news-sources-chart'), {
+      type: 'bar',
+      data: {
+        labels: topSources.map(([id])=>{ const ch=chById(Number(id)); return ch ? (ch.title||ch.username) : id; }),
+        datasets: [{
+          data: topSources.map(([,n])=>n),
+          backgroundColor: horizontalBarGradient('#b5651d', '#EAB393'),
+          borderRadius: 6, maxBarThickness: 30, barPercentage: 0.65, categoryPercentage: 0.75,
+        }],
+      },
+      options: {
+        indexAxis: 'y', responsive: true, maintainAspectRatio: false,
+        plugins: { legend: { display:false } },
+        scales: {
+          x: { beginAtZero:true, ticks:{ precision:0 }, grid:{ color:'rgba(20,27,36,0.06)' } },
+          y: { grid:{ display:false } },
+        },
+      },
+    });
+
+    // موضوعات پرتکرار — از روی news_topics تعریف‌شده در پنل «تنظیمات»،
+    // به‌جای نمودار میله‌ای (که شبیه ویجت منابع می‌شد) این‌بار دونات —
+    // چون این ویجت درباره‌ی «سهم» موضوعات از هم‌دیگه‌ست، نه رتبه‌بندی مطلق
+    const topicCounts = topicMatchCounts(posts).filter(([,n])=>n>0).slice(0,6);
+    const topicsBox = document.getElementById('news-topics-chart-box');
+    const topicsCanvas = document.getElementById('news-topics-chart');
+    const topicsEmpty = document.getElementById('news-topics-empty');
+    if(newsTopicsChart){ newsTopicsChart.destroy(); newsTopicsChart = null; }
+    if(!NEWS_TOPICS.length){
+      topicsBox.style.display = 'none';
+      topicsEmpty.textContent = 'هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.';
+      topicsEmpty.style.display = '';
+    }else if(!topicCounts.length){
+      topicsBox.style.display = 'none';
+      topicsEmpty.textContent = 'هیچ‌کدام از موضوعات تعریف‌شده در پست‌های ۲۴ ساعت اخیر یافت نشد.';
+      topicsEmpty.style.display = '';
+    }else{
+      topicsBox.style.display = '';
+      topicsEmpty.style.display = 'none';
+      newsTopicsChart = new Chart(topicsCanvas, {
+        type: 'doughnut',
+        data: {
+          labels: topicCounts.map(([name])=>name),
+          datasets: [{
+            data: topicCounts.map(([,n])=>n),
+            backgroundColor: TOPIC_DONUT_COLORS.slice(0, topicCounts.length),
+            borderColor: '#fff', borderWidth: 2, hoverOffset: 6,
+          }],
+        },
+        options: {
+          responsive: true, maintainAspectRatio: false, cutout: '62%',
+          plugins: { legend: { display:true, position:'bottom', rtl:true, labels:{ boxWidth:11, padding:12, font:{ size:11.5 } } } },
+        },
       });
     }
   }
