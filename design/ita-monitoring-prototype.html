@@ -2148,6 +2148,11 @@
     document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
     document.getElementById('sec-'+key).classList.add('active');
     document.getElementById('sec-title').textContent = TITLES[key];
+    // چون بخش‌ها با toggle کلاس روی همون صفحه‌ی بلندِ اسکرول‌شونده عوض
+    // می‌شن (نه ناوبری واقعی)، بدون این خط اسکرول قبلی (مثلاً از وسط
+    // صفحه‌ی نخست، جایی که کارت‌های عرصه‌های رصد هستن) روی بخش جدید هم
+    // می‌مونه و کاربر وسط/پایین بخش جدید فرود میاد، نه بالای اون
+    window.scrollTo(0, 0);
     // فید اخبار رسمی اولین‌بار موقع loadAll() ساخته می‌شه، وقتی بخش هنوز
     // display:none‌ه — یعنی clientHeight/scrollHeight برای همه صفر حساب
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
