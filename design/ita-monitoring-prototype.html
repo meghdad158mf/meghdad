@@ -722,8 +722,14 @@
   .seg button{ border:none; background:none; color: var(--text-dim); font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; }
   .seg button.active{ background: var(--navy); color:#fff; }
 
-  .words{ display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; min-height:280px; }
-  .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); align-self:flex-start; }
+
+  /* آمار تولید خبر — امروز (تب «آنالیز») — بدون عنوان پنل؛ عدد کل توی
+     کادر خودش سمت راست، تاریخ شمسی امروز سمت چپ همون ردیف */
+  .platform-total-row{ display:flex; align-items:center; justify-content:center; gap:20px; }
+  .platform-total-box{ background: var(--surface-2); border:1px solid var(--border); border-radius: var(--radius); padding:14px 24px; text-align:center; }
+  .platform-total-box b{ display:block; font-size:32px; font-weight:800; color:#b5651d; font-family: ui-monospace,monospace; line-height:1; }
+  .platform-total-box span{ display:block; margin-top:6px; font-size:11.5px; color: var(--text-faint); white-space:nowrap; }
+  .platform-total-date{ font-size:13.5px; font-weight:600; color: var(--text-dim); }
 
   /* لیست «اخبار منتخب» بالای تب «آنالیز» */
   .rank-list{ display:flex; flex-direction:column; }
@@ -735,15 +741,18 @@
   .rank-item .rc .rmeta{ margin-top:6px; font-size:11px; color: var(--text-faint); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
   .rank-item .rc .rmeta .cat{ color: var(--accent-strong); font-weight:600; }
 
-  /* چهار ویجت تب «آنالیز» به‌صورت گرید دوستونه (چپ‌وراست)، نه زیر هم —
-     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه.
-     align-items پیش‌فرض (stretch) + panel به‌صورت flex-column باعث می‌شه
-     دو کارت هم‌ردیف همیشه هم‌ارتفاع بمونن (لبه‌ی پایین هم‌تراز، نه پلکانی) */
-  .news-analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
-  .news-analytics-grid .panel{ margin-bottom:0; display:flex; flex-direction:column; }
-  .news-analytics-grid .panel > .chart-box,
-  .news-analytics-grid .panel > .words{ flex:1 1 auto; }
-  @media (max-width:900px){ .news-analytics-grid{ grid-template-columns:1fr; } }
+  /* تب «آنالیز» — چیدمان دوستونه‌ی نامتقارن (masonry-مانند)، نه گرید
+     هم‌ردیف: ستون راست («اخبار منتخب» + روند حجم اخبار توی فضای باقی‌مونده‌ش)
+     و ستون چپ (آمار تولید خبر + موضوعات پرتکرار + حجم تولید محتوا) قد
+     متفاوتی دارن — align-items:start عمداً به‌جای stretch، چون این‌بار
+     قرار نیست دو ستون هم‌ارتفاع باشن، فقط محتوای هرکدوم مرتب زیر هم بچینه.
+     صفحه RTLه، پس اولین `.news-analytics-col` توی DOM (ستون راست) توی
+     ستون اول گرید قرار می‌گیره که سمت راست دیده می‌شه.
+     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه */
+  .news-analytics-columns{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .news-analytics-col{ display:flex; flex-direction:column; gap:16px; }
+  .news-analytics-col .panel{ margin-bottom:0; }
+  @media (max-width:900px){ .news-analytics-columns{ grid-template-columns:1fr; } }
 
   /* نمودارهای Chart.js — کانتینر با ارتفاع کمینه‌ی یکسان (نه attribute
      height خودِ canvas) چون به همراه maintainAspectRatio:false توی JS،
@@ -751,7 +760,7 @@
      بلندتر بود، این‌یکی هم به همون اندازه کشیده بشه */
   .chart-box{ position:relative; width:100%; min-height:280px; }
   @media (max-width:640px){
-    .chart-box, .words{ min-height:230px; }
+    .chart-box{ min-height:230px; }
   }
 
   /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
@@ -1456,34 +1465,47 @@
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
            (یعنی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»)، بدون «روزنامه‌ها»/«ادعاها و شایعات» -->
       <div id="news-analytics-panel" style="display:none;">
-        <div class="panel">
-          <div class="panel-head">
-            <span class="panel-pill">اخبار منتخب</span>
-            <span class="ai-updated-note" id="news-selected-updated"></span>
-          </div>
-          <div class="rank-list" id="news-analytics-selected-list"></div>
-          <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
-        </div>
-        <div class="news-analytics-grid">
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
-            <div class="chart-box"><canvas id="news-trend-chart"></canvas></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر (۸ منبع برتر)</span></div>
-            <div class="chart-box"><canvas id="news-sources-chart"></canvas></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">ابرکلمات — پرتکرارترین کلمات (۲۴ ساعت اخیر)</span></div>
-            <div class="words" id="news-analytics-words"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head">
-              <span class="panel-pill">موضوعات پرتکرار</span>
-              <span class="ai-updated-note" id="news-topics-updated"></span>
+        <div class="news-analytics-columns">
+          <!-- ستون راست: اخبار منتخب بالا + روند حجم اخبار توی فضای باقی‌مونده‌ی همون ستون -->
+          <div class="news-analytics-col">
+            <div class="panel">
+              <div class="panel-head">
+                <span class="panel-pill">اخبار منتخب</span>
+                <span class="ai-updated-note" id="news-selected-updated"></span>
+              </div>
+              <div class="rank-list" id="news-analytics-selected-list"></div>
+              <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
             </div>
-            <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
-            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
+            <div class="panel">
+              <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
+              <div class="chart-box"><canvas id="news-trend-chart"></canvas></div>
+            </div>
+          </div>
+          <!-- ستون چپ: تعداد کل اخبار امروز، بعد جدیدترین ادعا/شایعه، بعد موضوعات پرتکرار، بعد حجم تولید محتوا -->
+          <div class="news-analytics-col">
+            <div class="panel">
+              <div class="platform-total-row">
+                <div class="platform-total-box" id="news-platform-cards"></div>
+                <div class="platform-total-date" id="news-platform-date"></div>
+              </div>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><span class="panel-pill">جدیدترین ادعا یا شایعه</span></div>
+              <div class="rank-list" id="news-claims-recent-list"></div>
+              <p id="news-claims-recent-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز ادعا یا شایعه‌ای ثبت نشده.</p>
+            </div>
+            <div class="panel">
+              <div class="panel-head">
+                <span class="panel-pill">موضوعات پرتکرار</span>
+                <span class="ai-updated-note" id="news-topics-updated"></span>
+              </div>
+              <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
+              <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">تحلیل هوش مصنوعی هنوز آماده نشده — طبق زمان‌بندی روزی ۴ بار (۲، ۸، ۱۴ و ۲۰) به‌روز می‌شه.</p>
+            </div>
+            <div class="panel">
+              <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر (۸ منبع برتر)</span></div>
+              <div class="chart-box"><canvas id="news-sources-chart"></canvas></div>
+            </div>
           </div>
         </div>
       </div>
@@ -3332,6 +3354,7 @@
     // (نه هر بار بازکردن این تب) محاسبه شده
     const posts = newsAnalyticsPosts(24);
     const hasChart = typeof Chart !== 'undefined';
+    if(hasChart) applyChartDefaultsOnce();
 
     // اخبار منتخب — تشخیص هوش مصنوعی (نه صرفاً جدیدترین). این خودِ
     // renderNewsAnalytics() هیچی محاسبه نمی‌کنه — فقط آخرین ردیف
@@ -3359,23 +3382,39 @@
       selectedList.appendChild(el);
     });
 
-    // ابرکلمات — تنها ویجتی که به Chart.js نیاز نداره، همیشه رندر می‌شه
-    const wordsEl = document.getElementById('news-analytics-words');
-    const freq = wordFrequency(posts);
-    wordsEl.innerHTML = '';
-    if(!freq.length){
-      wordsEl.innerHTML = '<span style="color:var(--text-faint);font-size:12px;">هنوز داده‌ی کافی نیست</span>';
-    }else{
-      const maxF = freq[0][1];
-      freq.forEach(([w,f])=>{
-        const el=document.createElement('span'); el.className='word';
-        el.style.fontSize = (12+f/maxF*10)+'px'; el.style.opacity = (0.6+f/maxF*0.4);
-        el.textContent = w; wordsEl.appendChild(el);
-      });
-    }
+    // آمار تولید خبر — امروز (نه ۲۴ ساعت اخیر؛ از نیمه‌شب تقویمی امروز به
+    // وقت مرورگر) — فقط عدد کل، بدون تفکیک پلتفرم؛ بدون عنوان پنل، عدد
+    // توی کادر خودش سمت راست + تاریخ شمسی امروز سمت چپ همون ردیف
+    const platformCardsEl = document.getElementById('news-platform-cards');
+    const platformDateEl = document.getElementById('news-platform-date');
+    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const todayPosts = newsAnalyticsPosts().filter(p=>{
+      const t = new Date(p.posted_at || p.scraped_at).getTime();
+      return t >= todayStart.getTime();
+    });
+    platformCardsEl.innerHTML = `<b>${toFaDigits(todayPosts.length)}</b><span>تعداد کل اخبار امروز</span>`;
+    platformDateEl.textContent = new Date().toLocaleDateString('fa-IR', { day:'numeric', month:'long', year:'numeric' });
+
+    // جدیدترین ادعا یا شایعه — ۳ مورد اخیر از تب «ادعاها و شایعات»
+    // (platform=bale، همون فیلتری که خودِ تب claims استفاده می‌کنه)، فقط
+    // عنوان کافیه؛ posts.title رو collect_bale.py همیشه پر می‌کنه
+    const claimsRecentList = document.getElementById('news-claims-recent-list');
+    const claimsRecentEmpty = document.getElementById('news-claims-recent-empty');
+    const recentClaims = POSTS_CACHE.filter(p=>p.platform==='bale')
+      .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at))
+      .slice(0,3);
+    claimsRecentList.innerHTML = '';
+    claimsRecentEmpty.style.display = recentClaims.length ? 'none' : '';
+    recentClaims.forEach((p,i)=>{
+      const text = p.title || (p.text||'').slice(0,140);
+      const el = document.createElement('div'); el.className = 'rank-item';
+      el.innerHTML = `<span class="rank-num">${toFaDigits(i+1)}</span>
+        <div class="rc"><p>${escHtml(text)}</p>
+        <div class="rmeta">${chName(p.channel_id)} · ${newsRelTime(p.posted_at||p.scraped_at)}</div></div>`;
+      claimsRecentList.appendChild(el);
+    });
 
     if(!hasChart) return; // بارگذاری Chart.js از CDN شکست خورده — بقیه‌ی نمودارها رو رد کن
-    applyChartDefaultsOnce();
 
     // روند حجم اخبار — ۲۴ ساعت اخیر، به تفکیک ساعت
     const hourLabels = [], hourCounts = [];
