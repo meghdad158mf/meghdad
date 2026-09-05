@@ -2710,6 +2710,15 @@
     return String(n).replace(/[0-9]/g, d => fa[d]);
   }
 
+  // شروع «امروز» رو صریح روی نیمه‌شب وقت ایران (نه ساعت محلی مرورگر
+  // بازدیدکننده) حساب می‌کنه — چون یه مدیر ممکنه از یه سیستم با تایم‌زون
+  // متفاوت وارد بشه و در اون صورت setHours(0,0,0,0) خام روی Date، نیمه‌شب
+  // همون تایم‌زون غلط رو حساب می‌کرد، نه نیمه‌شب واقعی ایران
+  function iranTodayStartMs(){
+    const iranDateStr = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Tehran', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date());
+    return new Date(iranDateStr + 'T00:00:00+03:30').getTime();
+  }
+
   async function renderDashHeroStats(){
     const wrap = document.getElementById('dash-hero-stats');
     if(!wrap) return;
@@ -3388,17 +3397,18 @@
     });
 
     // آمار تولید خبر — امروز (نه ۲۴ ساعت اخیر؛ از نیمه‌شب تقویمی امروز به
-    // وقت مرورگر) — فقط عدد کل، بدون تفکیک پلتفرم؛ بدون عنوان پنل، عدد
-    // توی کادر خودش سمت راست + تاریخ شمسی امروز سمت چپ همون ردیف
+    // وقت ایران، صریح — نه ساعت محلی مرورگر) — فقط عدد کل، بدون تفکیک
+    // پلتفرم؛ بدون عنوان پنل، عدد توی کادر خودش سمت راست + تاریخ شمسی
+    // امروز سمت چپ همون ردیف
     const platformCardsEl = document.getElementById('news-platform-cards');
     const platformDateEl = document.getElementById('news-platform-date');
-    const todayStart = new Date(); todayStart.setHours(0,0,0,0);
+    const todayStartMs = iranTodayStartMs();
     const todayPosts = newsAnalyticsPosts().filter(p=>{
       const t = new Date(p.posted_at || p.scraped_at).getTime();
-      return t >= todayStart.getTime();
+      return t >= todayStartMs;
     });
     platformCardsEl.innerHTML = `<b>${toFaDigits(todayPosts.length)}</b><span>تعداد کل اخبار امروز</span>`;
-    platformDateEl.textContent = new Date().toLocaleDateString('fa-IR', { day:'numeric', month:'long', year:'numeric' });
+    platformDateEl.textContent = new Date().toLocaleDateString('fa-IR', { day:'numeric', month:'long', year:'numeric', timeZone:'Asia/Tehran' });
 
     // جدیدترین ادعا یا شایعه — ۳ مورد اخیر از تب «ادعاها و شایعات»
     // (platform=bale، همون فیلتری که خودِ تب claims استفاده می‌کنه)، فقط
