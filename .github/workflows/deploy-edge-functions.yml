@@ -24,3 +24,7 @@ jobs:
       - run: supabase functions deploy translate --no-verify-jwt --project-ref komqnapfqrtxxaytpcdt
         env:
           SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+
+      - run: supabase functions deploy news-insights --no-verify-jwt --project-ref komqnapfqrtxxaytpcdt
+        env:
+          SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
