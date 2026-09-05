@@ -721,26 +721,26 @@
   .seg button{ border:none; background:none; color: var(--text-dim); font-size:12.5px; font-weight:700; padding:8px 16px; border-radius:6px; cursor:pointer; }
   .seg button.active{ background: var(--navy); color:#fff; }
 
-  .words{ display:flex; flex-wrap:wrap; gap:8px; }
-  .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); }
+  .words{ display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; min-height:280px; }
+  .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); align-self:flex-start; }
 
   /* چهار ویجت تب «آنالیز» به‌صورت گرید دوستونه (چپ‌وراست)، نه زیر هم —
-     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه */
-  .news-analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
-  .news-analytics-grid .panel{ margin-bottom:0; }
+     زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه.
+     align-items پیش‌فرض (stretch) + panel به‌صورت flex-column باعث می‌شه
+     دو کارت هم‌ردیف همیشه هم‌ارتفاع بمونن (لبه‌ی پایین هم‌تراز، نه پلکانی) */
+  .news-analytics-grid{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+  .news-analytics-grid .panel{ margin-bottom:0; display:flex; flex-direction:column; }
+  .news-analytics-grid .panel > .chart-box,
+  .news-analytics-grid .panel > .words{ flex:1 1 auto; }
   @media (max-width:900px){ .news-analytics-grid{ grid-template-columns:1fr; } }
 
-  /* نمودارهای Chart.js — کانتینر با ارتفاع ثابت (نه attribute height خودِ
-     canvas) چون به همراه maintainAspectRatio:false توی JS، اندازه‌ی
-     قابل‌پیش‌بینی و یکسان روی هر عرض صفحه می‌ده */
-  .chart-box{ position:relative; width:100%; }
-  .chart-box-line{ height:260px; }
-  .chart-box-bar-8{ height:300px; }
-  .chart-box-donut{ height:300px; }
+  /* نمودارهای Chart.js — کانتینر با ارتفاع کمینه‌ی یکسان (نه attribute
+     height خودِ canvas) چون به همراه maintainAspectRatio:false توی JS،
+     اندازه‌ی قابل‌پیش‌بینی می‌ده؛ flex:1 بالا باعث می‌شه اگه کارت هم‌ردیف
+     بلندتر بود، این‌یکی هم به همون اندازه کشیده بشه */
+  .chart-box{ position:relative; width:100%; min-height:280px; }
   @media (max-width:640px){
-    .chart-box-line{ height:220px; }
-    .chart-box-bar-8{ height:280px; }
-    .chart-box-donut{ height:280px; }
+    .chart-box, .words{ min-height:230px; }
   }
 
   /* schools — گزارش‌های تحلیل Power BI؛ هر عکس تمام‌عرض و پشت‌سرهم روی صفحه (نه گرید تامبنیل) */
@@ -1448,11 +1448,11 @@
         <div class="news-analytics-grid">
           <div class="panel">
             <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
-            <div class="chart-box chart-box-line"><canvas id="news-trend-chart"></canvas></div>
+            <div class="chart-box"><canvas id="news-trend-chart"></canvas></div>
           </div>
           <div class="panel">
             <div class="panel-head"><span class="panel-pill">حجم تولید محتوا به تفکیک منبع — ۲۴ ساعت اخیر (۸ منبع برتر)</span></div>
-            <div class="chart-box chart-box-bar-8"><canvas id="news-sources-chart"></canvas></div>
+            <div class="chart-box"><canvas id="news-sources-chart"></canvas></div>
           </div>
           <div class="panel">
             <div class="panel-head"><span class="panel-pill">ابرکلمات — پرتکرارترین کلمات (۲۴ ساعت اخیر)</span></div>
@@ -1460,7 +1460,7 @@
           </div>
           <div class="panel">
             <div class="panel-head"><span class="panel-pill">موضوعات پرتکرار — ۲۴ ساعت اخیر (۶ موضوع برتر)</span></div>
-            <div class="chart-box chart-box-donut" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
+            <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
             <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.</p>
           </div>
         </div>
