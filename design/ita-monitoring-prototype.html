@@ -724,6 +724,16 @@
   .words{ display:flex; flex-wrap:wrap; align-content:flex-start; gap:8px; min-height:280px; }
   .word{ padding:5px 12px; border-radius:100px; border:1px solid var(--border-strong); color: var(--text-dim); background: var(--surface-2); align-self:flex-start; }
 
+  /* لیست «اخبار منتخب» بالای تب «آنالیز» */
+  .rank-list{ display:flex; flex-direction:column; }
+  .rank-item{ display:flex; gap:12px; padding:13px 0; border-bottom:1px solid var(--border); }
+  .rank-item:last-child{ border-bottom:none; }
+  .rank-num{ width:24px; height:24px; border-radius:7px; background: var(--navy); color:#fff; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:700; flex-shrink:0; font-family: ui-monospace,monospace; margin-top:1px; }
+  .rank-item .rc{ min-width:0; }
+  .rank-item .rc p{ margin:0; font-size:13.5px; color: var(--text); }
+  .rank-item .rc .rmeta{ margin-top:6px; font-size:11px; color: var(--text-faint); display:flex; align-items:center; gap:6px; flex-wrap:wrap; }
+  .rank-item .rc .rmeta .cat{ color: var(--accent-strong); font-weight:600; }
+
   /* چهار ویجت تب «آنالیز» به‌صورت گرید دوستونه (چپ‌وراست)، نه زیر هم —
      زیر ۹۰۰px به یک‌ستونه برمی‌گرده تا روی موبایل جمع‌وجور نشه.
      align-items پیش‌فرض (stretch) + panel به‌صورت flex-column باعث می‌شه
@@ -1445,6 +1455,11 @@
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
            (یعنی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»)، بدون «روزنامه‌ها»/«ادعاها و شایعات» -->
       <div id="news-analytics-panel" style="display:none;">
+        <div class="panel">
+          <div class="panel-head"><span class="panel-pill">اخبار منتخب — ۲۴ ساعت اخیر (۱۰ خبر برتر)</span></div>
+          <div class="rank-list" id="news-analytics-selected-list"></div>
+          <p id="news-analytics-selected-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز خبری در ۲۴ ساعت اخیر ثبت نشده.</p>
+        </div>
         <div class="news-analytics-grid">
           <div class="panel">
             <div class="panel-head"><span class="panel-pill">روند حجم اخبار — ۲۴ ساعت اخیر (به تفکیک ساعت)</span></div>
@@ -3303,6 +3318,23 @@
     // معیار محاسبات همه‌ی ویجت‌های این تب: ۲۴ ساعت اخیر
     const posts = newsAnalyticsPosts(24);
     const hasChart = typeof Chart !== 'undefined';
+
+    // اخبار منتخب — ۱۰ خبر برتر (پرتکرارترین/جدیدترین پست‌های ۲۴ ساعت اخیر)
+    const selectedList = document.getElementById('news-analytics-selected-list');
+    const selectedEmpty = document.getElementById('news-analytics-selected-empty');
+    const selectedPosts = [...posts]
+      .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at))
+      .slice(0,10);
+    selectedList.innerHTML = '';
+    selectedEmpty.style.display = selectedPosts.length ? 'none' : '';
+    selectedPosts.forEach((p,i)=>{
+      const headline = p.title || (p.text||'').slice(0,140);
+      const el = document.createElement('div'); el.className = 'rank-item';
+      el.innerHTML = `<span class="rank-num">${toFaDigits(i+1)}</span>
+        <div class="rc"><p>${headline}</p>
+        <div class="rmeta">${catNameOf(p.channel_id)?`<span class="cat">${catNameOf(p.channel_id)}</span> · `:''}${chName(p.channel_id)} · ${newsRelTime(p.posted_at||p.scraped_at)}</div></div>`;
+      selectedList.appendChild(el);
+    });
 
     // ابرکلمات — تنها ویجتی که به Chart.js نیاز نداره، همیشه رندر می‌شه
     const wordsEl = document.getElementById('news-analytics-words');
