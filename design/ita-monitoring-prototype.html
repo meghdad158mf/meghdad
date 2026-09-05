@@ -1380,16 +1380,16 @@
     <section class="section" id="sec-overview">
 
       <div class="news-page-tabs">
-        <button id="news-tab-analytics" onclick="setNewsPageTab('analytics')">در یک نگاه</button>
+        <button class="active" id="news-tab-analytics" onclick="setNewsPageTab('analytics')">در یک نگاه</button>
         <button id="news-tab-claims" onclick="setNewsPageTab('claims')">ادعاها و شایعات</button>
-        <button class="active" id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
+        <button id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button disabled>پرونده ویژه<span class="news-soon">به‌زودی</span></button>
         <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
       </div>
 
-      <div id="news-study-panel">
+      <div id="news-study-panel" style="display:none;">
         <div class="news-filters">
           <div class="news-filter-row">
             <div class="news-search-box" id="news-search-box">
@@ -1464,7 +1464,7 @@
 
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
            (یعنی «شبکه‌های اجتماعی» + «وب‌سایت‌ها»)، بدون «روزنامه‌ها»/«ادعاها و شایعات» -->
-      <div id="news-analytics-panel" style="display:none;">
+      <div id="news-analytics-panel">
         <div class="news-analytics-columns">
           <!-- ستون راست: اخبار منتخب بالا + روند حجم اخبار توی فضای باقی‌مونده‌ی همون ستون -->
           <div class="news-analytics-col">
@@ -2152,7 +2152,7 @@
     // display:none‌ه — یعنی clientHeight/scrollHeight برای همه صفر حساب
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
-    if(key === 'overview') renderNewsFeed();
+    if(key === 'overview'){ renderNewsFeed(); renderNewsAnalytics(); }
     if(key === 'posts') renderPosts();
     if(key === 'feedback') loadFeedbackList().then(renderFeedbackList);
     if(key === 'export') loadNotifySubscribers().then(renderNotifySubscribers);
