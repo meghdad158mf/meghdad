@@ -1474,9 +1474,9 @@
             <div class="words" id="news-analytics-words"></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><span class="panel-pill">موضوعات پرتکرار — ۲۴ ساعت اخیر (۶ موضوع برتر)</span></div>
+            <div class="panel-head"><span class="panel-pill">موضوعات ترند — تشخیص خودکار (۲۴ ساعت اخیر)</span></div>
             <div class="chart-box" id="news-topics-chart-box"><canvas id="news-topics-chart"></canvas></div>
-            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.</p>
+            <p id="news-topics-empty" style="display:none;color:var(--text-faint);font-size:12.5px;">هنوز عبارت پرتکراری در ۲۴ ساعت اخیر پیدا نشد.</p>
           </div>
         </div>
       </div>
@@ -3273,17 +3273,26 @@
     });
   }
 
-  // شمارش پست‌های منطبق با هر موضوعِ ذخیره‌شده (news_topics) — همون منطق
-  // OR-بین-کلیدواژه‌ها که filteredNewsPosts() برای فیلتر جستجو استفاده می‌کنه
-  function topicMatchCounts(posts){
-    return NEWS_TOPICS.map(t=>{
-      const terms = (t.keywords||'').split(',').map(s=>s.trim().toLowerCase()).filter(Boolean);
-      const count = terms.length ? posts.filter(p=>{
-        const hay = ((p.title||'')+' '+(p.text||'')).toLowerCase();
-        return terms.some(term=>hay.includes(term));
-      }).length : 0;
-      return [t.name, count];
-    }).sort((a,b)=>b[1]-a[1]);
+  // تشخیص خودکار «موضوعات ترند» — به‌جای تکیه به موضوعات دستی news_topics
+  // (که چون تعریفشون دستیه، اغلب فقط ۱-۲ تاشون توی ۲۴ ساعت اخیر تطبیق
+  // داشتن)، عبارت‌های دوکلمه‌ای متوالی (بایگرام) پرتکرار متن پست‌ها رو
+  // می‌شمریم — نه هوش مصنوعی واقعی، فقط شمارش تکرار عبارت، ولی چون
+  // عبارت‌های دوکلمه‌ای («بازار ارز»، «انتخابات مجلس») نسبت به تک‌کلمه‌های
+  // ابرکلمات بالاتر معنای موضوعی بیشتری دارن، حس «موضوع ترند» می‌ده
+  function phraseFrequency(list){
+    const counts = {};
+    list.forEach(p=>{
+      const text = (p.text||'').replace(/https?:\/\/\S+/g,'').replace(/[^؀-ۿ\s]/g,' ');
+      const words = text.split(/\s+/).map(w=>w.trim()).filter(Boolean);
+      for(let i=0;i<words.length-1;i++){
+        const a = words[i], b = words[i+1];
+        if(a.length<2 || b.length<2 || STOPWORDS.has(a) || STOPWORDS.has(b)) continue;
+        const phrase = a+' '+b;
+        counts[phrase] = (counts[phrase]||0)+1;
+      }
+    });
+    // عبارتی که فقط یه‌بار توی کل ۲۴ ساعت اومده «ترند» حساب نمی‌شه، صرفاً نویزه
+    return Object.entries(counts).filter(([,n])=>n>=2).sort((a,b)=>b[1]-a[1]);
   }
 
   let newsTrendChart, newsSourcesChart, newsTopicsChart;
@@ -3421,21 +3430,16 @@
       },
     });
 
-    // موضوعات پرتکرار — از روی news_topics تعریف‌شده در پنل «تنظیمات»،
-    // به‌جای نمودار میله‌ای (که شبیه ویجت منابع می‌شد) این‌بار دونات —
-    // چون این ویجت درباره‌ی «سهم» موضوعات از هم‌دیگه‌ست، نه رتبه‌بندی مطلق
-    const topicCounts = topicMatchCounts(posts).filter(([,n])=>n>0).slice(0,6);
+    // موضوعات ترند — تشخیص خودکار از روی عبارت‌های دوکلمه‌ای پرتکرار متن
+    // پست‌ها (نه موضوعات دستی تعریف‌شده)؛ دونات چون درباره‌ی «سهم» عبارات
+    // از هم‌دیگه‌ست، نه رتبه‌بندی مطلق
+    const topicCounts = phraseFrequency(posts).slice(0,6);
     const topicsBox = document.getElementById('news-topics-chart-box');
     const topicsCanvas = document.getElementById('news-topics-chart');
     const topicsEmpty = document.getElementById('news-topics-empty');
     if(newsTopicsChart){ newsTopicsChart.destroy(); newsTopicsChart = null; }
-    if(!NEWS_TOPICS.length){
+    if(!topicCounts.length){
       topicsBox.style.display = 'none';
-      topicsEmpty.textContent = 'هنوز هیچ موضوعی از پنل «مدیریت ← تنظیمات» تعریف نشده.';
-      topicsEmpty.style.display = '';
-    }else if(!topicCounts.length){
-      topicsBox.style.display = 'none';
-      topicsEmpty.textContent = 'هیچ‌کدام از موضوعات تعریف‌شده در پست‌های ۲۴ ساعت اخیر یافت نشد.';
       topicsEmpty.style.display = '';
     }else{
       topicsBox.style.display = '';
