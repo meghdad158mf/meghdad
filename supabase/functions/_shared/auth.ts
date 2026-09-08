@@ -73,7 +73,7 @@ export async function fetchRecentNewsPostsForUser(
 // بی‌کلیدواژه‌ای نمونده) پردازش می‌شه، فقط اولویت با تازه‌هاست.
 export async function fetchPostsMissingKeywords(
   req: Request,
-  limit = 40,
+  limit = 30,
 ): Promise<Array<{ id: number; title: string | null; text: string | null }> | null> {
   const authHeader = req.headers.get("Authorization") || "";
   const token = authHeader.replace(/^Bearer\s+/i, "");
