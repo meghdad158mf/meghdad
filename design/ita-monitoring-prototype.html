@@ -662,8 +662,28 @@
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
 
-  .dossier-group{ margin:0 0 32px; }
-  .dossier-group-title{ font-size:15px; font-weight:800; color:var(--accent-strong); margin:0 0 14px; padding-inline-start:12px; border-inline-start:3px solid var(--accent); }
+  .dossier-group{ margin:0 0 20px; }
+  .dossier-group-title{
+    display:flex; align-items:center; justify-content:space-between; gap:10px; list-style:none; cursor:pointer;
+    font-size:15px; font-weight:800; color: var(--text-dim); margin:0; padding:10px 12px; border-radius:8px;
+    border-inline-start:3px solid var(--accent);
+  }
+  .dossier-group-title::-webkit-details-marker{ display:none; }
+  .dossier-group-title::after{ content:'▾'; font-size:12px; color:var(--accent); flex-shrink:0; }
+  /* موضوعِ بازشده («در حال نمایش») با پس‌زمینه‌ی هلویی‌رنگ و متن پررنگ‌تر
+     از موضوعات بسته مشخص می‌شه — تا معلوم باشه اخبار کدوم موضوع دیده می‌شه */
+  .dossier-group[open] > .dossier-group-title{
+    color: var(--accent-strong); background: rgba(234,179,147,0.16); margin-bottom:14px;
+  }
+  .dossier-group[open] > .dossier-group-title::after{ content:'▴'; }
+  .dossier-group > .news-feed{ padding-top:2px; }
+  .news-feed.dossier-feed{ grid-template-columns: repeat(2,1fr); }
+  @media (max-width:560px){ .news-feed.dossier-feed{ grid-template-columns: 1fr; } }
+  /* letterbox: عکس‌های عمودی/افقی مختلف کامل و بدون برش داخل قاب ثابت جا
+     می‌شن (به‌جای cover که بخشیش رو می‌برید)؛ فضای خالی اطراف عکس با همون
+     گرادیانی که placeholder بی‌عکس داره پر می‌شه، تا حاشیه‌ها یکدست به‌نظر برسن */
+  .news-feed.dossier-feed .news-thumb{ background: linear-gradient(155deg, var(--navy), #223142); }
+  .news-feed.dossier-feed .news-thumb img{ object-fit: contain; cursor:zoom-in; }
   .news-kw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
   .news-kw-chip{ font-size:10.5px; background: rgba(234,179,147,0.14); color: var(--accent-strong); border-radius: var(--radius-pill); padding:3px 10px; }
   .news-kw-chip.empty{ color: var(--text-faint); background: rgba(0,0,0,0.04); }
@@ -1492,6 +1512,16 @@
            می‌شه. فقط موضوعات active که حداقل یه پست excluded=false دارن
            نشون داده می‌شن. -->
       <div id="news-dossier-panel" style="display:none;">
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-seg" id="dossier-time-seg">
+              <button class="active" data-t="all">همه</button>
+              <button data-t="today">امروز</button>
+              <button data-t="yesterday">دیروز</button>
+              <button data-t="week">هفته گذشته</button>
+            </div>
+          </div>
+        </div>
         <div id="dossier-groups"></div>
         <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
       </div>
@@ -2495,32 +2525,65 @@
 
   // ---- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
   // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
+  // فیلتر «بازه‌ی زمانی» عیناً همون منطق filteredNewsPosts() (رولینگ
+  // ۲۴/۴۸/۱۶۸ ساعته، نه از نیمه‌شب) رو برای یکدستی با بقیه‌ی فیدها تکرار
+  // می‌کنه. جستجوی متنی و فیلتر چیپی موضوع طبق نظر کاربر حذف شدن —
+  // به‌جاش هر گروه/موضوع خودش یه <details> جمع‌شونده‌ست (پیش‌فرض بسته)
+  // که با کلیک روی عنوانش باز/بسته می‌شه؛ انتخاب موضوع دیگه لازم نیست.
+  let dossierState = { time: 'all' };
+
   function renderDossierTab(){
     const wrap = document.getElementById('dossier-groups');
     const empty = document.getElementById('dossier-empty');
     if(!wrap) return;
+    const now = Date.now();
     const groups = DOSSIER_TOPICS.filter(t=>t.active).map(t=>{
       const postIds = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id && !dp.excluded).map(dp=>dp.post_id);
-      const posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean)
-        .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
+      let posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean);
+      if(dossierState.time !== 'all'){
+        posts = posts.filter(p=>{
+          const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
+          const diffDays = (now - posted) / 86400000;
+          if(dossierState.time === 'today') return diffDays <= 1;
+          if(dossierState.time === 'yesterday') return diffDays >= 1 && diffDays <= 2;
+          if(dossierState.time === 'week') return diffDays <= 7;
+          return true;
+        });
+      }
+      posts.sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
       return { topic: t, posts };
     }).filter(g=>g.posts.length);
     empty.style.display = groups.length ? 'none' : 'block';
-    wrap.innerHTML = groups.map(g=>`
-      <div class="dossier-group">
-        <h3 class="dossier-group-title">${escAttr(g.topic.name)}</h3>
-        <div class="news-feed">${g.posts.map(p=>dossierPostCardHtml(p)).join('')}</div>
-      </div>
+    // <details> بدون attribute «open» یعنی پیش‌فرض بسته — کاربر با کلیک
+    // روی عنوان (summary) هر موضوع رو جدا باز/بسته می‌کنه (نه accordion
+    // انحصاری؛ چند موضوع می‌تونن هم‌زمان باز باشن). طبق نظر کاربر، آخرین
+    // موضوعِ گروه (یعنی پایین‌ترین ردیف صفحه) پیش‌فرض باز می‌مونه، بقیه بسته.
+    // اخبار هر موضوع دو ستونه (grid-view) نمایش داده می‌شن، برای عکس بزرگ‌تر/بهتر
+    wrap.innerHTML = groups.map((g,idx)=>`
+      <details class="dossier-group"${idx===groups.length-1?' open':''}>
+        <summary class="dossier-group-title">${escAttr(g.topic.name)}</summary>
+        <div class="news-feed grid-view dossier-feed">${g.posts.map(p=>dossierPostCardHtml(p, g.topic.id)).join('')}</div>
+      </details>
     `).join('');
     wireMediaViewerClicks(wrap);
+    // دکمه‌ی «نمایش بیشتر» فقط برای موضوعِ همین الان بازشده قابل‌محاسبه‌ست
+    // (<details> بسته لایوت نمی‌شه) — بقیه با هندلر toggle پایین‌تر موقع
+    // بازشدن محاسبه می‌شن
+    const openGroup = wrap.querySelector('.dossier-group[open]');
+    if(openGroup){
+      updateDossierMoreButtons(openGroup);
+      if(document.fonts && document.fonts.status !== 'loaded'){
+        document.fonts.ready.then(()=> updateDossierMoreButtons(openGroup));
+      }
+    }
   }
 
-  // نسخه‌ی ساده‌ی کارت خبر برای «پرونده ویژه» — بدون کلمپ سه‌خطی/دکمه‌ی
-  // «نمایش بیشتر»/ترجمه (که توی renderNewsFeed هست)، چون این تب هم‌زمان
-  // با فیدهای دیگه توی DOM می‌مونه (فقط display:none می‌شه) و id تکراری
-  // (news-text-N و مشابه) برای همون پست ممکنه توی دو جا هم‌زمان وجود
-  // داشته باشه — پس عمداً بدون عنصر تعاملی با id ساخته می‌شه
-  function dossierPostCardHtml(p){
+  // کارت خبر «پرونده ویژه» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
+  // این پنل هم‌زمان با فیدهای دیگه توی DOM می‌مونه (فقط display:none
+  // می‌شه) و چون یه پست می‌تونه هم‌زمان زیر چند موضوع مختلف هم ظاهر بشه،
+  // idهای تعاملی (متن/دکمه) با ترکیب topicId-postId ساخته می‌شن، نه فقط
+  // postId خام — تا با id پست توی فید اصلی یا موضوع دیگه تداخل نکنه
+  function dossierPostCardHtml(p, topicId){
     const ch = chById(p.channel_id) || {};
     const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
     const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
@@ -2529,6 +2592,7 @@
       : ch.avatar_url
         ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
         : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+    const uid = topicId + '-' + p.id;
     return `
     <div class="news-card">
       ${thumbHtml}
@@ -2540,13 +2604,40 @@
           <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
         </div>
         ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
-        <p class="news-text">${claimsTextDisplay(p.text)}</p>
+        <p class="news-text" id="dossier-text-${uid}">${claimsTextDisplay(p.text)}</p>
+        <button class="news-more" onclick="toggleDossierText('${uid}')" id="dossier-more-${uid}">
+          نمایش بیشتر
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
         <div class="news-foot">
           <div></div>
           <div>${(!isRealVideo && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}</div>
         </div>
       </div>
     </div>`;
+  }
+
+  function toggleDossierText(uid){
+    const t = document.getElementById('dossier-text-'+uid);
+    const b = document.getElementById('dossier-more-'+uid);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
+  }
+
+  // چون <details> بسته محتواش رو layout نمی‌کنه، scrollHeight/clientHeight
+  // موقع بسته بودن قابل‌اعتماد نیست — این تابع فقط روی یه گروه/بخش مشخص
+  // (که همون لحظه بازه) صدا زده می‌شه، نه کل wrap
+  function updateDossierMoreButtons(scopeEl){
+    if(!scopeEl) return;
+    scopeEl.querySelectorAll('.news-text[id^="dossier-text-"]').forEach(textEl=>{
+      const uid = textEl.id.slice('dossier-text-'.length);
+      const moreBtn = document.getElementById('dossier-more-'+uid);
+      if(!moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
+    });
   }
 
   // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
@@ -2800,6 +2891,23 @@
     newspaperState.date = b.dataset.date;
     renderNewspapers();
   });
+  // ---- فیلتر تب «پرونده ویژه» ----
+  document.getElementById('dossier-time-seg').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.t) return;
+    document.querySelectorAll('#dossier-time-seg > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    dossierState.time = b.dataset.t;
+    renderDossierTab();
+  });
+  // رویداد toggle بابل نمی‌شه، برای همین با capture (آرگومان سوم true) روی
+  // parent ثابت (#dossier-groups) گوش می‌دیم — وقتی مدیر یه موضوع رو باز
+  // می‌کنه، دکمه‌ی «نمایش بیشتر»هاش همون لحظه محاسبه می‌شه (قبلش چون
+  // <details> بسته بود، layout نداشت و اندازه‌گیری غلط بود)
+  document.getElementById('dossier-groups').addEventListener('toggle', e=>{
+    if(e.target && e.target.classList && e.target.classList.contains('dossier-group') && e.target.open){
+      updateDossierMoreButtons(e.target);
+    }
+  }, true);
 
   async function loadChannels(){
     const r = await api('/channels?select=*&order=added_at.desc');
