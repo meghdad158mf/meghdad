@@ -2,7 +2,11 @@ name: Cleanup old post media
 
 on:
   schedule:
-    - cron: "0 3 * * *"   # هر روز ساعت ۳ بامداد UTC
+    # روزی ۲ بار (هر ۱۲ ساعت) — هماهنگ با RETENTION_DAYS=0.5 (۱۲ ساعت).
+    # وقتی این جاب فقط یه‌بار در روز اجرا می‌شد ولی RETENTION_DAYS به نیم
+    # روز کم شده بود، بین دو اجرا رسانه تا نزدیک ۳۶ ساعت جمع می‌شد (نه ۱۲
+    # ساعت) و باعث رد شدن از سقف ۱ گیگ Storage شد — این تغییر برای رفعشه.
+    - cron: "0 3,15 * * *"
   workflow_dispatch:       # امکان اجرای دستی از تب Actions
     inputs:
       retention_days_override:
