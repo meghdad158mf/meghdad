@@ -120,9 +120,16 @@ def list_all_objects(token: str, bucket: str) -> list[str]:
     return objects
 
 
-def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> bool:
+def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> set[str]:
+    """حذف واقعی. ⚠️ فقط status code کافی نیست — این endpoint حتی وقتی
+    هیچ‌کدوم از paths واقعاً match نمی‌کنن، HTTP 200 با آرایه‌ی خالی
+    برمی‌گردونه (همون باگی که توی scripts/cleanup_media.py پیدا و رفع
+    شد؛ این تابع یه کپی جدای دیگه از همون منطقه بود که جا مونده بود).
+    خروجی: مجموعه‌ی نام‌هایی که واقعاً توی بدنه‌ی پاسخ به‌عنوان
+    حذف‌شده اعلام شدن (نه فقط اینکه status موفق بوده).
+    """
     if not paths:
-        return True
+        return set()
     r = requests.delete(
         f"{SUPABASE_URL}/storage/v1/object/{bucket}",
         headers=auth_headers(token),
@@ -131,8 +138,13 @@ def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> bool:
     )
     if not r.ok:
         print(f"[!] remove failed ({bucket}): {r.status_code} {r.text[:300]}", file=sys.stderr)
-        return False
-    return True
+        return set()
+    try:
+        deleted = r.json()
+    except ValueError:
+        print(f"[!] remove ({bucket}): پاسخ غیرقابل‌پارس {r.text[:300]}", file=sys.stderr)
+        return set()
+    return {item.get("name") for item in deleted} if isinstance(deleted, list) else set()
 
 
 def purge_bucket(token: str, bucket: str, table: str) -> None:
@@ -146,11 +158,19 @@ def purge_bucket(token: str, bucket: str, table: str) -> None:
         return
 
     removed = 0
+    not_removed: list[str] = []
     for i in range(0, len(orphans), DELETE_BATCH):
         chunk = orphans[i : i + DELETE_BATCH]
-        if remove_storage_objects(token, bucket, chunk):
-            removed += len(chunk)
-    print(f"[done] {bucket}: {removed}/{len(orphans)} فایل orphan حذف شد")
+        deleted_names = remove_storage_objects(token, bucket, chunk)
+        removed += len(deleted_names)
+        not_removed.extend(p for p in chunk if p not in deleted_names)
+    print(f"[done] {bucket}: {removed}/{len(orphans)} فایل orphan واقعاً حذف شد")
+    if not_removed:
+        print(
+            f"[!] {bucket}: {len(not_removed)} فایل با وجود درخواست حذف، توی پاسخ match نشدن. "
+            f"نمونه‌ی مسیر: {not_removed[:5]}",
+            file=sys.stderr,
+        )
 
 
 def main() -> None:
