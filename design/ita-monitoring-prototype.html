@@ -679,11 +679,6 @@
   .dossier-group > .news-feed{ padding-top:2px; }
   .news-feed.dossier-feed{ grid-template-columns: repeat(2,1fr); }
   @media (max-width:560px){ .news-feed.dossier-feed{ grid-template-columns: 1fr; } }
-  /* letterbox: عکس‌های عمودی/افقی مختلف کامل و بدون برش داخل قاب ثابت جا
-     می‌شن (به‌جای cover که بخشیش رو می‌برید)؛ فضای خالی اطراف عکس با همون
-     گرادیانی که placeholder بی‌عکس داره پر می‌شه، تا حاشیه‌ها یکدست به‌نظر برسن */
-  .news-feed.dossier-feed .news-thumb{ background: linear-gradient(155deg, var(--navy), #223142); }
-  .news-feed.dossier-feed .news-thumb img{ object-fit: contain; cursor:zoom-in; }
   .news-kw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
   .news-kw-chip{ font-size:10.5px; background: rgba(234,179,147,0.14); color: var(--accent-strong); border-radius: var(--radius-pill); padding:3px 10px; }
   .news-kw-chip.empty{ color: var(--text-faint); background: rgba(0,0,0,0.04); }
@@ -702,6 +697,22 @@
   .news-feed.grid-view.social-tab .news-thumb{ aspect-ratio:2/3; max-height:340px; }
   .news-thumb.placeholder{ background: linear-gradient(155deg, var(--navy), #223142); color: rgba(255,255,255,0.35); }
   .news-thumb.placeholder svg{ width:34px; height:34px; }
+
+  /* برخلاف بقیه‌ی کارت‌های grid-view (عکس بالای کارت)، اینجا طبق نظر کاربر
+     عکس کنار متن قرار می‌گیره (چون صفحه RTLه و thumb اولین فرزند flexه،
+     خودکار سمت راست کارت درمیاد) — flex-direction رو به row برمی‌گردونیم
+     و اندازه‌ی ثابت (نه کشیده‌ی تمام‌عرض) به thumb می‌دیم. این قوانین باید
+     بعد از قوانین پایه‌ی .grid-view بیان، وگرنه با specificity برابر،
+     قانون قبلی (که پایین‌تر توی فایل بود) برنده می‌شد */
+  .news-feed.dossier-feed .news-card{ flex-direction:row; border-inline-start:3px solid var(--accent); border-top:none; padding:16px; }
+  .news-feed.dossier-feed .news-card .news-body{ padding:0; }
+  .news-feed.dossier-feed .news-thumb{ width:130px; height:110px; aspect-ratio:auto; max-height:none; border-radius:10px; }
+  @media (max-width:520px){ .news-feed.dossier-feed .news-card{ flex-direction:column; } .news-feed.dossier-feed .news-thumb{ width:100%; height:150px; } }
+  /* letterbox: عکس‌های عمودی/افقی مختلف کامل و بدون برش داخل قاب ثابت جا
+     می‌شن (به‌جای cover که بخشیش رو می‌برید)؛ فضای خالی اطراف عکس با همون
+     گرادیانی که placeholder بی‌عکس داره پر می‌شه، تا حاشیه‌ها یکدست به‌نظر برسن */
+  .news-feed.dossier-feed .news-thumb{ background: linear-gradient(155deg, var(--navy), #223142); }
+  .news-feed.dossier-feed .news-thumb img{ object-fit: contain; cursor:zoom-in; }
 
   .news-body{ flex:1; min-width:0; }
   .news-head{ display:flex; align-items:center; gap:7px; margin-bottom:8px; flex-wrap:wrap; }
