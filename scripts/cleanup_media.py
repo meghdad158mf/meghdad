@@ -82,6 +82,16 @@ def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> bool:
     خروجی bool تا caller بدونه واقعاً حذف انجام شده یا نه — چون اگه این
     حذف fail بشه ولی رکورد دیتابیس پاک بشه، فایل برای همیشه orphan
     می‌مونه (رد دیتابیسی‌اش از دست می‌ره ولی خودش توی Storage جا می‌مونه).
+
+    ⚠️ فقط status code (r.ok) کافی نیست: این endpoint حتی وقتی هیچ‌کدوم
+    از prefixهای داده‌شده با فایل واقعی توی باکت match نمی‌کنن، باز هم
+    HTTP 200 با یه آرایه‌ی خالی برمی‌گردونه (یعنی «موفق، صفر فایل حذف
+    شد» رو هم‌رنگ با «موفق، همه حذف شدن» نشون می‌ده). این باگ واقعاً
+    باعث شد چند روز پشت‌سرهم چیزی از Storage واقعاً کم نشه ولی
+    media_storage_path دیتابیس هرروز پاک بشه (رد فایل از بین رفت، خودِ
+    فایل orphan موند) — برای همین این تابع الان بدنه‌ی پاسخ رو هم چک
+    می‌کنه و اگه تعداد واقعاً حذف‌شده کمتر از تعداد درخواستی بود، آن
+    را شکست‌خورده در نظر می‌گیرد (تا caller دیتابیس رو پاک نکنه).
     """
     if not paths:
         return True
@@ -93,6 +103,21 @@ def remove_storage_objects(token: str, bucket: str, paths: list[str]) -> bool:
     )
     if not r.ok:
         print(f"[!] storage remove failed ({bucket}): {r.status_code} {r.text[:300]}", file=sys.stderr)
+        return False
+    try:
+        deleted = r.json()
+    except ValueError:
+        print(f"[!] storage remove ({bucket}): پاسخ غیرقابل‌پارس {r.text[:300]}", file=sys.stderr)
+        return False
+    deleted_names = {item.get("name") for item in deleted} if isinstance(deleted, list) else set()
+    if len(deleted_names) < len(paths):
+        missing = [p for p in paths if p not in deleted_names]
+        sample = missing[:3]
+        print(
+            f"[!] storage remove ({bucket}): {len(deleted_names)}/{len(paths)} فایل واقعاً حذف شد — "
+            f"{len(missing)} تا match نشدن. نمونه‌ی مسیر درخواستی: {sample}",
+            file=sys.stderr,
+        )
         return False
     return True
 
