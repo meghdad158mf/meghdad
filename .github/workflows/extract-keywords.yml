@@ -1,0 +1,30 @@
+name: Extract post keywords (AI)
+
+# هر ۲ ساعت، مستقل و آفست از دو چیز دیگه:
+#   - کالکتورهای اصلی (collect-eitaa/collect-rss دقیقه‌ی ۰۰، collect-telegram
+#     دقیقه‌ی ۱۵، هر ۲ ساعت زوج) — عمداً روی ساعت‌های فرد اجرا می‌شه تا
+#     دقیقاً وسط فاصله‌ی دو اجرای متوالی کالکتورها بیفته، نه هم‌زمانشون
+#   - analyze-news-insights.yml (هر ۶ ساعت) — این دو تا کاملاً مستقلن
+on:
+  schedule:
+    - cron: "30 1-23/2 * * *"
+  workflow_dispatch: {}
+
+jobs:
+  extract:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r scripts/requirements.txt
+
+      - run: python scripts/extract_keywords.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
