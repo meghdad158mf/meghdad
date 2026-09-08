@@ -61,11 +61,16 @@ export async function fetchRecentNewsPostsForUser(
   return await postsRes.json();
 }
 
-// برای extract-post-keywords («پرونده ویژه») — قدیمی‌ترین پست‌هایی که
+// برای extract-post-keywords («پرونده ویژه») — جدیدترین پست‌هایی که
 // هنوز posts.ai_keywords ندارن (NULL، نه آرایه‌ی خالی). ORDER BY
-// posted_at ASC عمداست تا resumable باشه: اگه یه اجرا نصفه بمونه،
-// اجرای بعدی خودکار از همون قدیمی‌ترین جامونده ادامه بده، نه اینکه
-// همیشه پست‌های تازه رو بگیره و backlog قدیمی رو ول کنه.
+// posted_at DESC عمداست: «پرونده ویژه» روی موضوعات موقت/جاری کار
+// می‌کنه، پس پست‌های تازه اولویت دارن — اگه از قدیمی‌ترین شروع می‌شد
+// (نسخه‌ی قبلی این تابع)، با وجود backlog پست‌های قدیمی (که موقع
+// اضافه‌شدن این ستون همه NULL شدن)، ممکن بود روزها طول بکشه تا
+// پردازش به پست‌های واقعاً تازه/مرتبط برسه. resumability همچنان
+// برقراره چون معیار «پردازش‌شده» ai_keywords IS NULL هست، نه ترتیب —
+// backlog قدیمی هم بالأخره توی اجراهای بعدی (وقتی دیگه پست تازه‌ی
+// بی‌کلیدواژه‌ای نمونده) پردازش می‌شه، فقط اولویت با تازه‌هاست.
 export async function fetchPostsMissingKeywords(
   req: Request,
   limit = 40,
@@ -89,7 +94,7 @@ export async function fetchPostsMissingKeywords(
   const ids = channels.map((c) => c.id).join(",");
 
   const postsRes = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=id,title,text&channel_id=in.(${ids})&ai_keywords=is.null&order=posted_at.asc&limit=${limit}`,
+    `${supabaseUrl}/rest/v1/posts?select=id,title,text&channel_id=in.(${ids})&ai_keywords=is.null&order=posted_at.desc&limit=${limit}`,
     { headers },
   );
   if (!postsRes.ok) return null;
