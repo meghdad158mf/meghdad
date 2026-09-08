@@ -200,7 +200,8 @@ scripts/collect_telegram.py                کالکتور تلگرام (شامل
 scripts/collect_rss.py                     کالکتور RSS سایت‌های خبری (platform=website)
 scripts/collect_newspapers.py              کالکتور صفحه‌ی اول روزنامه‌ها از کیوسک جار (jaaar.com/kiosk) — دانلود واقعی عکس، نه hotlink
 scripts/collect_bale.py                    کالکتور کانال بله «رصد شایعات» — پارس HTML رندرشده‌ی سمت‌سرور (React Flight payload)، نه API رسمی بله
-scripts/cleanup_media.py                   جاب روزانه‌ی پاک‌سازی رسانه‌ی قدیمی‌تر از RETENTION_DAYS از Storage (عکس/فیلم پست‌ها + عکس روزنامه‌ها؛ فعلاً موقتاً ۱ روز)
+scripts/cleanup_media.py                   جاب روزی ۲بار پاک‌سازی رسانه‌ی قدیمی‌تر از RETENTION_DAYS از Storage (عکس/فیلم پست‌ها + عکس روزنامه‌ها؛ فعلاً موقتاً ۱۲ ساعت) — `remove_storage_objects()` الان بدنه‌ی پاسخ DELETE رو هم چک می‌کنه، نه فقط status code (نکته‌ی عملیاتی ۲۱ رو ببین)
+scripts/purge_orphaned_media.py            اسکریپت یک‌بارمصرف/بازیابی: از روی خودِ Storage لیست می‌گیره و هرچی توی post-media/newspaper-covers رد فعال توی دیتابیس نداره (orphan) رو پیدا/حذف می‌کنه — DRY_RUN پیش‌فرض true؛ نکته‌ی عملیاتی ۲۱ رو ببین
 scripts/analyze_news_insights.py           روزی ۴ بار (هر ۶ ساعت) Edge Function news-insights رو صدا می‌زنه — بخش «هوش مصنوعی — تحلیل خودکار اخبار» رو ببین
 scripts/telegram_session_to_string.py      ابزار یک‌بارمصرف محلی
 .github/workflows/collect-eitaa.yml
@@ -208,7 +209,8 @@ scripts/telegram_session_to_string.py      ابزار یک‌بارمصرف مح
 .github/workflows/collect-rss.yml
 .github/workflows/collect-newspapers.yml
 .github/workflows/collect-bale.yml         چندبار در روز (ساعت‌های مشخص به وقت ایران)، timeout-minutes: 15
-.github/workflows/cleanup-media.yml
+.github/workflows/cleanup-media.yml        روزی ۲ بار (۰۳:۰۰/۱۵:۰۰ UTC) — هماهنگ با RETENTION_DAYS=0.5، نکته‌ی عملیاتی ۱۳/۲۱
+.github/workflows/purge-orphaned-media.yml فقط workflow_dispatch (نه cron) — ورودی dry_run، نکته‌ی عملیاتی ۲۱
 .github/workflows/analyze-news-insights.yml   روزی ۴ بار — ۰۲:۰۰/۰۸:۰۰/۱۴:۰۰/۲۰:۰۰ وقت ایران — نگاه کن به بخش «هوش مصنوعی — تحلیل خودکار اخبار»
 .github/workflows/deploy-edge-functions.yml   push-based (نه schedule)، با تغییر supabase/functions/** خودکار دیپلوی می‌کنه — نگاه کن به بخش‌های «هوش مصنوعی»
 supabase/functions/translate/index.ts      Edge Function ترجمه‌ی اختیاری پست‌های تب «وب‌سایت‌ها» (لیارا AI) — بخش «هوش مصنوعی» بالاتر رو ببین
@@ -381,6 +383,12 @@ design/images/basirat-logo.webp            لوگوی مدرسه مجازی بص
     3. `LIARA_API_KEY` (secret سمت Edge Functions سوپابیس) روی پروژه‌ی جدید اصلاً تنظیم نشده بود («No custom secrets created») — از پنل لیارا دوباره گرفته شد و اضافه شد.
     **درس گرفته‌شده**: هر مهاجرت/بازسازی آینده‌ی پروژه‌ی سوپابیس باید این سه مورد رو هم صریح توی چک‌لیست داشته باشه — SQL migrationها فقط دیتابیس رو می‌سازن، نه secretهای Edge Functions و نه project-ref هاردکدشده‌ی خودِ ورک‌فلوی دیپلوی.
 20. **کرون `schedule` گیت‌هاب اکشنز می‌تونه با تأخیر قابل‌توجه (حتی ~۱.۵ ساعت) اجرا بشه، نه اینکه skip بشه**: اگه یه اسلات زمان‌بندی‌شده توی `list_workflow_runs` سر وقتش دیده نشد، **زود نتیجه نگیر که «skip شده» یا «کرون خرابه»** — قبل از نتیجه‌گیری، حداقل یکی‌دو ساعت صبر کن و دوباره چک کن؛ این تأخیر مخصوصاً وقتی محتمله که یه کرون جدید/تغییریافته خیلی نزدیک (کمتر از ~۱ ساعت) به زمان اجراش روی `main` merge شده باشه، ولی حتی زمان‌بندی‌های قدیمی و پایدار هم گاهی همین رفتار رو دارن (این یه رفتار مستندشده‌ی خودِ GitHub برای `schedule` triggerه، نه چیزی خاص این پروژه). نمونه‌ی واقعی: نگاه کن به بخش «هوش مصنوعی — تحلیل خودکار اخبار»، تاریخچه‌ی زمان‌بندی — یه اسلات که اولش «skip‌شده» به‌نظر می‌رسید، با چک دوباره معلوم شد فقط ~۱.۵ ساعت دیر (نه حذف) اجرا شده و کامل موفق بوده.
+21. ⚠️⚠️ **رفع نهایی حادثه‌ی ۱۷ شهریور ۱۴۰۵ (نکته‌ی عملیاتی ۱۳) — ریشه‌ی واقعی یه باگ silent-fail توی حذف Storage بود، نه فقط عدم‌هماهنگی فرکانس کرون**: بعد از رفع عدم‌هماهنگی کرون (نکته‌ی ۱۳)، کاربر چندبار Storage رو دوباره چک کرد و عدد **هیچ تغییری نکرد** — یعنی جاب `cleanup-media.yml` هرروز گزارش موفقیت می‌داد («[done] cleaned up N post(s)») ولی چیزی واقعاً از Storage کم نمی‌شد. ریشه پیدا شد: `remove_storage_objects()` توی `scripts/cleanup_media.py` فقط status code پاسخ (`r.ok`) رو چک می‌کرد. **Supabase Storage bulk-delete endpoint (`DELETE /storage/v1/object/{bucket}` با `{"prefixes":[...]}`) حتی وقتی هیچ‌کدوم از prefixهای داده‌شده با فایل واقعی match نمی‌کنن، HTTP 200 با یه آرایه‌ی خالی برمی‌گردونه** — یعنی «صفر فایل حذف شد» ظاهراً همون status موفقِ «همه حذف شدن» رو داره. نتیجه: تابع همیشه `True` برمی‌گردوند، caller (`cleanup_post_media`/`cleanup_newspaper_covers`) هم بلافاصله `media_storage_path` دیتابیس رو پاک می‌کرد — یعنی رد دیتابیسی فایل از بین می‌رفت ولی خودِ فایل هیچ‌وقت واقعاً حذف نمی‌شد و برای همیشه orphan (بدون هیچ ردی) توی Storage می‌موند.
+    - **تأیید کمّی**: با اجرای دستی `purge-orphaned-media.yml` (dry-run، اسکریپت `scripts/purge_orphaned_media.py` که از قبل برای دقیقاً همین سناریو، توی یه حادثه‌ی مشابه‌تر قدیمی‌تر، ساخته شده بود) مشخص شد `post-media` از ۵۲۵ فایل، **۲۴۶ تاش orphan** بودن (هیچ رد فعالی توی جدول `posts` نداشتن)؛ `newspaper-covers` صفر orphan داشت (۱۴۴/۱۴۴ کاملاً سالم).
+    - **رفع کد**: `remove_storage_objects()` الان بدنه‌ی پاسخ DELETE رو پارس می‌کنه، تعداد واقعاً حذف‌شده رو با تعداد درخواستی مقایسه می‌کنه، و اگه کمتر بود `False` برمی‌گردونه (که طبق منطق موجود caller، پاک‌کردن دیتابیس برای همون batch رو skip می‌کنه) — دیگه نمی‌تونه این‌جوری silent-fail کنه.
+    - **بازیابی فوری**: با `dry_run=false` روی `purge-orphaned-media.yml`، همون ۲۴۶ فایل orphan واقعاً حذف شدن (`246/246 فایل orphan حذف شد`) تا فضای اضافه‌ی جمع‌شده همون لحظه آزاد بشه — این یه اقدام یک‌بارمصرف بود، نه بخشی از جاب روزمره.
+    - **علت اصلی همچنان نامعلومه**: چرا اصلاً `media_storage_path` دیتابیس با کلید واقعی فایل توی Storage مغایرت پیدا کرد (فرمت مسیر عوض شده؟ یه اجرای قدیمی‌تر باگ‌دار مسیر اشتباه ذخیره کرده؟) هنوز بررسی نشده — اگه بعد از این رفع، جاب `cleanup-media.yml` باز هم مرتب لاگ «شکست match» (خروجی جدید تابع) داد، باید این مسیر رو دنبال کرد.
+    - **درس گرفته‌شده‌ی عمومی‌تر**: برای هر API حذف گروهی (batch delete)، هیچ‌وقت فقط به status code موفق (2xx) اکتفا نکن — endpointهای این‌شکلی معمولاً «بخشی موفق، بخشی نه» یا حتی «صفر موفق ولی 200» رو با موفقیت کامل هم‌رنگ نشون می‌دن؛ همیشه بدنه‌ی پاسخ رو برای شمارش واقعی چک کن، مخصوصاً وقتی نتیجه‌ش پاک‌کردن رد دیتابیسی یه چیز غیرقابل‌بازگشته.
 
 ## قدم بعدی (موارد باز — هیچ‌کدوم بدون درخواست صریح کاربر پیش نره)
 
