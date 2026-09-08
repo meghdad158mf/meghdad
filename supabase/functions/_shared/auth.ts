@@ -60,3 +60,38 @@ export async function fetchRecentNewsPostsForUser(
   if (!postsRes.ok) return null;
   return await postsRes.json();
 }
+
+// برای extract-post-keywords («پرونده ویژه») — قدیمی‌ترین پست‌هایی که
+// هنوز posts.ai_keywords ندارن (NULL، نه آرایه‌ی خالی). ORDER BY
+// posted_at ASC عمداست تا resumable باشه: اگه یه اجرا نصفه بمونه،
+// اجرای بعدی خودکار از همون قدیمی‌ترین جامونده ادامه بده، نه اینکه
+// همیشه پست‌های تازه رو بگیره و backlog قدیمی رو ول کنه.
+export async function fetchPostsMissingKeywords(
+  req: Request,
+  limit = 40,
+): Promise<Array<{ id: number; title: string | null; text: string | null }> | null> {
+  const authHeader = req.headers.get("Authorization") || "";
+  const token = authHeader.replace(/^Bearer\s+/i, "");
+  if (!token) return null;
+
+  const supabaseUrl = Deno.env.get("SUPABASE_URL");
+  const anonKey = Deno.env.get("SUPABASE_ANON_KEY");
+  const headers = { apikey: anonKey ?? "", Authorization: `Bearer ${token}` };
+
+  // همون منبع خبری news-insights: کانال‌های «شبکه‌های اجتماعی» + «وب‌سایت‌ها» (show_in_news، غیر از بله)
+  const chRes = await fetch(
+    `${supabaseUrl}/rest/v1/channels?select=id&show_in_news=eq.true&platform=neq.bale`,
+    { headers },
+  );
+  if (!chRes.ok) return null;
+  const channels: Array<{ id: number }> = await chRes.json();
+  if (!channels.length) return [];
+  const ids = channels.map((c) => c.id).join(",");
+
+  const postsRes = await fetch(
+    `${supabaseUrl}/rest/v1/posts?select=id,title,text&channel_id=in.(${ids})&ai_keywords=is.null&order=posted_at.asc&limit=${limit}`,
+    { headers },
+  );
+  if (!postsRes.ok) return null;
+  return await postsRes.json();
+}
