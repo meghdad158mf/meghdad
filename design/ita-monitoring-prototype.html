@@ -3887,15 +3887,64 @@
     const name = nameEl.value.trim();
     const keywords = kwEl.value.trim();
     if(!name || !keywords) return;
-    const r = await api('/dossier_topics', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name, keywords, active:true, sort_order: DOSSIER_TOPICS.length})});
+    // return=representation نه minimal: بلافاصله بعد از ساخت موضوع، به id تازه
+    // نیاز داریم تا بررسی اولیه‌ی خودکار (autoMatchDossierTopic) رو روی همون
+    // موضوع اجرا کنیم — بدون این، باید یه round-trip جدا برای پیداکردن id بزنیم
+    const r = await api('/dossier_topics', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify({name, keywords, active:true, sort_order: DOSSIER_TOPICS.length})});
     if(r.ok){
+      const rows = await r.json();
+      const created = Array.isArray(rows) ? rows[0] : null;
       nameEl.value=''; kwEl.value='';
       await loadDossierTopics();
       renderDossierTopicAdminList();
+      if(created){
+        const count = await autoMatchDossierTopic(created.id, {silent:true});
+        alert(count ? ('موضوع اضافه شد. ' + toFaDigits(count) + ' خبر مرتبط از پست‌های موجود پیدا و اضافه شد.') : 'موضوع اضافه شد. فعلاً خبری با این کلیدواژه‌ها توی پست‌های موجود پیدا نشد — با ورود خبر تازه یا با دکمه‌ی «جست‌وجوی خودکار» دوباره بررسی می‌شه.');
+      }
     }else{
       alert('خطایی رخ داد.');
     }
   });
+
+  // تطبیق متنی ساده‌ی کلیدواژه‌ها (همون منطق دوطرفه‌ی Edge Function
+  // extract-post-keywords) — برای بررسی اولیه‌ی خودکار موضوع تازه‌ساخته‌شده
+  // روی backlog پست‌های موجود، و برای دکمه‌ی «جست‌وجوی خودکار» دستی
+  function keywordListsMatch(topicKeywords, postKeywords){
+    return topicKeywords.some(tk => postKeywords.some(pk => pk.includes(tk) || tk.includes(pk)));
+  }
+
+  // چرا این تابع لازمه، جدا از تطبیق خودکار داخل Edge Function: اون فقط
+  // همون دسته‌ی تازه‌پردازش‌شده‌ی هر اجرای extract-post-keywords رو با
+  // موضوعات فعال تطبیق می‌ده — یه موضوع تازه‌ساخته‌شده هیچ‌وقت روی
+  // backlog پست‌هایی که از قبل کلیدواژه گرفتن (posted_at قدیمی‌تر از
+  // آخرین batch) بررسی نمی‌شه. این تابع همون تطبیق رو مستقیم از فرانت‌اند
+  // (با توکن مدیر) روی همه‌ی پست‌های ai_keywords-دار موجود اجرا می‌کنه.
+  async function autoMatchDossierTopic(topicId, opts){
+    opts = opts || {};
+    const topic = DOSSIER_TOPICS.find(t=>t.id===topicId);
+    if(!topic) return 0;
+    const topicKeywords = (topic.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+    if(!topicKeywords.length) return 0;
+    const r = await api('/posts?select=id,ai_keywords&ai_keywords=not.is.null&order=posted_at.desc&limit=3000');
+    const posts = r.ok ? await r.json() : [];
+    const already = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===topicId).map(dp=>dp.post_id));
+    const inserts = [];
+    for(const p of posts){
+      if(already.has(p.id)) continue;
+      const postKeywords = Array.isArray(p.ai_keywords) ? p.ai_keywords : [];
+      if(postKeywords.length && keywordListsMatch(topicKeywords, postKeywords)) inserts.push({topic_id: topicId, post_id: p.id, source:'auto'});
+    }
+    if(inserts.length){
+      // on_conflict + ignore-duplicates: اگه مدیر قبلاً یه match رو دستی
+      // حذف/پنهان کرده بود، این اجرای دوباره نباید دوباره‌ش اضافه کنه —
+      // چون همون ردیف (topic_id,post_id) از قبل هست، insert نادیده گرفته می‌شه
+      await api('/dossier_topic_posts?on_conflict=topic_id,post_id', {method:'POST', headers:{Prefer:'resolution=ignore-duplicates,return=minimal'}, body: JSON.stringify(inserts)});
+      await loadDossierTopicPosts();
+      renderDossierTopicAdminList();
+    }
+    if(!opts.silent) alert(inserts.length ? (toFaDigits(inserts.length) + ' خبر با کلیدواژه‌های این موضوع پیدا و اضافه شد.') : 'با کلیدواژه‌های فعلی این موضوع، خبر جدیدی توی پست‌های موجود پیدا نشد.');
+    return inserts.length;
+  }
 
   function renderDossierTopicAdminList(){
     const wrap = document.getElementById('dossier-topic-admin-list');
@@ -3923,6 +3972,7 @@
       <div class="dossier-topic-card-head">
         <span class="name"><b>${escAttr(t.name)}</b><div class="kw">${escAttr(t.keywords)}</div></span>
         <span class="dossier-topic-card-actions">
+          <button class="btn" style="padding:3px 10px;font-size:10.5px;" title="پست‌های موجود رو دوباره با کلیدواژه‌های این موضوع تطبیق بده" onclick="autoMatchDossierTopic(${t.id})">جست‌وجوی خودکار</button>
           <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;">
             <input type="checkbox" ${t.active?'checked':''} onchange="toggleDossierTopicActive(${t.id}, this.checked)" />
             فعال
