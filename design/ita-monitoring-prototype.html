@@ -662,8 +662,27 @@
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
 
-  .dossier-group{ margin:0 0 32px; }
-  .dossier-group-title{ font-size:15px; font-weight:800; color:var(--accent-strong); margin:0 0 14px; padding-inline-start:12px; border-inline-start:3px solid var(--accent); }
+  /* تب «پرونده ویژه»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
+     flex، توی RTL خودکار سمت راست درمیاد)، اخبار موضوعِ انتخاب‌شده توی
+     ستون چپ‌ترش. فقط یه موضوع در هر لحظه انتخاب می‌شه (نه هم‌زمان چندتا) */
+  .dossier-layout{ display:flex; gap:24px; align-items:flex-start; }
+  .dossier-sidebar{ width:210px; flex-shrink:0; display:flex; flex-direction:column; gap:8px; position:sticky; top:90px; }
+  .dossier-content{ flex:1; min-width:0; }
+  @media (max-width:760px){
+    .dossier-layout{ flex-direction:column; }
+    .dossier-sidebar{ width:100%; flex-direction:row; flex-wrap:wrap; position:static; }
+  }
+  .dossier-nav-item{
+    display:block; width:100%; text-align:start; cursor:pointer; font-family:inherit;
+    font-size:14px; font-weight:800; color: var(--text-dim); background:none; border:none;
+    border-inline-start:3px solid var(--accent); padding:10px 12px; border-radius:8px;
+  }
+  @media (max-width:760px){ .dossier-nav-item{ width:auto; } }
+  /* موضوعِ انتخاب‌شده («در حال نمایش») با پس‌زمینه‌ی هلویی‌رنگ و متن
+     پررنگ‌تر از بقیه مشخص می‌شه — تا معلوم باشه اخبار کدوم موضوع دیده می‌شه */
+  .dossier-nav-item.active{ color: var(--accent-strong); background: rgba(234,179,147,0.16); }
+  .news-feed.dossier-feed{ grid-template-columns: repeat(2,1fr); }
+  @media (max-width:560px){ .news-feed.dossier-feed{ grid-template-columns: 1fr; } }
   .news-kw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
   .news-kw-chip{ font-size:10.5px; background: rgba(234,179,147,0.14); color: var(--accent-strong); border-radius: var(--radius-pill); padding:3px 10px; }
   .news-kw-chip.empty{ color: var(--text-faint); background: rgba(0,0,0,0.04); }
@@ -682,6 +701,22 @@
   .news-feed.grid-view.social-tab .news-thumb{ aspect-ratio:2/3; max-height:340px; }
   .news-thumb.placeholder{ background: linear-gradient(155deg, var(--navy), #223142); color: rgba(255,255,255,0.35); }
   .news-thumb.placeholder svg{ width:34px; height:34px; }
+
+  /* برخلاف بقیه‌ی کارت‌های grid-view (عکس بالای کارت)، اینجا طبق نظر کاربر
+     عکس کنار متن قرار می‌گیره (چون صفحه RTLه و thumb اولین فرزند flexه،
+     خودکار سمت راست کارت درمیاد) — flex-direction رو به row برمی‌گردونیم
+     و اندازه‌ی ثابت (نه کشیده‌ی تمام‌عرض) به thumb می‌دیم. این قوانین باید
+     بعد از قوانین پایه‌ی .grid-view بیان، وگرنه با specificity برابر،
+     قانون قبلی (که پایین‌تر توی فایل بود) برنده می‌شد */
+  .news-feed.dossier-feed .news-card{ flex-direction:row; border-inline-start:3px solid var(--accent); border-top:none; padding:16px; }
+  .news-feed.dossier-feed .news-card .news-body{ padding:0; }
+  .news-feed.dossier-feed .news-thumb{ width:130px; height:110px; aspect-ratio:auto; max-height:none; border-radius:10px; }
+  @media (max-width:520px){ .news-feed.dossier-feed .news-card{ flex-direction:column; } .news-feed.dossier-feed .news-thumb{ width:100%; height:150px; } }
+  /* letterbox: عکس‌های عمودی/افقی مختلف کامل و بدون برش داخل قاب ثابت جا
+     می‌شن (به‌جای cover که بخشیش رو می‌برید)؛ فضای خالی اطراف عکس با همون
+     گرادیانی که placeholder بی‌عکس داره پر می‌شه، تا حاشیه‌ها یکدست به‌نظر برسن */
+  .news-feed.dossier-feed .news-thumb{ background: linear-gradient(155deg, var(--navy), #223142); }
+  .news-feed.dossier-feed .news-thumb img{ object-fit: contain; cursor:zoom-in; }
 
   .news-body{ flex:1; min-width:0; }
   .news-head{ display:flex; align-items:center; gap:7px; margin-bottom:8px; flex-wrap:wrap; }
@@ -1492,7 +1527,20 @@
            می‌شه. فقط موضوعات active که حداقل یه پست excluded=false دارن
            نشون داده می‌شن. -->
       <div id="news-dossier-panel" style="display:none;">
-        <div id="dossier-groups"></div>
+        <div class="news-filters">
+          <div class="news-filter-row">
+            <div class="news-seg" id="dossier-time-seg">
+              <button class="active" data-t="all">همه</button>
+              <button data-t="today">امروز</button>
+              <button data-t="yesterday">دیروز</button>
+              <button data-t="week">هفته گذشته</button>
+            </div>
+          </div>
+        </div>
+        <div class="dossier-layout">
+          <div class="dossier-sidebar" id="dossier-sidebar"></div>
+          <div class="dossier-content" id="dossier-groups"></div>
+        </div>
         <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
       </div>
 
@@ -2495,32 +2543,64 @@
 
   // ---- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
   // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
+  // فیلتر «بازه‌ی زمانی» عیناً همون منطق filteredNewsPosts() (رولینگ
+  // ۲۴/۴۸/۱۶۸ ساعته، نه از نیمه‌شب) رو برای یکدستی با بقیه‌ی فیدها تکرار
+  // می‌کنه. طبق نظر کاربر، چیدمان سایدباریه: موضوعات ستون راست زیر هم،
+  // فقط یکی در هر لحظه انتخاب/نمایش داده می‌شه (نه accordion چندبازِ قبلی)
+  let dossierState = { time: 'all', topicId: null };
+
   function renderDossierTab(){
+    const sidebar = document.getElementById('dossier-sidebar');
     const wrap = document.getElementById('dossier-groups');
     const empty = document.getElementById('dossier-empty');
-    if(!wrap) return;
+    if(!wrap || !sidebar) return;
+    const now = Date.now();
     const groups = DOSSIER_TOPICS.filter(t=>t.active).map(t=>{
       const postIds = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id && !dp.excluded).map(dp=>dp.post_id);
-      const posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean)
-        .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
+      let posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean);
+      if(dossierState.time !== 'all'){
+        posts = posts.filter(p=>{
+          const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
+          const diffDays = (now - posted) / 86400000;
+          if(dossierState.time === 'today') return diffDays <= 1;
+          if(dossierState.time === 'yesterday') return diffDays >= 1 && diffDays <= 2;
+          if(dossierState.time === 'week') return diffDays <= 7;
+          return true;
+        });
+      }
+      posts.sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
       return { topic: t, posts };
     }).filter(g=>g.posts.length);
+
     empty.style.display = groups.length ? 'none' : 'block';
-    wrap.innerHTML = groups.map(g=>`
-      <div class="dossier-group">
-        <h3 class="dossier-group-title">${escAttr(g.topic.name)}</h3>
-        <div class="news-feed">${g.posts.map(p=>dossierPostCardHtml(p)).join('')}</div>
-      </div>
+    if(!groups.length){ sidebar.innerHTML=''; wrap.innerHTML=''; return; }
+
+    // اگه موضوع انتخاب‌شده دیگه بین موضوعات دارای خبر نیست (غیرفعال شده یا
+    // با فیلتر زمانی خالی شده)، طبق نظر کاربر آخرین موضوع (پایین‌ترین ردیف
+    // سایدبار) پیش‌فرض انتخاب می‌شه
+    if(!groups.some(g=>g.topic.id===dossierState.topicId)){
+      dossierState.topicId = groups[groups.length-1].topic.id;
+    }
+
+    sidebar.innerHTML = groups.map(g=>`
+      <button type="button" class="dossier-nav-item${g.topic.id===dossierState.topicId?' active':''}" data-topic="${g.topic.id}">${escAttr(g.topic.name)}</button>
     `).join('');
+
+    const active = groups.find(g=>g.topic.id===dossierState.topicId);
+    wrap.innerHTML = `<div class="news-feed grid-view dossier-feed">${active.posts.map(p=>dossierPostCardHtml(p, active.topic.id)).join('')}</div>`;
     wireMediaViewerClicks(wrap);
+    updateDossierMoreButtons(wrap);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updateDossierMoreButtons(wrap));
+    }
   }
 
-  // نسخه‌ی ساده‌ی کارت خبر برای «پرونده ویژه» — بدون کلمپ سه‌خطی/دکمه‌ی
-  // «نمایش بیشتر»/ترجمه (که توی renderNewsFeed هست)، چون این تب هم‌زمان
-  // با فیدهای دیگه توی DOM می‌مونه (فقط display:none می‌شه) و id تکراری
-  // (news-text-N و مشابه) برای همون پست ممکنه توی دو جا هم‌زمان وجود
-  // داشته باشه — پس عمداً بدون عنصر تعاملی با id ساخته می‌شه
-  function dossierPostCardHtml(p){
+  // کارت خبر «پرونده ویژه» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
+  // این پنل هم‌زمان با فیدهای دیگه توی DOM می‌مونه (فقط display:none
+  // می‌شه) و چون یه پست می‌تونه هم‌زمان زیر چند موضوع مختلف هم ظاهر بشه،
+  // idهای تعاملی (متن/دکمه) با ترکیب topicId-postId ساخته می‌شن، نه فقط
+  // postId خام — تا با id پست توی فید اصلی یا موضوع دیگه تداخل نکنه
+  function dossierPostCardHtml(p, topicId){
     const ch = chById(p.channel_id) || {};
     const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
     const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
@@ -2529,6 +2609,7 @@
       : ch.avatar_url
         ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
         : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+    const uid = topicId + '-' + p.id;
     return `
     <div class="news-card">
       ${thumbHtml}
@@ -2540,13 +2621,40 @@
           <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
         </div>
         ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
-        <p class="news-text">${claimsTextDisplay(p.text)}</p>
+        <p class="news-text" id="dossier-text-${uid}">${claimsTextDisplay(p.text)}</p>
+        <button class="news-more" onclick="toggleDossierText('${uid}')" id="dossier-more-${uid}">
+          نمایش بیشتر
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>
+        </button>
         <div class="news-foot">
           <div></div>
           <div>${(!isRealVideo && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}</div>
         </div>
       </div>
     </div>`;
+  }
+
+  function toggleDossierText(uid){
+    const t = document.getElementById('dossier-text-'+uid);
+    const b = document.getElementById('dossier-more-'+uid);
+    if(!t || !b) return;
+    const isOpen = t.classList.toggle('expanded');
+    b.classList.toggle('open', isOpen);
+    b.firstChild.textContent = isOpen ? 'بستن ' : 'نمایش بیشتر ';
+  }
+
+  // چون <details> بسته محتواش رو layout نمی‌کنه، scrollHeight/clientHeight
+  // موقع بسته بودن قابل‌اعتماد نیست — این تابع فقط روی یه گروه/بخش مشخص
+  // (که همون لحظه بازه) صدا زده می‌شه، نه کل wrap
+  function updateDossierMoreButtons(scopeEl){
+    if(!scopeEl) return;
+    scopeEl.querySelectorAll('.news-text[id^="dossier-text-"]').forEach(textEl=>{
+      const uid = textEl.id.slice('dossier-text-'.length);
+      const moreBtn = document.getElementById('dossier-more-'+uid);
+      if(!moreBtn) return;
+      const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
+      moreBtn.style.display = overflowing ? '' : 'none';
+    });
   }
 
   // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
@@ -2799,6 +2907,19 @@
     const b = e.target.closest('button'); if(!b || !b.dataset.date) return;
     newspaperState.date = b.dataset.date;
     renderNewspapers();
+  });
+  // ---- فیلتر و سایدبار تب «پرونده ویژه» ----
+  document.getElementById('dossier-time-seg').addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.t) return;
+    document.querySelectorAll('#dossier-time-seg > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    dossierState.time = b.dataset.t;
+    renderDossierTab();
+  });
+  document.getElementById('dossier-sidebar').addEventListener('click', e=>{
+    const btn = e.target.closest('.dossier-nav-item'); if(!btn) return;
+    dossierState.topicId = Number(btn.dataset.topic);
+    renderDossierTab();
   });
 
   async function loadChannels(){
@@ -3887,15 +4008,97 @@
     const name = nameEl.value.trim();
     const keywords = kwEl.value.trim();
     if(!name || !keywords) return;
-    const r = await api('/dossier_topics', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name, keywords, active:true, sort_order: DOSSIER_TOPICS.length})});
+    // return=representation نه minimal: بلافاصله بعد از ساخت موضوع، به id تازه
+    // نیاز داریم تا بررسی اولیه‌ی خودکار (autoMatchDossierTopic) رو روی همون
+    // موضوع اجرا کنیم — بدون این، باید یه round-trip جدا برای پیداکردن id بزنیم
+    const r = await api('/dossier_topics', {method:'POST', headers:{Prefer:'return=representation'}, body: JSON.stringify({name, keywords, active:true, sort_order: DOSSIER_TOPICS.length})});
     if(r.ok){
+      const rows = await r.json();
+      const created = Array.isArray(rows) ? rows[0] : null;
       nameEl.value=''; kwEl.value='';
       await loadDossierTopics();
       renderDossierTopicAdminList();
+      if(created){
+        const count = await autoMatchDossierTopic(created.id, {silent:true});
+        alert(count ? ('موضوع اضافه شد. ' + toFaDigits(count) + ' خبر مرتبط از پست‌های موجود پیدا و اضافه شد.') : 'موضوع اضافه شد. فعلاً خبری با این کلیدواژه‌ها توی پست‌های موجود پیدا نشد — با ورود خبر تازه یا با دکمه‌ی «جست‌وجوی خودکار» دوباره بررسی می‌شه.');
+      }
     }else{
       alert('خطایی رخ داد.');
     }
   });
+
+  // تطبیق متنی ساده‌ی کلیدواژه‌ها (همون منطق دوطرفه‌ی Edge Function
+  // extract-post-keywords) — برای بررسی اولیه‌ی خودکار موضوع تازه‌ساخته‌شده
+  // روی backlog پست‌های موجود، و برای دکمه‌ی «جست‌وجوی خودکار» دستی
+  function keywordListsMatch(topicKeywords, postKeywords){
+    return topicKeywords.some(tk => postKeywords.some(pk => pk.includes(tk) || tk.includes(pk)));
+  }
+
+  // چرا این تابع لازمه، جدا از تطبیق خودکار داخل Edge Function: اون فقط
+  // همون دسته‌ی تازه‌پردازش‌شده‌ی هر اجرای extract-post-keywords رو با
+  // موضوعات فعال تطبیق می‌ده — یه موضوع تازه‌ساخته‌شده هیچ‌وقت روی
+  // backlog پست‌هایی که از قبل کلیدواژه گرفتن (posted_at قدیمی‌تر از
+  // آخرین batch) بررسی نمی‌شه. این تابع همون تطبیق رو مستقیم از فرانت‌اند
+  // (با توکن مدیر) روی همه‌ی پست‌های ai_keywords-دار موجود اجرا می‌کنه.
+  async function autoMatchDossierTopic(topicId, opts){
+    opts = opts || {};
+    const topic = DOSSIER_TOPICS.find(t=>t.id===topicId);
+    if(!topic) return 0;
+    const topicKeywords = (topic.keywords||'').split(',').map(k=>k.trim()).filter(Boolean);
+    if(!topicKeywords.length) return 0;
+    const r = await api('/posts?select=id,ai_keywords&ai_keywords=not.is.null&order=posted_at.desc&limit=3000');
+    const posts = r.ok ? await r.json() : [];
+    const already = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===topicId).map(dp=>dp.post_id));
+    const inserts = [];
+    for(const p of posts){
+      if(already.has(p.id)) continue;
+      const postKeywords = Array.isArray(p.ai_keywords) ? p.ai_keywords : [];
+      if(postKeywords.length && keywordListsMatch(topicKeywords, postKeywords)) inserts.push({topic_id: topicId, post_id: p.id, source:'auto'});
+    }
+    if(inserts.length){
+      // on_conflict + ignore-duplicates: اگه مدیر قبلاً یه match رو دستی
+      // حذف/پنهان کرده بود، این اجرای دوباره نباید دوباره‌ش اضافه کنه —
+      // چون همون ردیف (topic_id,post_id) از قبل هست، insert نادیده گرفته می‌شه
+      await api('/dossier_topic_posts?on_conflict=topic_id,post_id', {method:'POST', headers:{Prefer:'resolution=ignore-duplicates,return=minimal'}, body: JSON.stringify(inserts)});
+      await loadDossierTopicPosts();
+      renderDossierTopicAdminList();
+    }
+    if(!opts.silent) alert(inserts.length ? (toFaDigits(inserts.length) + ' خبر با کلیدواژه‌های این موضوع پیدا و اضافه شد.') : 'با کلیدواژه‌های فعلی این موضوع، خبر جدیدی توی پست‌های موجود پیدا نشد.');
+    return inserts.length;
+  }
+
+  // ویرایش کلیدواژه‌های یه موضوع «پرونده ویژه» — جایگزینی درجا (inline) شبیه
+  // الگوی editPostKeywords/savePostKeywords، بدون مودال جدا
+  function editDossierTopicKeywords(id){
+    const t = DOSSIER_TOPICS.find(x=>x.id===id);
+    const kwEl = document.getElementById('dossier-topic-kw-'+id);
+    if(!t || !kwEl) return;
+    kwEl.innerHTML = `
+      <input type="text" id="dossier-topic-kw-input-${id}" value="${escAttr(t.keywords)}" placeholder="کلیدواژه‌ها، جدا با ویرگول" style="width:100%;font-size:11.5px;padding:4px 8px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-family:inherit;box-sizing:border-box;" />
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button type="button" class="btn" style="padding:2px 10px;font-size:10.5px;" onclick="saveDossierTopicKeywords(${id})">ذخیره</button>
+        <button type="button" class="btn" style="padding:2px 10px;font-size:10.5px;" onclick="renderDossierTopicAdminList()">انصراف</button>
+      </div>`;
+    document.getElementById('dossier-topic-kw-input-'+id).focus();
+  }
+
+  // بعد از ذخیره، همون بررسی «جست‌وجوی خودکار» رو هم خودکار روی
+  // کلیدواژه‌های تازه اجرا می‌کنه — چون کلیدواژه عوض شده، ممکنه خبرهای
+  // تازه‌ای توی backlog match بشن که با کلیدواژه‌ی قبلی نمی‌شدن. match
+  // قبلی که با کلیدواژه‌ی جدید دیگه ربطی نداره خودکار حذف نمی‌شه — مدیر
+  // باید خودش دستی «پنهان»/حذفش کنه (تا هیچ رکوردی بی‌سروصدا از دست نره)
+  async function saveDossierTopicKeywords(id){
+    const inputEl = document.getElementById('dossier-topic-kw-input-'+id);
+    if(!inputEl) return;
+    const keywords = inputEl.value.trim();
+    if(!keywords) return;
+    const r = await api('/dossier_topics?id=eq.'+id, {method:'PATCH', headers:{Prefer:'return=minimal'}, body: JSON.stringify({keywords})});
+    if(!r.ok){ alert('خطایی رخ داد.'); return; }
+    await loadDossierTopics();
+    renderDossierTopicAdminList();
+    const count = await autoMatchDossierTopic(id, {silent:true});
+    alert(count ? ('کلیدواژه‌ها ذخیره شد. ' + toFaDigits(count) + ' خبر تازه با کلیدواژه‌های جدید پیدا و اضافه شد.') : 'کلیدواژه‌ها ذخیره شد. با کلیدواژه‌های تازه، خبر جدیدی توی پست‌های موجود پیدا نشد.');
+  }
 
   function renderDossierTopicAdminList(){
     const wrap = document.getElementById('dossier-topic-admin-list');
@@ -3921,8 +4124,10 @@
     return `
     <div class="dossier-topic-card${t.active?'':' inactive'}">
       <div class="dossier-topic-card-head">
-        <span class="name"><b>${escAttr(t.name)}</b><div class="kw">${escAttr(t.keywords)}</div></span>
+        <span class="name"><b>${escAttr(t.name)}</b><div class="kw" id="dossier-topic-kw-${t.id}">${escAttr(t.keywords)}</div></span>
         <span class="dossier-topic-card-actions">
+          <button class="btn" style="padding:3px 10px;font-size:10.5px;" onclick="editDossierTopicKeywords(${t.id})">ویرایش کلیدواژه</button>
+          <button class="btn" style="padding:3px 10px;font-size:10.5px;" title="پست‌های موجود رو دوباره با کلیدواژه‌های این موضوع تطبیق بده" onclick="autoMatchDossierTopic(${t.id})">جست‌وجوی خودکار</button>
           <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;">
             <input type="checkbox" ${t.active?'checked':''} onchange="toggleDossierTopicActive(${t.id}, this.checked)" />
             فعال
