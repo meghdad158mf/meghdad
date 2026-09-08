@@ -3946,6 +3946,39 @@
     return inserts.length;
   }
 
+  // ویرایش کلیدواژه‌های یه موضوع «پرونده ویژه» — جایگزینی درجا (inline) شبیه
+  // الگوی editPostKeywords/savePostKeywords، بدون مودال جدا
+  function editDossierTopicKeywords(id){
+    const t = DOSSIER_TOPICS.find(x=>x.id===id);
+    const kwEl = document.getElementById('dossier-topic-kw-'+id);
+    if(!t || !kwEl) return;
+    kwEl.innerHTML = `
+      <input type="text" id="dossier-topic-kw-input-${id}" value="${escAttr(t.keywords)}" placeholder="کلیدواژه‌ها، جدا با ویرگول" style="width:100%;font-size:11.5px;padding:4px 8px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-family:inherit;box-sizing:border-box;" />
+      <div style="display:flex;gap:6px;margin-top:6px;">
+        <button type="button" class="btn" style="padding:2px 10px;font-size:10.5px;" onclick="saveDossierTopicKeywords(${id})">ذخیره</button>
+        <button type="button" class="btn" style="padding:2px 10px;font-size:10.5px;" onclick="renderDossierTopicAdminList()">انصراف</button>
+      </div>`;
+    document.getElementById('dossier-topic-kw-input-'+id).focus();
+  }
+
+  // بعد از ذخیره، همون بررسی «جست‌وجوی خودکار» رو هم خودکار روی
+  // کلیدواژه‌های تازه اجرا می‌کنه — چون کلیدواژه عوض شده، ممکنه خبرهای
+  // تازه‌ای توی backlog match بشن که با کلیدواژه‌ی قبلی نمی‌شدن. match
+  // قبلی که با کلیدواژه‌ی جدید دیگه ربطی نداره خودکار حذف نمی‌شه — مدیر
+  // باید خودش دستی «پنهان»/حذفش کنه (تا هیچ رکوردی بی‌سروصدا از دست نره)
+  async function saveDossierTopicKeywords(id){
+    const inputEl = document.getElementById('dossier-topic-kw-input-'+id);
+    if(!inputEl) return;
+    const keywords = inputEl.value.trim();
+    if(!keywords) return;
+    const r = await api('/dossier_topics?id=eq.'+id, {method:'PATCH', headers:{Prefer:'return=minimal'}, body: JSON.stringify({keywords})});
+    if(!r.ok){ alert('خطایی رخ داد.'); return; }
+    await loadDossierTopics();
+    renderDossierTopicAdminList();
+    const count = await autoMatchDossierTopic(id, {silent:true});
+    alert(count ? ('کلیدواژه‌ها ذخیره شد. ' + toFaDigits(count) + ' خبر تازه با کلیدواژه‌های جدید پیدا و اضافه شد.') : 'کلیدواژه‌ها ذخیره شد. با کلیدواژه‌های تازه، خبر جدیدی توی پست‌های موجود پیدا نشد.');
+  }
+
   function renderDossierTopicAdminList(){
     const wrap = document.getElementById('dossier-topic-admin-list');
     if(!wrap) return;
@@ -3970,8 +4003,9 @@
     return `
     <div class="dossier-topic-card${t.active?'':' inactive'}">
       <div class="dossier-topic-card-head">
-        <span class="name"><b>${escAttr(t.name)}</b><div class="kw">${escAttr(t.keywords)}</div></span>
+        <span class="name"><b>${escAttr(t.name)}</b><div class="kw" id="dossier-topic-kw-${t.id}">${escAttr(t.keywords)}</div></span>
         <span class="dossier-topic-card-actions">
+          <button class="btn" style="padding:3px 10px;font-size:10.5px;" onclick="editDossierTopicKeywords(${t.id})">ویرایش کلیدواژه</button>
           <button class="btn" style="padding:3px 10px;font-size:10.5px;" title="پست‌های موجود رو دوباره با کلیدواژه‌های این موضوع تطبیق بده" onclick="autoMatchDossierTopic(${t.id})">جست‌وجوی خودکار</button>
           <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;">
             <input type="checkbox" ${t.active?'checked':''} onchange="toggleDossierTopicActive(${t.id}, this.checked)" />
