@@ -662,21 +662,25 @@
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
 
-  .dossier-group{ margin:0 0 20px; }
-  .dossier-group-title{
-    display:flex; align-items:center; justify-content:space-between; gap:10px; list-style:none; cursor:pointer;
-    font-size:15px; font-weight:800; color: var(--text-dim); margin:0; padding:10px 12px; border-radius:8px;
-    border-inline-start:3px solid var(--accent);
+  /* تب «پرونده ویژه»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
+     flex، توی RTL خودکار سمت راست درمیاد)، اخبار موضوعِ انتخاب‌شده توی
+     ستون چپ‌ترش. فقط یه موضوع در هر لحظه انتخاب می‌شه (نه هم‌زمان چندتا) */
+  .dossier-layout{ display:flex; gap:24px; align-items:flex-start; }
+  .dossier-sidebar{ width:210px; flex-shrink:0; display:flex; flex-direction:column; gap:8px; position:sticky; top:90px; }
+  .dossier-content{ flex:1; min-width:0; }
+  @media (max-width:760px){
+    .dossier-layout{ flex-direction:column; }
+    .dossier-sidebar{ width:100%; flex-direction:row; flex-wrap:wrap; position:static; }
   }
-  .dossier-group-title::-webkit-details-marker{ display:none; }
-  .dossier-group-title::after{ content:'▾'; font-size:12px; color:var(--accent); flex-shrink:0; }
-  /* موضوعِ بازشده («در حال نمایش») با پس‌زمینه‌ی هلویی‌رنگ و متن پررنگ‌تر
-     از موضوعات بسته مشخص می‌شه — تا معلوم باشه اخبار کدوم موضوع دیده می‌شه */
-  .dossier-group[open] > .dossier-group-title{
-    color: var(--accent-strong); background: rgba(234,179,147,0.16); margin-bottom:14px;
+  .dossier-nav-item{
+    display:block; width:100%; text-align:start; cursor:pointer; font-family:inherit;
+    font-size:14px; font-weight:800; color: var(--text-dim); background:none; border:none;
+    border-inline-start:3px solid var(--accent); padding:10px 12px; border-radius:8px;
   }
-  .dossier-group[open] > .dossier-group-title::after{ content:'▴'; }
-  .dossier-group > .news-feed{ padding-top:2px; }
+  @media (max-width:760px){ .dossier-nav-item{ width:auto; } }
+  /* موضوعِ انتخاب‌شده («در حال نمایش») با پس‌زمینه‌ی هلویی‌رنگ و متن
+     پررنگ‌تر از بقیه مشخص می‌شه — تا معلوم باشه اخبار کدوم موضوع دیده می‌شه */
+  .dossier-nav-item.active{ color: var(--accent-strong); background: rgba(234,179,147,0.16); }
   .news-feed.dossier-feed{ grid-template-columns: repeat(2,1fr); }
   @media (max-width:560px){ .news-feed.dossier-feed{ grid-template-columns: 1fr; } }
   .news-kw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
@@ -1533,7 +1537,10 @@
             </div>
           </div>
         </div>
-        <div id="dossier-groups"></div>
+        <div class="dossier-layout">
+          <div class="dossier-sidebar" id="dossier-sidebar"></div>
+          <div class="dossier-content" id="dossier-groups"></div>
+        </div>
         <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
       </div>
 
@@ -2538,15 +2545,15 @@
   // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
   // فیلتر «بازه‌ی زمانی» عیناً همون منطق filteredNewsPosts() (رولینگ
   // ۲۴/۴۸/۱۶۸ ساعته، نه از نیمه‌شب) رو برای یکدستی با بقیه‌ی فیدها تکرار
-  // می‌کنه. جستجوی متنی و فیلتر چیپی موضوع طبق نظر کاربر حذف شدن —
-  // به‌جاش هر گروه/موضوع خودش یه <details> جمع‌شونده‌ست (پیش‌فرض بسته)
-  // که با کلیک روی عنوانش باز/بسته می‌شه؛ انتخاب موضوع دیگه لازم نیست.
-  let dossierState = { time: 'all' };
+  // می‌کنه. طبق نظر کاربر، چیدمان سایدباریه: موضوعات ستون راست زیر هم،
+  // فقط یکی در هر لحظه انتخاب/نمایش داده می‌شه (نه accordion چندبازِ قبلی)
+  let dossierState = { time: 'all', topicId: null };
 
   function renderDossierTab(){
+    const sidebar = document.getElementById('dossier-sidebar');
     const wrap = document.getElementById('dossier-groups');
     const empty = document.getElementById('dossier-empty');
-    if(!wrap) return;
+    if(!wrap || !sidebar) return;
     const now = Date.now();
     const groups = DOSSIER_TOPICS.filter(t=>t.active).map(t=>{
       const postIds = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id && !dp.excluded).map(dp=>dp.post_id);
@@ -2564,28 +2571,27 @@
       posts.sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
       return { topic: t, posts };
     }).filter(g=>g.posts.length);
+
     empty.style.display = groups.length ? 'none' : 'block';
-    // <details> بدون attribute «open» یعنی پیش‌فرض بسته — کاربر با کلیک
-    // روی عنوان (summary) هر موضوع رو جدا باز/بسته می‌کنه (نه accordion
-    // انحصاری؛ چند موضوع می‌تونن هم‌زمان باز باشن). طبق نظر کاربر، آخرین
-    // موضوعِ گروه (یعنی پایین‌ترین ردیف صفحه) پیش‌فرض باز می‌مونه، بقیه بسته.
-    // اخبار هر موضوع دو ستونه (grid-view) نمایش داده می‌شن، برای عکس بزرگ‌تر/بهتر
-    wrap.innerHTML = groups.map((g,idx)=>`
-      <details class="dossier-group"${idx===groups.length-1?' open':''}>
-        <summary class="dossier-group-title">${escAttr(g.topic.name)}</summary>
-        <div class="news-feed grid-view dossier-feed">${g.posts.map(p=>dossierPostCardHtml(p, g.topic.id)).join('')}</div>
-      </details>
+    if(!groups.length){ sidebar.innerHTML=''; wrap.innerHTML=''; return; }
+
+    // اگه موضوع انتخاب‌شده دیگه بین موضوعات دارای خبر نیست (غیرفعال شده یا
+    // با فیلتر زمانی خالی شده)، طبق نظر کاربر آخرین موضوع (پایین‌ترین ردیف
+    // سایدبار) پیش‌فرض انتخاب می‌شه
+    if(!groups.some(g=>g.topic.id===dossierState.topicId)){
+      dossierState.topicId = groups[groups.length-1].topic.id;
+    }
+
+    sidebar.innerHTML = groups.map(g=>`
+      <button type="button" class="dossier-nav-item${g.topic.id===dossierState.topicId?' active':''}" data-topic="${g.topic.id}">${escAttr(g.topic.name)}</button>
     `).join('');
+
+    const active = groups.find(g=>g.topic.id===dossierState.topicId);
+    wrap.innerHTML = `<div class="news-feed grid-view dossier-feed">${active.posts.map(p=>dossierPostCardHtml(p, active.topic.id)).join('')}</div>`;
     wireMediaViewerClicks(wrap);
-    // دکمه‌ی «نمایش بیشتر» فقط برای موضوعِ همین الان بازشده قابل‌محاسبه‌ست
-    // (<details> بسته لایوت نمی‌شه) — بقیه با هندلر toggle پایین‌تر موقع
-    // بازشدن محاسبه می‌شن
-    const openGroup = wrap.querySelector('.dossier-group[open]');
-    if(openGroup){
-      updateDossierMoreButtons(openGroup);
-      if(document.fonts && document.fonts.status !== 'loaded'){
-        document.fonts.ready.then(()=> updateDossierMoreButtons(openGroup));
-      }
+    updateDossierMoreButtons(wrap);
+    if(document.fonts && document.fonts.status !== 'loaded'){
+      document.fonts.ready.then(()=> updateDossierMoreButtons(wrap));
     }
   }
 
@@ -2902,7 +2908,7 @@
     newspaperState.date = b.dataset.date;
     renderNewspapers();
   });
-  // ---- فیلتر تب «پرونده ویژه» ----
+  // ---- فیلتر و سایدبار تب «پرونده ویژه» ----
   document.getElementById('dossier-time-seg').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b || !b.dataset.t) return;
     document.querySelectorAll('#dossier-time-seg > button').forEach(x=>x.classList.remove('active'));
@@ -2910,15 +2916,11 @@
     dossierState.time = b.dataset.t;
     renderDossierTab();
   });
-  // رویداد toggle بابل نمی‌شه، برای همین با capture (آرگومان سوم true) روی
-  // parent ثابت (#dossier-groups) گوش می‌دیم — وقتی مدیر یه موضوع رو باز
-  // می‌کنه، دکمه‌ی «نمایش بیشتر»هاش همون لحظه محاسبه می‌شه (قبلش چون
-  // <details> بسته بود، layout نداشت و اندازه‌گیری غلط بود)
-  document.getElementById('dossier-groups').addEventListener('toggle', e=>{
-    if(e.target && e.target.classList && e.target.classList.contains('dossier-group') && e.target.open){
-      updateDossierMoreButtons(e.target);
-    }
-  }, true);
+  document.getElementById('dossier-sidebar').addEventListener('click', e=>{
+    const btn = e.target.closest('.dossier-nav-item'); if(!btn) return;
+    dossierState.topicId = Number(btn.dataset.topic);
+    renderDossierTab();
+  });
 
   async function loadChannels(){
     const r = await api('/channels?select=*&order=added_at.desc');
