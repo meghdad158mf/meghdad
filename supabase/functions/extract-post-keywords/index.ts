@@ -12,9 +12,12 @@
 // با کالکتورها) از GitHub Actions (scripts/extract_keywords.py، با توکن
 // مدیر) صدا زده می‌شه.
 //
-// resumable: fetchPostsMissingKeywords همیشه قدیمی‌ترین پست‌های
-// ai_keywords IS NULL رو می‌گیره (ORDER BY posted_at ASC) — اگه یه
-// اجرا fail بشه یا نصفه بمونه، اجرای بعدی خودکار از همونجا ادامه می‌ده.
+// resumable + اولویت با تازه‌ها: fetchPostsMissingKeywords همیشه
+// جدیدترین پست‌های ai_keywords IS NULL رو می‌گیره (ORDER BY posted_at
+// DESC، چون این فیچر روی موضوعات موقت/جاری کار می‌کنه) — اگه یه اجرا
+// fail بشه یا نصفه بمونه، اجرای بعدی خودکار همون‌ها رو دوباره امتحان
+// می‌کنه؛ backlog قدیمی هم بالأخره (وقتی دیگه پست تازه‌ی بی‌کلیدواژه‌ای
+// نمونده) توی اجراهای بعدی پردازش می‌شه.
 //
 // مثل translate/news-insights: ورودی فقط limit (اختیاری) هست، نه خودِ
 // متن — خودِ تابع پست‌های واقعی رو از دیتابیس (با توکن کاربر) می‌خونه، تا
@@ -28,7 +31,7 @@ import { fetchPostsMissingKeywords } from "../_shared/auth.ts";
 
 const LIARA_BASE_URL = "https://ai.liara.ir/api/6a9271a1d6564b043acdefe1/v1";
 const LIARA_MODEL = "openai/gpt-4o-mini";
-const DEFAULT_LIMIT = 40;
+const DEFAULT_LIMIT = 30;
 const TEXT_TRUNCATE = 400;
 
 const corsHeaders = {

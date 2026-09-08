@@ -661,6 +661,13 @@
 
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
+
+  .dossier-group{ margin:0 0 32px; }
+  .dossier-group-title{ font-size:15px; font-weight:800; color:var(--accent-strong); margin:0 0 14px; padding-inline-start:12px; border-inline-start:3px solid var(--accent); }
+  .news-kw-chips{ display:flex; flex-wrap:wrap; gap:6px; margin-top:8px; }
+  .news-kw-chip{ font-size:10.5px; background: rgba(234,179,147,0.14); color: var(--accent-strong); border-radius: var(--radius-pill); padding:3px 10px; }
+  .news-kw-chip.empty{ color: var(--text-faint); background: rgba(0,0,0,0.04); }
+  .news-kw-edit-btn{ font-size:10.5px; color: var(--text-faint); background:none; border:none; padding:0; cursor:pointer; font-family:inherit; text-decoration:underline; }
   .news-feed.grid-view .news-card{ flex-direction:column; border-inline-start:1px solid var(--border); border-top:3px solid var(--accent); padding:0; overflow:hidden; }
   .news-feed.grid-view .news-card .news-body{ padding:14px; display:flex; flex-direction:column; flex:1; }
   .news-feed.grid-view .news-card .news-foot{ margin-top:auto; }
@@ -790,6 +797,24 @@
   .cat-card .name{ font-size:12.5px; font-weight:700; }
   .cat-card .cc-actions{ display:flex; align-items:center; gap:8px; }
   .cat-card .count{ font-size:12px; color: var(--accent-strong); font-family: ui-monospace,monospace; font-weight:700; }
+
+  /* پنل مدیریت موضوعات «پرونده ویژه» — کارت هر موضوع + لیست پست‌های منتسب + افزودن دستی */
+  .dossier-topic-card{ background: var(--surface-2); border:1px solid var(--border); border-radius: var(--radius-control); padding:12px 14px; margin-bottom:10px; border-inline-start:3px solid var(--accent); }
+  .dossier-topic-card.inactive{ opacity:.55; }
+  .dossier-topic-card-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
+  .dossier-topic-card-head .name{ font-size:12.5px; font-weight:700; }
+  .dossier-topic-card-head .kw{ font-size:11px; color: var(--text-faint); margin-top:2px; }
+  .dossier-topic-card-actions{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
+  .dossier-topic-posts{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); display:flex; flex-direction:column; gap:6px; }
+  .dossier-topic-post-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11.5px; }
+  .dossier-topic-post-row .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .dossier-topic-post-row.excluded .txt{ opacity:.5; text-decoration:line-through; }
+  .dossier-topic-empty{ font-size:11.5px; color: var(--text-faint); }
+  .dossier-manual-add{ margin-top:10px; }
+  .dossier-manual-add input{ width:100%; background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:7px 10px; border-radius: var(--radius-control); font-size:12px; font-family:inherit; }
+  .dossier-manual-results{ max-height:160px; overflow-y:auto; margin-top:6px; display:flex; flex-direction:column; gap:4px; }
+  .dossier-manual-result-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11px; padding:5px 8px; border-radius:6px; background: var(--surface); }
+  .dossier-manual-result-row .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
   /* settings: add-forms + editable channel rows */
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
@@ -1256,7 +1281,7 @@
         <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
         <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
-        <span class="domain-shortcut-disabled">پرونده ویژه<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
         <span class="domain-shortcut-disabled">خبرخوان مدارس<span class="news-soon">به‌زودی</span></span>
         <a onclick="switchSection('people')">چهره‌های سیاسی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
@@ -1384,7 +1409,7 @@
         <button id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
-        <button disabled>پرونده ویژه<span class="news-soon">به‌زودی</span></button>
+        <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
         <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
       </div>
 
@@ -1459,6 +1484,16 @@
         </div>
         <div class="newspaper-grid" id="newspaper-grid"></div>
         <p class="news-empty" id="newspapers-empty" style="display:none;">هنوز روزنامه‌ای دریافت نشده.</p>
+      </div>
+
+      <!-- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی که مدیر
+           تعیین می‌کنه (پنل «مدیریت ← تنظیمات»)؛ منبع همون پست‌های
+           show_in_news فعلیه، فقط بر اساس posts.ai_keywords دسته‌بندی
+           می‌شه. فقط موضوعات active که حداقل یه پست excluded=false دارن
+           نشون داده می‌شن. -->
+      <div id="news-dossier-panel" style="display:none;">
+        <div id="dossier-groups"></div>
+        <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
       </div>
 
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
@@ -1801,6 +1836,16 @@
               <button class="btn primary" id="add-topic-btn">افزودن موضوع</button>
             </div>
             <div class="cat-grid" id="topic-grid"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده ویژه»</span></div>
+            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده ویژه» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
+            <div class="add-row">
+              <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
+              <input type="text" id="new-dossier-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
+              <button class="btn primary" id="add-dossier-topic-btn">افزودن موضوع</button>
+            </div>
+            <div id="dossier-topic-admin-list"></div>
           </div>
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;">
@@ -2173,6 +2218,7 @@
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
     document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
+    document.getElementById('news-tab-dossier').classList.toggle('active', tab==='dossier');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
     // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
     // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
@@ -2182,6 +2228,7 @@
     document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
     document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
+    document.getElementById('news-dossier-panel').style.display = tab==='dossier' ? '' : 'none';
     if(showStudy){
       newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
@@ -2197,6 +2244,7 @@
     }
     if(tab==='newspapers') renderNewspapers();
     if(tab==='analytics') renderNewsAnalytics();
+    if(tab==='dossier') renderDossierTab();
   }
 
   // ---- real data state ----
@@ -2204,6 +2252,8 @@
   let CATEGORIES = [];  // {id, name, color}
   let REGIONS = [];     // {id, name}
   let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
+  let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده ویژه»
+  let DOSSIER_TOPIC_POSTS = []; // {id, topic_id, post_id, source, excluded} — پست‌های منتسب به هر موضوع
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
@@ -2381,6 +2431,7 @@
     const start = (newsState.page - 1) * NEWS_PAGE_SIZE;
     const list = fullList.slice(start, start + NEWS_PAGE_SIZE);
     renderNewsPagination(totalPages);
+    const isAdmin = currentRole === 'app_admin';
     feed.innerHTML = list.map(p=>{
       const ch = chById(p.channel_id) || {};
       const topic = catNameOf(p.channel_id);
@@ -2421,6 +2472,11 @@
               ${(!isClaims && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}
             </div>
           </div>
+          ${isAdmin ? `
+          <div class="news-kw-row" id="news-kw-row-${p.id}" style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+            <div class="news-kw-chips" id="news-kw-chips-${p.id}">${keywordChipsHtml(p.ai_keywords)}</div>
+            <button type="button" class="news-kw-edit-btn" onclick="editPostKeywords(${p.id})">ویرایش کلیدواژه</button>
+          </div>` : ''}
         </div>
       </div>`;
     }).join('');
@@ -2435,6 +2491,97 @@
     if(document.fonts && document.fonts.status !== 'loaded'){
       document.fonts.ready.then(()=> updateNewsMoreButtons(list));
     }
+  }
+
+  // ---- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
+  // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
+  function renderDossierTab(){
+    const wrap = document.getElementById('dossier-groups');
+    const empty = document.getElementById('dossier-empty');
+    if(!wrap) return;
+    const groups = DOSSIER_TOPICS.filter(t=>t.active).map(t=>{
+      const postIds = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id && !dp.excluded).map(dp=>dp.post_id);
+      const posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean)
+        .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at));
+      return { topic: t, posts };
+    }).filter(g=>g.posts.length);
+    empty.style.display = groups.length ? 'none' : 'block';
+    wrap.innerHTML = groups.map(g=>`
+      <div class="dossier-group">
+        <h3 class="dossier-group-title">${escAttr(g.topic.name)}</h3>
+        <div class="news-feed">${g.posts.map(p=>dossierPostCardHtml(p)).join('')}</div>
+      </div>
+    `).join('');
+    wireMediaViewerClicks(wrap);
+  }
+
+  // نسخه‌ی ساده‌ی کارت خبر برای «پرونده ویژه» — بدون کلمپ سه‌خطی/دکمه‌ی
+  // «نمایش بیشتر»/ترجمه (که توی renderNewsFeed هست)، چون این تب هم‌زمان
+  // با فیدهای دیگه توی DOM می‌مونه (فقط display:none می‌شه) و id تکراری
+  // (news-text-N و مشابه) برای همون پست ممکنه توی دو جا هم‌زمان وجود
+  // داشته باشه — پس عمداً بدون عنصر تعاملی با id ساخته می‌شه
+  function dossierPostCardHtml(p){
+    const ch = chById(p.channel_id) || {};
+    const isRealVideo = p.media_type === 'video' && p.media_path && /\.mp4($|\?)/i.test(p.media_path);
+    const hasThumb = !!p.media_path && (p.media_type === 'photo' || (p.media_type === 'video' && !isRealVideo));
+    const thumbHtml = hasThumb
+      ? `<div class="news-thumb"><img src="${escAttr(p.media_path)}" alt="" loading="lazy" data-viewer-kind="image" data-viewer-src="${escAttr(p.media_path)}"${p.media_type==='video' && p.link ? ` data-viewer-link="${escAttr(p.link)}"` : ''} /></div>`
+      : ch.avatar_url
+        ? `<div class="news-thumb"><img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" /></div>`
+        : `<div class="news-thumb placeholder">${ICONS.doc}</div>`;
+    return `
+    <div class="news-card">
+      ${thumbHtml}
+      <div class="news-body">
+        <div class="news-head">
+          <span class="news-source">${escAttr(ch.title||ch.username||'؟')}</span>
+          <span class="news-platform">${NEWS_PLATFORM_ICON[ch.platform]||''}${NEWS_PLATFORM_LABEL[ch.platform]||ch.platform}</span>
+          ${ch.region_id ? `<span class="news-region">${regionNameOf(ch.region_id)}</span>` : ''}
+          <span class="news-time">${newsRelTime(p.posted_at||p.scraped_at)}</span>
+        </div>
+        ${p.title ? `<h3 class="news-title">${p.title}</h3>` : ''}
+        <p class="news-text">${claimsTextDisplay(p.text)}</p>
+        <div class="news-foot">
+          <div></div>
+          <div>${(!isRealVideo && p.link) ? `<a class="news-link" href="${p.link}" target="_blank" rel="noopener">مشاهده‌ی منبع ↗</a>` : ''}${isRealVideo ? `<a class="news-link" href="${p.media_path}" target="_blank" rel="noopener" download>دانلود فیلم ↓</a>` : ''}</div>
+        </div>
+      </div>
+    </div>`;
+  }
+
+  // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
+  // برای مدیر، زیر پست‌های تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها» — برای
+  // بازبینی رندوم/اصلاح دستی کیفیت استخراج خودکار (نکاه به Edge Function
+  // extract-post-keywords). NULL یعنی هنوز بررسی نشده؛ آرایه‌ی خالی یعنی
+  // بررسی شد ولی کلیدواژه‌ی معناداری نداشت.
+  function keywordChipsHtml(keywords){
+    if(keywords == null) return '<span class="news-kw-chip empty">هنوز بررسی نشده</span>';
+    if(!keywords.length) return '<span class="news-kw-chip empty">بدون کلیدواژه</span>';
+    return keywords.map(k=>`<span class="news-kw-chip">${escAttr(k)}</span>`).join('');
+  }
+
+  function editPostKeywords(id){
+    const rowEl = document.getElementById('news-kw-row-'+id);
+    const p = POSTS_CACHE.find(x=>x.id===id);
+    if(!rowEl || !p) return;
+    const current = (p.ai_keywords||[]).join('، ');
+    rowEl.innerHTML = `
+      <input type="text" id="news-kw-input-${id}" value="${escAttr(current)}" placeholder="کلیدواژه‌ها، جدا با ویرگول" style="flex:1;font-size:11px;padding:4px 8px;border-radius:6px;border:1px solid var(--border-strong);background:var(--surface-2);color:var(--text);font-family:inherit;" />
+      <button type="button" class="news-kw-edit-btn" onclick="savePostKeywords(${id})">ذخیره</button>
+      <button type="button" class="news-kw-edit-btn" onclick="renderNewsFeed()">انصراف</button>
+    `;
+    document.getElementById('news-kw-input-'+id).focus();
+  }
+
+  async function savePostKeywords(id){
+    const inputEl = document.getElementById('news-kw-input-'+id);
+    if(!inputEl) return;
+    const keywords = inputEl.value.split(/[,،]/).map(k=>k.trim()).filter(Boolean);
+    const r = await api('/posts?id=eq.'+id, {method:'PATCH', headers:{Prefer:'return=minimal'}, body: JSON.stringify({ai_keywords: keywords, ai_keywords_extracted_at: new Date().toISOString()})});
+    if(!r.ok){ alert('خطایی رخ داد.'); return; }
+    const p = POSTS_CACHE.find(x=>x.id===id);
+    if(p) p.ai_keywords = keywords;
+    renderNewsFeed();
   }
 
   function updateNewsMoreButtons(list){
@@ -2670,6 +2817,14 @@
     const r = await api('/news_topics?select=*&order=sort_order.asc');
     NEWS_TOPICS = r.ok ? await r.json() : [];
   }
+  async function loadDossierTopics(){
+    const r = await api('/dossier_topics?select=*&order=sort_order.asc');
+    DOSSIER_TOPICS = r.ok ? await r.json() : [];
+  }
+  async function loadDossierTopicPosts(){
+    const r = await api('/dossier_topic_posts?select=*&order=created_at.desc&limit=2000');
+    DOSSIER_TOPIC_POSTS = r.ok ? await r.json() : [];
+  }
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
@@ -2787,7 +2942,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -2803,6 +2958,7 @@
     renderNewsRegionChips();
     renderNewsTopicRow();
     renderTopicGrid();
+    renderDossierTopicAdminList();
     renderChanList();
     renderMagazines();
     renderArchiveReports();
@@ -3723,6 +3879,113 @@
       alert('خطایی رخ داد.');
     }
   });
+
+  // ---- پنل مدیریت موضوعات «پرونده ویژه» ----
+  document.getElementById('add-dossier-topic-btn').addEventListener('click', async ()=>{
+    const nameEl = document.getElementById('new-dossier-topic-name');
+    const kwEl = document.getElementById('new-dossier-topic-keywords');
+    const name = nameEl.value.trim();
+    const keywords = kwEl.value.trim();
+    if(!name || !keywords) return;
+    const r = await api('/dossier_topics', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({name, keywords, active:true, sort_order: DOSSIER_TOPICS.length})});
+    if(r.ok){
+      nameEl.value=''; kwEl.value='';
+      await loadDossierTopics();
+      renderDossierTopicAdminList();
+    }else{
+      alert('خطایی رخ داد.');
+    }
+  });
+
+  function renderDossierTopicAdminList(){
+    const wrap = document.getElementById('dossier-topic-admin-list');
+    if(!wrap) return;
+    wrap.innerHTML = DOSSIER_TOPICS.map(t=>dossierTopicAdminCardHtml(t)).join('');
+  }
+
+  function dossierTopicAdminCardHtml(t){
+    const posts = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id);
+    const postsHtml = posts.length ? posts.map(dp=>{
+      const p = POSTS_CACHE.find(x=>x.id===dp.post_id);
+      const label = p ? (p.title || (p.text||'').slice(0,60) || ('پست #'+p.id)) : ('پست #'+dp.post_id+' (حذف‌شده)');
+      return `
+      <div class="dossier-topic-post-row${dp.excluded?' excluded':''}">
+        <span class="txt">${escAttr(label)}</span>
+        <span style="display:flex;gap:8px;flex-shrink:0;">
+          <button class="btn" style="padding:2px 8px;font-size:10.5px;" onclick="toggleDossierTopicPostExcluded(${dp.id})">${dp.excluded?'نمایش':'پنهان'}</button>
+          <button class="del-btn" style="min-width:24px;min-height:24px;font-size:11px;" title="حذف کامل" onclick="deleteDossierTopicPost(${dp.id})">✕</button>
+        </span>
+      </div>`;
+    }).join('') : '<p class="dossier-topic-empty">هنوز خبری برای این موضوع ثبت نشده.</p>';
+
+    return `
+    <div class="dossier-topic-card${t.active?'':' inactive'}">
+      <div class="dossier-topic-card-head">
+        <span class="name"><b>${escAttr(t.name)}</b><div class="kw">${escAttr(t.keywords)}</div></span>
+        <span class="dossier-topic-card-actions">
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;cursor:pointer;">
+            <input type="checkbox" ${t.active?'checked':''} onchange="toggleDossierTopicActive(${t.id}, this.checked)" />
+            فعال
+          </label>
+          <button class="del-btn" title="حذف موضوع" onclick="deleteDossierTopic(${t.id})">✕</button>
+        </span>
+      </div>
+      <div class="dossier-topic-posts">${postsHtml}</div>
+      <div class="dossier-manual-add">
+        <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن به این موضوع…" oninput="searchDossierManualAdd(${t.id}, this.value)" />
+        <div class="dossier-manual-results" id="dossier-manual-results-${t.id}"></div>
+      </div>
+    </div>`;
+  }
+
+  async function toggleDossierTopicActive(id, active){
+    await api('/dossier_topics?id=eq.'+id, {method:'PATCH', headers:{Prefer:'return=minimal'}, body: JSON.stringify({active})});
+    await loadDossierTopics();
+    renderDossierTopicAdminList();
+  }
+
+  async function deleteDossierTopic(id){
+    const t = DOSSIER_TOPICS.find(x=>x.id===id);
+    if(!confirm('موضوع «' + (t?t.name:'') + '» حذف شود؟ (پست‌های منتسب به این موضوع هم حذف می‌شن)')) return;
+    await api('/dossier_topics?id=eq.'+id, {method:'DELETE'});
+    await loadDossierTopics();
+    await loadDossierTopicPosts();
+    renderDossierTopicAdminList();
+  }
+
+  async function toggleDossierTopicPostExcluded(id){
+    const dp = DOSSIER_TOPIC_POSTS.find(x=>x.id===id);
+    if(!dp) return;
+    await api('/dossier_topic_posts?id=eq.'+id, {method:'PATCH', headers:{Prefer:'return=minimal'}, body: JSON.stringify({excluded: !dp.excluded})});
+    await loadDossierTopicPosts();
+    renderDossierTopicAdminList();
+  }
+
+  async function deleteDossierTopicPost(id){
+    await api('/dossier_topic_posts?id=eq.'+id, {method:'DELETE'});
+    await loadDossierTopicPosts();
+    renderDossierTopicAdminList();
+  }
+
+  function searchDossierManualAdd(topicId, query){
+    const resultsEl = document.getElementById('dossier-manual-results-'+topicId);
+    if(!resultsEl) return;
+    query = (query||'').trim();
+    if(query.length < 2){ resultsEl.innerHTML=''; return; }
+    const already = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===topicId).map(dp=>dp.post_id));
+    const matches = POSTS_CACHE.filter(p=> !already.has(p.id) && ((p.title||'').includes(query) || (p.text||'').includes(query))).slice(0,8);
+    resultsEl.innerHTML = matches.length ? matches.map(p=>{
+      const label = p.title || (p.text||'').slice(0,60) || ('پست #'+p.id);
+      return `<div class="dossier-manual-result-row"><span class="txt">${escAttr(label)}</span><button class="btn" style="padding:2px 8px;font-size:10.5px;" onclick="addDossierManualPost(${topicId}, ${p.id})">افزودن</button></div>`;
+    }).join('') : '<p class="dossier-topic-empty">موردی پیدا نشد.</p>';
+  }
+
+  async function addDossierManualPost(topicId, postId){
+    const r = await api('/dossier_topic_posts', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify({topic_id: topicId, post_id: postId, source:'manual', excluded:false})});
+    if(!r.ok){ alert('این پست از قبل توی این موضوع ثبت شده یا خطایی رخ داد.'); return; }
+    await loadDossierTopicPosts();
+    renderDossierTopicAdminList();
+  }
 
   document.getElementById('add-chan-btn').addEventListener('click', async ()=>{
     const nameEl = document.getElementById('new-chan-name');

@@ -30,7 +30,7 @@ SUPABASE_ANON_KEY = os.environ["SUPABASE_ANON_KEY"]
 ADMIN_PASSWORD = os.environ["ADMIN_PASSWORD"]
 
 REQUEST_TIMEOUT = 120  # پاسخ هوش مصنوعی روی دسته‌ای از پست‌ها ممکنه چند ثانیه طول بکشه
-BATCH_LIMIT = 40
+BATCH_LIMIT = 30
 
 
 def login() -> str:
