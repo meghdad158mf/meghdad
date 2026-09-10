@@ -536,7 +536,7 @@
   .cpt-row:hover::before{ background: var(--accent-strong); }
   .cpt-row:hover .cpt-arrow{ color: var(--accent-strong); transform: translateX(-3px); }
 
-  .cpt-who{ display:flex; align-items:center; gap:11px; min-width:0; flex:1.8 1 170px; }
+  .cpt-who{ display:flex; align-items:center; gap:11px; min-width:0; flex:1.5 1 140px; }
   .cpt-avatar-wrap{ position:relative; width:40px; height:40px; flex-shrink:0; }
   .cpt-avatar{
     width:100%; height:100%; border-radius:50%; overflow:hidden; color: var(--accent-strong);
@@ -552,14 +552,24 @@
   .cpt-dot.inactive{ background: var(--danger); }
   .cpt-who-txt{ min-width:0; }
   .cpt-name{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
-  .cpt-handle{ font-size:10px; color: var(--text-faint); margin-top:1px; }
 
-  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.4 1 150px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  /* «بستر فعالیت» — پلتفرم (ایتا/تلگرام) + لینک واقعی به خودِ کانال؛ قبلاً
+     این دو زیر نام کانال (.cpt-handle) می‌نشستن، طبق درخواست کاربر ستون
+     جدای خودشون شدن */
+  .cpt-platform{ display:flex; flex-direction:column; justify-content:center; gap:1px; min-width:0; flex:0 0 128px; }
+  .cpt-platform-name{ font-size:11px; font-weight:700; color: var(--text-dim); }
+  .cpt-platform-link{ font-size:10px; color: var(--accent-strong); text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; direction:ltr; text-align:right; }
+  .cpt-platform-link:hover{ text-decoration:underline; }
+
+  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.2 1 120px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .cpt-owner svg{ width:13px; height:13px; opacity:.5; flex-shrink:0; }
   /* ستون‌های عدد/فعالیت/موضوع عرض ثابت دارن (نه flex:auto بر پایه‌ی محتوا) —
      چون خیلی از کانال‌ها (مخصوصاً تازه‌اضافه‌شده‌ها) صاحب‌کانال/مخاطب/دسته‌بندی
      خالی دارن، اگه عرض ستون بر اساس محتوا حساب بشه، ستون‌های خالی جمع می‌شن
-     به صفر و همه‌چیز بعدشون از زیر سربرگ جابه‌جا می‌شه (باگ واقعی گزارش‌شده) */
+     به صفر و همه‌چیز بعدشون از زیر سربرگ جابه‌جا می‌شه (باگ واقعی گزارش‌شده).
+     محتوای این سه ستون هم وسط‌چینه، پس سربرگشون هم باید وسط‌چین بشه
+     (کلاس‌های .cpt-head-center روی خودِ سربرگ) وگرنه با اینکه عرض ستون‌ها
+     یکیه، متن سربرگ راست‌چین و پیل زیرش وسط‌چین به‌نظر ناهم‌تراز میان. */
   .cpt-num{ flex:0 0 90px; display:flex; align-items:center; justify-content:center; }
   .cpt-num-val{ direction:ltr; font-weight:800; font-size:13.5px; color: var(--accent-strong); display:inline-flex; align-items:center; gap:5px; }
   .cpt-num-val svg{ width:13px; height:13px; opacity:.6; }
@@ -575,6 +585,7 @@
   .cpt-arrow{ color: var(--text-faint); flex:0 0 20px; transition: transform .15s ease, color .15s ease; }
   .cpt-arrow svg{ width:14px; height:14px; display:block; }
   @media (max-width:700px){ .cpt-arrow{ display:none; } }
+  .cpt-head-center{ text-align:center; }
 
   .toolbar{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
   .toolbar select, .toolbar input{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
@@ -1951,11 +1962,12 @@
         <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
         <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
           <div class="cpt-head">
-            <span style="flex:1.8 1 170px">نام کانال</span>
-            <span style="flex:1.4 1 150px">صاحب کانال</span>
-            <span style="flex:0 0 90px">مخاطب</span>
-            <span style="flex:0 0 100px">فعالیت</span>
-            <span style="flex:0 0 90px">موضوع</span>
+            <span style="flex:1.5 1 140px">نام کانال</span>
+            <span style="flex:0 0 128px">بستر فعالیت</span>
+            <span style="flex:1.2 1 120px">صاحب کانال</span>
+            <span class="cpt-head-center" style="flex:0 0 90px">مخاطب</span>
+            <span class="cpt-head-center" style="flex:0 0 100px">فعالیت</span>
+            <span class="cpt-head-center" style="flex:0 0 90px">موضوع</span>
             <span style="flex:0 0 20px"></span>
           </div>
           <div id="cyber-people-grid"></div>
@@ -3781,6 +3793,7 @@
       const cat = CATEGORIES.find(c=>c.id===ch.category_id);
       const el=document.createElement('div'); el.className='cpt-row';
       el.title = 'مشاهده‌ی پست‌های ' + (ch.title || ch.username);
+      const channelUrl = ch.platform==='telegram' ? `https://t.me/${ch.username}` : `https://eitaa.com/${ch.username}`;
       el.innerHTML = `<div class="cpt-who">
           <div class="cpt-avatar-wrap">
             <div class="cpt-avatar">${ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" />` : ICONS.person}</div>
@@ -3788,14 +3801,18 @@
           </div>
           <div class="cpt-who-txt">
             <div class="cpt-name">${escHtml(ch.title || ch.username)}</div>
-            <div class="cpt-handle">${ch.platform==='telegram'?'تلگرام':'ایتا'} · <span class="mono">@${escHtml(ch.username)}</span></div>
           </div>
+        </div>
+        <div class="cpt-platform">
+          <span class="cpt-platform-name">${ch.platform==='telegram'?'تلگرام':'ایتا'}</span>
+          <a class="cpt-platform-link mono" href="${escAttr(channelUrl)}" target="_blank" rel="noopener">${escHtml(channelUrl.replace('https://',''))}</a>
         </div>
         <div class="cpt-owner">${ch.owner_name ? ICONS.userLine + `<span>${escHtml(ch.owner_name)}</span>` : ''}</div>
         <div class="cpt-num">${ch.subscriber_count ? `<span class="cpt-num-val">${ICONS.users}${toFaDigits(ch.subscriber_count)}</span>` : ''}</div>
         <div class="cpt-activity-col"><span class="cpt-activity ${act.level}"><span class="dt"></span>${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}</span></div>
         <div class="cpt-tagcol">${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : ''}</div>
         <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
+      el.querySelector('.cpt-platform-link').addEventListener('click', e => e.stopPropagation());
       el.addEventListener('click', ()=> openPersonFeed(ch.id));
       wrap.appendChild(el);
     });
