@@ -495,6 +495,7 @@
   }
   .cc-portrait{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--accent); opacity:.45; transition: all .25s ease; }
   .cc-portrait svg{ width:48%; }
+  .cc-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 
   .cc-body{ flex:1; min-width:0; padding:14px 16px; display:flex; flex-direction:column; justify-content:center; gap:5px; }
   .cc-name{ font-size:13.5px; font-weight:700; color: var(--text); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -509,6 +510,62 @@
   .cc-activity.low .dot{ background: var(--text-faint); }
   .cc-cats{ display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
   .cc-cats span{ font-size:9px; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:2px 8px; }
+
+  /* «افراد و مجموعه‌ها» (کنشگری مجازی) — گالری معرفی کنشگر به‌شکل جدول/لیست
+     فشرده (نه کارت‌های گرید)؛ سربرگ و ردیف‌ها با ته‌رنگ گرادیانی هلویی
+     .package-card تا نسبت به یه جدول خشک/اداری جذاب‌تر دیده بشه. ستون‌ها
+     با flex-wrap (نه grid ثابت) پیاده شدن تا زیر ۷۰۰px بدون اسکرول افقی
+     زیر هم بشکنن — سربرگ روی موبایل مخفی می‌شه چون دیگه با ستون‌ها هم‌تراز نیست. */
+  .cyber-people-table{
+    border-radius: var(--radius-card); overflow:hidden; background: var(--surface);
+    border:1px solid rgba(181,101,29,0.2);
+    box-shadow: 0 20px 40px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
+  }
+  .cpt-head{
+    display:flex; gap:16px; padding:13px 18px; font-size:10.5px; font-weight:700; color: var(--accent-strong);
+    background: linear-gradient(155deg, #fffaf5, #fbe9d7); border-bottom:1px solid rgba(181,101,29,.18);
+  }
+  @media (max-width:700px){ .cpt-head{ display:none; } }
+  .cpt-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:14px 18px; font-size:12.5px; color: var(--text);
+    border-top:1px solid var(--border); cursor:pointer; position:relative; transition: background .15s ease;
+  }
+  .cpt-row:first-of-type{ border-top:none; }
+  .cpt-row::before{ content:''; position:absolute; inset-inline-start:0; top:0; bottom:0; width:3px; background:transparent; transition: background .15s ease; }
+  .cpt-row:hover{ background: linear-gradient(90deg, rgba(234,179,147,.09), transparent 60%); }
+  .cpt-row:hover::before{ background: var(--accent-strong); }
+  .cpt-row:hover .cpt-arrow{ color: var(--accent-strong); transform: translateX(-3px); }
+
+  .cpt-who{ display:flex; align-items:center; gap:11px; min-width:0; flex:1.8 1 170px; }
+  .cpt-avatar-wrap{ position:relative; width:40px; height:40px; flex-shrink:0; }
+  .cpt-avatar{
+    width:100%; height:100%; border-radius:50%; overflow:hidden; color: var(--accent-strong);
+    background: radial-gradient(120% 120% at 30% 20%, rgba(234,179,147,0.5), var(--bg));
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 3px 8px -3px rgba(181,101,29,.4);
+  }
+  .cpt-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .cpt-avatar svg{ width:54%; }
+  .cpt-dot{ position:absolute; bottom:-1px; inset-inline-end:-1px; width:11px; height:11px; border-radius:50%; border:2px solid var(--surface); }
+  .cpt-dot.high{ background: var(--ok); }
+  .cpt-dot.mid{ background: var(--accent-strong); }
+  .cpt-dot.low{ background: var(--text-faint); }
+  .cpt-who-txt{ min-width:0; }
+  .cpt-name{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cpt-handle{ font-size:10px; color: var(--text-faint); margin-top:1px; }
+
+  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.4 1 150px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cpt-owner svg{ width:13px; height:13px; opacity:.5; flex-shrink:0; }
+  .cpt-num{ direction:ltr; font-weight:800; font-size:13.5px; color: var(--accent-strong); flex:0 0 auto; display:flex; align-items:center; gap:5px; }
+  .cpt-num svg{ width:13px; height:13px; opacity:.6; }
+  .cpt-activity{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius: var(--radius-pill); flex:0 0 auto; }
+  .cpt-activity .dt{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+  .cpt-activity.high{ color: var(--ok); background: var(--ok-soft); }
+  .cpt-activity.mid{ color: var(--accent-strong); background: var(--accent-soft); }
+  .cpt-activity.low{ color: var(--text-faint); background: var(--surface-2); }
+  .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; flex:0 0 auto; }
+  .cpt-arrow{ color: var(--text-faint); margin-inline-start:auto; flex-shrink:0; transition: transform .15s ease, color .15s ease; }
+  .cpt-arrow svg{ width:14px; height:14px; display:block; }
+  @media (max-width:700px){ .cpt-arrow{ display:none; } }
 
   .toolbar{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
   .toolbar select, .toolbar input{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
@@ -935,6 +992,10 @@
   }
   .chan-row-news{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color: var(--text-faint); flex-shrink:0; cursor:pointer; white-space:nowrap; }
   .chan-row-news input{ cursor:pointer; }
+  .chan-row-profile-fields{ min-width:190px; }
+  .chan-row-profile-fields label{ display:flex; flex-direction:column; gap:4px; font-size:10.5px; font-weight:600; color: var(--text-faint); }
+  .chan-row-profile-fields input{ font-size:12px; font-weight:500; font-family:inherit; color: var(--text); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:5px 7px; }
+  .chan-row-profile-fields input:focus{ outline:none; border-color: var(--accent); }
   #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
@@ -1374,7 +1435,8 @@
         <a onclick="switchSection('people')">چهره‌های سیاسی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
         <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
-        <a onclick="switchSection('posts')">پست‌های منتشر شده</a>
+        <a onclick="goToPostsTab('feed')">پست‌های منتشر شده</a>
+        <a onclick="goToPostsTab('people')">افراد و مجموعه‌ها</a>
         <span class="domain-shortcut-disabled">آنالیز کنشگری<span class="news-soon">به‌زودی</span></span>
       </div>
 
@@ -1843,35 +1905,53 @@
 
     <!-- POSTS (dedicated reading page) -->
     <section class="section" id="sec-posts">
-      <div class="news-page-tabs">
-        <button class="active">پست‌های منتشر شده</button>
+      <div class="news-page-tabs" id="posts-page-tabs">
+        <button class="active" data-posts-tab="feed">پست‌های منتشر شده</button>
+        <button data-posts-tab="people">افراد و مجموعه‌ها</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
 
-      <div class="toolbar">
-        <details class="news-source-details" id="posts-source-details">
-          <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
-          <div class="news-source-list" id="posts-source-list"></div>
-        </details>
-        <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
-        <select id="posts-filter-time">
-          <option value="">همه‌ی زمان‌ها</option>
-          <option value="today">امروز</option>
-          <option value="yesterday">دیروز</option>
-          <option value="week">این هفته</option>
-        </select>
-        <div class="news-search-box" id="posts-search-box">
-          <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div id="posts-tab-feed">
+        <div class="toolbar">
+          <details class="news-source-details" id="posts-source-details">
+            <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
+            <div class="news-source-list" id="posts-source-list"></div>
+          </details>
+          <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
+          <select id="posts-filter-time">
+            <option value="">همه‌ی زمان‌ها</option>
+            <option value="today">امروز</option>
+            <option value="yesterday">دیروز</option>
+            <option value="week">این هفته</option>
+          </select>
+          <div class="news-search-box" id="posts-search-box">
+            <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </div>
+          <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+            جستجوی هوشمند
+            <span class="sw"></span>
+          </div>
         </div>
-        <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
-          جستجوی هوشمند
-          <span class="sw"></span>
+        <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
+        <div class="news-feed grid-view social-tab" id="posts-list"></div>
+      </div>
+
+      <div id="posts-tab-people" style="display:none;">
+        <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
+        <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
+          <div class="cpt-head">
+            <span style="flex:1.8 1 170px">نام کانال</span>
+            <span style="flex:1.4 1 150px">صاحب کانال</span>
+            <span style="flex:0 0 90px">مخاطب</span>
+            <span style="flex:0 0 100px">فعالیت</span>
+            <span style="flex:0 0 90px">موضوع</span>
+            <span style="flex:0 0 20px"></span>
+          </div>
+          <div id="cyber-people-grid"></div>
         </div>
       </div>
-      <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
-      <div class="news-feed grid-view social-tab" id="posts-list"></div>
     </section>
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
@@ -2126,7 +2206,9 @@
     audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="7" rx="2"/><rect x="16.5" y="13" width="5" height="7" rx="2"/></svg>',
     mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4M9 22h6"/></svg>',
     interview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.4 0-2.7-.3-3.9-.9L3 20l1-4.9A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>',
-    newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v13a3 3 0 0 0 3 3H7a3 3 0 0 1-3-3V4z"/><path d="M17 8h3v9a3 3 0 0 1-3 3"/><path d="M7.5 8h6M7.5 11h6M7.5 14h4"/></svg>'
+    newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v13a3 3 0 0 0 3 3H7a3 3 0 0 1-3-3V4z"/><path d="M17 8h3v9a3 3 0 0 1-3 3"/><path d="M7.5 8h6M7.5 11h6M7.5 14h4"/></svg>',
+    userLine: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M2.5 19c0-3.3 2.8-5.6 6.5-5.6s6.5 2.3 6.5 5.6"/><path d="M16 8.2a3 3 0 1 1 1.2 5.7"/><path d="M18 13.6c2.6.6 3.5 2.6 3.5 4.7"/></svg>'
   };
 
   // ---- auth (real Supabase/PostgREST backend) ----
@@ -2321,7 +2403,7 @@
     closeDeleteChannelModal();
     await api('/channels?id=eq.'+ch.id, {method:'DELETE'});
     await loadChannels(); await loadPosts();
-    renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts();
+    renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderCyberPeopleGrid();
   });
 
   function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
@@ -2360,7 +2442,7 @@
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview'){ renderNewsFeed(); renderNewsAnalytics(); }
-    if(key === 'posts') renderPosts();
+    if(key === 'posts'){ renderPosts(); renderCyberPeopleGrid(); }
     if(key === 'feedback') loadFeedbackList().then(renderFeedbackList);
     if(key === 'export') loadNotifySubscribers().then(renderNotifySubscribers);
   }
@@ -2369,6 +2451,11 @@
   function goToNewsTab(tab){
     switchSection('overview');
     setNewsPageTab(tab);
+  }
+  function goToPostsTab(tab){
+    switchSection('posts');
+    const tabBtn = document.querySelector('#posts-page-tabs button[data-posts-tab="'+tab+'"]');
+    if(tabBtn) tabBtn.click();
   }
   function setNewsPageTab(tab){
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
@@ -3505,6 +3592,7 @@
     renderChannelCards();
     populatePostFilters();
     renderPosts();
+    renderCyberPeopleGrid();
     populatePoliticalFiguresSourceOptions();
     renderPoliticalFigures();
     populateExportFilters();
@@ -3651,6 +3739,62 @@
         </div>`;
       wrap.appendChild(el);
     });
+  }
+
+  // ---- «افراد و مجموعه‌ها»: زیرتب دوم «کنشگری مجازی»، گالری معرفی همون
+  // کانال‌هایی که پست‌هاشون توی زیرتب «پست‌های منتشر شده» جمع می‌شه ----
+  const postsPageTabsEl = document.getElementById('posts-page-tabs');
+  if(postsPageTabsEl) postsPageTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.postsTab) return;
+    postsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    ['feed','people'].forEach(key=>{
+      const el = document.getElementById('posts-tab-'+key);
+      if(el) el.style.display = key === b.dataset.postsTab ? '' : 'none';
+    });
+    if(b.dataset.postsTab === 'people') renderCyberPeopleGrid();
+  });
+
+  function renderCyberPeopleGrid(){
+    const wrap = document.getElementById('cyber-people-grid');
+    const table = document.getElementById('cyber-people-table');
+    const empty = document.getElementById('cyber-people-empty');
+    if(!wrap) return;
+    const channels = CHANNELS.filter(c=>c.show_in_cyberspace);
+    empty.style.display = channels.length ? 'none' : 'block';
+    table.style.display = channels.length ? '' : 'none';
+    wrap.innerHTML = '';
+    channels.forEach(ch=>{
+      const act = activityOf(ch.id);
+      const cat = CATEGORIES.find(c=>c.id===ch.category_id);
+      const el=document.createElement('div'); el.className='cpt-row';
+      el.title = 'مشاهده‌ی پست‌های ' + (ch.title || ch.username);
+      el.innerHTML = `<div class="cpt-who">
+          <div class="cpt-avatar-wrap">
+            <div class="cpt-avatar">${ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" />` : ICONS.person}</div>
+            <span class="cpt-dot ${act.level}" title="فعالیت ${act.label}"></span>
+          </div>
+          <div class="cpt-who-txt">
+            <div class="cpt-name">${escHtml(ch.title || ch.username)}</div>
+            <div class="cpt-handle">${ch.platform==='telegram'?'تلگرام':'ایتا'} · <span class="mono">@${escHtml(ch.username)}</span></div>
+          </div>
+        </div>
+        <div class="cpt-owner">${ch.owner_name ? ICONS.userLine + `<span>${escHtml(ch.owner_name)}</span>` : ''}</div>
+        <div class="cpt-num">${ch.subscriber_count ? ICONS.users + toFaDigits(ch.subscriber_count) : ''}</div>
+        <span class="cpt-activity ${act.level}"><span class="dt"></span>فعالیت ${act.label}</span>
+        ${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : '<span></span>'}
+        <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
+      el.addEventListener('click', ()=> openPersonFeed(ch.id));
+      wrap.appendChild(el);
+    });
+  }
+
+  function openPersonFeed(channelId){
+    postsSelectedChannels = [String(channelId)];
+    populatePostSourceOptions();
+    renderPosts();
+    const tabBtn = document.querySelector('#posts-page-tabs button[data-posts-tab="feed"]');
+    if(tabBtn) tabBtn.click();
   }
 
   // ---- posts page ----
@@ -4248,7 +4392,7 @@
   const newChanRegionEl = document.getElementById('new-chan-region');
   const CHAN_DOMAIN_FIELDS = [
     { field: 'show_in_news', label: 'اخبار و رویدادها', onChange: () => renderNewsFeed() },
-    { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => renderPosts() },
+    { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => { renderPosts(); renderCyberPeopleGrid(); } },
     { field: 'show_in_people', label: 'یادداشت', onChange: () => renderPoliticalFigures() },
   ];
 
@@ -4296,7 +4440,7 @@
         if(!confirm('این دسته‌بندی حذف شود؟')) return;
         await api('/categories?id=eq.'+c.id, {method:'DELETE'});
         await loadCategories(); await loadChannels();
-        refreshCatOptions(); renderCatGrid(); renderChanList(); renderChannelCards(); populatePostFilters(); populateExportFilters();
+        refreshCatOptions(); renderCatGrid(); renderChanList(); renderChannelCards(); renderCyberPeopleGrid(); populatePostFilters(); populateExportFilters();
       });
       el.querySelector('.cc-actions').appendChild(del);
       catGridEl.appendChild(el);
@@ -4379,6 +4523,44 @@
       });
       domainsDetails.appendChild(domainsWrap);
       row.appendChild(domainsDetails);
+      // پروفایل کنشگر (صاحب کانال + تعداد مخاطب) — برای گالری «افراد و
+      // مجموعه‌ها» توی کنشگری مجازی؛ دو فیلد دستی، نه خودکار (بخش
+      // «هوش مصنوعی» رو نگاه کن، هیچ کالکتوری این دو رو زنده نمی‌گیره)
+      const profileDetails=document.createElement('details'); profileDetails.className='chan-row-domains-details';
+      const profileSummary=document.createElement('summary'); profileSummary.textContent='پروفایل';
+      profileDetails.appendChild(profileSummary);
+      const profileWrap=document.createElement('div'); profileWrap.className='chan-row-domains chan-row-profile-fields';
+      const ownerLbl=document.createElement('label'); ownerLbl.appendChild(document.createTextNode('صاحب کانال'));
+      const ownerInput=document.createElement('input'); ownerInput.type='text'; ownerInput.placeholder='نام صاحب کانال'; ownerInput.value=ch.owner_name||'';
+      let ownerSaveTimer;
+      ownerInput.addEventListener('input', e=>{
+        clearTimeout(ownerSaveTimer);
+        const val = e.target.value.trim() || null;
+        ownerSaveTimer = setTimeout(async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({owner_name: val})});
+          ch.owner_name = val;
+          renderCyberPeopleGrid();
+        }, 600);
+      });
+      ownerLbl.appendChild(ownerInput);
+      profileWrap.appendChild(ownerLbl);
+      const subLbl=document.createElement('label'); subLbl.appendChild(document.createTextNode('تعداد مخاطب'));
+      const subInput=document.createElement('input'); subInput.type='number'; subInput.min='0'; subInput.placeholder='مثلاً ۱۲۰۰۰'; subInput.value = ch.subscriber_count==null ? '' : ch.subscriber_count;
+      let subSaveTimer;
+      subInput.addEventListener('input', e=>{
+        clearTimeout(subSaveTimer);
+        const raw = e.target.value;
+        const val = raw==='' ? null : Number(raw);
+        subSaveTimer = setTimeout(async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({subscriber_count: val})});
+          ch.subscriber_count = val;
+          renderCyberPeopleGrid();
+        }, 600);
+      });
+      subLbl.appendChild(subInput);
+      profileWrap.appendChild(subLbl);
+      profileDetails.appendChild(profileWrap);
+      row.appendChild(profileDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
       del.addEventListener('click', ()=> openDeleteChannelModal(ch));
       row.appendChild(del);
@@ -4650,7 +4832,7 @@
       nameEl.value=''; handleEl.value=''; regionEl.value='';
       showNewsEl.checked=false; showCyberspaceEl.checked=false; showPeopleEl.checked=false;
       await loadChannels();
-      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderPoliticalFigures();
+      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderCyberPeopleGrid(); renderPoliticalFigures();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
     }
