@@ -889,15 +889,10 @@
   .newsletter-page-title{ display:flex; align-items:center; gap:12px; margin:0 0 16px; break-after:avoid; }
   .newsletter-page-title::before, .newsletter-page-title::after{ content:''; flex:1; border-top:1.5px solid #16202a; }
   .newsletter-page-title span{ font-size:15px; font-weight:800; color:#16202a; white-space:nowrap; }
-  /* دو ستون «شبکه‌های اجتماعی...» + «پرونده ویژه» با CSS multi-column
-     (نه flex) چون flex زیر چاپ درست صفحه‌بندی نمی‌شه (محتوای زیاد به‌جای
-     ادامه به صفحه‌ی بعد، یا بریده می‌شه یا کل ردیف با هم می‌پره)؛
-     multi-column برخلاف flex برای این کار طراحی شده. تیتر «پرونده ویژه»
-     با break-before:column همیشه مجبور به شروع از ابتدای ستون دومه (نه
-     وسط ستون اول)، تا اخبار واقعاً توی ستون راست و پرونده‌ویژه توی
-     ستون چپ بمونه، نه یه‌جا قاطی بشن */
+  /* دوستونه‌کردن متن با CSS multi-column (نه flex) چون flex زیر چاپ
+     درست صفحه‌بندی نمی‌شه (محتوای زیاد به‌جای ادامه به صفحه‌ی بعد، یا
+     بریده می‌شه یا کل ردیف با هم می‌پره) */
   .newsletter-flow-columns{ column-count:2; column-gap:28px; column-rule:1px solid #ccc; }
-  .newsletter-col-break{ break-before:column; -webkit-column-break-before:always; }
   .newsletter-item{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; break-inside:avoid; -webkit-column-break-inside:avoid; }
   .newsletter-item:last-child{ border-bottom:none; }
   .newsletter-item-title{ font-weight:700; font-size:13px; color:#16202a; line-height:1.5; margin-bottom:6px; }
@@ -2907,11 +2902,15 @@
       </div>`;
   }
 
-  // .newsletter-flow-columns دوجور استفاده می‌شه: یه‌بار تنها برای
-  // خودِ «ادعاها و شایعات» (فقط دوستونه‌کردن، بدون تقسیم به دو زیربخش)،
-  // یه‌بار دیگه برای «شبکه‌های اجتماعی...»+«پرونده ویژه» با هم (چون
-  // صفحه/چاپ RTLه، ستون اول خودکار سمت راست درمیاد و ستون دوم با
-  // newsletter-col-break مجبور به شروع از ابتدای ستون بعدی سمت چپ می‌شه)
+  // ⚠️ طبق درخواست کاربر: «شبکه‌های اجتماعی...» و «پرونده ویژه» دیگه دو
+  // بخش جدا با دو عنوان جدا نیستن — فقط توی پنل مدیریت (بالاتر، سه پنل
+  // curation جدا) دسته‌بندی‌شون حفظ شده تا مدیر بهتر پیدا/مدیریت‌شون کنه؛
+  // موقع نمایش نهایی به کاربر، آیتم‌های news+dossier با هم یکی (concat)
+  // و زیر یه عنوان مشترک «برخی از مهمترین خبرها» با شماره‌گذاری پیوسته
+  // (نه از سر گرفتن شماره برای هرکدوم) نشون داده می‌شن. صفحه‌ی اول هم
+  // طبق خواسته‌ی کاربر فقط مخصوص «ادعاها و شایعات»ه — برش اجباری صفحه
+  // بین این دو بخش توی buildNewsletterPdf (پایین‌تر) با اندازه‌گیری
+  // مرز #nl-claims-block انجام می‌شه، نه صرفاً جریان پیوسته‌ی قبلی.
   function buildNewsletterPrintHtml(){
     const wrap = document.getElementById('newsletter-print-view');
     if(!wrap) return;
@@ -2920,6 +2919,7 @@
       const p = POSTS_CACHE.find(x=>x.id===np.post_id);
       if(p) grouped[np.section].push(p);
     });
+    const highlights = [...grouped.news, ...grouped.dossier];
     const today = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'long', day:'numeric' });
     const headerHtml = `
       <div class="newsletter-masthead">
@@ -2934,15 +2934,15 @@
     wrap.innerHTML = `
       <div class="newsletter-page">
         ${headerHtml}
-        <h3 class="newsletter-page-title"><span>ادعاها و شایعات</span></h3>
-        <div class="newsletter-flow-columns">
-          ${grouped.claims.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
+        <div id="nl-claims-block">
+          <h3 class="newsletter-page-title"><span>ادعاها و شایعات</span></h3>
+          <div class="newsletter-flow-columns">
+            ${grouped.claims.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
+          </div>
         </div>
+        <h3 class="newsletter-page-title"><span>برخی از مهمترین خبرها</span></h3>
         <div class="newsletter-flow-columns">
-          <h3 class="newsletter-page-title"><span>شبکه‌های اجتماعی و وب‌سایت‌ها</span></h3>
-          ${grouped.news.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
-          <h3 class="newsletter-page-title newsletter-col-break"><span>پرونده ویژه</span></h3>
-          ${grouped.dossier.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
+          ${highlights.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
         </div>
       </div>`;
   }
@@ -3025,6 +3025,11 @@
       return { top: r.top - sourceTop, bottom: r.bottom - sourceTop };
     }).sort((a,b)=>a.top-b.top);
     const totalHeightCss = pdfSource.getBoundingClientRect().height;
+    // طبق درخواست کاربر، صفحه‌ی اول فقط مخصوص «ادعاها و شایعات»ه — یعنی
+    // اینجا برخلاف بقیه‌ی جریان پیوسته، یه برش اجباری درست سرِ مرز پایین
+    // #nl-claims-block می‌خوریم (نه صرفاً هروقت صفحه پر شد)
+    const claimsBlock = pdfSource.querySelector('#nl-claims-block');
+    const claimsBottom = claimsBlock ? (claimsBlock.getBoundingClientRect().bottom - sourceTop) : 0;
 
     const fullCanvas = await html2canvas(pdfSource, { scale, backgroundColor:'#ffffff', windowWidth: PDF_PX_WIDTH });
     document.body.removeChild(pdfSource);
@@ -3034,22 +3039,29 @@
     // شروع همون آیتم عقب کشیده می‌شه (چیزی شبیه break-inside:avoid دستی).
     // اگه خودِ آیتم به‌تنهایی از یه صفحه‌ی کامل بلندتر بود (خیلی نادر)،
     // برش به‌جای وسط یه خط، لااقل سر یه خط (lineAtoms) جا داده می‌شه —
-    // تا هیچ‌وقت چیزی نصفه‌ونیمه/بریده به‌نظر نرسه.
-    const breaks = [0];
-    let cursor = 0;
-    while(cursor < totalHeightCss - 1){
-      let target = cursor + pageContentHeightCss;
-      if(target >= totalHeightCss){ breaks.push(totalHeightCss); break; }
-      const straddling = atoms.find(a => a.top < target && a.bottom > target && a.top >= cursor);
-      if(straddling){
-        target = (straddling.bottom - straddling.top > pageContentHeightCss)
-          ? (lineAtoms.find(a => a.top < target && a.bottom > target && a.top >= cursor)?.top ?? target)
-          : straddling.top;
+    // تا هیچ‌وقت چیزی نصفه‌ونیمه/بریده به‌نظر نرسه. این تابع روی یه بازه
+    // مشخص اجرا می‌شه تا بشه claimsBottom رو به‌عنوان یه مرز اجباری بین
+    // دو بازه‌ی جدا (ادعاها / بقیه) تحمیل کرد، نه فقط جریان پیوسته‌ی یکسره.
+    function computeBreaksInRange(rangeStart, rangeEnd){
+      const result = [];
+      let cur = rangeStart;
+      while(cur < rangeEnd - 1){
+        let target = cur + pageContentHeightCss;
+        if(target >= rangeEnd){ result.push(rangeEnd); break; }
+        const straddling = atoms.find(a => a.top < target && a.bottom > target && a.top >= cur);
+        if(straddling){
+          target = (straddling.bottom - straddling.top > pageContentHeightCss)
+            ? (lineAtoms.find(a => a.top < target && a.bottom > target && a.top >= cur)?.top ?? target)
+            : straddling.top;
+        }
+        if(target <= cur) target = cur + pageContentHeightCss;
+        result.push(target);
+        cur = target;
       }
-      if(target <= cursor) target = cursor + pageContentHeightCss;
-      breaks.push(target);
-      cursor = target;
+      if(!result.length) result.push(rangeEnd);
+      return result;
     }
+    const breaks = [0, ...computeBreaksInRange(0, claimsBottom), ...computeBreaksInRange(claimsBottom, totalHeightCss)];
 
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit:'mm', format:'a4' });
