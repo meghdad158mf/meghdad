@@ -858,20 +858,41 @@
   .newsletter-draft-item .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #newsletter-admin-panel .add-row{ margin-top:10px; }
   /* خودِ صفحه‌ی چاپی — عمداً رنگ روشن/تیره‌ی ثابت (نه متغیرهای رنگی
-     تم تیره‌ی برنامه)، چون قراره روی کاغذ سفید چاپ بشه */
+     تم تیره‌ی برنامه)، چون قراره روی کاغذ سفید چاپ بشه.
+     ⚠️ یه ظرف پیوسته‌ست، نه دوتا صفحه‌ی جدا با page-break اجباری بینشون —
+     طبق نظر کاربر، وقتی محتوای «ادعاها» زودتر از پرشدن صفحه تموم بشه،
+     ادامه (بخش دوستونه) باید همون‌جا ادامه پیدا کنه، نه با یه فضای خالی
+     در ته صفحه به صفحه‌ی بعد پرتاب بشه؛ خودِ مرورگر موقع چاپ هرجا واقعاً
+     لازم بود (صفحه پر شد) خودکار صفحه‌ی بعدی رو شروع می‌کنه */
   #newsletter-print-view{ display:none; }
-  .newsletter-page{ background:#fff; color:#111; direction:rtl; font-family:inherit; padding:14mm; box-sizing:border-box; width:210mm; min-height:297mm; page-break-after:always; break-after:page; }
-  .newsletter-page:last-child{ page-break-after:auto; break-after:auto; }
-  .newsletter-page-header{ display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid #16202a; padding-bottom:8px; margin-bottom:16px; }
-  .newsletter-page-header h2{ margin:0; font-size:20px; }
-  .newsletter-page-header span{ font-size:12px; color:#555; }
-  .newsletter-page-title{ font-size:15px; font-weight:800; margin:0 0 10px; border-inline-start:3px solid #EAB393; padding-inline-start:8px; }
-  .newsletter-columns{ display:flex; gap:18px; }
-  .newsletter-col{ flex:1; min-width:0; }
-  .newsletter-item{ margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #ddd; }
-  .newsletter-item-title{ font-weight:800; font-size:12.5px; margin-bottom:3px; }
-  .newsletter-item-text{ font-size:11px; line-height:1.7; white-space:pre-wrap; }
-  .newsletter-item-meta{ font-size:9.5px; color:#777; margin-top:3px; }
+  .newsletter-page{ background:#fff; color:#222; direction:rtl; font-family:inherit; padding:14mm; box-sizing:border-box; width:210mm; }
+  /* هدر با هویت بصری جریان — عمداً بدون تصویر/لوگوی رستری (فقط رنگ+فونت)
+     تا موقع چاپ/PDF هیچ وابستگی به بارگذاری عکس نداشته باشه. چون الان
+     کل خبرنامه یه ظرف پیوسته‌ست، این هدر فقط یه‌بار بالای کل خبرنامه
+     میاد، نه تکرارشونده روی هر صفحه‌ی فیزیکی چاپی (برای تکرار خودکار
+     سربرگ روی هر صفحه به CSS Paged Media پیشرفته‌تری نیاز بود که پشتیبانی
+     مرورگرها ازش هنوز ناقصه) */
+  .newsletter-page-header{ display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #16202a; padding-bottom:14px; margin-bottom:24px; }
+  .newsletter-brand{ display:flex; align-items:center; gap:12px; }
+  .newsletter-brand-badge{ width:36px; height:36px; border-radius:10px; background:linear-gradient(155deg,#EAB393,#d99a72); flex-shrink:0; }
+  .newsletter-brand-title{ font-size:11.5px; color:#777; font-weight:600; margin-bottom:2px; }
+  .newsletter-brand-sub{ font-size:21px; font-weight:800; color:#16202a; }
+  .newsletter-date{ font-size:11.5px; color:#666; background:#f4f4f4; padding:6px 14px; border-radius:100px; font-weight:600; }
+  .newsletter-page-title{ font-size:16px; font-weight:800; margin:0 0 16px; padding-inline-start:10px; border-inline-start:4px solid #EAB393; color:#16202a; break-after:avoid; }
+  /* دو ستون «شبکه‌های اجتماعی...» + «پرونده ویژه» با CSS multi-column
+     (نه flex) چون flex زیر چاپ درست صفحه‌بندی نمی‌شه (محتوای زیاد به‌جای
+     ادامه به صفحه‌ی بعد، یا بریده می‌شه یا کل ردیف با هم می‌پره)؛
+     multi-column برخلاف flex برای این کار طراحی شده. تیتر «پرونده ویژه»
+     با break-before:column همیشه مجبور به شروع از ابتدای ستون دومه (نه
+     وسط ستون اول)، تا اخبار واقعاً توی ستون راست و پرونده‌ویژه توی
+     ستون چپ بمونه، نه یه‌جا قاطی بشن */
+  .newsletter-flow-columns{ column-count:2; column-gap:32px; column-rule:1px solid #e2e2e2; }
+  .newsletter-col-break{ break-before:column; -webkit-column-break-before:always; }
+  .newsletter-item{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; break-inside:avoid; -webkit-column-break-inside:avoid; }
+  .newsletter-item:last-child{ border-bottom:none; }
+  .newsletter-item-title{ font-weight:700; font-size:13px; margin-bottom:6px; color:#16202a; line-height:1.5; }
+  .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; }
+  .newsletter-item-meta{ font-size:9.5px; color:#999; margin-top:6px; }
   @media print{
     body > *:not(#newsletter-print-view){ display:none !important; }
     #newsletter-print-view{ display:block !important; }
@@ -2873,9 +2894,10 @@
       </div>`;
   }
 
-  // ستون‌های .newsletter-columns: چون صفحه/چاپ RTLه و «شبکه‌های اجتماعی»
-  // اولین فرزندشه، خودکار سمت راست درمیاد؛ «پرونده ویژه» سمت چپ — دقیقاً
-  // همون آرایشی که کاربر خواسته بود
+  // .newsletter-flow-columns: چون صفحه/چاپ RTLه، ستون اول multi-column
+  // («شبکه‌های اجتماعی...») خودکار سمت راست درمیاد و ستون دوم («پرونده
+  // ویژه»، با newsletter-col-break مجبور به شروع از ابتدای ستون بعدی)
+  // سمت چپ — دقیقاً همون آرایشی که کاربر خواسته بود
   function buildNewsletterPrintHtml(){
     const wrap = document.getElementById('newsletter-print-view');
     if(!wrap) return;
@@ -2885,23 +2907,27 @@
       if(p) grouped[np.section].push(p);
     });
     const today = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'long', day:'numeric' });
+    const headerHtml = `
+      <div class="newsletter-page-header">
+        <div class="newsletter-brand">
+          <span class="newsletter-brand-badge"></span>
+          <div>
+            <div class="newsletter-brand-title">سامانه هوشمند جریان</div>
+            <div class="newsletter-brand-sub">خبرنامه مدارس</div>
+          </div>
+        </div>
+        <span class="newsletter-date">${today}</span>
+      </div>`;
     wrap.innerHTML = `
       <div class="newsletter-page">
-        <div class="newsletter-page-header"><h2>خبرنامه مدارس</h2><span>${today}</span></div>
+        ${headerHtml}
         <h3 class="newsletter-page-title">ادعاها و شایعات</h3>
         ${grouped.claims.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
-      </div>
-      <div class="newsletter-page">
-        <div class="newsletter-page-header"><h2>خبرنامه مدارس</h2><span>${today}</span></div>
-        <div class="newsletter-columns">
-          <div class="newsletter-col">
-            <h3 class="newsletter-page-title">شبکه‌های اجتماعی و وب‌سایت‌ها</h3>
-            ${grouped.news.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
-          </div>
-          <div class="newsletter-col">
-            <h3 class="newsletter-page-title">پرونده ویژه</h3>
-            ${grouped.dossier.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
-          </div>
+        <div class="newsletter-flow-columns">
+          <h3 class="newsletter-page-title">شبکه‌های اجتماعی و وب‌سایت‌ها</h3>
+          ${grouped.news.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+          <h3 class="newsletter-page-title newsletter-col-break">پرونده ویژه</h3>
+          ${grouped.dossier.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
         </div>
       </div>`;
   }
