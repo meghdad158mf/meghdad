@@ -867,11 +867,19 @@
   #newsletter-print-view{ display:none; }
   .newsletter-page{ background:#fff; color:#222; direction:rtl; font-family:inherit; padding:14mm; box-sizing:border-box; width:210mm; }
   /* هدر با هویت بصری جریان — عمداً بدون تصویر/لوگوی رستری (فقط رنگ+فونت)
-     تا موقع چاپ/PDF هیچ وابستگی به بارگذاری عکس نداشته باشه. چون الان
-     کل خبرنامه یه ظرف پیوسته‌ست، این هدر فقط یه‌بار بالای کل خبرنامه
-     میاد، نه تکرارشونده روی هر صفحه‌ی فیزیکی چاپی (برای تکرار خودکار
-     سربرگ روی هر صفحه به CSS Paged Media پیشرفته‌تری نیاز بود که پشتیبانی
-     مرورگرها ازش هنوز ناقصه) */
+     تا موقع چاپ/PDF هیچ وابستگی به بارگذاری عکس نداشته باشه.
+     ⚠️ کاربر خواسته بود این هدر روی همه‌ی صفحات فیزیکی تکرار بشه — امتحان
+     شد (با position:fixed زیر @media print + رزرو حاشیه‌ی بالای @page)،
+     ولی با تولید یه PDF واقعی و رندر مستقیمش (نه فقط شبیه‌سازی) معلوم شد
+     Chromium توی حالت چاپ عنصر fixed رو درست روی هر صفحه تکرار نمی‌کنه —
+     یه‌جای اشتباه (وسط یه صفحه) می‌ذارتش و توی صفحه‌های بعدی اصلاً نمیاد.
+     این محدودیت واقعیِ خودِ موتور چاپ کرومه (نه باگ کد ما) — CSS Paged
+     Media برای «هدر/فوتر تکرارشونده‌ی واقعی» (position:running + عناصر
+     margin box توی @page) هنوز توی هیچ مرورگر اصلی‌ای پیاده نشده. برای
+     همین به حالت قبلی (هدر فقط یه‌بار بالای کل خبرنامه) برگشت داده شد؛
+     اگه تکرار واقعی لازم باشه، راه‌حل واقعی تغییر معماری از «چاپ مرورگر»
+     به تولید مستقیم PDF با یه کتابخونه‌ی جاوااسکریپت (مثل jsPDF) است که
+     خودمون صفحه‌بندی/تکرار هدر رو دستی کنترل کنیم، نه CSS/چاپ مرورگر */
   .newsletter-page-header{ display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #16202a; padding-bottom:14px; margin-bottom:24px; }
   .newsletter-brand{ display:flex; align-items:center; gap:12px; }
   .newsletter-brand-badge{ width:36px; height:36px; border-radius:10px; background:linear-gradient(155deg,#EAB393,#d99a72); flex-shrink:0; }
@@ -890,9 +898,8 @@
   .newsletter-col-break{ break-before:column; -webkit-column-break-before:always; }
   .newsletter-item{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; break-inside:avoid; -webkit-column-break-inside:avoid; }
   .newsletter-item:last-child{ border-bottom:none; }
-  .newsletter-item-head{ display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
-  .newsletter-item-num{ width:20px; height:20px; border-radius:6px; background:#16202a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; font-family: ui-monospace,monospace; margin-top:1px; }
-  .newsletter-item-title{ flex:1; font-weight:700; font-size:13px; color:#16202a; line-height:1.5; }
+  .newsletter-item-title{ font-weight:700; font-size:13px; color:#16202a; line-height:1.5; margin-bottom:6px; }
+  .newsletter-item-num{ color:#c9895e; font-weight:800; }
   .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; text-align:justify; }
   .newsletter-item-meta{ font-size:9.5px; color:#999; margin-top:6px; }
   @media print{
@@ -2885,15 +2892,15 @@
     alert('خبرنامه‌ی امروز منتشر شد.');
   }
 
-  // idx: شماره‌ی خبر داخل همون بخش (۱-پایه، هر بخش از ۱ دوباره شروع می‌شه)
+  // idx: شماره‌ی خبر داخل همون بخش (۱-پایه، هر بخش از ۱ دوباره شروع می‌شه) —
+  // به‌جای نشان مربعی جدا (که با تیتر هم‌ردیف نمی‌شد و بی‌ربط دیده می‌شد)،
+  // مستقیم قبل از خودِ تیتر، هم‌رنگ و هم‌خط با اون نوشته می‌شه
   function newsletterItemHtml(p, idx){
     const ch = chById(p.channel_id) || {};
+    const num = `<span class="newsletter-item-num">${toFaDigits(idx)}.</span>`;
     return `
       <div class="newsletter-item">
-        <div class="newsletter-item-head">
-          <span class="newsletter-item-num">${toFaDigits(idx)}</span>
-          ${p.title ? `<div class="newsletter-item-title">${escAttr(p.title)}</div>` : ''}
-        </div>
+        <div class="newsletter-item-title">${num} ${p.title ? escAttr(p.title) : ''}</div>
         <div class="newsletter-item-text">${claimsTextDisplay(p.text||'')}</div>
         <div class="newsletter-item-meta">${escAttr(ch.title||ch.username||'')} — ${newsRelTime(p.posted_at||p.scraped_at)}</div>
       </div>`;
