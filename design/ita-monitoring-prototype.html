@@ -561,7 +561,7 @@
   .cpt-platform-link{ font-size:10px; color: var(--accent-strong); text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; direction:ltr; text-align:right; }
   .cpt-platform-link:hover{ text-decoration:underline; }
 
-  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.2 1 120px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.2 1 120px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-inline-start:14px; }
   .cpt-owner svg{ width:13px; height:13px; opacity:.5; flex-shrink:0; }
   /* ستون‌های عدد/فعالیت/موضوع عرض ثابت دارن (نه flex:auto بر پایه‌ی محتوا) —
      چون خیلی از کانال‌ها (مخصوصاً تازه‌اضافه‌شده‌ها) صاحب‌کانال/مخاطب/دسته‌بندی
@@ -586,6 +586,12 @@
   .cpt-arrow svg{ width:14px; height:14px; display:block; }
   @media (max-width:700px){ .cpt-arrow{ display:none; } }
   .cpt-head-center{ text-align:center; }
+  .cpt-sort-btn{ cursor:pointer; user-select:none; display:inline-flex; align-items:center; gap:3px; transition: color .15s ease; }
+  .cpt-sort-btn.cpt-head-center{ justify-content:center; }
+  .cpt-sort-btn:hover{ color: var(--text); }
+  .cpt-sort-btn.active{ color: var(--text); }
+  .cpt-sort-ind{ font-size:8px; opacity:.3; }
+  .cpt-sort-btn.active .cpt-sort-ind{ opacity:1; }
 
   .toolbar{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
   .toolbar select, .toolbar input{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
@@ -1961,13 +1967,13 @@
       <div id="posts-tab-people" style="display:none;">
         <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
         <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
-          <div class="cpt-head">
-            <span style="flex:1.5 1 140px">نام کانال</span>
-            <span style="flex:0 0 128px">بستر فعالیت</span>
-            <span style="flex:1.2 1 120px">صاحب کانال</span>
-            <span class="cpt-head-center" style="flex:0 0 90px">مخاطب</span>
-            <span class="cpt-head-center" style="flex:0 0 100px">فعالیت</span>
-            <span class="cpt-head-center" style="flex:0 0 90px">موضوع</span>
+          <div class="cpt-head" id="cyber-people-head">
+            <span class="cpt-sort-btn cpt-head-center" data-sort="name" style="flex:1.5 1 140px">نام کانال<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn" data-sort="platform" style="flex:0 0 128px">بستر فعالیت<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn" data-sort="owner" style="flex:1.2 1 120px;margin-inline-start:14px">صاحب کانال<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="subscribers" style="flex:0 0 90px">مخاطب<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="activity" style="flex:0 0 100px">فعالیت<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="category" style="flex:0 0 90px">موضوع<span class="cpt-sort-ind"></span></span>
             <span style="flex:0 0 20px"></span>
           </div>
           <div id="cyber-people-grid"></div>
@@ -3741,10 +3747,10 @@
     // قبلی (۲۴ساعته، ≥۸/≥۳) برای کانال‌های کنشگری مجازی زیادی سخت‌گیرانه بود
     const weekAgo = Date.now() - 7*24*3600*1000;
     const n = POSTS_CACHE.filter(p=>p.channel_id===channelId && new Date(p.scraped_at).getTime()>=weekAgo).length;
-    if(n === 0) return {level:'inactive', label:'غیرفعال'};
-    if(n > 20) return {level:'high', label:'زیاد'};
-    if(n >= 7) return {level:'mid', label:'متوسط'};
-    return {level:'low', label:'کم'};
+    if(n === 0) return {level:'inactive', label:'غیرفعال', n};
+    if(n > 20) return {level:'high', label:'زیاد', n};
+    if(n >= 7) return {level:'mid', label:'متوسط', n};
+    return {level:'low', label:'کم', n};
   }
 
   function renderChannelCards(){
@@ -3779,12 +3785,50 @@
     if(b.dataset.postsTab === 'people') renderCyberPeopleGrid();
   });
 
+  // مرتب‌سازی جدول «افراد و مجموعه‌ها» با کلیک روی سرستون‌ها — بدون سرور،
+  // کاملاً سمت کلاینت روی همون آرایه‌ی فیلترشده‌ی CHANNELS
+  let cyberPeopleSort = { field: null, dir: 'asc' };
+  function cyberPeopleSortValue(ch, field){
+    switch(field){
+      case 'name': return ch.title || ch.username || '';
+      case 'platform': return ch.platform==='telegram' ? 'تلگرام' : 'ایتا';
+      case 'owner': return ch.owner_name || '';
+      case 'subscribers': return ch.subscriber_count == null ? -1 : ch.subscriber_count;
+      case 'activity': return activityOf(ch.id).n;
+      case 'category': { const c = CATEGORIES.find(x=>x.id===ch.category_id); return c ? c.name : ''; }
+      default: return '';
+    }
+  }
+  const cyberPeopleHeadEl = document.getElementById('cyber-people-head');
+  if(cyberPeopleHeadEl) cyberPeopleHeadEl.addEventListener('click', e=>{
+    const btn = e.target.closest('.cpt-sort-btn'); if(!btn) return;
+    const field = btn.dataset.sort;
+    if(cyberPeopleSort.field === field){ cyberPeopleSort.dir = cyberPeopleSort.dir==='asc' ? 'desc' : 'asc'; }
+    else{ cyberPeopleSort.field = field; cyberPeopleSort.dir = 'asc'; }
+    renderCyberPeopleGrid();
+  });
+
   function renderCyberPeopleGrid(){
     const wrap = document.getElementById('cyber-people-grid');
     const table = document.getElementById('cyber-people-table');
     const empty = document.getElementById('cyber-people-empty');
     if(!wrap) return;
     const channels = CHANNELS.filter(c=>c.show_in_cyberspace);
+    if(cyberPeopleSort.field){
+      const field = cyberPeopleSort.field;
+      const dir = cyberPeopleSort.dir === 'desc' ? -1 : 1;
+      channels.sort((a,b)=>{
+        const va = cyberPeopleSortValue(a, field), vb = cyberPeopleSortValue(b, field);
+        if(typeof va === 'number' && typeof vb === 'number') return (va-vb)*dir;
+        return String(va).localeCompare(String(vb), 'fa') * dir;
+      });
+    }
+    if(cyberPeopleHeadEl) cyberPeopleHeadEl.querySelectorAll('.cpt-sort-btn').forEach(btn=>{
+      const isActive = btn.dataset.sort === cyberPeopleSort.field;
+      btn.classList.toggle('active', isActive);
+      const ind = btn.querySelector('.cpt-sort-ind');
+      if(ind) ind.textContent = isActive ? (cyberPeopleSort.dir==='asc' ? '▲' : '▼') : '⇅';
+    });
     empty.style.display = channels.length ? 'none' : 'block';
     table.style.display = channels.length ? '' : 'none';
     wrap.innerHTML = '';
