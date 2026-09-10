@@ -890,8 +890,10 @@
   .newsletter-col-break{ break-before:column; -webkit-column-break-before:always; }
   .newsletter-item{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; break-inside:avoid; -webkit-column-break-inside:avoid; }
   .newsletter-item:last-child{ border-bottom:none; }
-  .newsletter-item-title{ font-weight:700; font-size:13px; margin-bottom:6px; color:#16202a; line-height:1.5; }
-  .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; }
+  .newsletter-item-head{ display:flex; align-items:flex-start; gap:8px; margin-bottom:6px; }
+  .newsletter-item-num{ width:20px; height:20px; border-radius:6px; background:#16202a; color:#fff; display:flex; align-items:center; justify-content:center; font-size:10px; font-weight:700; flex-shrink:0; font-family: ui-monospace,monospace; margin-top:1px; }
+  .newsletter-item-title{ flex:1; font-weight:700; font-size:13px; color:#16202a; line-height:1.5; }
+  .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; text-align:justify; }
   .newsletter-item-meta{ font-size:9.5px; color:#999; margin-top:6px; }
   @media print{
     body > *:not(#newsletter-print-view){ display:none !important; }
@@ -2883,12 +2885,15 @@
     alert('خبرنامه‌ی امروز منتشر شد.');
   }
 
-  function newsletterItemHtml(p){
+  // idx: شماره‌ی خبر داخل همون بخش (۱-پایه، هر بخش از ۱ دوباره شروع می‌شه)
+  function newsletterItemHtml(p, idx){
     const ch = chById(p.channel_id) || {};
-    const title = p.title ? `<div class="newsletter-item-title">${escAttr(p.title)}</div>` : '';
     return `
       <div class="newsletter-item">
-        ${title}
+        <div class="newsletter-item-head">
+          <span class="newsletter-item-num">${toFaDigits(idx)}</span>
+          ${p.title ? `<div class="newsletter-item-title">${escAttr(p.title)}</div>` : ''}
+        </div>
         <div class="newsletter-item-text">${claimsTextDisplay(p.text||'')}</div>
         <div class="newsletter-item-meta">${escAttr(ch.title||ch.username||'')} — ${newsRelTime(p.posted_at||p.scraped_at)}</div>
       </div>`;
@@ -2922,12 +2927,12 @@
       <div class="newsletter-page">
         ${headerHtml}
         <h3 class="newsletter-page-title">ادعاها و شایعات</h3>
-        ${grouped.claims.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+        ${grouped.claims.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
         <div class="newsletter-flow-columns">
           <h3 class="newsletter-page-title">شبکه‌های اجتماعی و وب‌سایت‌ها</h3>
-          ${grouped.news.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+          ${grouped.news.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
           <h3 class="newsletter-page-title newsletter-col-break">پرونده ویژه</h3>
-          ${grouped.dossier.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+          ${grouped.dossier.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
         </div>
       </div>`;
   }
