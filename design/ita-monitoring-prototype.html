@@ -851,6 +851,34 @@
   .dossier-manual-result-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11px; padding:5px 8px; border-radius:6px; background: var(--surface); }
   .dossier-manual-result-row .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 
+  /* ---- تب «خبرنامه مدارس» ---- */
+  .newsletter-download-card{ text-align:center; max-width:420px; margin-inline:auto; }
+  .newsletter-draft-item{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11.5px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .newsletter-draft-item:last-child{ border-bottom:none; }
+  .newsletter-draft-item .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #newsletter-admin-panel .add-row{ margin-top:10px; }
+  /* خودِ صفحه‌ی چاپی — عمداً رنگ روشن/تیره‌ی ثابت (نه متغیرهای رنگی
+     تم تیره‌ی برنامه)، چون قراره روی کاغذ سفید چاپ بشه */
+  #newsletter-print-view{ display:none; }
+  .newsletter-page{ background:#fff; color:#111; direction:rtl; font-family:inherit; padding:14mm; box-sizing:border-box; width:210mm; min-height:297mm; page-break-after:always; break-after:page; }
+  .newsletter-page:last-child{ page-break-after:auto; break-after:auto; }
+  .newsletter-page-header{ display:flex; align-items:baseline; justify-content:space-between; border-bottom:2px solid #16202a; padding-bottom:8px; margin-bottom:16px; }
+  .newsletter-page-header h2{ margin:0; font-size:20px; }
+  .newsletter-page-header span{ font-size:12px; color:#555; }
+  .newsletter-page-title{ font-size:15px; font-weight:800; margin:0 0 10px; border-inline-start:3px solid #EAB393; padding-inline-start:8px; }
+  .newsletter-columns{ display:flex; gap:18px; }
+  .newsletter-col{ flex:1; min-width:0; }
+  .newsletter-item{ margin-bottom:10px; padding-bottom:10px; border-bottom:1px solid #ddd; }
+  .newsletter-item-title{ font-weight:800; font-size:12.5px; margin-bottom:3px; }
+  .newsletter-item-text{ font-size:11px; line-height:1.7; white-space:pre-wrap; }
+  .newsletter-item-meta{ font-size:9.5px; color:#777; margin-top:3px; }
+  @media print{
+    body > *:not(#newsletter-print-view){ display:none !important; }
+    #newsletter-print-view{ display:block !important; }
+    @page{ size:A4; margin:0; }
+    .newsletter-page{ margin:0; }
+  }
+
   /* settings: add-forms + editable channel rows */
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
   .add-row input, .add-row select{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); padding:8px 12px; border-radius: var(--radius-control); font-size:12.5px; font-family:inherit; }
@@ -1317,7 +1345,7 @@
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
         <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
         <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
-        <span class="domain-shortcut-disabled">خبرخوان مدارس<span class="news-soon">به‌زودی</span></span>
+        <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
         <a onclick="switchSection('people')">چهره‌های سیاسی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
         <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
@@ -1445,7 +1473,7 @@
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
-        <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
+        <button id="news-tab-newsletter" onclick="setNewsPageTab('newsletter')">خبرنامه مدارس</button>
       </div>
 
       <div id="news-study-panel" style="display:none;">
@@ -1542,6 +1570,50 @@
           <div class="dossier-content" id="dossier-groups"></div>
         </div>
         <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
+      </div>
+
+      <!-- تب «خبرنامه مدارس» — خبرنامه‌ی قابل‌دانلود (۲ صفحه‌ی A4 چاپی):
+           صفحه‌ی اول «ادعاها و شایعات»، صفحه‌ی دوم دوستونه («شبکه‌های
+           اجتماعی و وب‌سایت‌ها» + «پرونده ویژه»). بدون آرشیو — فقط یه
+           مجموعه‌ی «فعلیِ منتشرشده» توی newsletter_posts هست؛ مدیر با
+           پیشنهاد خودکار روزانه + تأیید/ویرایش دستی «منتشر»ش می‌کنه. -->
+      <div id="news-newsletter-panel" style="display:none;">
+        <div class="panel newsletter-download-card">
+          <div class="panel-head"><span class="panel-pill">خبرنامه‌ی امروز</span></div>
+          <p id="newsletter-download-status" style="font-size:13px;color:var(--text-dim);margin:0 0 14px;">هنوز خبرنامه‌ای منتشر نشده.</p>
+          <button class="btn primary" id="newsletter-download-btn" onclick="downloadNewsletter()" disabled>دانلود خبرنامه‌ی امروز</button>
+        </div>
+
+        <div id="newsletter-admin-panel" style="display:none;">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۱ — ادعاها و شایعات</span></div>
+            <div id="newsletter-draft-claims"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('claims', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('claims')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-claims"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون راست) — شبکه‌های اجتماعی و وب‌سایت‌ها</span></div>
+            <div id="newsletter-draft-news"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('news', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('news')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-news"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون چپ) — پرونده ویژه</span></div>
+            <div id="newsletter-draft-dossier"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('dossier', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('dossier')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-dossier"></div>
+          </div>
+          <button class="btn primary" onclick="publishNewsletter()">انتشار خبرنامه‌ی امروز</button>
+        </div>
       </div>
 
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
@@ -1961,6 +2033,14 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- محتوای خبرنامه‌ی مدارس برای چاپ (Ctrl+P → ذخیره PDF) — عمداً به‌عنوان
+     فرزند مستقیم body قرار گرفته (نه داخل تب/پنلش)، تا قانون CSS چاپ زیر
+     بتونه با یه انتخاب‌گر ساده («همه‌چیز به‌جز این رو مخفی کن») کل بقیه‌ی
+     برنامه (که چندلایه تو دیو دیگه‌ست) رو نادیده بگیره؛ اگه اینجا تودرتو
+     می‌موند، مخفی‌کردن درست بقیه‌ی برنامه با visibility/position پیچیده و
+     شکننده می‌شد -->
+<div id="newsletter-print-view"></div>
+
 <!-- برای انیمیشن شمارش اعداد در پنل آماری هرو صفحه‌ی نخست -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <!-- برای نمودارهای تب «آنالیز» بخش «اخبار و رویدادها». عمداً از CDN نمی‌گیریمش
@@ -2267,6 +2347,7 @@
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
     document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
     document.getElementById('news-tab-dossier').classList.toggle('active', tab==='dossier');
+    document.getElementById('news-tab-newsletter').classList.toggle('active', tab==='newsletter');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
     // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
     // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
@@ -2277,6 +2358,7 @@
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
     document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
     document.getElementById('news-dossier-panel').style.display = tab==='dossier' ? '' : 'none';
+    document.getElementById('news-newsletter-panel').style.display = tab==='newsletter' ? '' : 'none';
     if(showStudy){
       newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
@@ -2293,6 +2375,7 @@
     if(tab==='newspapers') renderNewspapers();
     if(tab==='analytics') renderNewsAnalytics();
     if(tab==='dossier') renderDossierTab();
+    if(tab==='newsletter') renderNewsletterTab();
   }
 
   // ---- real data state ----
@@ -2302,6 +2385,8 @@
   let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
   let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده ویژه»
   let DOSSIER_TOPIC_POSTS = []; // {id, topic_id, post_id, source, excluded} — پست‌های منتسب به هر موضوع
+  let NEWSLETTER_POSTS = []; // {id, section, post_id, sort_order} — مجموعه‌ی فعلیِ منتشرشده‌ی «خبرنامه مدارس» (بدون آرشیو)
+  let NEWSLETTER_DRAFT = { claims: [], news: [], dossier: [] }; // پیش‌نویس در‌حال‌ویرایش مدیر (فقط حافظه، تا «انتشار» زده نشه ذخیره نمی‌شه)
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
@@ -2657,6 +2742,175 @@
     });
   }
 
+  // ---- تب «خبرنامه مدارس» — خبرنامه‌ی قابل‌دانلود (چاپی، A4)، بدون
+  // آرشیو: newsletter_posts همیشه فقط مجموعه‌ی «فعلیِ منتشرشده»‌ست. هر
+  // بار مدیر پنل رو باز می‌کنه، برای هر بخش یه پیش‌نویس محلی
+  // (NEWSLETTER_DRAFT) از روی مجموعه‌ی منتشرشده (یا اگه چیزی منتشر
+  // نشده، از یه پیشنهاد خودکار جدیدترین‌ها) ساخته می‌شه؛ تا وقتی
+  // «انتشار» نزنه، هیچ‌چیز توی دیتابیس تغییر نمی‌کنه.
+  const NEWSLETTER_SUGGEST_LIMIT = { claims: 5, news: 8, dossier: 6 };
+
+  function newsletterCandidatePosts(section){
+    if(section === 'claims'){
+      const ids = new Set(CHANNELS.filter(c=>c.platform==='bale').map(c=>c.id));
+      return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
+    }
+    if(section === 'news'){
+      const ids = new Set(CHANNELS.filter(c=>c.show_in_news && c.platform!=='bale').map(c=>c.id));
+      return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
+    }
+    // dossier: از پست‌های واقعاً منتسب به موضوعات فعال «پرونده ویژه» (excluded=false)
+    const activeTopicIds = new Set(DOSSIER_TOPICS.filter(t=>t.active).map(t=>t.id));
+    const postIds = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>!dp.excluded && activeTopicIds.has(dp.topic_id)).map(dp=>dp.post_id));
+    return POSTS_CACHE.filter(p=>postIds.has(p.id));
+  }
+
+  function suggestNewsletterPostIds(section){
+    return newsletterCandidatePosts(section)
+      .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at))
+      .slice(0, NEWSLETTER_SUGGEST_LIMIT[section])
+      .map(p=>p.id);
+  }
+
+  function initNewsletterDraft(){
+    ['claims','news','dossier'].forEach(section=>{
+      const published = NEWSLETTER_POSTS.filter(np=>np.section===section).sort((a,b)=>a.sort_order-b.sort_order).map(np=>np.post_id);
+      NEWSLETTER_DRAFT[section] = published.length ? published.slice() : suggestNewsletterPostIds(section);
+    });
+  }
+
+  function renderNewsletterTab(){
+    const statusEl = document.getElementById('newsletter-download-status');
+    const downloadBtn = document.getElementById('newsletter-download-btn');
+    if(NEWSLETTER_POSTS.length){
+      statusEl.textContent = 'خبرنامه‌ی امروز آماده‌ی دانلوده.';
+      downloadBtn.disabled = false;
+    }else{
+      statusEl.textContent = 'هنوز خبرنامه‌ای منتشر نشده.';
+      downloadBtn.disabled = true;
+    }
+    const isAdmin = currentRole === 'app_admin';
+    document.getElementById('newsletter-admin-panel').style.display = isAdmin ? '' : 'none';
+    if(isAdmin){
+      initNewsletterDraft();
+      renderNewsletterAdminPanel();
+    }
+  }
+
+  function newsletterDraftLabel(postId){
+    const p = POSTS_CACHE.find(x=>x.id===postId);
+    if(!p) return 'پست #'+postId+' (حذف‌شده)';
+    return p.title || (p.text||'').slice(0,60) || ('پست #'+p.id);
+  }
+
+  function renderNewsletterAdminPanel(){
+    ['claims','news','dossier'].forEach(section=>{
+      const wrap = document.getElementById('newsletter-draft-'+section);
+      if(!wrap) return;
+      const ids = NEWSLETTER_DRAFT[section];
+      wrap.innerHTML = ids.length ? ids.map(id=>`
+        <div class="newsletter-draft-item">
+          <span class="txt">${escAttr(newsletterDraftLabel(id))}</span>
+          <button class="del-btn" style="min-width:24px;min-height:24px;font-size:11px;" title="حذف از خبرنامه" onclick="removeNewsletterDraftItem('${section}', ${id})">✕</button>
+        </div>`).join('') : '<p class="dossier-topic-empty">خبری انتخاب نشده.</p>';
+    });
+  }
+
+  function removeNewsletterDraftItem(section, postId){
+    NEWSLETTER_DRAFT[section] = NEWSLETTER_DRAFT[section].filter(id=>id!==postId);
+    renderNewsletterAdminPanel();
+  }
+
+  function suggestNewsletterSection(section){
+    NEWSLETTER_DRAFT[section] = suggestNewsletterPostIds(section);
+    renderNewsletterAdminPanel();
+  }
+
+  function searchNewsletterManualAdd(section, query){
+    const resultsEl = document.getElementById('newsletter-manual-results-'+section);
+    if(!resultsEl) return;
+    query = (query||'').trim();
+    if(query.length < 2){ resultsEl.innerHTML=''; return; }
+    const already = new Set(NEWSLETTER_DRAFT[section]);
+    const matches = POSTS_CACHE.filter(p=> !already.has(p.id) && ((p.title||'').includes(query) || (p.text||'').includes(query))).slice(0,8);
+    resultsEl.innerHTML = matches.length ? matches.map(p=>{
+      const label = p.title || (p.text||'').slice(0,60) || ('پست #'+p.id);
+      return `<div class="dossier-manual-result-row"><span class="txt">${escAttr(label)}</span><button class="btn" style="padding:2px 8px;font-size:10.5px;" onclick="addNewsletterManualPost('${section}', ${p.id})">افزودن</button></div>`;
+    }).join('') : '<p class="dossier-topic-empty">موردی پیدا نشد.</p>';
+  }
+
+  function addNewsletterManualPost(section, postId){
+    if(!NEWSLETTER_DRAFT[section].includes(postId)) NEWSLETTER_DRAFT[section].push(postId);
+    document.getElementById('newsletter-manual-results-'+section).innerHTML = '';
+    renderNewsletterAdminPanel();
+  }
+
+  // «انتشار» = جایگزینی کامل (نه insert اضافه‌شونده) — طبق تصمیم کاربر
+  // این جدول آرشیو نداره، همیشه فقط مجموعه‌ی «فعلی» رو نشون می‌ده
+  async function publishNewsletter(){
+    await api('/newsletter_posts?id=gt.0', {method:'DELETE'});
+    const rows = [];
+    ['claims','news','dossier'].forEach(section=>{
+      NEWSLETTER_DRAFT[section].forEach((postId, idx)=> rows.push({section, post_id: postId, sort_order: idx}));
+    });
+    if(rows.length){
+      const r = await api('/newsletter_posts', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(rows)});
+      if(!r.ok){ alert('خطایی رخ داد.'); return; }
+    }
+    await loadNewsletterPosts();
+    renderNewsletterTab();
+    alert('خبرنامه‌ی امروز منتشر شد.');
+  }
+
+  function newsletterItemHtml(p){
+    const ch = chById(p.channel_id) || {};
+    const title = p.title ? `<div class="newsletter-item-title">${escAttr(p.title)}</div>` : '';
+    return `
+      <div class="newsletter-item">
+        ${title}
+        <div class="newsletter-item-text">${claimsTextDisplay(p.text||'')}</div>
+        <div class="newsletter-item-meta">${escAttr(ch.title||ch.username||'')} — ${newsRelTime(p.posted_at||p.scraped_at)}</div>
+      </div>`;
+  }
+
+  // ستون‌های .newsletter-columns: چون صفحه/چاپ RTLه و «شبکه‌های اجتماعی»
+  // اولین فرزندشه، خودکار سمت راست درمیاد؛ «پرونده ویژه» سمت چپ — دقیقاً
+  // همون آرایشی که کاربر خواسته بود
+  function buildNewsletterPrintHtml(){
+    const wrap = document.getElementById('newsletter-print-view');
+    if(!wrap) return;
+    const grouped = { claims: [], news: [], dossier: [] };
+    NEWSLETTER_POSTS.forEach(np=>{
+      const p = POSTS_CACHE.find(x=>x.id===np.post_id);
+      if(p) grouped[np.section].push(p);
+    });
+    const today = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'long', day:'numeric' });
+    wrap.innerHTML = `
+      <div class="newsletter-page">
+        <div class="newsletter-page-header"><h2>خبرنامه مدارس</h2><span>${today}</span></div>
+        <h3 class="newsletter-page-title">ادعاها و شایعات</h3>
+        ${grouped.claims.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+      </div>
+      <div class="newsletter-page">
+        <div class="newsletter-page-header"><h2>خبرنامه مدارس</h2><span>${today}</span></div>
+        <div class="newsletter-columns">
+          <div class="newsletter-col">
+            <h3 class="newsletter-page-title">شبکه‌های اجتماعی و وب‌سایت‌ها</h3>
+            ${grouped.news.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+          </div>
+          <div class="newsletter-col">
+            <h3 class="newsletter-page-title">پرونده ویژه</h3>
+            ${grouped.dossier.map(newsletterItemHtml).join('') || '<p>خبری ثبت نشده.</p>'}
+          </div>
+        </div>
+      </div>`;
+  }
+
+  function downloadNewsletter(){
+    buildNewsletterPrintHtml();
+    window.print();
+  }
+
   // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
   // برای مدیر، زیر پست‌های تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها» — برای
   // بازبینی رندوم/اصلاح دستی کیفیت استخراج خودکار (نکاه به Edge Function
@@ -2946,6 +3200,10 @@
     const r = await api('/dossier_topic_posts?select=*&order=created_at.desc&limit=2000');
     DOSSIER_TOPIC_POSTS = r.ok ? await r.json() : [];
   }
+  async function loadNewsletterPosts(){
+    const r = await api('/newsletter_posts?select=*&order=section.asc,sort_order.asc');
+    NEWSLETTER_POSTS = r.ok ? await r.json() : [];
+  }
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
@@ -3063,7 +3321,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
