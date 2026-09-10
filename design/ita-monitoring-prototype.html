@@ -857,29 +857,20 @@
   .newsletter-draft-item:last-child{ border-bottom:none; }
   .newsletter-draft-item .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   #newsletter-admin-panel .add-row{ margin-top:10px; }
-  /* خودِ صفحه‌ی چاپی — عمداً رنگ روشن/تیره‌ی ثابت (نه متغیرهای رنگی
-     تم تیره‌ی برنامه)، چون قراره روی کاغذ سفید چاپ بشه.
-     ⚠️ یه ظرف پیوسته‌ست، نه دوتا صفحه‌ی جدا با page-break اجباری بینشون —
-     طبق نظر کاربر، وقتی محتوای «ادعاها» زودتر از پرشدن صفحه تموم بشه،
-     ادامه (بخش دوستونه) باید همون‌جا ادامه پیدا کنه، نه با یه فضای خالی
-     در ته صفحه به صفحه‌ی بعد پرتاب بشه؛ خودِ مرورگر موقع چاپ هرجا واقعاً
-     لازم بود (صفحه پر شد) خودکار صفحه‌ی بعدی رو شروع می‌کنه */
+  /* #newsletter-print-view فقط یه ظرف مخفیِ staging برای ساخت DOM
+     خبرنامه‌ست (buildNewsletterPrintHtml) — هیچ‌وقت مستقیم نمایش داده
+     نمی‌شه. دانلود دیگه با window.print() نیست: چون Chromium در حالت
+     چاپ هدر position:fixed رو روی صفحات بعدی تکرار نمی‌کنه (محدودیت
+     واقعی موتور چاپ، نه باگ کد ما — با تولید PDF واقعی تست و تأیید شد)،
+     برای گرفتن هدر تکرارشونده‌ی واقعی روی هر صفحه، تولید فایل کامل به
+     jsPDF+html2canvas منتقل شد (downloadNewsletter/buildNewsletterPdf،
+     پایین‌تر): محتوا یک‌بار با html2canvas رندر می‌شه، بر اساس مرز واقعی
+     هر خبر/عنوان (بدون بریدن وسط یک خبر) به تصاویر صفحه‌ای برش می‌خوره،
+     و تصویر هدر روی هر صفحه دوباره چسبونده می‌شه — این‌جوری متن فارسی هم
+     دقیقاً همون‌جوری که مرورگر رندر کرده (RTL/اتصال حروف درست) توی PDF
+     میاد، چون فونت‌های پیش‌فرض jsPDF از حروف فارسی/عربی پشتیبانی نمی‌کنن. */
   #newsletter-print-view{ display:none; }
-  .newsletter-page{ background:#fff; color:#222; direction:rtl; font-family:inherit; padding:14mm; box-sizing:border-box; width:210mm; }
-  /* هدر با هویت بصری جریان — عمداً بدون تصویر/لوگوی رستری (فقط رنگ+فونت)
-     تا موقع چاپ/PDF هیچ وابستگی به بارگذاری عکس نداشته باشه.
-     ⚠️ کاربر خواسته بود این هدر روی همه‌ی صفحات فیزیکی تکرار بشه — امتحان
-     شد (با position:fixed زیر @media print + رزرو حاشیه‌ی بالای @page)،
-     ولی با تولید یه PDF واقعی و رندر مستقیمش (نه فقط شبیه‌سازی) معلوم شد
-     Chromium توی حالت چاپ عنصر fixed رو درست روی هر صفحه تکرار نمی‌کنه —
-     یه‌جای اشتباه (وسط یه صفحه) می‌ذارتش و توی صفحه‌های بعدی اصلاً نمیاد.
-     این محدودیت واقعیِ خودِ موتور چاپ کرومه (نه باگ کد ما) — CSS Paged
-     Media برای «هدر/فوتر تکرارشونده‌ی واقعی» (position:running + عناصر
-     margin box توی @page) هنوز توی هیچ مرورگر اصلی‌ای پیاده نشده. برای
-     همین به حالت قبلی (هدر فقط یه‌بار بالای کل خبرنامه) برگشت داده شد؛
-     اگه تکرار واقعی لازم باشه، راه‌حل واقعی تغییر معماری از «چاپ مرورگر»
-     به تولید مستقیم PDF با یه کتابخونه‌ی جاوااسکریپت (مثل jsPDF) است که
-     خودمون صفحه‌بندی/تکرار هدر رو دستی کنترل کنیم، نه CSS/چاپ مرورگر */
+  .newsletter-page{ background:#fff; color:#222; direction:rtl; font-family:inherit; }
   .newsletter-page-header{ display:flex; align-items:center; justify-content:space-between; border-bottom:3px solid #16202a; padding-bottom:14px; margin-bottom:24px; }
   .newsletter-brand{ display:flex; align-items:center; gap:12px; }
   .newsletter-brand-badge{ width:36px; height:36px; border-radius:10px; background:linear-gradient(155deg,#EAB393,#d99a72); flex-shrink:0; }
@@ -902,12 +893,6 @@
   .newsletter-item-num{ color:#c9895e; font-weight:800; }
   .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; text-align:justify; }
   .newsletter-item-meta{ font-size:9.5px; color:#999; margin-top:6px; }
-  @media print{
-    body > *:not(#newsletter-print-view){ display:none !important; }
-    #newsletter-print-view{ display:block !important; }
-    @page{ size:A4; margin:0; }
-    .newsletter-page{ margin:0; }
-  }
 
   /* settings: add-forms + editable channel rows */
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
@@ -2079,6 +2064,11 @@
      ردیابی/آنالیز تبلیغاتیه)، حتی اگه از یه CDN معتبر مثل cdnjs بیاد. فایل
      محلی از همون دامنه‌ی خودِ سایت لود می‌شه، پس این مشکل رو نداره. -->
 <script src="vendor/chart.min.js"></script>
+<!-- برای تولید واقعی فایل PDF «خبرنامه مدارس» (نه چاپ مرورگر) — رندر
+     صفحه به تصویر (html2canvas) + مونتاژ صفحات A4 (jsPDF). محلی وندور
+     شده، نه از CDN، هم‌الگو با chart.min.js بالا. -->
+<script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -2944,9 +2934,106 @@
       </div>`;
   }
 
-  function downloadNewsletter(){
+  async function downloadNewsletter(){
+    const btn = document.getElementById('newsletter-download-btn');
+    if(btn){ btn.disabled = true; btn.dataset.origText = btn.textContent; btn.textContent = 'در حال آماده‌سازی PDF...'; }
+    try{
+      await buildNewsletterPdf();
+    }catch(err){
+      console.error(err);
+      showToast('تولید فایل PDF ناموفق بود، دوباره امتحان کنید');
+    }
+    if(btn){ btn.disabled = false; btn.textContent = btn.dataset.origText || 'دانلود خبرنامه‌ی امروز'; }
+  }
+
+  // ساخت واقعی فایل PDF با jsPDF+html2canvas (نه چاپ مرورگر) — دلیل کامل
+  // این تغییر معماری بالای همین بخش، کنار #newsletter-print-view، مستند
+  // شده. مراحل: ۱) هدر برند رو جدا رندر می‌کنیم تا هم بشه تصویرش رو
+  // مستقل نگه داشت هم روی هر صفحه دوباره چسبوند. ۲) کل بدنه‌ی خبرنامه
+  // (بدون هدر) رو یه‌بار با html2canvas به یه بوم بلند تبدیل می‌کنیم.
+  // ۳) با گرفتن مختصات واقعی هر `.newsletter-item`/`.newsletter-page-title`
+  // (getBoundingClientRect)، نقاط برش صفحه رو طوری تعیین می‌کنیم که هیچ‌کدوم
+  // از این عنصرها وسط بریده نشن — دقیقاً معادل همون break-inside:avoid
+  // که موقع چاپ مرورگر داشتیم، ولی این‌بار خودمون محاسبه‌ش می‌کنیم چون
+  // دیگه به موتور صفحه‌بندی مرورگر متکی نیستیم. ۴) هر بخش از بوم بلند
+  // (به‌شکل JPEG کیفیت ۰.۸۸ برای حجم معقول فایل، نه PNG سنگین) + تصویر
+  // هدر با هم روی یه صفحه‌ی A4 جدید جای می‌گیرن.
+  async function buildNewsletterPdf(){
     buildNewsletterPrintHtml();
-    window.print();
+    const printView = document.getElementById('newsletter-print-view');
+    const pageEl = printView.querySelector('.newsletter-page');
+    const headerEl = pageEl.querySelector('.newsletter-page-header');
+
+    const PDF_PX_WIDTH = 750;
+    const marginLR = 14, marginTop = 34, marginBottom = 14;
+    const contentWidthMM = 210 - marginLR * 2;
+    const pageContentHeightMM = 297 - marginTop - marginBottom;
+    const cssPxPerMM = PDF_PX_WIDTH / contentWidthMM;
+    const pageContentHeightCss = pageContentHeightMM * cssPxPerMM;
+    const scale = 2;
+
+    const headerHolder = document.createElement('div');
+    headerHolder.style.cssText = `position:fixed; top:0; left:0; width:${PDF_PX_WIDTH}px; background:#fff; z-index:-1;`;
+    headerHolder.appendChild(headerEl.cloneNode(true));
+    document.body.appendChild(headerHolder);
+    const headerCanvas = await html2canvas(headerHolder, { scale, backgroundColor:'#ffffff' });
+    const headerDataUrl = headerCanvas.toDataURL('image/png');
+    const headerHeightMM = contentWidthMM * (headerCanvas.height / headerCanvas.width);
+    document.body.removeChild(headerHolder);
+
+    const bodyClone = pageEl.cloneNode(true);
+    const headerInClone = bodyClone.querySelector('.newsletter-page-header');
+    if(headerInClone) headerInClone.remove();
+    const pdfSource = document.createElement('div');
+    pdfSource.style.cssText = `position:fixed; top:0; left:0; width:${PDF_PX_WIDTH}px; background:#fff; direction:rtl; font-family:inherit; color:#222; z-index:-1;`;
+    while(bodyClone.firstChild) pdfSource.appendChild(bodyClone.firstChild);
+    document.body.appendChild(pdfSource);
+
+    const sourceTop = pdfSource.getBoundingClientRect().top;
+    const atoms = Array.from(pdfSource.querySelectorAll('.newsletter-item, .newsletter-page-title')).map(el=>{
+      const r = el.getBoundingClientRect();
+      return { top: r.top - sourceTop, bottom: r.bottom - sourceTop };
+    }).sort((a,b)=>a.top-b.top);
+    const totalHeightCss = pdfSource.getBoundingClientRect().height;
+
+    const fullCanvas = await html2canvas(pdfSource, { scale, backgroundColor:'#ffffff', windowWidth: PDF_PX_WIDTH });
+    document.body.removeChild(pdfSource);
+
+    // نقاط برش صفحه: هر جا محتوا از ارتفاع یه صفحه رد بشه برش می‌خوره،
+    // مگر اینکه دقیقاً وسط یه آیتم/عنوان بیفته که اون‌وقت برش به قبل از
+    // شروع همون آیتم عقب کشیده می‌شه (چیزی شبیه break-inside:avoid دستی)
+    const breaks = [0];
+    let cursor = 0;
+    while(cursor < totalHeightCss - 1){
+      let target = cursor + pageContentHeightCss;
+      if(target >= totalHeightCss){ breaks.push(totalHeightCss); break; }
+      const straddling = atoms.find(a => a.top < target && a.bottom > target && a.top >= cursor);
+      if(straddling) target = straddling.top;
+      if(target <= cursor) target = cursor + pageContentHeightCss;
+      breaks.push(target);
+      cursor = target;
+    }
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    for(let i=0;i<breaks.length-1;i++){
+      const yStart = breaks[i], yEnd = breaks[i+1];
+      const sliceHeightCss = yEnd - yStart;
+      const sliceCanvas = document.createElement('canvas');
+      sliceCanvas.width = fullCanvas.width;
+      sliceCanvas.height = Math.round(sliceHeightCss * scale);
+      const ctx = sliceCanvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+      ctx.drawImage(fullCanvas, 0, Math.round(yStart*scale), fullCanvas.width, Math.round(sliceHeightCss*scale), 0, 0, fullCanvas.width, Math.round(sliceHeightCss*scale));
+      const sliceDataUrl = sliceCanvas.toDataURL('image/jpeg', 0.88);
+      const sliceHeightMM = sliceHeightCss / cssPxPerMM;
+      if(i > 0) doc.addPage();
+      doc.addImage(headerDataUrl, 'PNG', marginLR, 10, contentWidthMM, headerHeightMM);
+      doc.addImage(sliceDataUrl, 'JPEG', marginLR, marginTop, contentWidthMM, sliceHeightMM);
+    }
+
+    const fileDate = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '-');
+    doc.save(`khabarnameh-madares-${fileDate}.pdf`);
   }
 
   // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
