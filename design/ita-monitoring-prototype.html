@@ -1202,11 +1202,14 @@
             <div class="nav-menu-col">
               <div class="nav-menu-toplevel-title">عرصه‌های رصد</div>
 
-              <button class="nav-menu-group-title-btn" onclick="goToNewsTab('study'); closeNavMenu();">اخبار و رویدادها</button>
+              <button class="nav-menu-group-title-btn" onclick="goToNewsTab('analytics'); closeNavMenu();">اخبار و رویدادها</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('analytics'); closeNavMenu();">در یک نگاه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
-              <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('dossier'); closeNavMenu();">پرونده ویژه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('newsletter'); closeNavMenu();">خبرنامه مدارس</button>
 
               <button class="nav-menu-group-title-btn" onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
               <button class="nav-menu-sub" onclick="switchSection('posts'); closeNavMenu();">پست‌های منتشر شده</button>
@@ -1361,10 +1364,11 @@
       <p class="domain-caption">جریان این چهار عرصه را به‌صورت جداگانه رصد و پایش می‌کند: اخبار و رویدادهای خبرگزاری‌ها، کنشگری فضای مجازی، برنامه‌های آموزشی مدارس و یادداشت‌های مربوط به افراد و مجموعه‌های تأثیرگذار. هر عرصه با منبع داده و روش پایش مخصوص به خودش دنبال می‌شود.</p>
 
       <div class="domain-shortcuts">
+        <a onclick="goToNewsTab('analytics')">در یک نگاه</a>
+        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
         <a onclick="goToNewsTab('study')">شبکه‌های اجتماعی</a>
         <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
-        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
         <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
         <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
         <a onclick="switchSection('people')">چهره‌های سیاسی</a>
