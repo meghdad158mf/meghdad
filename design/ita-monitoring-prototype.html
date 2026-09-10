@@ -549,21 +549,30 @@
   .cpt-dot.high{ background: var(--ok); }
   .cpt-dot.mid{ background: var(--accent-strong); }
   .cpt-dot.low{ background: var(--text-faint); }
+  .cpt-dot.inactive{ background: var(--danger); }
   .cpt-who-txt{ min-width:0; }
   .cpt-name{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .cpt-handle{ font-size:10px; color: var(--text-faint); margin-top:1px; }
 
   .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.4 1 150px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .cpt-owner svg{ width:13px; height:13px; opacity:.5; flex-shrink:0; }
-  .cpt-num{ direction:ltr; font-weight:800; font-size:13.5px; color: var(--accent-strong); flex:0 0 auto; display:flex; align-items:center; gap:5px; }
-  .cpt-num svg{ width:13px; height:13px; opacity:.6; }
-  .cpt-activity{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius: var(--radius-pill); flex:0 0 auto; }
+  /* ستون‌های عدد/فعالیت/موضوع عرض ثابت دارن (نه flex:auto بر پایه‌ی محتوا) —
+     چون خیلی از کانال‌ها (مخصوصاً تازه‌اضافه‌شده‌ها) صاحب‌کانال/مخاطب/دسته‌بندی
+     خالی دارن، اگه عرض ستون بر اساس محتوا حساب بشه، ستون‌های خالی جمع می‌شن
+     به صفر و همه‌چیز بعدشون از زیر سربرگ جابه‌جا می‌شه (باگ واقعی گزارش‌شده) */
+  .cpt-num{ flex:0 0 90px; display:flex; align-items:center; justify-content:center; }
+  .cpt-num-val{ direction:ltr; font-weight:800; font-size:13.5px; color: var(--accent-strong); display:inline-flex; align-items:center; gap:5px; }
+  .cpt-num-val svg{ width:13px; height:13px; opacity:.6; }
+  .cpt-activity-col{ flex:0 0 100px; display:flex; justify-content:center; }
+  .cpt-activity{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius: var(--radius-pill); }
   .cpt-activity .dt{ width:5px; height:5px; border-radius:50%; background:currentColor; }
   .cpt-activity.high{ color: var(--ok); background: var(--ok-soft); }
   .cpt-activity.mid{ color: var(--accent-strong); background: var(--accent-soft); }
   .cpt-activity.low{ color: var(--text-faint); background: var(--surface-2); }
-  .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; flex:0 0 auto; }
-  .cpt-arrow{ color: var(--text-faint); margin-inline-start:auto; flex-shrink:0; transition: transform .15s ease, color .15s ease; }
+  .cpt-activity.inactive{ color: var(--danger); background: var(--danger-soft); }
+  .cpt-tagcol{ flex:0 0 90px; display:flex; justify-content:center; }
+  .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; }
+  .cpt-arrow{ color: var(--text-faint); flex:0 0 20px; transition: transform .15s ease, color .15s ease; }
   .cpt-arrow svg{ width:14px; height:14px; display:block; }
   @media (max-width:700px){ .cpt-arrow{ display:none; } }
 
@@ -3716,10 +3725,13 @@
 
   // ---- channels & people page ----
   function activityOf(channelId){
-    const dayAgo = Date.now() - 24*3600*1000;
-    const n = POSTS_CACHE.filter(p=>p.channel_id===channelId && new Date(p.scraped_at).getTime()>=dayAgo).length;
-    if(n >= 8) return {level:'high', label:'زیاد'};
-    if(n >= 3) return {level:'mid', label:'متوسط'};
+    // هفته‌ی اخیر rolling (نه ۲۴ساعته) — طبق درخواست صریح کاربر، آستانه‌ی
+    // قبلی (۲۴ساعته، ≥۸/≥۳) برای کانال‌های کنشگری مجازی زیادی سخت‌گیرانه بود
+    const weekAgo = Date.now() - 7*24*3600*1000;
+    const n = POSTS_CACHE.filter(p=>p.channel_id===channelId && new Date(p.scraped_at).getTime()>=weekAgo).length;
+    if(n === 0) return {level:'inactive', label:'غیرفعال'};
+    if(n > 20) return {level:'high', label:'زیاد'};
+    if(n >= 7) return {level:'mid', label:'متوسط'};
     return {level:'low', label:'کم'};
   }
 
@@ -3772,7 +3784,7 @@
       el.innerHTML = `<div class="cpt-who">
           <div class="cpt-avatar-wrap">
             <div class="cpt-avatar">${ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" />` : ICONS.person}</div>
-            <span class="cpt-dot ${act.level}" title="فعالیت ${act.label}"></span>
+            <span class="cpt-dot ${act.level}" title="${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}"></span>
           </div>
           <div class="cpt-who-txt">
             <div class="cpt-name">${escHtml(ch.title || ch.username)}</div>
@@ -3780,9 +3792,9 @@
           </div>
         </div>
         <div class="cpt-owner">${ch.owner_name ? ICONS.userLine + `<span>${escHtml(ch.owner_name)}</span>` : ''}</div>
-        <div class="cpt-num">${ch.subscriber_count ? ICONS.users + toFaDigits(ch.subscriber_count) : ''}</div>
-        <span class="cpt-activity ${act.level}"><span class="dt"></span>فعالیت ${act.label}</span>
-        ${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : '<span></span>'}
+        <div class="cpt-num">${ch.subscriber_count ? `<span class="cpt-num-val">${ICONS.users}${toFaDigits(ch.subscriber_count)}</span>` : ''}</div>
+        <div class="cpt-activity-col"><span class="cpt-activity ${act.level}"><span class="dt"></span>${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}</span></div>
+        <div class="cpt-tagcol">${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : ''}</div>
         <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
       el.addEventListener('click', ()=> openPersonFeed(ch.id));
       wrap.appendChild(el);
