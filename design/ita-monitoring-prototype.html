@@ -1224,6 +1224,7 @@
               <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('hawza'); closeNavMenu();">اخبار حوزه</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('dossier'); closeNavMenu();">پرونده ویژه</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newsletter'); closeNavMenu();">خبرنامه مدارس</button>
@@ -1380,6 +1381,7 @@
         <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
         <a onclick="goToNewsTab('study')">شبکه‌های اجتماعی</a>
         <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
+        <a onclick="goToNewsTab('hawza')">اخبار حوزه</a>
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
         <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
         <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
@@ -1498,6 +1500,7 @@
         <button id="news-tab-claims" onclick="setNewsPageTab('claims')">ادعاها و شایعات</button>
         <button id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
+        <button id="news-tab-hawza" onclick="setNewsPageTab('hawza')">اخبار حوزه</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
         <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
         <button id="news-tab-newsletter" onclick="setNewsPageTab('newsletter')">خبرنامه مدارس</button>
@@ -2417,6 +2420,7 @@
     claims: 'ادعاها و شایعات منتشرشده در کانال «رصد شایعات» پیام‌رسان بله.',
     study: 'پست‌های کانال‌های ایتا و تلگرامی که در بخش «اخبار و رویدادها» دنبال می‌شوند.',
     website: 'مقالات سایت‌های خبری رسمی، با امکان جست‌وجوی موضوعی و ترجمه‌ی خودکار.',
+    hawza: 'مقالات سایت‌های خبری اختصاصی حوزه‌ی علمیه.',
     newspapers: 'صفحه‌ی اول روزنامه‌های کشور، جمع‌آوری‌شده‌ی روزانه از کیوسک مطبوعات.',
     dossier: 'اخبار مرتبط با چند موضوع خاص و موقت، گروه‌بندی‌شده بر اساس کلیدواژه.',
     newsletter: 'خبرنامه‌ی روزانه‌ی قابل‌دانلود، متشکل از اخبار منتخب مدیر سامانه.'
@@ -2436,24 +2440,26 @@
     if(subEl) subEl.querySelector('span').textContent = NEWS_TAB_INFO[tab] || '';
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
+    document.getElementById('news-tab-hawza').classList.toggle('active', tab==='hawza');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
     document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
     document.getElementById('news-tab-dossier').classList.toggle('active', tab==='dossier');
     document.getElementById('news-tab-newsletter').classList.toggle('active', tab==='newsletter');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
-    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
-    // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
-    // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
-    // اساسش کانال‌های پیام‌رسان/وب‌سایت/بله رو برگردونه
-    const showStudy = tab==='study' || tab==='website' || tab==='claims';
+    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها»، «اخبار حوزه» و «ادعاها و شایعات»
+    // یه پنل مشترک (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی
+    // یکسان به اشتراک می‌ذارن — فقط newsState.platform عوض می‌شه که
+    // newsChannels() بر اساسش کانال‌های پیام‌رسان/وب‌سایت/حوزه/بله رو
+    // برمی‌گردونه
+    const showStudy = tab==='study' || tab==='website' || tab==='hawza' || tab==='claims';
     document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
     document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
     document.getElementById('news-dossier-panel').style.display = tab==='dossier' ? '' : 'none';
     document.getElementById('news-newsletter-panel').style.display = tab==='newsletter' ? '' : 'none';
     if(showStudy){
-      newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
+      newsState.platform = tab==='website' ? 'website' : tab==='hawza' ? 'hawza' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
       // تب «ادعاها و شایعات» فقط یه منبع (کانال بله) داره — فیلتر منطقه و
       // دراپ‌داون چندانتخابی رسانه‌ها بی‌معنیه، پس مخفی می‌شن
@@ -2520,12 +2526,15 @@
   };
   const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '', platform: 'social' };
 
-  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری RSS،
+  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری عمومی،
+  // 'hawza' = سایت‌های خبری اختصاصی حوزه (هم platform=website ولی show_in_hawza=true،
+  // برای همین از سطل 'website' مستثنا می‌شن تا دوبار نمایش داده نشن)،
   // 'claims' = کانال بله «ادعاها و شایعات»
   function newsChannels(){
     return CHANNELS.filter(c => {
       if(!c.show_in_news) return false;
-      if(newsState.platform === 'website') return c.platform === 'website';
+      if(newsState.platform === 'website') return c.platform === 'website' && !c.show_in_hawza;
+      if(newsState.platform === 'hawza') return c.platform === 'website' && !!c.show_in_hawza;
       if(newsState.platform === 'claims') return c.platform === 'bale';
       return c.platform !== 'website' && c.platform !== 'bale';
     });
@@ -4664,6 +4673,20 @@
       talabehLbl.appendChild(talabehChk);
       talabehLbl.appendChild(document.createTextNode('طلبه‌ی حوزه‌ی خراسان'));
       profileWrap.appendChild(talabehLbl);
+      // تیک «اخبار حوزه» فقط برای کانال‌های website معنا داره (تب «اخبار
+      // حوزه» فقط سایت‌های خبری رو نشون می‌ده، نه ایتا/تلگرام/بله)
+      if(ch.platform === 'website'){
+        const hawzaLbl=document.createElement('label'); hawzaLbl.className='chan-row-news';
+        const hawzaChk=document.createElement('input'); hawzaChk.type='checkbox'; hawzaChk.checked=!!ch.show_in_hawza;
+        hawzaChk.addEventListener('change', async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({show_in_hawza: hawzaChk.checked})});
+          ch.show_in_hawza = hawzaChk.checked;
+          renderNewsFeed();
+        });
+        hawzaLbl.appendChild(hawzaChk);
+        hawzaLbl.appendChild(document.createTextNode('اخبار حوزه'));
+        profileWrap.appendChild(hawzaLbl);
+      }
       profileDetails.appendChild(profileWrap);
       row.appendChild(profileDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
