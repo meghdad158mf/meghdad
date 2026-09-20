@@ -2618,6 +2618,11 @@
   function filteredNewsPosts(){
     return newsPosts().filter(p=>{
       const ch = chById(p.channel_id);
+      // تب «اخبار حوزه»: فقط پست‌هایی که هوش مصنوعی صریحاً سیاسی/اجتماعی
+      // تشخیص داده (posts.hawza_relevant===true) نشون داده می‌شن — پست‌های
+      // تازه‌ی هنوز-بررسی‌نشده (NULL) و پست‌های غیرسیاسی/غیراجتماعی (false)
+      // هر دو مخفی می‌مونن؛ نگاه کن به Edge Function extract-post-keywords
+      if(newsState.platform === 'hawza' && p.hawza_relevant !== true) return false;
       if(newsState.region && String(ch.region_id) !== newsState.region) return false;
       if(newsState.sources.length && !newsState.sources.includes(String(p.channel_id))) return false;
       if(newsState.time === 'custom'){
