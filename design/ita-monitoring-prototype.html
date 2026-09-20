@@ -646,12 +646,20 @@
   .post-foot .cat{ color: var(--accent-strong); font-weight:600; }
 
   /* اخبار رسمی — بخش مطالعه (فاز ۱، بدون فیلتر/ترجمه‌ی هوشمند) */
-  .news-page-tabs{ display:flex; gap:26px; margin-bottom:22px; }
+  .news-page-tabs{ display:flex; gap:26px; margin-bottom:16px; }
   .news-page-tabs button{ border:none; background:none; color:rgba(255,255,255,0.5); font-size:14px; font-weight:700; padding:11px 2px; cursor:pointer; position:relative; font-family:inherit; }
   .news-page-tabs button.active{ color:#fff; }
   .news-page-tabs button.active::after{ content:''; position:absolute; inset-inline:0; bottom:-1px; height:2px; background:var(--accent); border-radius:2px; }
   .news-page-tabs button:disabled{ cursor:default; opacity:.6; }
   .news-soon{ font-size:9.5px; font-weight:600; color: var(--accent); background: rgba(234,179,147,0.14); border-radius:100px; padding:2px 7px; margin-inline-start:6px; }
+
+  /* زیرنویس توضیحی تب فعال — یه خط کوتاه هدف همون تب رو توضیح می‌ده،
+     با تعویض تب هم عوض می‌شه (نگاه کن به setNewsPageTab و دو هندلر کلیک
+     posts-page-tabs/people-page-tabs) */
+  .news-tab-subtitle{ display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.58); font-size:13px; line-height:1.9; margin:0 0 26px; max-width:620px; animation:subtitleFade .25s ease; }
+  .news-tab-subtitle::before{ content:''; flex:none; width:2px; align-self:stretch; border-radius:2px; background:linear-gradient(180deg, var(--accent), rgba(234,179,147,0)); margin-top:2px; }
+  .news-tab-subtitle span{ padding-top:1px; }
+  @keyframes subtitleFade{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
 
   .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; margin-inline-start:auto; }
   .news-view-toggle button{ border:none; background:none; color: rgba(255,255,255,0.55); padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
@@ -1490,6 +1498,7 @@
         <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
         <button id="news-tab-newsletter" onclick="setNewsPageTab('newsletter')">خبرنامه مدارس</button>
       </div>
+      <p class="news-tab-subtitle" id="news-tab-subtitle"><span>خلاصه‌ی هوشمند اخبار مهم و موضوعات پرتکرار ۶ ساعت اخیر، تولیدشده با هوش مصنوعی.</span></p>
 
       <div id="news-study-panel" style="display:none;">
         <div class="news-filters">
@@ -1707,6 +1716,7 @@
         <button data-people-tab="basirat">بسته‌های آموزشی</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
+      <p class="news-tab-subtitle" id="people-tab-subtitle"><span>یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.</span></p>
 
       <div id="people-tab-figures">
         <div class="toolbar">
@@ -1832,6 +1842,7 @@
         <button data-posts-tab="people">افراد و مجموعه‌ها</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
+      <p class="news-tab-subtitle" id="posts-tab-subtitle"><span>پست‌های منتشرشده‌ی کانال‌های کنشگر فضای مجازی، قابل‌فیلتر بر اساس کانال، دسته و زمان.</span></p>
 
       <div id="posts-tab-feed">
         <div class="toolbar">
@@ -2384,7 +2395,31 @@
     const tabBtn = document.querySelector('#people-page-tabs button[data-people-tab="'+tab+'"]');
     if(tabBtn) tabBtn.click();
   }
+  // متن زیرنویس هر تب (سه گروه: اخبار و رویدادها / کنشگری مجازی / یادداشت‌ها)
+  // — یه خط کوتاه هدف همون تب رو توضیح می‌ده؛ در setNewsPageTab و دو هندلر
+  // کلیک posts-page-tabs/people-page-tabs مصرف می‌شه
+  const NEWS_TAB_INFO = {
+    analytics: 'خلاصه‌ی هوشمند اخبار مهم و موضوعات پرتکرار ۶ ساعت اخیر، تولیدشده با هوش مصنوعی.',
+    claims: 'ادعاها و شایعات منتشرشده در کانال «رصد شایعات» پیام‌رسان بله.',
+    study: 'پست‌های کانال‌های ایتا و تلگرامی که در بخش «اخبار و رویدادها» دنبال می‌شوند.',
+    website: 'مقالات سایت‌های خبری رسمی، با امکان جست‌وجوی موضوعی و ترجمه‌ی خودکار.',
+    newspapers: 'صفحه‌ی اول روزنامه‌های کشور، جمع‌آوری‌شده‌ی روزانه از کیوسک مطبوعات.',
+    dossier: 'اخبار مرتبط با چند موضوع خاص و موقت، گروه‌بندی‌شده بر اساس کلیدواژه.',
+    newsletter: 'خبرنامه‌ی روزانه‌ی قابل‌دانلود، متشکل از اخبار منتخب مدیر سامانه.'
+  };
+  const POSTS_TAB_INFO = {
+    feed: 'پست‌های منتشرشده‌ی کانال‌های کنشگر فضای مجازی، قابل‌فیلتر بر اساس کانال، دسته و زمان.',
+    people: 'فهرست کانال‌های کنشگر به‌همراه صاحب کانال، تعداد مخاطب و سطح فعالیت هرکدام.'
+  };
+  const PEOPLE_TAB_INFO = {
+    figures: 'یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.',
+    archive: 'تولیدات تحلیلی سایر نهادها، جدا از بسته‌های تحلیلی خودِ جریان.',
+    basirat: 'بسته‌های آموزشی مدرسه‌ی مجازی بصیرت، با لینک مستقیم به دوره.'
+  };
+
   function setNewsPageTab(tab){
+    const subEl = document.getElementById('news-tab-subtitle');
+    if(subEl) subEl.querySelector('span').textContent = NEWS_TAB_INFO[tab] || '';
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
@@ -3698,6 +3733,8 @@
     const b = e.target.closest('button'); if(!b || !b.dataset.postsTab) return;
     postsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
+    const postsSubEl = document.getElementById('posts-tab-subtitle');
+    if(postsSubEl) postsSubEl.querySelector('span').textContent = POSTS_TAB_INFO[b.dataset.postsTab] || '';
     ['feed','people'].forEach(key=>{
       const el = document.getElementById('posts-tab-'+key);
       if(el) el.style.display = key === b.dataset.postsTab ? '' : 'none';
@@ -3712,6 +3749,8 @@
     const b = e.target.closest('button'); if(!b || !b.dataset.peopleTab) return;
     peoplePageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
     b.classList.add('active');
+    const peopleSubEl = document.getElementById('people-tab-subtitle');
+    if(peopleSubEl) peopleSubEl.querySelector('span').textContent = PEOPLE_TAB_INFO[b.dataset.peopleTab] || '';
     ['figures','archive','basirat'].forEach(key=>{
       const el = document.getElementById('people-tab-'+key);
       if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
