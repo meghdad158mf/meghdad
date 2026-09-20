@@ -2429,7 +2429,7 @@
   let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
   let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده ویژه»
   let DOSSIER_TOPIC_POSTS = []; // {id, topic_id, post_id, source, excluded} — پست‌های منتسب به هر موضوع
-  let NEWSLETTER_POSTS = []; // {id, section, post_id, sort_order} — مجموعه‌ی فعلیِ منتشرشده‌ی «خبرنامه مدارس» (بدون آرشیو)
+  let NEWSLETTER_POSTS = []; // {id, section, post_id, sort_order, posts:{...}} — مجموعه‌ی فعلیِ منتشرشده‌ی «خبرنامه مدارس» (بدون آرشیو)؛ posts رکورد کامل پست embedشده‌ست (نه فقط id) چون POSTS_CACHE سقف ۱۰۰۰تایی داره و پست‌های ادعا/شایعه (کمیاب‌تر) زود ازش بیرون می‌افتن — نگاه کن به buildNewsletterPrintHtml
   let NEWSLETTER_DRAFT = { claims: [], news: [], dossier: [] }; // پیش‌نویس در‌حال‌ویرایش مدیر (فقط حافظه، تا «انتشار» زده نشه ذخیره نمی‌شه)
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
@@ -2934,8 +2934,11 @@
     if(!wrap) return;
     const grouped = { claims: [], news: [], dossier: [] };
     NEWSLETTER_POSTS.forEach(np=>{
-      const p = POSTS_CACHE.find(x=>x.id===np.post_id);
-      if(p) grouped[np.section].push(p);
+      // از np.posts (embedشده توسط loadNewsletterPosts) استفاده می‌کنیم، نه
+      // POSTS_CACHE — چون POSTS_CACHE سقف ۱۰۰۰تایی داره و تا وقتی مدیر واقعاً
+      // به این تب برمی‌گرده، پست‌های ادعا/شایعه‌ی منتشرشده (کمیاب‌تر از بقیه)
+      // ممکنه ازش بیرون افتاده باشن و PDF رو با «خبری ثبت نشده» خالی بسازه
+      if(np.posts) grouped[np.section].push(np.posts);
     });
     const highlights = [...grouped.news, ...grouped.dossier];
     const today = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'long', day:'numeric' });
@@ -3393,7 +3396,10 @@
     DOSSIER_TOPIC_POSTS = r.ok ? await r.json() : [];
   }
   async function loadNewsletterPosts(){
-    const r = await api('/newsletter_posts?select=*&order=section.asc,sort_order.asc');
+    // select=*,posts(*) پست واقعی رو مستقیم embed می‌کنه به‌جای اینکه بعداً
+    // از POSTS_CACHE (که سقف ۱۰۰۰تایی داره و پست‌های ادعا/شایعه زود ازش
+    // بیرون می‌افتن) پیدا بشه — نگاه کن به buildNewsletterPrintHtml
+    const r = await api('/newsletter_posts?select=*,posts(*)&order=section.asc,sort_order.asc');
     NEWSLETTER_POSTS = r.ok ? await r.json() : [];
   }
   async function loadPosts(){
