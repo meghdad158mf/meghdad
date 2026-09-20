@@ -1031,6 +1031,10 @@
   .chan-row-profile-fields label{ display:flex; flex-direction:column; gap:4px; font-size:10.5px; font-weight:600; color: var(--text-faint); }
   .chan-row-profile-fields input{ font-size:12px; font-weight:500; font-family:inherit; color: var(--text); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:5px 7px; }
   .chan-row-profile-fields input:focus{ outline:none; border-color: var(--accent); }
+  /* چک‌باکس «طلبه‌ی حوزه‌ی خراسان» با کلاس مشترک chan-row-news داخل همین
+     پنل «پروفایل» هم می‌شینه — باید override بشه، وگرنه قانون ستونی بالا
+     (label{flex-direction:column}) روش هم اعمال می‌شه و چیدمانش می‌شکنه */
+  .chan-row-profile-fields label.chan-row-news{ flex-direction:row; }
   #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
@@ -1845,6 +1849,11 @@
       <p class="news-tab-subtitle" id="posts-tab-subtitle"><span>پست‌های منتشرشده‌ی کانال‌های کنشگر فضای مجازی، قابل‌فیلتر بر اساس کانال، دسته و زمان.</span></p>
 
       <div id="posts-tab-feed">
+        <div class="news-seg" id="posts-group-seg" style="margin-bottom:14px">
+          <button class="active" data-g="">همه</button>
+          <button data-g="khorasan">طلاب خراسان</button>
+          <button data-g="other">سایر کنشگران</button>
+        </div>
         <div class="toolbar">
           <details class="news-source-details" id="posts-source-details">
             <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
@@ -1872,6 +1881,11 @@
       </div>
 
       <div id="posts-tab-people" style="display:none;">
+        <div class="news-seg" id="cyber-people-group-seg" style="margin-bottom:14px">
+          <button class="active" data-g="">همه</button>
+          <button data-g="khorasan">طلاب خراسان</button>
+          <button data-g="other">سایر کنشگران</button>
+        </div>
         <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
         <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
           <div class="cpt-head" id="cyber-people-head">
@@ -3757,6 +3771,18 @@
     });
   });
 
+  // فیلتر «طلاب خراسان / سایر» جدول «افراد و مجموعه‌ها» — '' یعنی همه؛
+  // نگاه کن به matchesActivistGroup
+  let cyberPeopleGroupFilter = '';
+  const cyberPeopleGroupSegEl = document.getElementById('cyber-people-group-seg');
+  if(cyberPeopleGroupSegEl) cyberPeopleGroupSegEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.dataset.g===undefined) return;
+    cyberPeopleGroupSegEl.querySelectorAll(':scope > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    cyberPeopleGroupFilter = b.dataset.g;
+    renderCyberPeopleGrid();
+  });
+
   // مرتب‌سازی جدول «افراد و مجموعه‌ها» با کلیک روی سرستون‌ها — بدون سرور،
   // کاملاً سمت کلاینت روی همون آرایه‌ی فیلترشده‌ی CHANNELS
   let cyberPeopleSort = { field: null, dir: 'asc' };
@@ -3785,7 +3811,10 @@
     const table = document.getElementById('cyber-people-table');
     const empty = document.getElementById('cyber-people-empty');
     if(!wrap) return;
-    const channels = CHANNELS.filter(c=>c.show_in_cyberspace);
+    const channels = CHANNELS.filter(c=>c.show_in_cyberspace && matchesActivistGroup(c, cyberPeopleGroupFilter));
+    if(empty) empty.textContent = (CHANNELS.some(c=>c.show_in_cyberspace) && cyberPeopleGroupFilter)
+      ? 'کانالی با این فیلتر پیدا نشد.'
+      : 'هنوز کانالی برای «کنشگری مجازی» تگ نشده.';
     if(cyberPeopleSort.field){
       const field = cyberPeopleSort.field;
       const dir = cyberPeopleSort.dir === 'desc' ? -1 : 1;
@@ -3851,6 +3880,8 @@
   // به‌جای یه select تک‌انتخابی، مثل «انتخاب رسانه‌ها…» تب شبکه‌های اجتماعی
   // یه چندانتخابی چک‌باکسیه — بشه چندتا کانال رو هم‌زمان انتخاب کرد
   let postsSelectedChannels = [];
+  // فیلتر «طلاب خراسان / سایر» — '' یعنی همه؛ نگاه کن به matchesActivistGroup
+  let postsGroupFilter = '';
 
   function updatePostSourceSummary(){
     const summary = document.getElementById('posts-source-summary');
@@ -3898,6 +3929,16 @@
     return true;
   }
 
+  // فیلتر مشترک «طلاب خراسان / سایر» بخش «کنشگری مجازی» — هم توی فید
+  // «پست‌های منتشر شده» هم توی جدول «افراد و مجموعه‌ها» استفاده می‌شه
+  // (نگاه کن به postsGroupFilter/cyberPeopleGroupFilter)
+  function matchesActivistGroup(ch, group){
+    if(!group) return true;
+    if(group === 'khorasan') return !!(ch && ch.is_khorasan_talabeh);
+    if(group === 'other') return !(ch && ch.is_khorasan_talabeh);
+    return true;
+  }
+
   function filteredPosts(){
     const catFilter = filterCatEl.value;
     const timeFilter = filterTimeEl.value;
@@ -3905,6 +3946,7 @@
     return POSTS_CACHE.filter(p=>{
       const ownerCh = chById(p.channel_id);
       if(!ownerCh || !ownerCh.show_in_cyberspace) return false;
+      if(!matchesActivistGroup(ownerCh, postsGroupFilter)) return false;
       if(postsSelectedChannels.length && !postsSelectedChannels.includes(String(p.channel_id))) return false;
       if(catFilter){
         const ch = chById(p.channel_id);
@@ -4051,6 +4093,14 @@
   filterCatEl.addEventListener('change', renderPosts);
   filterTimeEl.addEventListener('change', renderPosts);
   searchEl.addEventListener('input', renderPosts);
+  const postsGroupSegEl = document.getElementById('posts-group-seg');
+  if(postsGroupSegEl) postsGroupSegEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.dataset.g===undefined) return;
+    postsGroupSegEl.querySelectorAll(':scope > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    postsGroupFilter = b.dataset.g;
+    renderPosts();
+  });
 
   // ---- چهره‌های سیاسی (تنها محتوای بخش «یادداشت‌ها») ----
   // عیناً هم‌الگو با فید «کنشگری مجازی» بالا (همون POSTS_CACHE، فقط فیلتر
@@ -4604,6 +4654,16 @@
       });
       subLbl.appendChild(subInput);
       profileWrap.appendChild(subLbl);
+      const talabehLbl=document.createElement('label'); talabehLbl.className='chan-row-news';
+      const talabehChk=document.createElement('input'); talabehChk.type='checkbox'; talabehChk.checked=!!ch.is_khorasan_talabeh;
+      talabehChk.addEventListener('change', async ()=>{
+        await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({is_khorasan_talabeh: talabehChk.checked})});
+        ch.is_khorasan_talabeh = talabehChk.checked;
+        renderCyberPeopleGrid(); renderPosts();
+      });
+      talabehLbl.appendChild(talabehChk);
+      talabehLbl.appendChild(document.createTextNode('طلبه‌ی حوزه‌ی خراسان'));
+      profileWrap.appendChild(talabehLbl);
       profileDetails.appendChild(profileWrap);
       row.appendChild(profileDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
