@@ -754,7 +754,7 @@
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
 
-  /* تب «پرونده ویژه»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
+  /* تب «پرونده‌های موضوعی»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
      flex، توی RTL خودکار سمت راست درمیاد)، اخبار موضوعِ انتخاب‌شده توی
      ستون چپ‌ترش. فقط یه موضوع در هر لحظه انتخاب می‌شه (نه هم‌زمان چندتا) */
   .dossier-layout{ display:flex; gap:24px; align-items:flex-start; }
@@ -925,7 +925,7 @@
   .cat-card .cc-actions{ display:flex; align-items:center; gap:8px; }
   .cat-card .count{ font-size:12px; color: var(--accent-strong); font-family: ui-monospace,monospace; font-weight:700; }
 
-  /* پنل مدیریت موضوعات «پرونده ویژه» — کارت هر موضوع + لیست پست‌های منتسب + افزودن دستی */
+  /* پنل مدیریت موضوعات «پرونده‌های موضوعی» — کارت هر موضوع + لیست پست‌های منتسب + افزودن دستی */
   .dossier-topic-card{ background: var(--surface-2); border:1px solid var(--border); border-radius: var(--radius-control); padding:12px 14px; margin-bottom:10px; border-inline-start:3px solid var(--accent); }
   .dossier-topic-card.inactive{ opacity:.55; }
   .dossier-topic-card-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
@@ -1225,7 +1225,8 @@
               <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
-              <button class="nav-menu-sub" onclick="goToNewsTab('dossier'); closeNavMenu();">پرونده ویژه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('hawza'); closeNavMenu();">اخبار حوزه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('dossier'); closeNavMenu();">پرونده‌های موضوعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newsletter'); closeNavMenu();">خبرنامه مدارس</button>
 
               <button class="nav-menu-group-title-btn" onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
@@ -1381,7 +1382,8 @@
         <a onclick="goToNewsTab('study')">شبکه‌های اجتماعی</a>
         <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
-        <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
+        <a onclick="goToNewsTab('hawza')">اخبار حوزه</a>
+        <a onclick="goToNewsTab('dossier')">پرونده‌های موضوعی</a>
         <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
         <a onclick="goToPeopleTab('figures')">چهره‌های سیاسی</a>
         <a onclick="goToPeopleTab('archive')">سایر بسته‌های تحلیلی</a>
@@ -1499,7 +1501,8 @@
         <button id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
-        <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
+        <button id="news-tab-hawza" onclick="setNewsPageTab('hawza')">اخبار حوزه</button>
+        <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده‌های موضوعی</button>
         <button id="news-tab-newsletter" onclick="setNewsPageTab('newsletter')">خبرنامه مدارس</button>
       </div>
       <p class="news-tab-subtitle" id="news-tab-subtitle"><span>خلاصه‌ی هوشمند اخبار مهم و موضوعات پرتکرار ۶ ساعت اخیر، تولیدشده با هوش مصنوعی.</span></p>
@@ -1577,7 +1580,7 @@
         <p class="news-empty" id="newspapers-empty" style="display:none;">هنوز روزنامه‌ای دریافت نشده.</p>
       </div>
 
-      <!-- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی که مدیر
+      <!-- تب «پرونده‌های موضوعی» — اخبار مرتبط با موضوعات موقت/چرخشی که مدیر
            تعیین می‌کنه (پنل «مدیریت ← تنظیمات»)؛ منبع همون پست‌های
            show_in_news فعلیه، فقط بر اساس posts.ai_keywords دسته‌بندی
            می‌شه. فقط موضوعات active که حداقل یه پست excluded=false دارن
@@ -1597,12 +1600,12 @@
           <div class="dossier-sidebar" id="dossier-sidebar"></div>
           <div class="dossier-content" id="dossier-groups"></div>
         </div>
-        <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
+        <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی موضوعی فعالی نیست.</p>
       </div>
 
       <!-- تب «خبرنامه مدارس» — خبرنامه‌ی قابل‌دانلود (۲ صفحه‌ی A4 چاپی):
            صفحه‌ی اول «ادعاها و شایعات»، صفحه‌ی دوم دوستونه («شبکه‌های
-           اجتماعی و وب‌سایت‌ها» + «پرونده ویژه»). بدون آرشیو — فقط یه
+           اجتماعی و وب‌سایت‌ها» + «پرونده‌های موضوعی»). بدون آرشیو — فقط یه
            مجموعه‌ی «فعلیِ منتشرشده» توی newsletter_posts هست؛ مدیر با
            پیشنهاد خودکار روزانه + تأیید/ویرایش دستی «منتشر»ش می‌کنه. -->
       <div id="news-newsletter-panel" style="display:none;">
@@ -1632,7 +1635,7 @@
             <div class="dossier-manual-results" id="newsletter-manual-results-news"></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون چپ) — پرونده ویژه</span></div>
+            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون چپ) — پرونده‌های موضوعی</span></div>
             <div id="newsletter-draft-dossier"></div>
             <div class="add-row">
               <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('dossier', this.value)" />
@@ -2011,8 +2014,8 @@
             <div class="cat-grid" id="topic-grid"></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده ویژه»</span></div>
-            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده ویژه» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
+            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></div>
+            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده‌های موضوعی» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
             <div class="add-row">
               <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
               <input type="text" id="new-dossier-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
@@ -2417,6 +2420,7 @@
     claims: 'ادعاها و شایعات منتشرشده در کانال «رصد شایعات» پیام‌رسان بله.',
     study: 'پست‌های کانال‌های ایتا و تلگرامی که در بخش «اخبار و رویدادها» دنبال می‌شوند.',
     website: 'مقالات سایت‌های خبری رسمی، با امکان جست‌وجوی موضوعی و ترجمه‌ی خودکار.',
+    hawza: 'مقالات سایت‌های خبری اختصاصی حوزه‌ی علمیه.',
     newspapers: 'صفحه‌ی اول روزنامه‌های کشور، جمع‌آوری‌شده‌ی روزانه از کیوسک مطبوعات.',
     dossier: 'اخبار مرتبط با چند موضوع خاص و موقت، گروه‌بندی‌شده بر اساس کلیدواژه.',
     newsletter: 'خبرنامه‌ی روزانه‌ی قابل‌دانلود، متشکل از اخبار منتخب مدیر سامانه.'
@@ -2436,24 +2440,26 @@
     if(subEl) subEl.querySelector('span').textContent = NEWS_TAB_INFO[tab] || '';
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
+    document.getElementById('news-tab-hawza').classList.toggle('active', tab==='hawza');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
     document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
     document.getElementById('news-tab-dossier').classList.toggle('active', tab==='dossier');
     document.getElementById('news-tab-newsletter').classList.toggle('active', tab==='newsletter');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
-    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
-    // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
-    // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
-    // اساسش کانال‌های پیام‌رسان/وب‌سایت/بله رو برگردونه
-    const showStudy = tab==='study' || tab==='website' || tab==='claims';
+    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها»، «اخبار حوزه» و «ادعاها و شایعات»
+    // یه پنل مشترک (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی
+    // یکسان به اشتراک می‌ذارن — فقط newsState.platform عوض می‌شه که
+    // newsChannels() بر اساسش کانال‌های پیام‌رسان/وب‌سایت/حوزه/بله رو
+    // برمی‌گردونه
+    const showStudy = tab==='study' || tab==='website' || tab==='hawza' || tab==='claims';
     document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
     document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
     document.getElementById('news-dossier-panel').style.display = tab==='dossier' ? '' : 'none';
     document.getElementById('news-newsletter-panel').style.display = tab==='newsletter' ? '' : 'none';
     if(showStudy){
-      newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
+      newsState.platform = tab==='website' ? 'website' : tab==='hawza' ? 'hawza' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
       // تب «ادعاها و شایعات» فقط یه منبع (کانال بله) داره — فیلتر منطقه و
       // دراپ‌داون چندانتخابی رسانه‌ها بی‌معنیه، پس مخفی می‌شن
@@ -2476,7 +2482,7 @@
   let CATEGORIES = [];  // {id, name, color}
   let REGIONS = [];     // {id, name}
   let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
-  let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده ویژه»
+  let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده‌های موضوعی»
   let DOSSIER_TOPIC_POSTS = []; // {id, topic_id, post_id, source, excluded} — پست‌های منتسب به هر موضوع
   let NEWSLETTER_POSTS = []; // {id, section, post_id, sort_order, posts:{...}} — مجموعه‌ی فعلیِ منتشرشده‌ی «خبرنامه مدارس» (بدون آرشیو)؛ posts رکورد کامل پست embedشده‌ست (نه فقط id) چون POSTS_CACHE سقف ۱۰۰۰تایی داره و پست‌های ادعا/شایعه (کمیاب‌تر) زود ازش بیرون می‌افتن — نگاه کن به buildNewsletterPrintHtml
   let NEWSLETTER_DRAFT = { claims: [], news: [], dossier: [] }; // پیش‌نویس در‌حال‌ویرایش مدیر (فقط حافظه، تا «انتشار» زده نشه ذخیره نمی‌شه)
@@ -2520,12 +2526,15 @@
   };
   const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '', platform: 'social' };
 
-  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری RSS،
+  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری عمومی،
+  // 'hawza' = سایت‌های خبری اختصاصی حوزه (هم platform=website ولی show_in_hawza=true،
+  // برای همین از سطل 'website' مستثنا می‌شن تا دوبار نمایش داده نشن)،
   // 'claims' = کانال بله «ادعاها و شایعات»
   function newsChannels(){
     return CHANNELS.filter(c => {
       if(!c.show_in_news) return false;
-      if(newsState.platform === 'website') return c.platform === 'website';
+      if(newsState.platform === 'website') return c.platform === 'website' && !c.show_in_hawza;
+      if(newsState.platform === 'hawza') return c.platform === 'website' && !!c.show_in_hawza;
       if(newsState.platform === 'claims') return c.platform === 'bale';
       return c.platform !== 'website' && c.platform !== 'bale';
     });
@@ -2719,7 +2728,7 @@
     }
   }
 
-  // ---- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
+  // ---- تب «پرونده‌های موضوعی» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
   // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
   // فیلتر «بازه‌ی زمانی» از نیمه‌شب تقویمی تهران حساب می‌شه (tehranDayDiff،
   // کنار iranTodayStartMs) — نه فاصله‌ی خام از همین لحظه. طبق نظر کاربر،
@@ -2771,7 +2780,7 @@
     }
   }
 
-  // کارت خبر «پرونده ویژه» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
+  // کارت خبر «پرونده‌های موضوعی» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
   // این پنل هم‌زمان با فیدهای دیگه توی DOM می‌مونه (فقط display:none
   // می‌شه) و چون یه پست می‌تونه هم‌زمان زیر چند موضوع مختلف هم ظاهر بشه،
   // idهای تعاملی (متن/دکمه) با ترکیب topicId-postId ساخته می‌شن، نه فقط
@@ -2850,7 +2859,7 @@
       const ids = new Set(CHANNELS.filter(c=>c.show_in_news && c.platform!=='bale').map(c=>c.id));
       return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
     }
-    // dossier: از پست‌های واقعاً منتسب به موضوعات فعال «پرونده ویژه» (excluded=false)
+    // dossier: از پست‌های واقعاً منتسب به موضوعات فعال «پرونده‌های موضوعی» (excluded=false)
     const activeTopicIds = new Set(DOSSIER_TOPICS.filter(t=>t.active).map(t=>t.id));
     const postIds = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>!dp.excluded && activeTopicIds.has(dp.topic_id)).map(dp=>dp.post_id));
     return POSTS_CACHE.filter(p=>postIds.has(p.id));
@@ -2967,7 +2976,7 @@
       </div>`;
   }
 
-  // ⚠️ طبق درخواست کاربر: «شبکه‌های اجتماعی...» و «پرونده ویژه» دیگه دو
+  // ⚠️ طبق درخواست کاربر: «شبکه‌های اجتماعی...» و «پرونده‌های موضوعی» دیگه دو
   // بخش جدا با دو عنوان جدا نیستن — فقط توی پنل مدیریت (بالاتر، سه پنل
   // curation جدا) دسته‌بندی‌شون حفظ شده تا مدیر بهتر پیدا/مدیریت‌شون کنه؛
   // موقع نمایش نهایی به کاربر، آیتم‌های news+dossier با هم یکی (concat)
@@ -3404,7 +3413,7 @@
     newspaperState.date = b.dataset.date;
     renderNewspapers();
   });
-  // ---- فیلتر و سایدبار تب «پرونده ویژه» ----
+  // ---- فیلتر و سایدبار تب «پرونده‌های موضوعی» ----
   document.getElementById('dossier-time-seg').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b || !b.dataset.t) return;
     document.querySelectorAll('#dossier-time-seg > button').forEach(x=>x.classList.remove('active'));
@@ -3498,7 +3507,7 @@
   }
 
   // چند تا نقطه از سایت («کنشگری مجازی»، «یادداشت‌ها»، «اخبار و رویدادها»،
-  // «پرونده ویژه») فیلتر «امروز/دیروز/هفته گذشته» داشتن که هرکدوم جدا و
+  // «پرونده‌های موضوعی») فیلتر «امروز/دیروز/هفته گذشته» داشتن که هرکدوم جدا و
   // با معیار «فاصله‌ی خام از همین لحظه» (نه نیمه‌شب تقویمی) پیاده شده بود —
   // یعنی مرز «امروز» با گذشت ساعت‌های شب به‌جای نیمه‌شب واقعی ایران، به
   // ساعت لحظه‌ی بازدید کاربر (یا حتی تایم‌زون محلی مرورگرش) وابسته بود.
@@ -4664,6 +4673,20 @@
       talabehLbl.appendChild(talabehChk);
       talabehLbl.appendChild(document.createTextNode('طلبه‌ی حوزه‌ی خراسان'));
       profileWrap.appendChild(talabehLbl);
+      // تیک «اخبار حوزه» فقط برای کانال‌های website معنا داره (تب «اخبار
+      // حوزه» فقط سایت‌های خبری رو نشون می‌ده، نه ایتا/تلگرام/بله)
+      if(ch.platform === 'website'){
+        const hawzaLbl=document.createElement('label'); hawzaLbl.className='chan-row-news';
+        const hawzaChk=document.createElement('input'); hawzaChk.type='checkbox'; hawzaChk.checked=!!ch.show_in_hawza;
+        hawzaChk.addEventListener('change', async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({show_in_hawza: hawzaChk.checked})});
+          ch.show_in_hawza = hawzaChk.checked;
+          renderNewsFeed();
+        });
+        hawzaLbl.appendChild(hawzaChk);
+        hawzaLbl.appendChild(document.createTextNode('اخبار حوزه'));
+        profileWrap.appendChild(hawzaLbl);
+      }
       profileDetails.appendChild(profileWrap);
       row.appendChild(profileDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
@@ -4724,7 +4747,7 @@
     }
   });
 
-  // ---- پنل مدیریت موضوعات «پرونده ویژه» ----
+  // ---- پنل مدیریت موضوعات «پرونده‌های موضوعی» ----
   document.getElementById('add-dossier-topic-btn').addEventListener('click', async ()=>{
     const nameEl = document.getElementById('new-dossier-topic-name');
     const kwEl = document.getElementById('new-dossier-topic-keywords');
@@ -4790,7 +4813,7 @@
     return inserts.length;
   }
 
-  // ویرایش کلیدواژه‌های یه موضوع «پرونده ویژه» — جایگزینی درجا (inline) شبیه
+  // ویرایش کلیدواژه‌های یه موضوع «پرونده‌های موضوعی» — جایگزینی درجا (inline) شبیه
   // الگوی editPostKeywords/savePostKeywords، بدون مودال جدا
   function editDossierTopicKeywords(id){
     const t = DOSSIER_TOPICS.find(x=>x.id===id);
