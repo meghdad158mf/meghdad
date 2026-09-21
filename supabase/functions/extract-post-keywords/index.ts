@@ -10,11 +10,12 @@
 //
 // از همین پاس، یه کار دوم و مستقل هم انجام می‌شه — تشخیص سیاسی/اجتماعی‌
 // بودن پست‌های تب «اخبار حوزه» (migration_027/029): فیدهای RSS دو تا از
-// سه کانال «اخبار حوزه» عمومی‌ان (همه‌ی موضوعات رو می‌گیرن)، پس هوش
-// مصنوعی توی همین فراخوانی، فقط برای پست‌های کانال‌های show_in_hawza=true
-// (پرچم needsHawzaCheck)، یه فیلد اضافه (hawza_relevant) هم برمی‌گردونه؛
-// posts.hawza_relevant=true تنها پست‌هاییه که توی تب «اخبار حوزه» نشون
-// داده می‌شن.
+// سه کانال «اخبار حوزه» عمومی‌ان (همه‌ی موضوعات رو می‌گیرن)، پس از هوش
+// مصنوعی برای **همه‌ی** پست‌های دسته (بدون قید شرط، برای قابل‌اعتمادتر
+// بودن پاسخ) یه فیلد اضافه (hawza_relevant) هم خواسته می‌شه؛ فقط توی کد،
+// این مقدار صرفاً برای پست‌های کانال‌های show_in_hawza=true واقعاً نوشته
+// می‌شه (برای بقیه نادیده گرفته می‌شه) — posts.hawza_relevant=true تنها
+// پست‌هاییه که توی تب «اخبار حوزه» نشون داده می‌شن.
 //
 // هر ۲ ساعت، **مستقل** از news-insights (نه هم‌زمان با اون، نه هم‌زمان
 // با کالکتورها) از GitHub Actions (scripts/extract_keywords.py، با توکن
@@ -75,14 +76,21 @@ Deno.serve(async (req) => {
       return jsonResponse({ processed: 0, matched: 0, note: "no posts pending" });
     }
 
+    // ⚠️ hawza_relevant عمداً بدون هیچ پرچم شرطی («فقط برای این پست‌ها»)
+    // از هوش مصنوعی خواسته می‌شه — یه نسخه‌ی قبلی این کد یه فیلد
+    // اختیاری (needsHawzaCheck) می‌فرستاد و فقط برای اون‌ها hawza_relevant
+    // می‌خواست؛ در عمل مدل این فیلد شرطی رو برای همه‌ی پست‌های لازم برنمی‌گردوند
+    // (احتمالاً چون وسط یه batch مختلط، رعایت یه قانون شرطی برای زیرمجموعه‌ای
+    // از آیتم‌ها قابل‌اعتماد نیست) و کد هم غیبت رو با false پر می‌کرد — نتیجه:
+    // حتی خبرهای قطعاً سیاسی (فید اختصاصی سیاسی رسا) هم همه false ثبت شدن.
+    // رفعش: مثل keywords، از مدل خواسته می‌شه این فیلد رو **برای همه‌ی پست‌ها
+    // بدون استثنا** برگردونه (همون الگوی «هیچ‌کدوم رو جا نندار» که برای
+    // keywords قبلاً ثابت‌شده قابل‌اعتماده) — فقط توی کد، مقدارش صرفاً برای
+    // پست‌های hawzaChannelIds.has(channel_id) واقعاً نوشته می‌شه.
     const compact = posts.map((p) => ({
       id: p.id,
       title: p.title || null,
       text: (p.text || "").slice(0, TEXT_TRUNCATE),
-      // فقط پست‌های کانال‌های «اخبار حوزه» (بخش‌های عمومی/بدون‌فیلتر
-      // موضوعی، مثل حوزه‌خراسان/حوزه‌نیوز) این پرچم رو دارن — نگاه کن
-      // به system prompt پایین‌تر برای معنای دقیق hawza_relevant
-      ...(hawzaChannelIds.has(p.channel_id) ? { needsHawzaCheck: true } : {}),
     }));
 
     const liaraKey = Deno.env.get("LIARA_API_KEY");
@@ -100,7 +108,7 @@ Deno.serve(async (req) => {
               "For EVERY post in the batch, without exception, return exactly one entry — never skip a post, " +
               "even if it has no meaningful content (in that case return an empty keywords array for it).\n" +
               "Each entry: {\"id\": <one of the given post ids, exactly>, \"keywords\": [<Persian keyword " +
-              "strings>]}.\n" +
+              "strings>], \"hawza_relevant\": true or false}.\n" +
               "Rules for keywords:\n" +
               "- Always write keywords in Persian, regardless of the post's original language (translate " +
               "entity/topic names, do not leave them in the source language).\n" +
@@ -111,9 +119,8 @@ Deno.serve(async (req) => {
               "or organization — always specify which one, e.g. \"وزارت خارجه ایران\" vs \"وزارت خارجه آمریکا\", " +
               "\"رئیس‌جمهور ایران\" vs \"رئیس‌جمهور آمریکا\".\n" +
               "\n" +
-              "SEPARATE TASK — only for posts whose input object has \"needsHawzaCheck\": true, ALSO add " +
-              "\"hawza_relevant\": true or false to that post's result entry, classifying whether the post is " +
-              "genuinely POLITICAL or SOCIAL news:\n" +
+              "Rules for hawza_relevant — for EVERY post, without exception (this field is mandatory on every " +
+              "entry, exactly like keywords), classify whether the post is genuinely POLITICAL or SOCIAL news:\n" +
               "- true = POLITICAL news (government, elections, foreign policy, international relations, " +
               "sanctions/diplomacy, statements by political or religious authorities specifically about " +
               "political matters, protests, political institutions/parties) OR SOCIAL news (social issues, " +
@@ -124,8 +131,6 @@ Deno.serve(async (req) => {
               "or administrative announcements (class schedules, exam notices, seminary management news), " +
               "cultural or literary content, sports, obituary or condolence notices, or anything else that is " +
               "not clearly political or social.\n" +
-              "- Do NOT include the \"hawza_relevant\" field at all for posts without \"needsHawzaCheck\": true " +
-              "in their input.\n" +
               'Respond with ONLY a raw JSON object like {"results":[{"id":1,"keywords":["..."]}, ...]} and ' +
               "nothing else — no markdown fences, no extra commentary. The results array MUST have exactly one " +
               "entry per input post id, using only ids from the given list.",
@@ -163,8 +168,9 @@ Deno.serve(async (req) => {
         ? r.keywords.map((k) => String(k).slice(0, 80)).filter(Boolean).slice(0, 20)
         : [];
       results.set(id, keywords);
-      // فقط برای پست‌هایی که واقعاً needsHawzaCheck داشتن ثبت می‌شه —
-      // هوش مصنوعی ممکنه این فیلد رو برای بقیه هم اشتباهی برگردونه
+      // فقط برای کانال‌های واقعاً «اخبار حوزه» ذخیره می‌شه — هوش مصنوعی این
+      // فیلد رو برای همه‌ی پست‌ها برمی‌گردونه (طبق طراحی، بدون قید شرط)،
+      // ولی مقدارش برای بقیه‌ی کانال‌ها هیچ‌وقت خونده/نوشته نمی‌شه
       if (hawzaChannelIds.has(channelById.get(id)!)) {
         hawzaResults.set(id, r.hawza_relevant === true);
       }
