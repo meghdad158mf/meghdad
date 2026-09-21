@@ -98,9 +98,19 @@ export async function fetchPostsMissingKeywords(
   if (!channels.length) return { posts: [], hawzaChannelIds: new Set() };
   const ids = channels.map((c) => c.id).join(",");
   const hawzaChannelIds = new Set(channels.filter((c) => c.show_in_hawza).map((c) => c.id));
+  const hawzaIds = [...hawzaChannelIds].join(",");
+
+  // دو معیار resumable مستقل، با OR: «هنوز ai_keywords نداره» (همه‌ی
+  // کانال‌ها) یا «کانال حوزه‌ست ولی هنوز hawza_relevant نداره» — این دومی
+  // لازمه چون وگرنه پستی که ai_keywords‌ش قبلاً ست شده (مثلاً به‌خاطر یه
+  // نسخه‌ی قبلی‌تر این تابع، یا پرامپتی که hawza_relevant رو جا انداخته
+  // بود) دیگه هیچ‌وقت انتخاب نمی‌شد تا دوباره برای hawza_relevant بررسی بشه
+  const orFilter = hawzaIds
+    ? `or=(and(channel_id.in.(${ids}),ai_keywords.is.null),and(channel_id.in.(${hawzaIds}),hawza_relevant.is.null))`
+    : `channel_id=in.(${ids})&ai_keywords=is.null`;
 
   const postsRes = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&channel_id=in.(${ids})&ai_keywords=is.null&order=posted_at.desc&limit=${limit}`,
+    `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&${orFilter}&order=posted_at.desc&limit=${limit}`,
     { headers },
   );
   if (!postsRes.ok) return null;
