@@ -129,34 +129,34 @@
   .login-form-wrap .btn.primary{ width:100%; margin-top:6px; padding:11px; }
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
+  /* .notify-card و .feedback-card کنار هم (دو ستون هم‌ارتفاع) می‌شینن —
+     بدون هیچ کادر/زمینه‌ای، نه دورشون نه دور کل ردیف (دو نسخه‌ی قبلی که
+     قاب/سایه داشتن رد شدن) — فقط یه خط عمودی هلویی‌رنگ وسطشون از هم
+     جداشون می‌کنه، و یه خط کوتاه هلویی زیر عنوان هرکدوم. دکمه‌های
+     «ثبت»/«ارسال» بزرگ‌تر و برجسته‌تر از دکمه‌ی primary معمولی سایت‌ان
+     تا سریع‌تر توجه رو جلب کنن. */
+  .home-bottom-row{ display:flex; align-items:stretch; justify-content:center; gap:32px; margin-top:220px; }
+  @media (max-width:900px){ .home-bottom-row{ flex-direction:column; gap:40px; } }
+  .home-bottom-divider{ width:1px; align-self:stretch; background: rgba(234,179,147,0.28); flex-shrink:0; }
+  @media (max-width:900px){ .home-bottom-divider{ display:none; } }
+  .home-bottom-bar{ width:64px; height:3px; border-radius:2px; background: var(--accent); margin:10px auto 16px; }
   .notify-card{
-    width:100%; max-width:460px; margin:220px auto 0; box-sizing:border-box; /* قبلاً ۱۲۰px بود؛ چون کارت بعدی
-      (.basirat-widget-block) margin-top:220px داره و margin بین دو المان خواهر همجوار همیشه
-      بزرگ‌ترین مقدار رو می‌گیره نه جمعشون، فاصله‌ی بالای این کارت (بین این و .package-card که
-      margin-bottom:40px داره) با فاصله‌ی پایینش (بین این و .basirat-widget-block) برابر نبود */
-    display:flex; flex-direction:column; align-items:center; text-align:center; gap:14px;
-    padding:0 20px;
-    border-inline-start:1px solid rgba(255,255,255,0.32);
-    border-inline-end:1px solid rgba(255,255,255,0.32);
+    flex:1 1 400px; max-width:440px; box-sizing:border-box;
+    display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:14px;
   }
-  .notify-card-icon{
-    width:40px; height:40px; border-radius:50%; flex-shrink:0;
-    background: rgba(234,179,147,0.14); color: var(--accent);
-    display:flex; align-items:center; justify-content:center;
-  }
-  .notify-card-icon svg{ width:18px; height:18px; }
-  .notify-card-text h3{ font-size:14.5px; font-weight:700; color:#fff; margin:0 0 4px; }
+  .notify-card-text h3{ font-size:14.5px; font-weight:700; color:#fff; margin:0; }
   .notify-card-text p{ font-size:12px; color: rgba(255,255,255,0.62); margin:0 auto; line-height:1.7; max-width:380px; }
-  .notify-card-form{ display:flex; justify-content:center; gap:8px; flex-wrap:wrap; width:100%; }
+  .notify-card-form{ display:flex; flex-direction:column; align-items:center; gap:10px; width:100%; }
   .notify-card-form input{
     background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text);
     padding:10px 12px; border-radius: var(--radius-control); font-size:14px; font-family:inherit;
-    direction:ltr; text-align:center; width:170px; box-sizing:border-box;
+    direction:ltr; text-align:center; width:220px; box-sizing:border-box;
   }
   .notify-card-form input:focus{ border-color: var(--primary-strong); outline:none; }
   @media (max-width:480px){
     .notify-card-form input{ width:100%; }
   }
+  .notify-card-form button.primary{ padding:13px 34px; font-size:14.5px; box-shadow: 0 14px 28px -14px rgba(234,179,147,0.55); }
 
   /* ---------- DASHBOARD SHELL (unified dark canvas, topbar + content float as light cards) ---------- */
   #view-dash{
@@ -219,7 +219,7 @@
   .app-footer-brand small{ font-size:11px; font-weight:600; color: rgba(255,255,255,0.4); }
   .app-footer-org{ display:flex; gap:32px; flex-wrap:wrap; }
   .afo-item{ display:flex; flex-direction:column; gap:5px; font-size:12px; max-width:250px; }
-  .afo-item b{ color: rgba(255,255,255,0.45); font-weight:600; font-size:10.5px; }
+  .afo-item b{ color: rgba(255,255,255,0.85); font-weight:700; font-size:10.5px; }
   .afo-item span{ color: rgba(255,255,255,0.62); line-height:1.7; }
   .topbar{
     display:flex; align-items:center; justify-content:space-between; gap:16px;
@@ -319,6 +319,12 @@
   .panel{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:24px; margin-bottom:16px; }
   .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
   .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
+  /* .panel-pill پیش‌فرض مونواسپیس (JetBrains Mono) داره — برای برچسب‌های
+     کوتاه مثل «بخش تحلیلی» خوب جواب می‌ده، ولی حرف فارسی نداره؛ توی تب
+     «در یک نگاه» که متن کامل فارسی («اخبار منتخب (۶ الی ۱۲ ساعت اخیر)»)
+     داخلشه، مرورگر برای حروف فارسی به فونت پیش‌فرض سیستم می‌افته (نه
+     IRANSansX) و با بقیه‌ی صفحه ناهماهنگ می‌شه — این‌جا صریحاً برمی‌گردونیمش */
+  #news-analytics-panel .panel-pill{ font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; }
   .ai-updated-note{ font-size:11px; color: var(--text-faint); }
   .dot-list{ display:flex; flex-direction:column; gap:9px; }
   .dot-item{ display:flex; align-items:baseline; gap:9px; font-size:13px; color: var(--text); }
@@ -348,7 +354,7 @@
      پایین کادر هرو می‌شینه — چون کادر مشترکی در کار نیست، دیگه چیزی از
      پشت نوار دیده نمی‌شه. ورود با یه فید+بالا آمدن ملایم و پلکانی. */
   .dash-hero-stats{
-    display:grid; grid-template-columns: repeat(6,1fr); gap:10px; max-width:820px; margin:-46px auto 8px; position:relative; z-index:1;
+    display:grid; grid-template-columns: repeat(5,1fr); gap:10px; max-width:820px; margin:-46px auto 8px; position:relative; z-index:1;
   }
   @media (max-width:760px){ .dash-hero-stats{ grid-template-columns: repeat(3,1fr); max-width:460px; margin-top:-30px; } }
   @media (max-width:480px){ .dash-hero-stats{ grid-template-columns: repeat(2,1fr); } }
@@ -412,18 +418,19 @@
   @media (max-width:760px){ .why-jarian-grid{ grid-template-columns:1fr; } }
   .why-jarian-item{
     padding:32px 24px; border-radius: var(--radius-card);
-    background: rgba(255,255,255,0.045); border:1px solid rgba(255,255,255,0.14);
-    box-shadow: 0 24px 44px -26px rgba(234,179,147,0.4);
-    transition: transform .25s ease, background .25s ease, border-color .25s ease, box-shadow .25s ease;
+    background: linear-gradient(155deg, #fffaf5, #fbe9d7);
+    border:1px solid rgba(181,101,29,0.3);
+    box-shadow: 0 24px 44px -26px rgba(10,15,22,0.4), 0 1px 0 rgba(255,255,255,0.7) inset;
+    transition: transform .25s ease, box-shadow .25s ease;
   }
   .why-jarian-item:hover{
-    transform:translateY(-4px); background: rgba(255,255,255,0.075); border-color: rgba(255,255,255,0.24);
-    box-shadow: 0 28px 52px -24px rgba(234,179,147,0.55);
+    transform:translateY(-4px);
+    box-shadow: 0 28px 52px -24px rgba(10,15,22,0.5), 0 1px 0 rgba(255,255,255,0.7) inset;
   }
-  .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent); margin:0 0 10px; letter-spacing:0.01em; }
-  .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent); margin:0 auto 16px; transition: width .25s ease; }
+  .why-jarian-item .why-jarian-tag{ font-size:15px; font-weight:800; color: var(--accent-strong); margin:0 0 10px; letter-spacing:0.01em; }
+  .why-jarian-item .why-jarian-bar{ width:32px; height:3px; border-radius:2px; background: var(--accent-strong); margin:0 auto 16px; transition: width .25s ease; }
   .why-jarian-item:hover .why-jarian-bar{ width:48px; }
-  .why-jarian-item p{ font-size:13px; color: rgba(255,255,255,0.62); line-height:1.9; margin:0; }
+  .why-jarian-item p{ font-size:13px; color: var(--text-dim); line-height:1.9; margin:0; }
 
   /* domain cards: no card box at all — just a big icon + title + tags floating on the
      dark canvas, separated purely by grid spacing (no border/background/shadow). */
@@ -495,6 +502,7 @@
   }
   .cc-portrait{ position:absolute; inset:0; display:flex; align-items:center; justify-content:center; color: var(--accent); opacity:.45; transition: all .25s ease; }
   .cc-portrait svg{ width:48%; }
+  .cc-photo img{ position:absolute; inset:0; width:100%; height:100%; object-fit:cover; }
 
   .cc-body{ flex:1; min-width:0; padding:14px 16px; display:flex; flex-direction:column; justify-content:center; gap:5px; }
   .cc-name{ font-size:13.5px; font-weight:700; color: var(--text); line-height:1.3; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
@@ -509,6 +517,88 @@
   .cc-activity.low .dot{ background: var(--text-faint); }
   .cc-cats{ display:flex; flex-wrap:wrap; gap:5px; margin-top:4px; }
   .cc-cats span{ font-size:9px; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:2px 8px; }
+
+  /* «افراد و مجموعه‌ها» (کنشگری مجازی) — گالری معرفی کنشگر به‌شکل جدول/لیست
+     فشرده (نه کارت‌های گرید)؛ سربرگ و ردیف‌ها با ته‌رنگ گرادیانی هلویی
+     .package-card تا نسبت به یه جدول خشک/اداری جذاب‌تر دیده بشه. ستون‌ها
+     با flex-wrap (نه grid ثابت) پیاده شدن تا زیر ۷۰۰px بدون اسکرول افقی
+     زیر هم بشکنن — سربرگ روی موبایل مخفی می‌شه چون دیگه با ستون‌ها هم‌تراز نیست. */
+  .cyber-people-table{
+    border-radius: var(--radius-card); overflow:hidden; background: var(--surface);
+    border:1px solid rgba(181,101,29,0.2);
+    box-shadow: 0 20px 40px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
+  }
+  .cpt-head{
+    display:flex; gap:16px; padding:13px 18px; font-size:10.5px; font-weight:700; color: var(--accent-strong);
+    background: linear-gradient(155deg, #fffaf5, #fbe9d7); border-bottom:1px solid rgba(181,101,29,.18);
+  }
+  @media (max-width:700px){ .cpt-head{ display:none; } }
+  .cpt-row{
+    display:flex; flex-wrap:wrap; align-items:center; gap:10px 16px; padding:14px 18px; font-size:12.5px; color: var(--text);
+    border-top:1px solid var(--border); cursor:pointer; position:relative; transition: background .15s ease;
+  }
+  .cpt-row:first-of-type{ border-top:none; }
+  .cpt-row::before{ content:''; position:absolute; inset-inline-start:0; top:0; bottom:0; width:3px; background:transparent; transition: background .15s ease; }
+  .cpt-row:hover{ background: linear-gradient(90deg, rgba(234,179,147,.09), transparent 60%); }
+  .cpt-row:hover::before{ background: var(--accent-strong); }
+  .cpt-row:hover .cpt-arrow{ color: var(--accent-strong); transform: translateX(-3px); }
+
+  .cpt-who{ display:flex; align-items:center; gap:11px; min-width:0; flex:1.5 1 140px; }
+  .cpt-avatar-wrap{ position:relative; width:40px; height:40px; flex-shrink:0; }
+  .cpt-avatar{
+    width:100%; height:100%; border-radius:50%; overflow:hidden; color: var(--accent-strong);
+    background: radial-gradient(120% 120% at 30% 20%, rgba(234,179,147,0.5), var(--bg));
+    display:flex; align-items:center; justify-content:center; box-shadow: 0 3px 8px -3px rgba(181,101,29,.4);
+  }
+  .cpt-avatar img{ width:100%; height:100%; object-fit:cover; }
+  .cpt-avatar svg{ width:54%; }
+  .cpt-dot{ position:absolute; bottom:-1px; inset-inline-end:-1px; width:11px; height:11px; border-radius:50%; border:2px solid var(--surface); }
+  .cpt-dot.high{ background: var(--ok); }
+  .cpt-dot.mid{ background: var(--accent-strong); }
+  .cpt-dot.low{ background: var(--text-faint); }
+  .cpt-dot.inactive{ background: var(--danger); }
+  .cpt-who-txt{ min-width:0; }
+  .cpt-name{ font-weight:800; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* «بستر فعالیت» — پلتفرم (ایتا/تلگرام) + لینک واقعی به خودِ کانال؛ قبلاً
+     این دو زیر نام کانال (.cpt-handle) می‌نشستن، طبق درخواست کاربر ستون
+     جدای خودشون شدن */
+  .cpt-platform{ display:flex; flex-direction:column; justify-content:center; gap:1px; min-width:0; flex:0 0 128px; }
+  .cpt-platform-name{ font-size:11px; font-weight:700; color: var(--text-dim); }
+  .cpt-platform-link{ font-size:10px; color: var(--accent-strong); text-decoration:none; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; direction:ltr; text-align:right; }
+  .cpt-platform-link:hover{ text-decoration:underline; }
+
+  .cpt-owner{ display:flex; align-items:center; gap:6px; font-size:11.5px; color: var(--text-dim); flex:1.2 1 120px; min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; margin-inline-start:14px; }
+  .cpt-owner svg{ width:13px; height:13px; opacity:.5; flex-shrink:0; }
+  /* ستون‌های عدد/فعالیت/موضوع عرض ثابت دارن (نه flex:auto بر پایه‌ی محتوا) —
+     چون خیلی از کانال‌ها (مخصوصاً تازه‌اضافه‌شده‌ها) صاحب‌کانال/مخاطب/دسته‌بندی
+     خالی دارن، اگه عرض ستون بر اساس محتوا حساب بشه، ستون‌های خالی جمع می‌شن
+     به صفر و همه‌چیز بعدشون از زیر سربرگ جابه‌جا می‌شه (باگ واقعی گزارش‌شده).
+     محتوای این سه ستون هم وسط‌چینه، پس سربرگشون هم باید وسط‌چین بشه
+     (کلاس‌های .cpt-head-center روی خودِ سربرگ) وگرنه با اینکه عرض ستون‌ها
+     یکیه، متن سربرگ راست‌چین و پیل زیرش وسط‌چین به‌نظر ناهم‌تراز میان. */
+  .cpt-num{ flex:0 0 90px; display:flex; align-items:center; justify-content:center; }
+  .cpt-num-val{ direction:ltr; font-weight:800; font-size:13.5px; color: var(--accent-strong); display:inline-flex; align-items:center; gap:5px; }
+  .cpt-num-val svg{ width:13px; height:13px; opacity:.6; }
+  .cpt-activity-col{ flex:0 0 100px; display:flex; justify-content:center; }
+  .cpt-activity{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:700; padding:4px 10px; border-radius: var(--radius-pill); }
+  .cpt-activity .dt{ width:5px; height:5px; border-radius:50%; background:currentColor; }
+  .cpt-activity.high{ color: var(--ok); background: var(--ok-soft); }
+  .cpt-activity.mid{ color: var(--accent-strong); background: var(--accent-soft); }
+  .cpt-activity.low{ color: var(--text-faint); background: var(--surface-2); }
+  .cpt-activity.inactive{ color: var(--danger); background: var(--danger-soft); }
+  .cpt-tagcol{ flex:0 0 90px; display:flex; justify-content:center; }
+  .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; }
+  .cpt-arrow{ color: var(--text-faint); flex:0 0 20px; transition: transform .15s ease, color .15s ease; }
+  .cpt-arrow svg{ width:14px; height:14px; display:block; }
+  @media (max-width:700px){ .cpt-arrow{ display:none; } }
+  .cpt-head-center{ text-align:center; }
+  .cpt-sort-btn{ cursor:pointer; user-select:none; display:inline-flex; align-items:center; gap:3px; transition: color .15s ease; }
+  .cpt-sort-btn.cpt-head-center{ justify-content:center; }
+  .cpt-sort-btn:hover{ color: var(--text); }
+  .cpt-sort-btn.active{ color: var(--text); }
+  .cpt-sort-ind{ font-size:8px; opacity:.3; }
+  .cpt-sort-btn.active .cpt-sort-ind{ opacity:1; }
 
   .toolbar{ display:flex; gap:10px; margin-bottom:18px; flex-wrap:wrap; }
   .toolbar select, .toolbar input{ background: var(--surface); border:1px solid var(--border-strong); color: var(--text); padding:9px 12px; border-radius:8px; font-size:13px; font-family:inherit; }
@@ -562,12 +652,20 @@
   .post-foot .cat{ color: var(--accent-strong); font-weight:600; }
 
   /* اخبار رسمی — بخش مطالعه (فاز ۱، بدون فیلتر/ترجمه‌ی هوشمند) */
-  .news-page-tabs{ display:flex; gap:26px; margin-bottom:22px; }
+  .news-page-tabs{ display:flex; gap:26px; margin-bottom:16px; }
   .news-page-tabs button{ border:none; background:none; color:rgba(255,255,255,0.5); font-size:14px; font-weight:700; padding:11px 2px; cursor:pointer; position:relative; font-family:inherit; }
   .news-page-tabs button.active{ color:#fff; }
   .news-page-tabs button.active::after{ content:''; position:absolute; inset-inline:0; bottom:-1px; height:2px; background:var(--accent); border-radius:2px; }
   .news-page-tabs button:disabled{ cursor:default; opacity:.6; }
   .news-soon{ font-size:9.5px; font-weight:600; color: var(--accent); background: rgba(234,179,147,0.14); border-radius:100px; padding:2px 7px; margin-inline-start:6px; }
+
+  /* زیرنویس توضیحی تب فعال — یه خط کوتاه هدف همون تب رو توضیح می‌ده،
+     با تعویض تب هم عوض می‌شه (نگاه کن به setNewsPageTab و دو هندلر کلیک
+     posts-page-tabs/people-page-tabs) */
+  .news-tab-subtitle{ display:flex; align-items:flex-start; gap:9px; color:rgba(255,255,255,0.58); font-size:13px; line-height:1.9; margin:0 0 26px; max-width:620px; animation:subtitleFade .25s ease; }
+  .news-tab-subtitle::before{ content:''; flex:none; width:2px; align-self:stretch; border-radius:2px; background:linear-gradient(180deg, var(--accent), rgba(234,179,147,0)); margin-top:2px; }
+  .news-tab-subtitle span{ padding-top:1px; }
+  @keyframes subtitleFade{ from{ opacity:0; transform:translateY(-4px); } to{ opacity:1; transform:translateY(0); } }
 
   .news-view-toggle{ display:flex; gap:4px; background: rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.12); padding:4px; border-radius:9px; flex-shrink:0; margin-inline-start:auto; }
   .news-view-toggle button{ border:none; background:none; color: rgba(255,255,255,0.55); padding:8px 10px; border-radius:6px; cursor:pointer; display:flex; align-items:center; justify-content:center; }
@@ -662,7 +760,7 @@
   .news-card{ display:flex; gap:14px; background: var(--surface); border:1px solid var(--border); border-inline-start:3px solid var(--accent); border-radius: var(--radius); padding:16px; box-shadow: var(--shadow); }
   @media (max-width:520px){ .news-card{ flex-direction:column; } }
 
-  /* تب «پرونده ویژه»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
+  /* تب «پرونده‌های موضوعی»: چیدمان سایدباری — موضوعات ستون راست (اولین فرزند
      flex، توی RTL خودکار سمت راست درمیاد)، اخبار موضوعِ انتخاب‌شده توی
      ستون چپ‌ترش. فقط یه موضوع در هر لحظه انتخاب می‌شه (نه هم‌زمان چندتا) */
   .dossier-layout{ display:flex; gap:24px; align-items:flex-start; }
@@ -833,7 +931,7 @@
   .cat-card .cc-actions{ display:flex; align-items:center; gap:8px; }
   .cat-card .count{ font-size:12px; color: var(--accent-strong); font-family: ui-monospace,monospace; font-weight:700; }
 
-  /* پنل مدیریت موضوعات «پرونده ویژه» — کارت هر موضوع + لیست پست‌های منتسب + افزودن دستی */
+  /* پنل مدیریت موضوعات «پرونده‌های موضوعی» — کارت هر موضوع + لیست پست‌های منتسب + افزودن دستی */
   .dossier-topic-card{ background: var(--surface-2); border:1px solid var(--border); border-radius: var(--radius-control); padding:12px 14px; margin-bottom:10px; border-inline-start:3px solid var(--accent); }
   .dossier-topic-card.inactive{ opacity:.55; }
   .dossier-topic-card-head{ display:flex; align-items:center; justify-content:space-between; gap:8px; flex-wrap:wrap; }
@@ -850,6 +948,55 @@
   .dossier-manual-results{ max-height:160px; overflow-y:auto; margin-top:6px; display:flex; flex-direction:column; gap:4px; }
   .dossier-manual-result-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11px; padding:5px 8px; border-radius:6px; background: var(--surface); }
   .dossier-manual-result-row .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+
+  /* ---- تب «خبرنامه مدارس» ---- */
+  .newsletter-download-card{ text-align:center; max-width:420px; margin-inline:auto; }
+  .newsletter-draft-item{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11.5px; padding:6px 0; border-bottom:1px solid var(--border); }
+  .newsletter-draft-item:last-child{ border-bottom:none; }
+  .newsletter-draft-item .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  #newsletter-admin-panel .add-row{ margin-top:10px; }
+  /* #newsletter-print-view فقط یه ظرف مخفیِ staging برای ساخت DOM
+     خبرنامه‌ست (buildNewsletterPrintHtml) — هیچ‌وقت مستقیم نمایش داده
+     نمی‌شه. دانلود دیگه با window.print() نیست: چون Chromium در حالت
+     چاپ هدر position:fixed رو روی صفحات بعدی تکرار نمی‌کنه (محدودیت
+     واقعی موتور چاپ، نه باگ کد ما — با تولید PDF واقعی تست و تأیید شد)،
+     برای گرفتن هدر تکرارشونده‌ی واقعی روی هر صفحه، تولید فایل کامل به
+     jsPDF+html2canvas منتقل شد (downloadNewsletter/buildNewsletterPdf،
+     پایین‌تر): محتوا یک‌بار با html2canvas رندر می‌شه، بر اساس مرز واقعی
+     هر خبر/عنوان (بدون بریدن وسط یک خبر) به تصاویر صفحه‌ای برش می‌خوره،
+     و تصویر هدر روی هر صفحه دوباره چسبونده می‌شه — این‌جوری متن فارسی هم
+     دقیقاً همون‌جوری که مرورگر رندر کرده (RTL/اتصال حروف درست) توی PDF
+     میاد، چون فونت‌های پیش‌فرض jsPDF از حروف فارسی/عربی پشتیبانی نمی‌کنن. */
+  #newsletter-print-view{ display:none; }
+  .newsletter-page{ background:#fff; color:#222; direction:rtl; font-family:inherit; }
+  /* تم روزنامه‌ای (به‌جای هدر کارتی قبلی): یه سربرگ/نیم‌تاج (masthead)
+     کلاسیک روزنامه — عنوان بزرگ وسط‌چین + خط دوتایی ضخیم/نازک زیرش،
+     بالای همه یه ردیف کوچیک (کیکر «نشریه‌ی داخلی» + تاریخ). طبق درخواست
+     کاربر برای جذابیت بصری بیشتر؛ بدون شماره صفحه، طبق تصمیم قبلی کاربر. */
+  /* ⚠️ letter-spacing روی متن فارسی/RTL هیچ‌جای این بخش استفاده نشه —
+     حتی ۰.۵px هم باعث می‌شه html2canvas حروف رو کاملاً به‌هم بریزه (با
+     تست مجزا تأیید شد، جدا از باگ ZWNJ/pre-wrap بالاتر) */
+  .newsletter-masthead{ text-align:center; margin-bottom:22px; }
+  .newsletter-masthead-meta{ display:flex; align-items:center; justify-content:space-between; font-size:10px; color:#8a8a8a; padding-bottom:7px; }
+  .newsletter-masthead-title{ font-size:38px; font-weight:900; color:#16202a; line-height:1.15; margin:2px 0 5px; }
+  .newsletter-masthead-sub{ font-size:11px; color:#8f8f8f; margin-bottom:11px; }
+  .newsletter-masthead-rule{ border-top:3.5px solid #16202a; }
+  .newsletter-masthead-rule::after{ content:''; display:block; border-top:1.25px solid #16202a; margin-top:2.5px; }
+  /* عنوان بخش‌ها به‌شکل «پرچم» روزنامه‌ای: متن وسط با خط از دو طرف،
+     به‌جای نوار رنگی کنارِ قبلی */
+  .newsletter-page-title{ display:flex; align-items:center; gap:12px; margin:0 0 16px; break-after:avoid; }
+  .newsletter-page-title::before, .newsletter-page-title::after{ content:''; flex:1; border-top:1.5px solid #16202a; }
+  .newsletter-page-title span{ font-size:15px; font-weight:800; color:#16202a; white-space:nowrap; }
+  /* دوستونه‌کردن متن با CSS multi-column (نه flex) چون flex زیر چاپ
+     درست صفحه‌بندی نمی‌شه (محتوای زیاد به‌جای ادامه به صفحه‌ی بعد، یا
+     بریده می‌شه یا کل ردیف با هم می‌پره) */
+  .newsletter-flow-columns{ column-count:2; column-gap:28px; column-rule:1px solid #ccc; }
+  .newsletter-item{ margin-bottom:16px; padding-bottom:16px; border-bottom:1px solid #eee; break-inside:avoid; -webkit-column-break-inside:avoid; }
+  .newsletter-item:last-child{ border-bottom:none; }
+  .newsletter-item-title{ font-weight:700; font-size:13px; color:#16202a; line-height:1.5; margin-bottom:6px; }
+  .newsletter-item-num{ color:#c9895e; font-weight:800; }
+  .newsletter-item-text{ font-size:11.5px; line-height:1.9; color:#333; white-space:pre-wrap; text-align:justify; }
+  .newsletter-item-meta{ font-size:9.5px; color:#999; margin-top:6px; }
 
   /* settings: add-forms + editable channel rows */
   .add-row{ display:flex; gap:8px; margin-bottom:14px; flex-wrap:wrap; }
@@ -886,6 +1033,14 @@
   }
   .chan-row-news{ display:inline-flex; align-items:center; gap:5px; font-size:10.5px; font-weight:600; color: var(--text-faint); flex-shrink:0; cursor:pointer; white-space:nowrap; }
   .chan-row-news input{ cursor:pointer; }
+  .chan-row-profile-fields{ min-width:190px; }
+  .chan-row-profile-fields label{ display:flex; flex-direction:column; gap:4px; font-size:10.5px; font-weight:600; color: var(--text-faint); }
+  .chan-row-profile-fields input{ font-size:12px; font-weight:500; font-family:inherit; color: var(--text); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-control); padding:5px 7px; }
+  .chan-row-profile-fields input:focus{ outline:none; border-color: var(--accent); }
+  /* چک‌باکس «طلبه‌ی حوزه‌ی خراسان» با کلاس مشترک chan-row-news داخل همین
+     پنل «پروفایل» هم می‌شینه — باید override بشه، وگرنه قانون ستونی بالا
+     (label{flex-direction:column}) روش هم اعمال می‌شه و چیدمانش می‌شکنه */
+  .chan-row-profile-fields label.chan-row-news{ flex-direction:row; }
   #chan-list{ max-height:360px; overflow-y:auto; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
@@ -967,11 +1122,9 @@
   .basirat-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
   .basirat-poster svg{ width:26%; height:26%; opacity:.5; }
 
-  /* تب «سایر بسته‌های تحلیلی» (ضمیمه جریان) — عیناً همون تصویر نمایشی/جلدِ
-     کارسول صفحه‌ی نخست (.home-poster-cover، aspect-ratio 5/7)، نه
-     .mag-icon کوچیک، طبق خواسته‌ی صریح کاربر که یکسان باشن. کارت هم
-     برخلاف .magazine-card معمولی، قاب/زمینه‌ی سفید نداره — بدون قاب،
-     مستقیم روی بوم تیره (عیناً .home-poster-card صفحه‌ی نخست) چون خودِ
+  /* تب «سایر بسته‌های تحلیلی» (زیرتب «یادداشت‌ها») — یه قاب تصویر جلد بلند
+     (aspect-ratio 5/7) به‌جای .mag-icon کوچیک. کارت هم برخلاف .magazine-card
+     معمولی، قاب/زمینه‌ی سفید نداره — بدون قاب، مستقیم روی بوم تیره چون خودِ
      تصویر جلد کافیه و کارت نیازی به زمینه‌ی روشن نداره؛ رنگ متن‌ها هم به
      همین خاطر روشن شدن (نه رنگ تیره‌ی پیش‌فرض .mag-title/.mag-meta که
      برای زمینه‌ی سفید طراحی شده بودن). */
@@ -1001,94 +1154,13 @@
   .mag-tile-cover svg{ width:32%; height:32%; opacity:.5; }
   .mag-tile-title{ font-size:12px; font-weight:600; color: var(--text); text-align:center; line-height:1.5; }
 
-  /* ویجت «ضمیمه جریان» — تنها ویجت عمومی صفحه‌ی نخست زیر کارت هلویی «بسته
-     تحلیلی جریان». برخلاف .magazine-card (که خودِ زمینه‌ش روشنه)، بدون
-     قاب/پس‌زمینه‌ست (مثل .domain-card)، مستقیم روی بوم تیره. عنوان هم عمداً
-     از .panel-pill (فونت مونواسپیس JetBrains Mono) استفاده نمی‌کنه چون
-     حروف فارسیِ عبارت طولانی رو به‌هم نمی‌چسبونه (bug واقعاً دیده‌شده) —
-     یه h3 ساده با فونت پیش‌فرض سایت. «سایر بسته‌های تحلیلی» (کارسول آرشیو)
-     زیرمجموعه‌ی همین ویجته، نه یه بلوک جدای هم‌سطح (به‌خواست صریح کاربر). */
-  .home-widget-heading{ font-size:14.5px; font-weight:700; color:#fff; margin:0; }
-  .home-widget-desc{ font-size:13px; color: rgba(255,255,255,0.65); margin:7px 0 0; line-height:1.8; }
-  .home-poster-grid{ display:grid; grid-template-columns: repeat(auto-fill, minmax(140px,1fr)); gap:20px; }
-  .home-poster-card{ display:flex; flex-direction:column; gap:10px; cursor:pointer; }
-
-  /* .basirat-widget-block حالا عمودیه: یه ردیف بالا (.basirat-widget-top —
-     ستون باریک عنوان+توضیح سمت راست + ردیف آیکون‌های دسته‌بندی کنارش)، و
-     زیرش تمام‌عرض (لبه‌به‌لبه با بقیه‌ی عرض صفحه، نه فقط عرض ستون آیکون‌ها)
-     کارسول واقعیِ «سایر بسته‌های تحلیلی» با کادر دور خودش. */
-  .basirat-widget-block{ display:flex; flex-direction:column; gap:22px; margin:220px 0 220px; scroll-margin-top: 90px; }
-  .basirat-widget-top{ display:flex; align-items:flex-start; gap:24px; }
-  @media (max-width:760px){ .basirat-widget-top{ flex-direction:column; gap:18px; } }
-  .basirat-widget-info{ flex:0 0 34%; display:flex; flex-direction:column; align-items:flex-start; gap:6px; }
-  @media (max-width:760px){ .basirat-widget-info{ flex:none; } }
-  .basirat-widget-title-row{ display:flex; align-items:center; gap:11px; }
-  .basirat-widget-info .home-widget-heading{ font-size:21px; }
-  .basirat-widget-info .home-widget-desc{ font-size:15.5px; line-height:1.85; }
-  .home-poster-row{ flex:1; min-width:0; width:100%; display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
-  .home-poster-row::-webkit-scrollbar{ display:none; }
-  .home-poster-row .home-poster-card{ flex-shrink:0; width:190px; }
-  .home-poster-cover{ width:100%; aspect-ratio: 5/7; border-radius: var(--radius-control); overflow:hidden; background: var(--surface); border:1px solid var(--border); box-shadow: var(--shadow); display:flex; align-items:center; justify-content:center; color: var(--text-faint); transition: transform .2s ease, box-shadow .2s ease; }
-  .home-poster-cover.is-landscape{ aspect-ratio: 16/9; }
-  .home-poster-cover img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .home-poster-cover svg{ width:26%; height:26%; opacity:.5; }
-  .home-poster-card:hover .home-poster-cover{ transform:translateY(-5px) scale(1.02); box-shadow: var(--shadow-hover); }
-  .home-poster-title{ font-size:13px; font-weight:700; color:#fff; line-height:1.5; }
-
-  /* زیربخش کارسول «سایر بسته‌های تحلیلی» — تمام‌عرض، با کادر و ته‌رنگ
-     گرادیانی هلویی (به‌جای کادر ساده‌ی تخت) برای جذابیت بصری بیشتر؛ به‌جای
-     عنوان و دکمه‌ی «مشاهده‌ی همه» جدا بالای کارسول، همون عنوان+دکمه به‌شکل
-     یه کارتِ عملی (.supp-archive-viewall-card) ته کارسول (سمت چپ، چون
-     RTLه و آخرین فرزند در DOM چپ‌ترین می‌شه) قرار گرفته و با پوسترها
-     هم‌ردیفه. وقتی پوسترهای واقعی زیاد می‌شن، این کارت با اسکرول به چپ
-     می‌رفت زیر لبه‌ی کادر و اصلاً دیده نمی‌شد (باگ واقعاً گزارش‌شده) —
-     به‌همین‌خاطر sticky شده تا همیشه، چه قبل چه بعد از اسکرول، کامل و
-     چسبیده به لبه‌ی چپِ خودِ کادر دیده بشه؛ پس‌زمینه‌ش هم opaque شده تا
-     پوسترهایی که زیرش رد می‌شن دیده نشن. */
-  .supp-archive-block{
-    background: linear-gradient(160deg, rgba(234,179,147,0.08), rgba(255,255,255,0.015));
-    border:1px solid rgba(234,179,147,0.22); border-radius: var(--radius-card); padding:20px 22px;
-    box-shadow: 0 18px 40px -28px rgba(0,0,0,0.6);
-  }
-  .supp-archive-carousel{ display:flex; gap:16px; overflow-x:auto; scroll-behavior:smooth; padding:2px 2px 6px; scrollbar-width:none; }
-  .supp-archive-carousel::-webkit-scrollbar{ display:none; }
-  .supp-archive-carousel .home-poster-card{ flex-shrink:0; width:160px; }
-  .supp-archive-viewall-card{
-    position:sticky; left:0; z-index:2; flex-shrink:0; width:160px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:9px; padding:20px 14px;
-    background: linear-gradient(160deg, rgba(234,179,147,0.24), rgba(234,179,147,0.1)), var(--primary);
-    border:1px solid rgba(234,179,147,0.4); border-radius: var(--radius-control); cursor:pointer;
-    transition: transform .2s ease, background .2s ease, border-color .2s ease;
-  }
-  .supp-archive-viewall-card:hover{ transform:translateY(-5px); background: linear-gradient(160deg, rgba(234,179,147,0.36), rgba(234,179,147,0.14)), var(--primary); border-color: var(--accent); }
-  .supp-archive-viewall-icon{ width:42px; height:42px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center; background: rgba(255,255,255,0.1); color: var(--accent); }
-  .supp-archive-viewall-icon svg{ width:19px; height:19px; }
-  .supp-archive-viewall-label{ font-size:12.5px; font-weight:700; color:#fff; text-align:center; line-height:1.5; }
-  .supp-archive-viewall-cta{ font-size:12px; font-weight:800; color: var(--accent); }
-
-  /* «ضمیمه جریان» عمداً پوستر/عنوان واقعی هر بسته رو نشون نمی‌ده — چند
-     دسته‌ی کلی محتوا (مقالات/ویدئو/صوت/سخنرانی/مصاحبه) رو با آیکون
-     دایره‌ای معرفی می‌کنه (renderBasiratHomeGrid)، مستقل از داده‌ی واقعی
-     BASIRAT_COURSES؛ اون داده همچنان توی تب «بسته‌های آموزش تحلیلی» با
-     پوستر واقعی نمایش داده می‌شه، جای دیگه‌ای دست‌نخورده مونده. */
-  .home-poster-row .supp-icon-card{ flex-shrink:0; width:100px; display:flex; flex-direction:column; align-items:center; gap:10px; cursor:pointer; }
-  .supp-icon-circle{
-    width:74px; height:74px; border-radius:50%; flex-shrink:0; display:flex; align-items:center; justify-content:center;
-    background: linear-gradient(135deg, rgba(234,179,147,0.2), rgba(234,179,147,0.06));
-    border:1px solid rgba(234,179,147,0.35); color: var(--accent);
-    transition: transform .2s ease, background .2s ease;
-  }
-  .supp-icon-circle svg{ width:30px; height:30px; }
-  .supp-icon-card:hover .supp-icon-circle{ transform:translateY(-3px); background: linear-gradient(135deg, rgba(234,179,147,0.3), rgba(234,179,147,0.1)); }
-  .supp-icon-label{ font-size:12.5px; font-weight:700; color:#fff; text-align:center; line-height:1.4; }
-  .home-poster-meta{ font-size:11px; color: rgba(255,255,255,0.55); }
-
   /* کارت همیشه‌نمایان «ثبت نظر و پیشنهاد» — ته صفحه‌ی نخست، قبل از فوتر.
-     برخلاف بقیه‌ی بخش‌های صفحه‌ی نخست (بدون قاب، مستقیم روی بوم تیره)،
-     این یکی مثل .panel سطح روشن داره، چون یه فرم واقعیه نه صرفاً محتوای
-     نمایشی — همون قاعده‌ی «کارت روشن شناور روی بوم تیره» برای فرم/ورودی. */
-  .feedback-card{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius-card); padding:20px 24px; margin:40px auto 0; max-width:640px; box-shadow: var(--shadow); }
-  .feedback-card h3{ font-size:15px; font-weight:800; color: var(--text); margin:0 0 4px; text-align:center; }
-  .feedback-card p{ font-size:12.5px; color: var(--text-dim); margin:0 0 14px; text-align:center; }
+     طبق خواسته‌ی صریح کاربر، مثل .notify-card کناریش قاب/زمینه‌ی روشن
+     نداره — بدون قاب، مستقیم روی بوم تیره؛ فقط خودِ ورودی‌ها (mono
+     نیستن ولی از همون tokenهای var(--surface-2)) یه سطح روشن کوچیک
+     دارن تا قابل‌تشخیص/قابل‌کلیک بمونن، دقیقاً مثل ورودی .notify-card-form. */
+  .feedback-card{ flex:1 1 400px; max-width:440px; box-sizing:border-box; }
+  .feedback-card h3{ font-size:15px; font-weight:800; color:#fff; margin:0; text-align:center; }
   .feedback-form{ display:flex; flex-direction:column; gap:9px; max-width:560px; margin:0 auto; }
   .feedback-form input, .feedback-form textarea{
     font-family:inherit; font-size:13px; padding:9px 13px; border:1px solid var(--border);
@@ -1096,7 +1168,7 @@
   }
   .feedback-form textarea{ min-height:64px; }
   .feedback-form input:focus, .feedback-form textarea:focus{ outline:none; border-color: var(--accent); }
-  .feedback-form button{ align-self:center; margin-top:4px; }
+  .feedback-form button{ align-self:center; margin-top:4px; padding:13px 34px; font-size:14.5px; box-shadow: 0 14px 28px -14px rgba(234,179,147,0.55); }
 
   /* تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌های امروز، همون زبان بصری کاور مجله (mag-tile) */
   .newspaper-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:20px 16px; margin-top:8px; }
@@ -1119,7 +1191,7 @@
       <div class="lv-content">
         <h1>سامانه هوشمند جریان</h1>
         <p>رصد و تحلیل فضای سیاسی اجتماعی<br>به روایت حوزه علمیه خراسان</p>
-        <span class="badge" style="margin-top:16px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;color:var(--accent);border-color:rgba(234,179,147,0.32);background:rgba(234,179,147,0.08);">ویرایش ۴.۰</span>
+        <span class="badge" style="margin-top:16px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;color:var(--accent);border-color:rgba(234,179,147,0.32);background:rgba(234,179,147,0.08);">ویرایش ۵.۱.۱</span>
       </div>
     </div>
     <div class="login-panel">
@@ -1153,25 +1225,28 @@
             <div class="nav-menu-col">
               <div class="nav-menu-toplevel-title">عرصه‌های رصد</div>
 
-              <button class="nav-menu-group-title-btn" onclick="goToNewsTab('study'); closeNavMenu();">اخبار و رویدادها</button>
+              <button class="nav-menu-group-title-btn" onclick="goToNewsTab('analytics'); closeNavMenu();">اخبار و رویدادها</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('analytics'); closeNavMenu();">در یک نگاه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('study'); closeNavMenu();">شبکه‌های اجتماعی</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('website'); closeNavMenu();">وب‌سایت‌ها</button>
               <button class="nav-menu-sub" onclick="goToNewsTab('newspapers'); closeNavMenu();">روزنامه‌ها</button>
-              <button class="nav-menu-sub" onclick="goToNewsTab('claims'); closeNavMenu();">ادعاها و شایعات</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('hawza'); closeNavMenu();">اخبار حوزه</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('dossier'); closeNavMenu();">پرونده‌های موضوعی</button>
+              <button class="nav-menu-sub" onclick="goToNewsTab('newsletter'); closeNavMenu();">خبرنامه مدارس</button>
 
               <button class="nav-menu-group-title-btn" onclick="switchSection('posts'); closeNavMenu();">کنشگری مجازی</button>
               <button class="nav-menu-sub" onclick="switchSection('posts'); closeNavMenu();">پست‌های منتشر شده</button>
 
               <button class="nav-menu-group-title-btn" onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
 
-              <button class="nav-menu-group-title-btn" onclick="switchSection('people'); closeNavMenu();">یادداشت‌ها</button>
+              <button class="nav-menu-group-title-btn" onclick="goToPeopleTab('figures'); closeNavMenu();">یادداشت‌ها</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('figures'); closeNavMenu();">چهره‌های سیاسی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
             </div>
             <div class="nav-menu-col">
               <button class="nav-menu-toplevel-btn" onclick="switchSection('reports'); closeNavMenu();">بسته تحلیلی جریان</button>
-
-              <div class="nav-menu-toplevel-title">ضمیمه جریان</div>
-              <button class="nav-menu-sub" onclick="openSupplementTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
-              <button class="nav-menu-sub" onclick="openSupplementTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
             </div>
           </div>
         </div>
@@ -1259,10 +1334,6 @@
               <h3>بسته‌های تحلیلی</h3>
               <span class="quicknav-arrow">↓</span>
             </div>
-            <div class="quicknav-card" onclick="scrollToSupplementWidget()">
-              <h3>ضمیمه جریان</h3>
-              <span class="quicknav-arrow">↓</span>
-            </div>
           </div>
         </div>
         <img class="dash-hero-img" src="images/dashboard-hero.webp" alt="" />
@@ -1312,16 +1383,21 @@
       <p class="domain-caption">جریان این چهار عرصه را به‌صورت جداگانه رصد و پایش می‌کند: اخبار و رویدادهای خبرگزاری‌ها، کنشگری فضای مجازی، برنامه‌های آموزشی مدارس و یادداشت‌های مربوط به افراد و مجموعه‌های تأثیرگذار. هر عرصه با منبع داده و روش پایش مخصوص به خودش دنبال می‌شود.</p>
 
       <div class="domain-shortcuts">
+        <a onclick="goToNewsTab('analytics')">در یک نگاه</a>
+        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
         <a onclick="goToNewsTab('study')">شبکه‌های اجتماعی</a>
         <a onclick="goToNewsTab('website')">وب‌سایت‌ها</a>
         <a onclick="goToNewsTab('newspapers')">روزنامه‌ها</a>
-        <a onclick="goToNewsTab('claims')">ادعاها و شایعات</a>
-        <a onclick="goToNewsTab('dossier')">پرونده ویژه</a>
-        <span class="domain-shortcut-disabled">خبرخوان مدارس<span class="news-soon">به‌زودی</span></span>
-        <a onclick="switchSection('people')">چهره‌های سیاسی</a>
+        <a onclick="goToNewsTab('hawza')">اخبار حوزه</a>
+        <a onclick="goToNewsTab('dossier')">پرونده‌های موضوعی</a>
+        <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
+        <a onclick="goToPeopleTab('figures')">چهره‌های سیاسی</a>
+        <a onclick="goToPeopleTab('archive')">سایر بسته‌های تحلیلی</a>
+        <a onclick="goToPeopleTab('basirat')">بسته‌های آموزشی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
         <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
-        <a onclick="switchSection('posts')">پست‌های منتشر شده</a>
+        <a onclick="goToPostsTab('feed')">پست‌های منتشر شده</a>
+        <a onclick="goToPostsTab('people')">افراد و مجموعه‌ها</a>
         <span class="domain-shortcut-disabled">آنالیز کنشگری<span class="news-soon">به‌زودی</span></span>
       </div>
 
@@ -1395,43 +1471,30 @@
         </div>
       </div>
 
-      <div class="notify-card">
-        <div class="notify-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 00-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 01-3.46 0"/></svg>
-        </div>
-        <div class="notify-card-text">
-          <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
-          <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
-        </div>
-        <div class="notify-card-form">
-          <input type="tel" id="notify-phone" class="mono" placeholder="09xxxxxxxxx" dir="ltr" maxlength="11" onkeydown="if(event.key==='Enter') subscribeNotify()" />
-          <button type="button" class="btn primary" id="notify-subscribe-btn" onclick="subscribeNotify()">ثبت</button>
-        </div>
-      </div>
-
-      <div class="basirat-widget-block">
-        <div class="basirat-widget-top">
-          <div class="basirat-widget-info">
-            <div class="basirat-widget-title-row">
-              <h3 class="home-widget-heading">ضمیمه جریان</h3>
-            </div>
-            <p class="home-widget-desc">محتوای تکمیلی برای تعمیق عرصه‌های رصد و پایش</p>
+      <div class="home-bottom-row">
+        <div class="notify-card">
+          <div class="notify-card-text">
+            <h3>اطلاع از انتشار بسته تحلیلی جریان</h3>
+            <div class="home-bottom-bar"></div>
+            <p>شماره موبایل خود را ثبت کنید تا هر وقت شماره‌ی جدید «بسته تحلیلی جریان» منتشر شد، پیامک اطلاع‌رسانی برایتان ارسال شود.</p>
           </div>
-          <div class="home-poster-row" id="basirat-grid-home"></div>
+          <div class="notify-card-form">
+            <input type="tel" id="notify-phone" class="mono" placeholder="09xxxxxxxxx" dir="ltr" maxlength="11" onkeydown="if(event.key==='Enter') subscribeNotify()" />
+            <button type="button" class="btn primary" id="notify-subscribe-btn" onclick="subscribeNotify()">ثبت</button>
+          </div>
         </div>
-        <div class="supp-archive-block">
-          <div class="supp-archive-carousel" id="archive-grid-home"></div>
-        </div>
-      </div>
 
-      <div class="feedback-card">
-        <h3>برای بهتر شدن بسته‌های جریان به ما کمک کنید</h3>
-        <p>نظر یا پیشنهاد خود را با ما در میان بگذارید.</p>
-        <form class="feedback-form" onsubmit="submitFeedback(event)">
-          <input type="text" id="feedback-name" placeholder="نام (اختیاری)" />
-          <textarea id="feedback-message" placeholder="نظر یا پیشنهاد خود را بنویسید..." required></textarea>
-          <button type="submit" class="btn primary" id="feedback-submit-btn">ارسال</button>
-        </form>
+        <div class="home-bottom-divider"></div>
+
+        <div class="feedback-card">
+          <h3>برای بهتر شدن بسته‌های جریان به ما کمک کنید</h3>
+          <div class="home-bottom-bar"></div>
+          <form class="feedback-form" onsubmit="submitFeedback(event)">
+            <input type="text" id="feedback-name" placeholder="نام (اختیاری)" />
+            <textarea id="feedback-message" placeholder="نظر یا پیشنهاد خود را بنویسید..." required></textarea>
+            <button type="submit" class="btn primary" id="feedback-submit-btn">ارسال</button>
+          </form>
+        </div>
       </div>
     </section>
 
@@ -1444,9 +1507,11 @@
         <button id="news-tab-study" onclick="setNewsPageTab('study')">شبکه‌های اجتماعی</button>
         <button id="news-tab-website" onclick="setNewsPageTab('website')">وب‌سایت‌ها</button>
         <button id="news-tab-newspapers" onclick="setNewsPageTab('newspapers')">روزنامه‌ها</button>
-        <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده ویژه</button>
-        <button disabled>خبرخوان مدارس<span class="news-soon">به‌زودی</span></button>
+        <button id="news-tab-hawza" onclick="setNewsPageTab('hawza')">اخبار حوزه</button>
+        <button id="news-tab-dossier" onclick="setNewsPageTab('dossier')">پرونده‌های موضوعی</button>
+        <button id="news-tab-newsletter" onclick="setNewsPageTab('newsletter')">خبرنامه مدارس</button>
       </div>
+      <p class="news-tab-subtitle" id="news-tab-subtitle"><span>خلاصه‌ی هوشمند اخبار مهم و موضوعات پرتکرار ۶ ساعت اخیر، تولیدشده با هوش مصنوعی.</span></p>
 
       <div id="news-study-panel" style="display:none;">
         <div class="news-filters">
@@ -1521,7 +1586,7 @@
         <p class="news-empty" id="newspapers-empty" style="display:none;">هنوز روزنامه‌ای دریافت نشده.</p>
       </div>
 
-      <!-- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی که مدیر
+      <!-- تب «پرونده‌های موضوعی» — اخبار مرتبط با موضوعات موقت/چرخشی که مدیر
            تعیین می‌کنه (پنل «مدیریت ← تنظیمات»)؛ منبع همون پست‌های
            show_in_news فعلیه، فقط بر اساس posts.ai_keywords دسته‌بندی
            می‌شه. فقط موضوعات active که حداقل یه پست excluded=false دارن
@@ -1541,7 +1606,51 @@
           <div class="dossier-sidebar" id="dossier-sidebar"></div>
           <div class="dossier-content" id="dossier-groups"></div>
         </div>
-        <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی ویژه‌ای فعال نیست.</p>
+        <p class="news-empty" id="dossier-empty" style="display:none;">فعلاً پرونده‌ی موضوعی فعالی نیست.</p>
+      </div>
+
+      <!-- تب «خبرنامه مدارس» — خبرنامه‌ی قابل‌دانلود (۲ صفحه‌ی A4 چاپی):
+           صفحه‌ی اول «ادعاها و شایعات»، صفحه‌ی دوم دوستونه («شبکه‌های
+           اجتماعی و وب‌سایت‌ها» + «پرونده‌های موضوعی»). بدون آرشیو — فقط یه
+           مجموعه‌ی «فعلیِ منتشرشده» توی newsletter_posts هست؛ مدیر با
+           پیشنهاد خودکار روزانه + تأیید/ویرایش دستی «منتشر»ش می‌کنه. -->
+      <div id="news-newsletter-panel" style="display:none;">
+        <div class="panel newsletter-download-card">
+          <div class="panel-head"><span class="panel-pill">خبرنامه‌ی امروز</span></div>
+          <p id="newsletter-download-status" style="font-size:13px;color:var(--text-dim);margin:0 0 14px;">هنوز خبرنامه‌ای منتشر نشده.</p>
+          <button class="btn primary" id="newsletter-download-btn" onclick="downloadNewsletter()" disabled>دانلود خبرنامه‌ی امروز</button>
+        </div>
+
+        <div id="newsletter-admin-panel" style="display:none;">
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۱ — ادعاها و شایعات</span></div>
+            <div id="newsletter-draft-claims"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('claims', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('claims')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-claims"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون راست) — شبکه‌های اجتماعی و وب‌سایت‌ها</span></div>
+            <div id="newsletter-draft-news"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('news', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('news')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-news"></div>
+          </div>
+          <div class="panel">
+            <div class="panel-head"><span class="panel-pill">صفحه ۲ (ستون چپ) — پرونده‌های موضوعی</span></div>
+            <div id="newsletter-draft-dossier"></div>
+            <div class="add-row">
+              <input type="text" placeholder="جست‌وجوی دستی پست برای افزودن…" oninput="searchNewsletterManualAdd('dossier', this.value)" />
+              <button class="btn" onclick="suggestNewsletterSection('dossier')">پیشنهاد تازه</button>
+            </div>
+            <div class="dossier-manual-results" id="newsletter-manual-results-dossier"></div>
+          </div>
+          <button class="btn primary" onclick="publishNewsletter()">انتشار خبرنامه‌ی امروز</button>
+        </div>
       </div>
 
       <!-- تب «آنالیز» — فقط روی کانال‌های show_in_news با پلتفرم غیر از بله
@@ -1608,35 +1717,93 @@
       </div>
     </section>
 
-    <!-- ===== یادداشت‌ها: فقط «چهره‌های سیاسی» — فید یادداشت‌های کانال‌های
-         تگ‌شده (همون کانال‌های type='person' موجود، فقط اونایی که
-         show_in_people فعاله) — دقیقاً هم‌الگو با فید «کنشگری مجازی»
-         (sec-posts)، بدون تب‌بندی چون این تنها محتوای این بخشه ===== -->
+    <!-- ===== یادداشت‌ها: «چهره‌های سیاسی» (فید یادداشت‌های کانال‌های تگ‌شده،
+         دقیقاً هم‌الگو با فید «کنشگری مجازی») + دو تب منتقل‌شده از بخش قبلاً
+         مستقل «ضمیمه جریان» (سایر بسته‌های تحلیلی / بسته‌های آموزشی) که چون
+         «ضمیمه جریان» دیگه به‌عنوان یه عرصه/بخش مستقل معنا نداشت، طبق تصمیم
+         صریح کاربر به‌عنوان زیرتب همین بخش منتقل شدن ===== -->
     <section class="section" id="sec-people">
-      <div class="news-page-tabs">
-        <button class="active">چهره‌های سیاسی</button>
+      <div class="news-page-tabs" id="people-page-tabs">
+        <button class="active" data-people-tab="figures">چهره‌های سیاسی</button>
+        <button data-people-tab="archive">سایر بسته‌های تحلیلی</button>
+        <button data-people-tab="basirat">بسته‌های آموزشی</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
+      <p class="news-tab-subtitle" id="people-tab-subtitle"><span>یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.</span></p>
 
-      <div class="toolbar">
-        <details class="news-source-details" id="political-figures-source-details">
-          <summary id="political-figures-source-summary">انتخاب کانال‌ها…</summary>
-          <div class="news-source-list" id="political-figures-source-list"></div>
-        </details>
-        <select id="political-figures-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
-        <select id="political-figures-filter-time">
-          <option value="">همه‌ی زمان‌ها</option>
-          <option value="today">امروز</option>
-          <option value="yesterday">دیروز</option>
-          <option value="week">این هفته</option>
-        </select>
-        <div class="news-search-box" id="political-figures-search-box">
-          <input type="text" id="political-figures-search" placeholder="جست‌وجو در متن یادداشت‌ها…" />
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div id="people-tab-figures">
+        <div class="toolbar">
+          <details class="news-source-details" id="political-figures-source-details">
+            <summary id="political-figures-source-summary">انتخاب کانال‌ها…</summary>
+            <div class="news-source-list" id="political-figures-source-list"></div>
+          </details>
+          <select id="political-figures-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
+          <select id="political-figures-filter-time">
+            <option value="">همه‌ی زمان‌ها</option>
+            <option value="today">امروز</option>
+            <option value="yesterday">دیروز</option>
+            <option value="week">این هفته</option>
+          </select>
+          <div class="news-search-box" id="political-figures-search-box">
+            <input type="text" id="political-figures-search" placeholder="جست‌وجو در متن یادداشت‌ها…" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </div>
+        </div>
+        <p class="posts-empty" id="political-figures-empty" style="display:none;">یادداشتی با این فیلتر پیدا نشد.</p>
+        <div class="news-feed grid-view social-tab" id="political-figures-list"></div>
+      </div>
+
+      <div id="people-tab-archive" style="display:none;">
+        <p class="magazines-empty" id="archive-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>
+        <div class="magazine-grid" id="archive-report-grid"></div>
+
+        <div class="panel" id="archive-report-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری تولید تحلیلی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="arc-title" /></div>
+            <div class="field"><label>نهاد تولیدکننده</label><input type="text" id="arc-source-org" /></div>
+            <div class="field"><label>تاریخ انتشار</label><input type="date" id="arc-date" /></div>
+            <div class="field">
+              <label>نوع فایل</label>
+              <select id="arc-file-type">
+                <option value="pdf">PDF</option>
+                <option value="images">چند عکس</option>
+              </select>
+            </div>
+          </div>
+          <div class="field">
+            <label>فایل(ها)</label>
+            <input type="file" id="arc-files" multiple accept=".pdf,image/*" />
+          </div>
+          <div class="field">
+            <label>تصویر جلد (اختیاری)</label>
+            <input type="file" id="arc-cover" accept="image/*" />
+          </div>
+          <button class="btn primary" id="arc-upload-btn" style="margin-top:8px">بارگذاری</button>
         </div>
       </div>
-      <p class="posts-empty" id="political-figures-empty" style="display:none;">یادداشتی با این فیلتر پیدا نشد.</p>
-      <div class="news-feed grid-view social-tab" id="political-figures-list"></div>
+
+      <div id="people-tab-basirat" style="display:none;">
+        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
+        <div class="magazine-grid" id="basirat-grid"></div>
+
+        <div class="panel" id="basirat-upload-panel" style="display:none;">
+          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
+          <div class="form-grid">
+            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
+            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
+          </div>
+          <div class="field">
+            <label>توضیح کوتاه (اختیاری)</label>
+            <input type="text" id="bas-desc" />
+          </div>
+          <div class="field">
+            <label>پوستر (اختیاری)</label>
+            <input type="file" id="bas-poster" accept="image/*" />
+          </div>
+          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
+        </div>
+      </div>
     </section>
 
     <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
@@ -1675,69 +1842,6 @@
 
     </section>
 
-    <!-- ضمیمه جریان — بخش مستقل (نه زیرمجموعه‌ی «بخش تحلیلی») با دو زیرتب:
-         بسته‌های آموزشی (بصیرت) و سایر بسته‌های تحلیلی (آرشیو نهادهای دیگر) -->
-    <section class="section" id="sec-supplement">
-      <div class="panel-head"><span class="panel-pill">ضمیمه جریان</span></div>
-
-      <div class="news-page-tabs" id="supplement-page-tabs">
-        <button class="active" data-supplement-tab="archive">سایر بسته‌های تحلیلی</button>
-        <button data-supplement-tab="basirat">بسته‌های آموزشی</button>
-      </div>
-
-      <div id="supplement-tab-archive">
-        <p class="magazines-empty" id="archive-reports-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>
-        <div class="magazine-grid" id="archive-report-grid"></div>
-
-        <div class="panel" id="archive-report-upload-panel" style="display:none;">
-          <div class="panel-head"><span class="panel-pill">بارگذاری تولید تحلیلی جدید</span></div>
-          <div class="form-grid">
-            <div class="field"><label>عنوان</label><input type="text" id="arc-title" /></div>
-            <div class="field"><label>نهاد تولیدکننده</label><input type="text" id="arc-source-org" /></div>
-            <div class="field"><label>تاریخ انتشار</label><input type="date" id="arc-date" /></div>
-            <div class="field">
-              <label>نوع فایل</label>
-              <select id="arc-file-type">
-                <option value="pdf">PDF</option>
-                <option value="images">چند عکس</option>
-              </select>
-            </div>
-          </div>
-          <div class="field">
-            <label>فایل(ها)</label>
-            <input type="file" id="arc-files" multiple accept=".pdf,image/*" />
-          </div>
-          <div class="field">
-            <label>تصویر جلد (اختیاری)</label>
-            <input type="file" id="arc-cover" accept="image/*" />
-          </div>
-          <button class="btn primary" id="arc-upload-btn" style="margin-top:8px">بارگذاری</button>
-        </div>
-      </div>
-
-      <div id="supplement-tab-basirat" style="display:none;">
-        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
-        <div class="magazine-grid" id="basirat-grid"></div>
-
-        <div class="panel" id="basirat-upload-panel" style="display:none;">
-          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
-          <div class="form-grid">
-            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
-            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
-          </div>
-          <div class="field">
-            <label>توضیح کوتاه (اختیاری)</label>
-            <input type="text" id="bas-desc" />
-          </div>
-          <div class="field">
-            <label>پوستر (اختیاری)</label>
-            <input type="file" id="bas-poster" accept="image/*" />
-          </div>
-          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
-        </div>
-      </div>
-    </section>
-
     <!-- CHANNELS & PEOPLE (full monitored-channel directory) -->
     <section class="section" id="sec-channels">
       <div class="panel-head"><span class="panel-pill">همه‌ی کانال‌ها و مدیران آن‌ها</span></div>
@@ -1746,35 +1850,65 @@
 
     <!-- POSTS (dedicated reading page) -->
     <section class="section" id="sec-posts">
-      <div class="news-page-tabs">
-        <button class="active">پست‌های منتشر شده</button>
+      <div class="news-page-tabs" id="posts-page-tabs">
+        <button class="active" data-posts-tab="feed">پست‌های منتشر شده</button>
+        <button data-posts-tab="people">افراد و مجموعه‌ها</button>
         <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
       </div>
+      <p class="news-tab-subtitle" id="posts-tab-subtitle"><span>پست‌های منتشرشده‌ی کانال‌های کنشگر فضای مجازی، قابل‌فیلتر بر اساس کانال، دسته و زمان.</span></p>
 
-      <div class="toolbar">
-        <details class="news-source-details" id="posts-source-details">
-          <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
-          <div class="news-source-list" id="posts-source-list"></div>
-        </details>
-        <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
-        <select id="posts-filter-time">
-          <option value="">همه‌ی زمان‌ها</option>
-          <option value="today">امروز</option>
-          <option value="yesterday">دیروز</option>
-          <option value="week">این هفته</option>
-        </select>
-        <div class="news-search-box" id="posts-search-box">
-          <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      <div id="posts-tab-feed">
+        <div class="news-seg" id="posts-group-seg" style="margin-bottom:14px">
+          <button class="active" data-g="">همه</button>
+          <button data-g="khorasan">طلاب خراسان</button>
+          <button data-g="other">سایر کنشگران</button>
         </div>
-        <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
-          جستجوی هوشمند
-          <span class="sw"></span>
+        <div class="toolbar">
+          <details class="news-source-details" id="posts-source-details">
+            <summary id="posts-source-summary">انتخاب کانال‌ها…</summary>
+            <div class="news-source-list" id="posts-source-list"></div>
+          </details>
+          <select id="posts-filter-cat"><option value="">همه‌ی دسته‌بندی‌ها</option></select>
+          <select id="posts-filter-time">
+            <option value="">همه‌ی زمان‌ها</option>
+            <option value="today">امروز</option>
+            <option value="yesterday">دیروز</option>
+            <option value="week">این هفته</option>
+          </select>
+          <div class="news-search-box" id="posts-search-box">
+            <input type="text" id="posts-search" placeholder="جست‌وجو در متن پست‌ها…" />
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          </div>
+          <div class="news-smart-toggle" title="جستجوی هوشمند — به‌زودی">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3l1.9 4.6L18 9l-4.1 1.4L12 15l-1.9-4.6L6 9l4.1-1.4L12 3z"/><path d="M19 15l.9 2.1L22 18l-2.1.9L19 21l-.9-2.1L16 18l2.1-.9L19 15z"/></svg>
+            جستجوی هوشمند
+            <span class="sw"></span>
+          </div>
+        </div>
+        <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
+        <div class="news-feed grid-view social-tab" id="posts-list"></div>
+      </div>
+
+      <div id="posts-tab-people" style="display:none;">
+        <div class="news-seg" id="cyber-people-group-seg" style="margin-bottom:14px">
+          <button class="active" data-g="">همه</button>
+          <button data-g="khorasan">طلاب خراسان</button>
+          <button data-g="other">سایر کنشگران</button>
+        </div>
+        <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
+        <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
+          <div class="cpt-head" id="cyber-people-head">
+            <span class="cpt-sort-btn cpt-head-center" data-sort="name" style="flex:1.5 1 140px">نام کانال<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn" data-sort="platform" style="flex:0 0 128px">بستر فعالیت<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn" data-sort="owner" style="flex:1.2 1 120px;margin-inline-start:14px">صاحب کانال<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="subscribers" style="flex:0 0 90px">مخاطب<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="activity" style="flex:0 0 100px">فعالیت<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="category" style="flex:0 0 90px">موضوع<span class="cpt-sort-ind"></span></span>
+            <span style="flex:0 0 20px"></span>
+          </div>
+          <div id="cyber-people-grid"></div>
         </div>
       </div>
-      <p class="posts-empty" id="posts-empty" style="display:none;">پستی با این فیلتر پیدا نشد.</p>
-      <div class="news-feed grid-view social-tab" id="posts-list"></div>
     </section>
 
     <!-- ANALYTICS (with AI merged in as a sub-tab) -->
@@ -1886,8 +2020,8 @@
             <div class="cat-grid" id="topic-grid"></div>
           </div>
           <div class="panel">
-            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده ویژه»</span></div>
-            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده ویژه» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
+            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></div>
+            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده‌های موضوعی» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
             <div class="add-row">
               <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
               <input type="text" id="new-dossier-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
@@ -1939,6 +2073,7 @@
         <div class="app-footer-brand">
           <b class="app-footer-title">سامانه هوشمند جریان</b>
           <span class="app-footer-tagline">رصد و تحلیل فضای سیاسی‌اجتماعی</span>
+          <small>ویرایش ۵.۱.۱</small>
         </div>
         <div class="app-footer-org">
           <div class="afo-item">
@@ -1961,6 +2096,14 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
+<!-- محتوای خبرنامه‌ی مدارس برای چاپ (Ctrl+P → ذخیره PDF) — عمداً به‌عنوان
+     فرزند مستقیم body قرار گرفته (نه داخل تب/پنلش)، تا قانون CSS چاپ زیر
+     بتونه با یه انتخاب‌گر ساده («همه‌چیز به‌جز این رو مخفی کن») کل بقیه‌ی
+     برنامه (که چندلایه تو دیو دیگه‌ست) رو نادیده بگیره؛ اگه اینجا تودرتو
+     می‌موند، مخفی‌کردن درست بقیه‌ی برنامه با visibility/position پیچیده و
+     شکننده می‌شد -->
+<div id="newsletter-print-view"></div>
+
 <!-- برای انیمیشن شمارش اعداد در پنل آماری هرو صفحه‌ی نخست -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
 <!-- برای نمودارهای تب «آنالیز» بخش «اخبار و رویدادها». عمداً از CDN نمی‌گیریمش
@@ -1969,6 +2112,11 @@
      ردیابی/آنالیز تبلیغاتیه)، حتی اگه از یه CDN معتبر مثل cdnjs بیاد. فایل
      محلی از همون دامنه‌ی خودِ سایت لود می‌شه، پس این مشکل رو نداره. -->
 <script src="vendor/chart.min.js"></script>
+<!-- برای تولید واقعی فایل PDF «خبرنامه مدارس» (نه چاپ مرورگر) — رندر
+     صفحه به تصویر (html2canvas) + مونتاژ صفحات A4 (jsPDF). محلی وندور
+     شده، نه از CDN، هم‌الگو با chart.min.js بالا. -->
+<script src="vendor/html2canvas.min.js"></script>
+<script src="vendor/jspdf.umd.min.js"></script>
 <script>
   // ambient dot-field — quiet tactile backdrop, paused under reduced-motion
   (function(){
@@ -2016,7 +2164,9 @@
     audio: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><rect x="2.5" y="13" width="5" height="7" rx="2"/><rect x="16.5" y="13" width="5" height="7" rx="2"/></svg>',
     mic: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0 0 14 0"/><path d="M12 18v4M9 22h6"/></svg>',
     interview: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.5 8.5 0 0 1-8.5 8.5c-1.4 0-2.7-.3-3.9-.9L3 20l1-4.9A8.4 8.4 0 0 1 3 11.5 8.5 8.5 0 0 1 12.5 3 8.5 8.5 0 0 1 21 11.5z"/></svg>',
-    newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v13a3 3 0 0 0 3 3H7a3 3 0 0 1-3-3V4z"/><path d="M17 8h3v9a3 3 0 0 1-3 3"/><path d="M7.5 8h6M7.5 11h6M7.5 14h4"/></svg>'
+    newspaper: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h13v13a3 3 0 0 0 3 3H7a3 3 0 0 1-3-3V4z"/><path d="M17 8h3v9a3 3 0 0 1-3 3"/><path d="M7.5 8h6M7.5 11h6M7.5 14h4"/></svg>',
+    userLine: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6.5 7-6.5s7 2.5 7 6.5"/></svg>',
+    users: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"/><path d="M2.5 19c0-3.3 2.8-5.6 6.5-5.6s6.5 2.3 6.5 5.6"/><path d="M16 8.2a3 3 0 1 1 1.2 5.7"/><path d="M18 13.6c2.6.6 3.5 2.6 3.5 4.7"/></svg>'
   };
 
   // ---- auth (real Supabase/PostgREST backend) ----
@@ -2211,7 +2361,7 @@
     closeDeleteChannelModal();
     await api('/channels?id=eq.'+ch.id, {method:'DELETE'});
     await loadChannels(); await loadPosts();
-    renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts();
+    renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderCyberPeopleGrid();
   });
 
   function show(id){ document.querySelectorAll('.view').forEach(v=>v.classList.remove('active')); document.getElementById(id).classList.add('active'); }
@@ -2230,7 +2380,6 @@
     schools: 'برنامه مدارس',
     people: 'یادداشت‌ها',
     reports: 'بخش تحلیلی',
-    supplement: 'ضمیمه جریان',
     export: 'خروجی‌گیری',
     settings: 'کاربران و تنظیمات',
     feedback: 'نظرات کاربران',
@@ -2250,7 +2399,7 @@
     // می‌شه و دکمه‌ی «نمایش بیشتر» غلط مخفی می‌مونه. با ری‌رندر همین‌جا (که
     // بخش دیگه واقعاً دیده می‌شه) اندازه‌گیری سرریز درست انجام می‌شه.
     if(key === 'overview'){ renderNewsFeed(); renderNewsAnalytics(); }
-    if(key === 'posts') renderPosts();
+    if(key === 'posts'){ renderPosts(); renderCyberPeopleGrid(); }
     if(key === 'feedback') loadFeedbackList().then(renderFeedbackList);
     if(key === 'export') loadNotifySubscribers().then(renderNotifySubscribers);
   }
@@ -2260,25 +2409,64 @@
     switchSection('overview');
     setNewsPageTab(tab);
   }
+  function goToPostsTab(tab){
+    switchSection('posts');
+    const tabBtn = document.querySelector('#posts-page-tabs button[data-posts-tab="'+tab+'"]');
+    if(tabBtn) tabBtn.click();
+  }
+  function goToPeopleTab(tab){
+    switchSection('people');
+    const tabBtn = document.querySelector('#people-page-tabs button[data-people-tab="'+tab+'"]');
+    if(tabBtn) tabBtn.click();
+  }
+  // متن زیرنویس هر تب (سه گروه: اخبار و رویدادها / کنشگری مجازی / یادداشت‌ها)
+  // — یه خط کوتاه هدف همون تب رو توضیح می‌ده؛ در setNewsPageTab و دو هندلر
+  // کلیک posts-page-tabs/people-page-tabs مصرف می‌شه
+  const NEWS_TAB_INFO = {
+    analytics: 'خلاصه‌ی هوشمند اخبار مهم و موضوعات پرتکرار ۶ ساعت اخیر، تولیدشده با هوش مصنوعی.',
+    claims: 'ادعاها و شایعات منتشرشده در کانال «رصد شایعات» پیام‌رسان بله.',
+    study: 'پست‌های کانال‌های ایتا و تلگرامی که در بخش «اخبار و رویدادها» دنبال می‌شوند.',
+    website: 'مقالات سایت‌های خبری رسمی، با امکان جست‌وجوی موضوعی و ترجمه‌ی خودکار.',
+    hawza: 'مقالات سایت‌های خبری اختصاصی حوزه‌ی علمیه.',
+    newspapers: 'صفحه‌ی اول روزنامه‌های کشور، جمع‌آوری‌شده‌ی روزانه از کیوسک مطبوعات.',
+    dossier: 'اخبار مرتبط با چند موضوع خاص و موقت، گروه‌بندی‌شده بر اساس کلیدواژه.',
+    newsletter: 'خبرنامه‌ی روزانه‌ی قابل‌دانلود، متشکل از اخبار منتخب مدیر سامانه.'
+  };
+  const POSTS_TAB_INFO = {
+    feed: 'پست‌های منتشرشده‌ی کانال‌های کنشگر فضای مجازی، قابل‌فیلتر بر اساس کانال، دسته و زمان.',
+    people: 'فهرست کانال‌های کنشگر به‌همراه صاحب کانال، تعداد مخاطب و سطح فعالیت هرکدام.'
+  };
+  const PEOPLE_TAB_INFO = {
+    figures: 'یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.',
+    archive: 'تولیدات تحلیلی سایر نهادها، جدا از بسته‌های تحلیلی خودِ جریان.',
+    basirat: 'بسته‌های آموزشی مدرسه‌ی مجازی بصیرت، با لینک مستقیم به دوره.'
+  };
+
   function setNewsPageTab(tab){
+    const subEl = document.getElementById('news-tab-subtitle');
+    if(subEl) subEl.querySelector('span').textContent = NEWS_TAB_INFO[tab] || '';
     document.getElementById('news-tab-study').classList.toggle('active', tab==='study');
     document.getElementById('news-tab-website').classList.toggle('active', tab==='website');
+    document.getElementById('news-tab-hawza').classList.toggle('active', tab==='hawza');
     document.getElementById('news-tab-claims').classList.toggle('active', tab==='claims');
     document.getElementById('news-tab-newspapers').classList.toggle('active', tab==='newspapers');
     document.getElementById('news-tab-analytics').classList.toggle('active', tab==='analytics');
     document.getElementById('news-tab-dossier').classList.toggle('active', tab==='dossier');
+    document.getElementById('news-tab-newsletter').classList.toggle('active', tab==='newsletter');
     document.getElementById('news-feed').classList.toggle('social-tab', tab==='study');
-    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها» و «ادعاها و شایعات» یه پنل مشترک
-    // (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی یکسان به اشتراک
-    // می‌ذارن — فقط newsState.platform عوض می‌شه که newsChannels() بر
-    // اساسش کانال‌های پیام‌رسان/وب‌سایت/بله رو برگردونه
-    const showStudy = tab==='study' || tab==='website' || tab==='claims';
+    // «شبکه‌های اجتماعی»، «وب‌سایت‌ها»، «اخبار حوزه» و «ادعاها و شایعات»
+    // یه پنل مشترک (news-study-panel) رو با فیلترها/جست‌وجو/صفحه‌بندی
+    // یکسان به اشتراک می‌ذارن — فقط newsState.platform عوض می‌شه که
+    // newsChannels() بر اساسش کانال‌های پیام‌رسان/وب‌سایت/حوزه/بله رو
+    // برمی‌گردونه
+    const showStudy = tab==='study' || tab==='website' || tab==='hawza' || tab==='claims';
     document.getElementById('news-study-panel').style.display = showStudy ? '' : 'none';
     document.getElementById('news-newspapers-panel').style.display = tab==='newspapers' ? '' : 'none';
     document.getElementById('news-analytics-panel').style.display = tab==='analytics' ? '' : 'none';
     document.getElementById('news-dossier-panel').style.display = tab==='dossier' ? '' : 'none';
+    document.getElementById('news-newsletter-panel').style.display = tab==='newsletter' ? '' : 'none';
     if(showStudy){
-      newsState.platform = tab==='website' ? 'website' : tab==='claims' ? 'claims' : 'social';
+      newsState.platform = tab==='website' ? 'website' : tab==='hawza' ? 'hawza' : tab==='claims' ? 'claims' : 'social';
       newsState.page = 1;
       // تب «ادعاها و شایعات» فقط یه منبع (کانال بله) داره — فیلتر منطقه و
       // دراپ‌داون چندانتخابی رسانه‌ها بی‌معنیه، پس مخفی می‌شن
@@ -2293,6 +2481,7 @@
     if(tab==='newspapers') renderNewspapers();
     if(tab==='analytics') renderNewsAnalytics();
     if(tab==='dossier') renderDossierTab();
+    if(tab==='newsletter') renderNewsletterTab();
   }
 
   // ---- real data state ----
@@ -2300,8 +2489,10 @@
   let CATEGORIES = [];  // {id, name, color}
   let REGIONS = [];     // {id, name}
   let NEWS_TOPICS = []; // {id, name, keywords, sort_order} — موضوعات جستجوی ذخیره‌شده («اخبار رسمی»)
-  let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده ویژه»
+  let DOSSIER_TOPICS = []; // {id, name, keywords, active, sort_order} — موضوعات موقت «پرونده‌های موضوعی»
   let DOSSIER_TOPIC_POSTS = []; // {id, topic_id, post_id, source, excluded} — پست‌های منتسب به هر موضوع
+  let NEWSLETTER_POSTS = []; // {id, section, post_id, sort_order, posts:{...}} — مجموعه‌ی فعلیِ منتشرشده‌ی «خبرنامه مدارس» (بدون آرشیو)؛ posts رکورد کامل پست embedشده‌ست (نه فقط id) چون POSTS_CACHE سقف ۱۰۰۰تایی داره و پست‌های ادعا/شایعه (کمیاب‌تر) زود ازش بیرون می‌افتن — نگاه کن به buildNewsletterPrintHtml
+  let NEWSLETTER_DRAFT = { claims: [], news: [], dossier: [] }; // پیش‌نویس در‌حال‌ویرایش مدیر (فقط حافظه، تا «انتشار» زده نشه ذخیره نمی‌شه)
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
@@ -2342,12 +2533,15 @@
   };
   const newsState = { region: '', time: 'all', sources: [], query: '', page: 1, dateFrom: '', dateTo: '', platform: 'social' };
 
-  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری RSS،
+  // platform: 'social' = پیام‌رسان‌ها (ایتا/تلگرام)، 'website' = سایت‌های خبری عمومی،
+  // 'hawza' = سایت‌های خبری اختصاصی حوزه (هم platform=website ولی show_in_hawza=true،
+  // برای همین از سطل 'website' مستثنا می‌شن تا دوبار نمایش داده نشن)،
   // 'claims' = کانال بله «ادعاها و شایعات»
   function newsChannels(){
     return CHANNELS.filter(c => {
       if(!c.show_in_news) return false;
-      if(newsState.platform === 'website') return c.platform === 'website';
+      if(newsState.platform === 'website') return c.platform === 'website' && !c.show_in_hawza;
+      if(newsState.platform === 'hawza') return c.platform === 'website' && !!c.show_in_hawza;
       if(newsState.platform === 'claims') return c.platform === 'bale';
       return c.platform !== 'website' && c.platform !== 'bale';
     });
@@ -2429,9 +2623,13 @@
   }
 
   function filteredNewsPosts(){
-    const now = Date.now();
     return newsPosts().filter(p=>{
       const ch = chById(p.channel_id);
+      // تب «اخبار حوزه»: فقط پست‌هایی که هوش مصنوعی صریحاً سیاسی/اجتماعی
+      // تشخیص داده (posts.hawza_relevant===true) نشون داده می‌شن — پست‌های
+      // تازه‌ی هنوز-بررسی‌نشده (NULL) و پست‌های غیرسیاسی/غیراجتماعی (false)
+      // هر دو مخفی می‌مونن؛ نگاه کن به Edge Function extract-post-keywords
+      if(newsState.platform === 'hawza' && p.hawza_relevant !== true) return false;
       if(newsState.region && String(ch.region_id) !== newsState.region) return false;
       if(newsState.sources.length && !newsState.sources.includes(String(p.channel_id))) return false;
       if(newsState.time === 'custom'){
@@ -2439,11 +2637,12 @@
         if(newsState.dateFrom && postedMs < new Date(newsState.dateFrom+'T00:00:00').getTime()) return false;
         if(newsState.dateTo && postedMs > new Date(newsState.dateTo+'T23:59:59').getTime()) return false;
       }else if(newsState.time !== 'all'){
-        const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
-        const diffDays = (now - posted) / 86400000;
-        if(newsState.time === 'today' && diffDays > 1) return false;
-        if(newsState.time === 'yesterday' && (diffDays < 1 || diffDays > 2)) return false;
-        if(newsState.time === 'week' && diffDays > 7) return false;
+        // نیمه‌شب تقویمی تهران، نه فاصله‌ی خام از همین لحظه — تابع
+        // tehranDayDiff رو ببین (کنار iranTodayStartMs)
+        const diffDays = tehranDayDiff(p.posted_at || p.scraped_at);
+        if(newsState.time === 'today' && diffDays !== 0) return false;
+        if(newsState.time === 'yesterday' && diffDays !== 1) return false;
+        if(newsState.time === 'week' && (diffDays < 0 || diffDays > 6)) return false;
       }
       if(newsState.query){
         // یه موضوعِ ذخیره‌شده چندتا کلیدواژه‌ی جدا با ویرگول می‌فرسته — این‌ها
@@ -2541,12 +2740,12 @@
     }
   }
 
-  // ---- تب «پرونده ویژه» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
+  // ---- تب «پرونده‌های موضوعی» — اخبار مرتبط با موضوعات موقت/چرخشی، دسته‌بندی‌شده
   // بر اساس dossier_topic_posts (فقط موضوعات active، فقط excluded=false) ----
-  // فیلتر «بازه‌ی زمانی» عیناً همون منطق filteredNewsPosts() (رولینگ
-  // ۲۴/۴۸/۱۶۸ ساعته، نه از نیمه‌شب) رو برای یکدستی با بقیه‌ی فیدها تکرار
-  // می‌کنه. طبق نظر کاربر، چیدمان سایدباریه: موضوعات ستون راست زیر هم،
-  // فقط یکی در هر لحظه انتخاب/نمایش داده می‌شه (نه accordion چندبازِ قبلی)
+  // فیلتر «بازه‌ی زمانی» از نیمه‌شب تقویمی تهران حساب می‌شه (tehranDayDiff،
+  // کنار iranTodayStartMs) — نه فاصله‌ی خام از همین لحظه. طبق نظر کاربر،
+  // چیدمان سایدباریه: موضوعات ستون راست زیر هم، فقط یکی در هر لحظه
+  // انتخاب/نمایش داده می‌شه (نه accordion چندبازِ قبلی)
   let dossierState = { time: 'all', topicId: null };
 
   function renderDossierTab(){
@@ -2554,17 +2753,15 @@
     const wrap = document.getElementById('dossier-groups');
     const empty = document.getElementById('dossier-empty');
     if(!wrap || !sidebar) return;
-    const now = Date.now();
     const groups = DOSSIER_TOPICS.filter(t=>t.active).map(t=>{
       const postIds = DOSSIER_TOPIC_POSTS.filter(dp=>dp.topic_id===t.id && !dp.excluded).map(dp=>dp.post_id);
       let posts = postIds.map(id=>POSTS_CACHE.find(p=>p.id===id)).filter(Boolean);
       if(dossierState.time !== 'all'){
         posts = posts.filter(p=>{
-          const posted = p.posted_at ? new Date(p.posted_at).getTime() : (p.scraped_at ? new Date(p.scraped_at).getTime() : 0);
-          const diffDays = (now - posted) / 86400000;
-          if(dossierState.time === 'today') return diffDays <= 1;
-          if(dossierState.time === 'yesterday') return diffDays >= 1 && diffDays <= 2;
-          if(dossierState.time === 'week') return diffDays <= 7;
+          const diffDays = tehranDayDiff(p.posted_at || p.scraped_at);
+          if(dossierState.time === 'today') return diffDays === 0;
+          if(dossierState.time === 'yesterday') return diffDays === 1;
+          if(dossierState.time === 'week') return diffDays >= 0 && diffDays <= 6;
           return true;
         });
       }
@@ -2595,7 +2792,7 @@
     }
   }
 
-  // کارت خبر «پرونده ویژه» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
+  // کارت خبر «پرونده‌های موضوعی» — با دکمه‌ی «نمایش بیشتر» مثل فید اصلی، ولی چون
   // این پنل هم‌زمان با فیدهای دیگه توی DOM می‌مونه (فقط display:none
   // می‌شه) و چون یه پست می‌تونه هم‌زمان زیر چند موضوع مختلف هم ظاهر بشه،
   // idهای تعاملی (متن/دکمه) با ترکیب topicId-postId ساخته می‌شن، نه فقط
@@ -2655,6 +2852,326 @@
       const overflowing = textEl.scrollHeight > textEl.clientHeight + 1;
       moreBtn.style.display = overflowing ? '' : 'none';
     });
+  }
+
+  // ---- تب «خبرنامه مدارس» — خبرنامه‌ی قابل‌دانلود (چاپی، A4)، بدون
+  // آرشیو: newsletter_posts همیشه فقط مجموعه‌ی «فعلیِ منتشرشده»‌ست. هر
+  // بار مدیر پنل رو باز می‌کنه، برای هر بخش یه پیش‌نویس محلی
+  // (NEWSLETTER_DRAFT) از روی مجموعه‌ی منتشرشده (یا اگه چیزی منتشر
+  // نشده، از یه پیشنهاد خودکار جدیدترین‌ها) ساخته می‌شه؛ تا وقتی
+  // «انتشار» نزنه، هیچ‌چیز توی دیتابیس تغییر نمی‌کنه.
+  const NEWSLETTER_SUGGEST_LIMIT = { claims: 5, news: 8, dossier: 6 };
+
+  function newsletterCandidatePosts(section){
+    if(section === 'claims'){
+      const ids = new Set(CHANNELS.filter(c=>c.platform==='bale').map(c=>c.id));
+      return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
+    }
+    if(section === 'news'){
+      const ids = new Set(CHANNELS.filter(c=>c.show_in_news && c.platform!=='bale').map(c=>c.id));
+      return POSTS_CACHE.filter(p=>ids.has(p.channel_id));
+    }
+    // dossier: از پست‌های واقعاً منتسب به موضوعات فعال «پرونده‌های موضوعی» (excluded=false)
+    const activeTopicIds = new Set(DOSSIER_TOPICS.filter(t=>t.active).map(t=>t.id));
+    const postIds = new Set(DOSSIER_TOPIC_POSTS.filter(dp=>!dp.excluded && activeTopicIds.has(dp.topic_id)).map(dp=>dp.post_id));
+    return POSTS_CACHE.filter(p=>postIds.has(p.id));
+  }
+
+  function suggestNewsletterPostIds(section){
+    return newsletterCandidatePosts(section)
+      .sort((a,b)=> new Date(b.posted_at||b.scraped_at) - new Date(a.posted_at||a.scraped_at))
+      .slice(0, NEWSLETTER_SUGGEST_LIMIT[section])
+      .map(p=>p.id);
+  }
+
+  function initNewsletterDraft(){
+    ['claims','news','dossier'].forEach(section=>{
+      const published = NEWSLETTER_POSTS.filter(np=>np.section===section).sort((a,b)=>a.sort_order-b.sort_order).map(np=>np.post_id);
+      NEWSLETTER_DRAFT[section] = published.length ? published.slice() : suggestNewsletterPostIds(section);
+    });
+  }
+
+  function renderNewsletterTab(){
+    const statusEl = document.getElementById('newsletter-download-status');
+    const downloadBtn = document.getElementById('newsletter-download-btn');
+    if(NEWSLETTER_POSTS.length){
+      statusEl.textContent = 'خبرنامه‌ی امروز آماده‌ی دانلوده.';
+      downloadBtn.disabled = false;
+    }else{
+      statusEl.textContent = 'هنوز خبرنامه‌ای منتشر نشده.';
+      downloadBtn.disabled = true;
+    }
+    const isAdmin = currentRole === 'app_admin';
+    document.getElementById('newsletter-admin-panel').style.display = isAdmin ? '' : 'none';
+    if(isAdmin){
+      initNewsletterDraft();
+      renderNewsletterAdminPanel();
+    }
+  }
+
+  function newsletterDraftLabel(postId){
+    const p = POSTS_CACHE.find(x=>x.id===postId);
+    if(!p) return 'پست #'+postId+' (حذف‌شده)';
+    return p.title || (p.text||'').slice(0,60) || ('پست #'+p.id);
+  }
+
+  function renderNewsletterAdminPanel(){
+    ['claims','news','dossier'].forEach(section=>{
+      const wrap = document.getElementById('newsletter-draft-'+section);
+      if(!wrap) return;
+      const ids = NEWSLETTER_DRAFT[section];
+      wrap.innerHTML = ids.length ? ids.map(id=>`
+        <div class="newsletter-draft-item">
+          <span class="txt">${escAttr(newsletterDraftLabel(id))}</span>
+          <button class="del-btn" style="min-width:24px;min-height:24px;font-size:11px;" title="حذف از خبرنامه" onclick="removeNewsletterDraftItem('${section}', ${id})">✕</button>
+        </div>`).join('') : '<p class="dossier-topic-empty">خبری انتخاب نشده.</p>';
+    });
+  }
+
+  function removeNewsletterDraftItem(section, postId){
+    NEWSLETTER_DRAFT[section] = NEWSLETTER_DRAFT[section].filter(id=>id!==postId);
+    renderNewsletterAdminPanel();
+  }
+
+  function suggestNewsletterSection(section){
+    NEWSLETTER_DRAFT[section] = suggestNewsletterPostIds(section);
+    renderNewsletterAdminPanel();
+  }
+
+  function searchNewsletterManualAdd(section, query){
+    const resultsEl = document.getElementById('newsletter-manual-results-'+section);
+    if(!resultsEl) return;
+    query = (query||'').trim();
+    if(query.length < 2){ resultsEl.innerHTML=''; return; }
+    const already = new Set(NEWSLETTER_DRAFT[section]);
+    const matches = POSTS_CACHE.filter(p=> !already.has(p.id) && ((p.title||'').includes(query) || (p.text||'').includes(query))).slice(0,8);
+    resultsEl.innerHTML = matches.length ? matches.map(p=>{
+      const label = p.title || (p.text||'').slice(0,60) || ('پست #'+p.id);
+      return `<div class="dossier-manual-result-row"><span class="txt">${escAttr(label)}</span><button class="btn" style="padding:2px 8px;font-size:10.5px;" onclick="addNewsletterManualPost('${section}', ${p.id})">افزودن</button></div>`;
+    }).join('') : '<p class="dossier-topic-empty">موردی پیدا نشد.</p>';
+  }
+
+  function addNewsletterManualPost(section, postId){
+    if(!NEWSLETTER_DRAFT[section].includes(postId)) NEWSLETTER_DRAFT[section].push(postId);
+    document.getElementById('newsletter-manual-results-'+section).innerHTML = '';
+    renderNewsletterAdminPanel();
+  }
+
+  // «انتشار» = جایگزینی کامل (نه insert اضافه‌شونده) — طبق تصمیم کاربر
+  // این جدول آرشیو نداره، همیشه فقط مجموعه‌ی «فعلی» رو نشون می‌ده
+  async function publishNewsletter(){
+    await api('/newsletter_posts?id=gt.0', {method:'DELETE'});
+    const rows = [];
+    ['claims','news','dossier'].forEach(section=>{
+      NEWSLETTER_DRAFT[section].forEach((postId, idx)=> rows.push({section, post_id: postId, sort_order: idx}));
+    });
+    if(rows.length){
+      const r = await api('/newsletter_posts', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(rows)});
+      if(!r.ok){ alert('خطایی رخ داد.'); return; }
+    }
+    await loadNewsletterPosts();
+    renderNewsletterTab();
+    alert('خبرنامه‌ی امروز منتشر شد.');
+  }
+
+  // idx: شماره‌ی خبر داخل همون بخش (۱-پایه، هر بخش از ۱ دوباره شروع می‌شه) —
+  // به‌جای نشان مربعی جدا (که با تیتر هم‌ردیف نمی‌شد و بی‌ربط دیده می‌شد)،
+  // مستقیم قبل از خودِ تیتر، هم‌رنگ و هم‌خط با اون نوشته می‌شه
+  function newsletterItemHtml(p, idx){
+    const ch = chById(p.channel_id) || {};
+    const num = `<span class="newsletter-item-num">${toFaDigits(idx)}.</span>`;
+    return `
+      <div class="newsletter-item">
+        <div class="newsletter-item-title">${num} ${p.title ? escAttr(p.title) : ''}</div>
+        <div class="newsletter-item-text">${claimsTextDisplay(p.text||'')}</div>
+        <div class="newsletter-item-meta">${escAttr(ch.title||ch.username||'')} — ${newsRelTime(p.posted_at||p.scraped_at)}</div>
+      </div>`;
+  }
+
+  // ⚠️ طبق درخواست کاربر: «شبکه‌های اجتماعی...» و «پرونده‌های موضوعی» دیگه دو
+  // بخش جدا با دو عنوان جدا نیستن — فقط توی پنل مدیریت (بالاتر، سه پنل
+  // curation جدا) دسته‌بندی‌شون حفظ شده تا مدیر بهتر پیدا/مدیریت‌شون کنه؛
+  // موقع نمایش نهایی به کاربر، آیتم‌های news+dossier با هم یکی (concat)
+  // و زیر یه عنوان مشترک «برخی از مهمترین خبرها» با شماره‌گذاری پیوسته
+  // (نه از سر گرفتن شماره برای هرکدوم) نشون داده می‌شن. صفحه‌ی اول هم
+  // طبق خواسته‌ی کاربر فقط مخصوص «ادعاها و شایعات»ه — برش اجباری صفحه
+  // بین این دو بخش توی buildNewsletterPdf (پایین‌تر) با اندازه‌گیری
+  // مرز #nl-claims-block انجام می‌شه، نه صرفاً جریان پیوسته‌ی قبلی.
+  function buildNewsletterPrintHtml(){
+    const wrap = document.getElementById('newsletter-print-view');
+    if(!wrap) return;
+    const grouped = { claims: [], news: [], dossier: [] };
+    NEWSLETTER_POSTS.forEach(np=>{
+      // از np.posts (embedشده توسط loadNewsletterPosts) استفاده می‌کنیم، نه
+      // POSTS_CACHE — چون POSTS_CACHE سقف ۱۰۰۰تایی داره و تا وقتی مدیر واقعاً
+      // به این تب برمی‌گرده، پست‌های ادعا/شایعه‌ی منتشرشده (کمیاب‌تر از بقیه)
+      // ممکنه ازش بیرون افتاده باشن و PDF رو با «خبری ثبت نشده» خالی بسازه
+      if(np.posts) grouped[np.section].push(np.posts);
+    });
+    const highlights = [...grouped.news, ...grouped.dossier];
+    const today = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'long', day:'numeric' });
+    const headerHtml = `
+      <div class="newsletter-masthead">
+        <div class="newsletter-masthead-meta">
+          <span>نشریه‌ی داخلی · روزانه</span>
+          <span>${today}</span>
+        </div>
+        <div class="newsletter-masthead-title">خبرنامه مدارس</div>
+        <div class="newsletter-masthead-sub">سامانه هوشمند جریان — رصد و تحلیل فضای سیاسی‌اجتماعی</div>
+        <div class="newsletter-masthead-rule"></div>
+      </div>`;
+    wrap.innerHTML = `
+      <div class="newsletter-page">
+        ${headerHtml}
+        <div id="nl-claims-block">
+          <h3 class="newsletter-page-title"><span>ادعاها و شایعات</span></h3>
+          <div class="newsletter-flow-columns">
+            ${grouped.claims.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
+          </div>
+        </div>
+        <h3 class="newsletter-page-title"><span>برخی از مهمترین خبرها</span></h3>
+        <div class="newsletter-flow-columns">
+          ${highlights.map((p,i)=>newsletterItemHtml(p,i+1)).join('') || '<p>خبری ثبت نشده.</p>'}
+        </div>
+      </div>`;
+  }
+
+  async function downloadNewsletter(){
+    const btn = document.getElementById('newsletter-download-btn');
+    if(btn){ btn.disabled = true; btn.dataset.origText = btn.textContent; btn.textContent = 'در حال آماده‌سازی PDF...'; }
+    try{
+      await buildNewsletterPdf();
+    }catch(err){
+      console.error(err);
+      showToast('تولید فایل PDF ناموفق بود، دوباره امتحان کنید');
+    }
+    if(btn){ btn.disabled = false; btn.textContent = btn.dataset.origText || 'دانلود خبرنامه‌ی امروز'; }
+  }
+
+  // ساخت واقعی فایل PDF با jsPDF+html2canvas (نه چاپ مرورگر) — دلیل کامل
+  // این تغییر معماری بالای همین بخش، کنار #newsletter-print-view، مستند
+  // شده. مراحل: ۱) هدر برند رو جدا رندر می‌کنیم تا هم بشه تصویرش رو
+  // مستقل نگه داشت هم روی هر صفحه دوباره چسبوند. ۲) کل بدنه‌ی خبرنامه
+  // (بدون هدر) رو یه‌بار با html2canvas به یه بوم بلند تبدیل می‌کنیم.
+  // ۳) با گرفتن مختصات واقعی هر `.newsletter-item`/`.newsletter-page-title`
+  // (getBoundingClientRect)، نقاط برش صفحه رو طوری تعیین می‌کنیم که هیچ‌کدوم
+  // از این عنصرها وسط بریده نشن — دقیقاً معادل همون break-inside:avoid
+  // که موقع چاپ مرورگر داشتیم، ولی این‌بار خودمون محاسبه‌ش می‌کنیم چون
+  // دیگه به موتور صفحه‌بندی مرورگر متکی نیستیم. ۴) هر بخش از بوم بلند
+  // (به‌شکل JPEG کیفیت ۰.۸۸ برای حجم معقول فایل، نه PNG سنگین) + تصویر
+  // هدر با هم روی یه صفحه‌ی A4 جدید جای می‌گیرن.
+  async function buildNewsletterPdf(){
+    buildNewsletterPrintHtml();
+    const printView = document.getElementById('newsletter-print-view');
+    const pageEl = printView.querySelector('.newsletter-page');
+    const headerEl = pageEl.querySelector('.newsletter-masthead');
+
+    const PDF_PX_WIDTH = 750;
+    const marginLR = 14, marginTop = 34, marginBottom = 14;
+    const contentWidthMM = 210 - marginLR * 2;
+    const pageContentHeightMM = 297 - marginTop - marginBottom;
+    const cssPxPerMM = PDF_PX_WIDTH / contentWidthMM;
+    const pageContentHeightCss = pageContentHeightMM * cssPxPerMM;
+    const scale = 2;
+
+    const headerHolder = document.createElement('div');
+    headerHolder.style.cssText = `position:fixed; top:0; left:0; width:${PDF_PX_WIDTH}px; background:#fff; z-index:-1;`;
+    headerHolder.appendChild(headerEl.cloneNode(true));
+    document.body.appendChild(headerHolder);
+    const headerCanvas = await html2canvas(headerHolder, { scale, backgroundColor:'#ffffff' });
+    const headerDataUrl = headerCanvas.toDataURL('image/png');
+    const headerHeightMM = contentWidthMM * (headerCanvas.height / headerCanvas.width);
+    document.body.removeChild(headerHolder);
+
+    const bodyClone = pageEl.cloneNode(true);
+    const headerInClone = bodyClone.querySelector('.newsletter-masthead');
+    if(headerInClone) headerInClone.remove();
+    // ⚠️ html2canvas با ترکیب white-space:pre-wrap + یه کاراکتر خط‌جدید
+    // واقعی (\n) داخل یه گره متنی، حروف فارسیِ متصل‌شونده با ZWNJ (نیم‌فاصله،
+    // مثل «رسانه‌های») رو کاملاً به‌هم می‌ریزه — با یه متن نمونه‌ی واقعی
+    // (ادعای بله با فهرست منابع) تأیید و ریشه‌یابی شد. راه‌حل: خطوط رو با
+    // <br> واقعی جدا کن (نه \n داخل pre-wrap)، مشکل کامل برطرف می‌شه.
+    // هر خط رو هم توی یه span بلوکی جدا می‌ذاریم تا اگه یه آیتم به‌تنهایی
+    // از یه صفحه‌ی کامل بلندتر بود (به‌ندرت)، لااقل بشه سر خط برش زد، نه
+    // وسط یه خط.
+    bodyClone.querySelectorAll('.newsletter-item-text').forEach(el=>{
+      const lines = el.innerHTML.split('\n');
+      el.innerHTML = lines.map(l => `<span class="nl-line" style="display:block;">${l}</span>`).join('');
+      el.style.whiteSpace = 'normal';
+    });
+    const pdfSource = document.createElement('div');
+    pdfSource.style.cssText = `position:fixed; top:0; left:0; width:${PDF_PX_WIDTH}px; background:#fff; direction:rtl; font-family:inherit; color:#222; z-index:-1;`;
+    while(bodyClone.firstChild) pdfSource.appendChild(bodyClone.firstChild);
+    document.body.appendChild(pdfSource);
+
+    const sourceTop = pdfSource.getBoundingClientRect().top;
+    const atoms = Array.from(pdfSource.querySelectorAll('.newsletter-item, .newsletter-page-title')).map(el=>{
+      const r = el.getBoundingClientRect();
+      return { top: r.top - sourceTop, bottom: r.bottom - sourceTop };
+    }).sort((a,b)=>a.top-b.top);
+    const lineAtoms = Array.from(pdfSource.querySelectorAll('.nl-line')).map(el=>{
+      const r = el.getBoundingClientRect();
+      return { top: r.top - sourceTop, bottom: r.bottom - sourceTop };
+    }).sort((a,b)=>a.top-b.top);
+    const totalHeightCss = pdfSource.getBoundingClientRect().height;
+    // طبق درخواست کاربر، صفحه‌ی اول فقط مخصوص «ادعاها و شایعات»ه — یعنی
+    // اینجا برخلاف بقیه‌ی جریان پیوسته، یه برش اجباری درست سرِ مرز پایین
+    // #nl-claims-block می‌خوریم (نه صرفاً هروقت صفحه پر شد)
+    const claimsBlock = pdfSource.querySelector('#nl-claims-block');
+    const claimsBottom = claimsBlock ? (claimsBlock.getBoundingClientRect().bottom - sourceTop) : 0;
+
+    const fullCanvas = await html2canvas(pdfSource, { scale, backgroundColor:'#ffffff', windowWidth: PDF_PX_WIDTH });
+    document.body.removeChild(pdfSource);
+
+    // نقاط برش صفحه: هر جا محتوا از ارتفاع یه صفحه رد بشه برش می‌خوره،
+    // مگر اینکه دقیقاً وسط یه آیتم/عنوان بیفته که اون‌وقت برش به قبل از
+    // شروع همون آیتم عقب کشیده می‌شه (چیزی شبیه break-inside:avoid دستی).
+    // اگه خودِ آیتم به‌تنهایی از یه صفحه‌ی کامل بلندتر بود (خیلی نادر)،
+    // برش به‌جای وسط یه خط، لااقل سر یه خط (lineAtoms) جا داده می‌شه —
+    // تا هیچ‌وقت چیزی نصفه‌ونیمه/بریده به‌نظر نرسه. این تابع روی یه بازه
+    // مشخص اجرا می‌شه تا بشه claimsBottom رو به‌عنوان یه مرز اجباری بین
+    // دو بازه‌ی جدا (ادعاها / بقیه) تحمیل کرد، نه فقط جریان پیوسته‌ی یکسره.
+    function computeBreaksInRange(rangeStart, rangeEnd){
+      const result = [];
+      let cur = rangeStart;
+      while(cur < rangeEnd - 1){
+        let target = cur + pageContentHeightCss;
+        if(target >= rangeEnd){ result.push(rangeEnd); break; }
+        const straddling = atoms.find(a => a.top < target && a.bottom > target && a.top >= cur);
+        if(straddling){
+          target = (straddling.bottom - straddling.top > pageContentHeightCss)
+            ? (lineAtoms.find(a => a.top < target && a.bottom > target && a.top >= cur)?.top ?? target)
+            : straddling.top;
+        }
+        if(target <= cur) target = cur + pageContentHeightCss;
+        result.push(target);
+        cur = target;
+      }
+      if(!result.length) result.push(rangeEnd);
+      return result;
+    }
+    const breaks = [0, ...computeBreaksInRange(0, claimsBottom), ...computeBreaksInRange(claimsBottom, totalHeightCss)];
+
+    const { jsPDF } = window.jspdf;
+    const doc = new jsPDF({ unit:'mm', format:'a4' });
+    for(let i=0;i<breaks.length-1;i++){
+      const yStart = breaks[i], yEnd = breaks[i+1];
+      const sliceHeightCss = yEnd - yStart;
+      const sliceCanvas = document.createElement('canvas');
+      sliceCanvas.width = fullCanvas.width;
+      sliceCanvas.height = Math.round(sliceHeightCss * scale);
+      const ctx = sliceCanvas.getContext('2d');
+      ctx.fillStyle = '#fff'; ctx.fillRect(0, 0, sliceCanvas.width, sliceCanvas.height);
+      ctx.drawImage(fullCanvas, 0, Math.round(yStart*scale), fullCanvas.width, Math.round(sliceHeightCss*scale), 0, 0, fullCanvas.width, Math.round(sliceHeightCss*scale));
+      const sliceDataUrl = sliceCanvas.toDataURL('image/jpeg', 0.88);
+      const sliceHeightMM = sliceHeightCss / cssPxPerMM;
+      if(i > 0) doc.addPage();
+      doc.addImage(headerDataUrl, 'PNG', marginLR, 10, contentWidthMM, headerHeightMM);
+      doc.addImage(sliceDataUrl, 'JPEG', marginLR, marginTop, contentWidthMM, sliceHeightMM);
+    }
+
+    const fileDate = new Date().toLocaleDateString('fa-IR', { timeZone:'Asia/Tehran', year:'numeric', month:'2-digit', day:'2-digit' }).replace(/\//g, '-');
+    doc.save(`khabarnameh-madares-${fileDate}.pdf`);
   }
 
   // ---- کلیدواژه‌های هوش مصنوعی (posts.ai_keywords) — نمایش/ویرایش فقط
@@ -2908,7 +3425,7 @@
     newspaperState.date = b.dataset.date;
     renderNewspapers();
   });
-  // ---- فیلتر و سایدبار تب «پرونده ویژه» ----
+  // ---- فیلتر و سایدبار تب «پرونده‌های موضوعی» ----
   document.getElementById('dossier-time-seg').addEventListener('click', e=>{
     const b = e.target.closest('button'); if(!b || !b.dataset.t) return;
     document.querySelectorAll('#dossier-time-seg > button').forEach(x=>x.classList.remove('active'));
@@ -2945,6 +3462,13 @@
   async function loadDossierTopicPosts(){
     const r = await api('/dossier_topic_posts?select=*&order=created_at.desc&limit=2000');
     DOSSIER_TOPIC_POSTS = r.ok ? await r.json() : [];
+  }
+  async function loadNewsletterPosts(){
+    // select=*,posts(*) پست واقعی رو مستقیم embed می‌کنه به‌جای اینکه بعداً
+    // از POSTS_CACHE (که سقف ۱۰۰۰تایی داره و پست‌های ادعا/شایعه زود ازش
+    // بیرون می‌افتن) پیدا بشه — نگاه کن به buildNewsletterPrintHtml
+    const r = await api('/newsletter_posts?select=*,posts(*)&order=section.asc,sort_order.asc');
+    NEWSLETTER_POSTS = r.ok ? await r.json() : [];
   }
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
@@ -2994,6 +3518,26 @@
     return new Date(iranDateStr + 'T00:00:00+03:30').getTime();
   }
 
+  // چند تا نقطه از سایت («کنشگری مجازی»، «یادداشت‌ها»، «اخبار و رویدادها»،
+  // «پرونده‌های موضوعی») فیلتر «امروز/دیروز/هفته گذشته» داشتن که هرکدوم جدا و
+  // با معیار «فاصله‌ی خام از همین لحظه» (نه نیمه‌شب تقویمی) پیاده شده بود —
+  // یعنی مرز «امروز» با گذشت ساعت‌های شب به‌جای نیمه‌شب واقعی ایران، به
+  // ساعت لحظه‌ی بازدید کاربر (یا حتی تایم‌زون محلی مرورگرش) وابسته بود.
+  // طبق درخواست صریح کاربر، همه‌ی این‌ها یکدست به همون معیار iranTodayStartMs
+  // (نیمه‌شب تقویمی تهران) وصل شدن؛ diffDays=0 یعنی «امروز» (بعد از نیمه‌شب
+  // امروز تهران)، diffDays=1 یعنی «دیروز» (بین نیمه‌شب دیروز و امروز).
+  function tehranDayDiff(dateStr){
+    if(!dateStr) return Infinity;
+    // به‌جای تفریق مستقیم زمان رویداد از نیمه‌شب امروز (که برای رویدادهای
+    // «امروز» چون بعد از اون نیمه‌شب اتفاق افتادن، عدد منفی و با floor
+    // اشتباه به -۱ گرد می‌شه)، اول نیمه‌شب همون روز تقویمیِ رویداد (به وقت
+    // تهران) رو پیدا می‌کنیم و فاصله‌ی بین دو نیمه‌شب رو حساب می‌کنیم — همیشه
+    // یه عدد صحیح دقیق از روزه، مستقل از ساعت دقیق رویداد
+    const eventDateStr = new Intl.DateTimeFormat('en-CA', { timeZone:'Asia/Tehran', year:'numeric', month:'2-digit', day:'2-digit' }).format(new Date(dateStr));
+    const eventDayStartMs = new Date(eventDateStr + 'T00:00:00+03:30').getTime();
+    return Math.round((iranTodayStartMs() - eventDayStartMs) / 86400000);
+  }
+
   async function renderDashHeroStats(){
     const wrap = document.getElementById('dash-hero-stats');
     if(!wrap) return;
@@ -3030,9 +3574,6 @@
     // تیک «کنشگری مجازی» (show_in_cyberspace) روشون خورده
     const cyberspaceChannels = CHANNELS.filter(c=>c.show_in_cyberspace).length;
 
-    // «محتوای ضمیمه» — مجموع دو زیرتب بخش «ضمیمه جریان» (سایر بسته‌های تحلیلی + بسته‌های آموزشی)
-    const supplementCount = ARCHIVE_REPORTS.length + BASIRAT_COURSES.length;
-
     const magazinesCount = MAGAZINES.length; // «بسته تحلیل» — مجلات خودِ جریان
 
     const bar = '<div class="dash-hero-stat-bar"></div>';
@@ -3041,7 +3582,6 @@
       <div class="dash-hero-stat"><b data-value="${newsSourceCount}">۰</b>${bar}<span>خبرگزاری</span></div>
       <div class="dash-hero-stat"><b data-value="${schoolsCount}">۰</b>${bar}<span>مدارس علمیه</span></div>
       <div class="dash-hero-stat"><b data-value="${cyberspaceChannels}">۰</b>${bar}<span>کنشگر مجازی</span></div>
-      <div class="dash-hero-stat"><b data-value="${supplementCount}">۰</b>${bar}<span>محتوای ضمیمه</span></div>
       <div class="dash-hero-stat"><b data-value="${magazinesCount}">۰</b>${bar}<span>بسته تحلیل</span></div>`;
     animateHeroStatCounters(wrap);
   }
@@ -3063,12 +3603,13 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
     populatePostFilters();
     renderPosts();
+    renderCyberPeopleGrid();
     populatePoliticalFiguresSourceOptions();
     renderPoliticalFigures();
     populateExportFilters();
@@ -3192,11 +3733,14 @@
 
   // ---- channels & people page ----
   function activityOf(channelId){
-    const dayAgo = Date.now() - 24*3600*1000;
-    const n = POSTS_CACHE.filter(p=>p.channel_id===channelId && new Date(p.scraped_at).getTime()>=dayAgo).length;
-    if(n >= 8) return {level:'high', label:'زیاد'};
-    if(n >= 3) return {level:'mid', label:'متوسط'};
-    return {level:'low', label:'کم'};
+    // هفته‌ی اخیر rolling (نه ۲۴ساعته) — طبق درخواست صریح کاربر، آستانه‌ی
+    // قبلی (۲۴ساعته، ≥۸/≥۳) برای کانال‌های کنشگری مجازی زیادی سخت‌گیرانه بود
+    const weekAgo = Date.now() - 7*24*3600*1000;
+    const n = POSTS_CACHE.filter(p=>p.channel_id===channelId && new Date(p.scraped_at).getTime()>=weekAgo).length;
+    if(n === 0) return {level:'inactive', label:'غیرفعال', n};
+    if(n > 20) return {level:'high', label:'زیاد', n};
+    if(n >= 7) return {level:'mid', label:'متوسط', n};
+    return {level:'low', label:'کم', n};
   }
 
   function renderChannelCards(){
@@ -3217,6 +3761,137 @@
     });
   }
 
+  // ---- «افراد و مجموعه‌ها»: زیرتب دوم «کنشگری مجازی»، گالری معرفی همون
+  // کانال‌هایی که پست‌هاشون توی زیرتب «پست‌های منتشر شده» جمع می‌شه ----
+  const postsPageTabsEl = document.getElementById('posts-page-tabs');
+  if(postsPageTabsEl) postsPageTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.postsTab) return;
+    postsPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const postsSubEl = document.getElementById('posts-tab-subtitle');
+    if(postsSubEl) postsSubEl.querySelector('span').textContent = POSTS_TAB_INFO[b.dataset.postsTab] || '';
+    ['feed','people'].forEach(key=>{
+      const el = document.getElementById('posts-tab-'+key);
+      if(el) el.style.display = key === b.dataset.postsTab ? '' : 'none';
+    });
+    if(b.dataset.postsTab === 'people') renderCyberPeopleGrid();
+  });
+
+  // زیرتب‌های «یادداشت‌ها»: چهره‌های سیاسی (پیش‌فرض) + دو تب منتقل‌شده از
+  // بخش قبلاً مستقل «ضمیمه جریان» (سایر بسته‌های تحلیلی/بسته‌های آموزشی)
+  const peoplePageTabsEl = document.getElementById('people-page-tabs');
+  if(peoplePageTabsEl) peoplePageTabsEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || !b.dataset.peopleTab) return;
+    peoplePageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    const peopleSubEl = document.getElementById('people-tab-subtitle');
+    if(peopleSubEl) peopleSubEl.querySelector('span').textContent = PEOPLE_TAB_INFO[b.dataset.peopleTab] || '';
+    ['figures','archive','basirat'].forEach(key=>{
+      const el = document.getElementById('people-tab-'+key);
+      if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
+    });
+  });
+
+  // فیلتر «طلاب خراسان / سایر» جدول «افراد و مجموعه‌ها» — '' یعنی همه؛
+  // نگاه کن به matchesActivistGroup
+  let cyberPeopleGroupFilter = '';
+  const cyberPeopleGroupSegEl = document.getElementById('cyber-people-group-seg');
+  if(cyberPeopleGroupSegEl) cyberPeopleGroupSegEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.dataset.g===undefined) return;
+    cyberPeopleGroupSegEl.querySelectorAll(':scope > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    cyberPeopleGroupFilter = b.dataset.g;
+    renderCyberPeopleGrid();
+  });
+
+  // مرتب‌سازی جدول «افراد و مجموعه‌ها» با کلیک روی سرستون‌ها — بدون سرور،
+  // کاملاً سمت کلاینت روی همون آرایه‌ی فیلترشده‌ی CHANNELS
+  let cyberPeopleSort = { field: null, dir: 'asc' };
+  function cyberPeopleSortValue(ch, field){
+    switch(field){
+      case 'name': return ch.title || ch.username || '';
+      case 'platform': return ch.platform==='telegram' ? 'تلگرام' : 'ایتا';
+      case 'owner': return ch.owner_name || '';
+      case 'subscribers': return ch.subscriber_count == null ? -1 : ch.subscriber_count;
+      case 'activity': return activityOf(ch.id).n;
+      case 'category': { const c = CATEGORIES.find(x=>x.id===ch.category_id); return c ? c.name : ''; }
+      default: return '';
+    }
+  }
+  const cyberPeopleHeadEl = document.getElementById('cyber-people-head');
+  if(cyberPeopleHeadEl) cyberPeopleHeadEl.addEventListener('click', e=>{
+    const btn = e.target.closest('.cpt-sort-btn'); if(!btn) return;
+    const field = btn.dataset.sort;
+    if(cyberPeopleSort.field === field){ cyberPeopleSort.dir = cyberPeopleSort.dir==='asc' ? 'desc' : 'asc'; }
+    else{ cyberPeopleSort.field = field; cyberPeopleSort.dir = 'asc'; }
+    renderCyberPeopleGrid();
+  });
+
+  function renderCyberPeopleGrid(){
+    const wrap = document.getElementById('cyber-people-grid');
+    const table = document.getElementById('cyber-people-table');
+    const empty = document.getElementById('cyber-people-empty');
+    if(!wrap) return;
+    const channels = CHANNELS.filter(c=>c.show_in_cyberspace && matchesActivistGroup(c, cyberPeopleGroupFilter));
+    if(empty) empty.textContent = (CHANNELS.some(c=>c.show_in_cyberspace) && cyberPeopleGroupFilter)
+      ? 'کانالی با این فیلتر پیدا نشد.'
+      : 'هنوز کانالی برای «کنشگری مجازی» تگ نشده.';
+    if(cyberPeopleSort.field){
+      const field = cyberPeopleSort.field;
+      const dir = cyberPeopleSort.dir === 'desc' ? -1 : 1;
+      channels.sort((a,b)=>{
+        const va = cyberPeopleSortValue(a, field), vb = cyberPeopleSortValue(b, field);
+        if(typeof va === 'number' && typeof vb === 'number') return (va-vb)*dir;
+        return String(va).localeCompare(String(vb), 'fa') * dir;
+      });
+    }
+    if(cyberPeopleHeadEl) cyberPeopleHeadEl.querySelectorAll('.cpt-sort-btn').forEach(btn=>{
+      const isActive = btn.dataset.sort === cyberPeopleSort.field;
+      btn.classList.toggle('active', isActive);
+      const ind = btn.querySelector('.cpt-sort-ind');
+      if(ind) ind.textContent = isActive ? (cyberPeopleSort.dir==='asc' ? '▲' : '▼') : '⇅';
+    });
+    empty.style.display = channels.length ? 'none' : 'block';
+    table.style.display = channels.length ? '' : 'none';
+    wrap.innerHTML = '';
+    channels.forEach(ch=>{
+      const act = activityOf(ch.id);
+      const cat = CATEGORIES.find(c=>c.id===ch.category_id);
+      const el=document.createElement('div'); el.className='cpt-row';
+      el.title = 'مشاهده‌ی پست‌های ' + (ch.title || ch.username);
+      const channelUrl = ch.platform==='telegram' ? `https://t.me/${ch.username}` : `https://eitaa.com/${ch.username}`;
+      el.innerHTML = `<div class="cpt-who">
+          <div class="cpt-avatar-wrap">
+            <div class="cpt-avatar">${ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" loading="lazy" />` : ICONS.person}</div>
+            <span class="cpt-dot ${act.level}" title="${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}"></span>
+          </div>
+          <div class="cpt-who-txt">
+            <div class="cpt-name">${escHtml(ch.title || ch.username)}</div>
+          </div>
+        </div>
+        <div class="cpt-platform">
+          <span class="cpt-platform-name">${ch.platform==='telegram'?'تلگرام':'ایتا'}</span>
+          <a class="cpt-platform-link mono" href="${escAttr(channelUrl)}" target="_blank" rel="noopener">${escHtml(channelUrl.replace('https://',''))}</a>
+        </div>
+        <div class="cpt-owner">${ch.owner_name ? ICONS.userLine + `<span>${escHtml(ch.owner_name)}</span>` : ''}</div>
+        <div class="cpt-num">${ch.subscriber_count ? `<span class="cpt-num-val">${ICONS.users}${toFaDigits(ch.subscriber_count)}</span>` : ''}</div>
+        <div class="cpt-activity-col"><span class="cpt-activity ${act.level}"><span class="dt"></span>${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}</span></div>
+        <div class="cpt-tagcol">${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : ''}</div>
+        <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
+      el.querySelector('.cpt-platform-link').addEventListener('click', e => e.stopPropagation());
+      el.addEventListener('click', ()=> openPersonFeed(ch.id));
+      wrap.appendChild(el);
+    });
+  }
+
+  function openPersonFeed(channelId){
+    postsSelectedChannels = [String(channelId)];
+    populatePostSourceOptions();
+    renderPosts();
+    const tabBtn = document.querySelector('#posts-page-tabs button[data-posts-tab="feed"]');
+    if(tabBtn) tabBtn.click();
+  }
+
   // ---- posts page ----
   const filterCatEl = document.getElementById('posts-filter-cat');
   const filterTimeEl = document.getElementById('posts-filter-time');
@@ -3226,6 +3901,8 @@
   // به‌جای یه select تک‌انتخابی، مثل «انتخاب رسانه‌ها…» تب شبکه‌های اجتماعی
   // یه چندانتخابی چک‌باکسیه — بشه چندتا کانال رو هم‌زمان انتخاب کرد
   let postsSelectedChannels = [];
+  // فیلتر «طلاب خراسان / سایر» — '' یعنی همه؛ نگاه کن به matchesActivistGroup
+  let postsGroupFilter = '';
 
   function updatePostSourceSummary(){
     const summary = document.getElementById('posts-source-summary');
@@ -3266,10 +3943,20 @@
   function matchesTime(dateStr, val){
     if(!val) return true;
     if(!dateStr) return false;
-    const diffDays = Math.floor((Date.now() - new Date(dateStr).getTime()) / 86400000);
+    const diffDays = tehranDayDiff(dateStr);
     if(val==='today') return diffDays===0;
     if(val==='yesterday') return diffDays===1;
-    if(val==='week') return diffDays<=6;
+    if(val==='week') return diffDays>=0 && diffDays<=6;
+    return true;
+  }
+
+  // فیلتر مشترک «طلاب خراسان / سایر» بخش «کنشگری مجازی» — هم توی فید
+  // «پست‌های منتشر شده» هم توی جدول «افراد و مجموعه‌ها» استفاده می‌شه
+  // (نگاه کن به postsGroupFilter/cyberPeopleGroupFilter)
+  function matchesActivistGroup(ch, group){
+    if(!group) return true;
+    if(group === 'khorasan') return !!(ch && ch.is_khorasan_talabeh);
+    if(group === 'other') return !(ch && ch.is_khorasan_talabeh);
     return true;
   }
 
@@ -3280,6 +3967,7 @@
     return POSTS_CACHE.filter(p=>{
       const ownerCh = chById(p.channel_id);
       if(!ownerCh || !ownerCh.show_in_cyberspace) return false;
+      if(!matchesActivistGroup(ownerCh, postsGroupFilter)) return false;
       if(postsSelectedChannels.length && !postsSelectedChannels.includes(String(p.channel_id))) return false;
       if(catFilter){
         const ch = chById(p.channel_id);
@@ -3426,6 +4114,14 @@
   filterCatEl.addEventListener('change', renderPosts);
   filterTimeEl.addEventListener('change', renderPosts);
   searchEl.addEventListener('input', renderPosts);
+  const postsGroupSegEl = document.getElementById('posts-group-seg');
+  if(postsGroupSegEl) postsGroupSegEl.addEventListener('click', e=>{
+    const b = e.target.closest('button'); if(!b || b.dataset.g===undefined) return;
+    postsGroupSegEl.querySelectorAll(':scope > button').forEach(x=>x.classList.remove('active'));
+    b.classList.add('active');
+    postsGroupFilter = b.dataset.g;
+    renderPosts();
+  });
 
   // ---- چهره‌های سیاسی (تنها محتوای بخش «یادداشت‌ها») ----
   // عیناً هم‌الگو با فید «کنشگری مجازی» بالا (همون POSTS_CACHE، فقط فیلتر
@@ -3812,7 +4508,7 @@
   const newChanRegionEl = document.getElementById('new-chan-region');
   const CHAN_DOMAIN_FIELDS = [
     { field: 'show_in_news', label: 'اخبار و رویدادها', onChange: () => renderNewsFeed() },
-    { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => renderPosts() },
+    { field: 'show_in_cyberspace', label: 'کنشگری مجازی', onChange: () => { renderPosts(); renderCyberPeopleGrid(); } },
     { field: 'show_in_people', label: 'یادداشت', onChange: () => renderPoliticalFigures() },
   ];
 
@@ -3860,7 +4556,7 @@
         if(!confirm('این دسته‌بندی حذف شود؟')) return;
         await api('/categories?id=eq.'+c.id, {method:'DELETE'});
         await loadCategories(); await loadChannels();
-        refreshCatOptions(); renderCatGrid(); renderChanList(); renderChannelCards(); populatePostFilters(); populateExportFilters();
+        refreshCatOptions(); renderCatGrid(); renderChanList(); renderChannelCards(); renderCyberPeopleGrid(); populatePostFilters(); populateExportFilters();
       });
       el.querySelector('.cc-actions').appendChild(del);
       catGridEl.appendChild(el);
@@ -3943,6 +4639,68 @@
       });
       domainsDetails.appendChild(domainsWrap);
       row.appendChild(domainsDetails);
+      // پروفایل کنشگر (صاحب کانال + تعداد مخاطب) — برای گالری «افراد و
+      // مجموعه‌ها» توی کنشگری مجازی؛ دو فیلد دستی، نه خودکار (بخش
+      // «هوش مصنوعی» رو نگاه کن، هیچ کالکتوری این دو رو زنده نمی‌گیره)
+      const profileDetails=document.createElement('details'); profileDetails.className='chan-row-domains-details';
+      const profileSummary=document.createElement('summary'); profileSummary.textContent='پروفایل';
+      profileDetails.appendChild(profileSummary);
+      const profileWrap=document.createElement('div'); profileWrap.className='chan-row-domains chan-row-profile-fields';
+      const ownerLbl=document.createElement('label'); ownerLbl.appendChild(document.createTextNode('صاحب کانال'));
+      const ownerInput=document.createElement('input'); ownerInput.type='text'; ownerInput.placeholder='نام صاحب کانال'; ownerInput.value=ch.owner_name||'';
+      let ownerSaveTimer;
+      ownerInput.addEventListener('input', e=>{
+        clearTimeout(ownerSaveTimer);
+        const val = e.target.value.trim() || null;
+        ownerSaveTimer = setTimeout(async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({owner_name: val})});
+          ch.owner_name = val;
+          renderCyberPeopleGrid();
+        }, 600);
+      });
+      ownerLbl.appendChild(ownerInput);
+      profileWrap.appendChild(ownerLbl);
+      const subLbl=document.createElement('label'); subLbl.appendChild(document.createTextNode('تعداد مخاطب'));
+      const subInput=document.createElement('input'); subInput.type='number'; subInput.min='0'; subInput.placeholder='مثلاً ۱۲۰۰۰'; subInput.value = ch.subscriber_count==null ? '' : ch.subscriber_count;
+      let subSaveTimer;
+      subInput.addEventListener('input', e=>{
+        clearTimeout(subSaveTimer);
+        const raw = e.target.value;
+        const val = raw==='' ? null : Number(raw);
+        subSaveTimer = setTimeout(async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({subscriber_count: val})});
+          ch.subscriber_count = val;
+          renderCyberPeopleGrid();
+        }, 600);
+      });
+      subLbl.appendChild(subInput);
+      profileWrap.appendChild(subLbl);
+      const talabehLbl=document.createElement('label'); talabehLbl.className='chan-row-news';
+      const talabehChk=document.createElement('input'); talabehChk.type='checkbox'; talabehChk.checked=!!ch.is_khorasan_talabeh;
+      talabehChk.addEventListener('change', async ()=>{
+        await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({is_khorasan_talabeh: talabehChk.checked})});
+        ch.is_khorasan_talabeh = talabehChk.checked;
+        renderCyberPeopleGrid(); renderPosts();
+      });
+      talabehLbl.appendChild(talabehChk);
+      talabehLbl.appendChild(document.createTextNode('طلبه‌ی حوزه‌ی خراسان'));
+      profileWrap.appendChild(talabehLbl);
+      // تیک «اخبار حوزه» فقط برای کانال‌های website معنا داره (تب «اخبار
+      // حوزه» فقط سایت‌های خبری رو نشون می‌ده، نه ایتا/تلگرام/بله)
+      if(ch.platform === 'website'){
+        const hawzaLbl=document.createElement('label'); hawzaLbl.className='chan-row-news';
+        const hawzaChk=document.createElement('input'); hawzaChk.type='checkbox'; hawzaChk.checked=!!ch.show_in_hawza;
+        hawzaChk.addEventListener('change', async ()=>{
+          await api('/channels?id=eq.'+ch.id, {method:'PATCH', body: JSON.stringify({show_in_hawza: hawzaChk.checked})});
+          ch.show_in_hawza = hawzaChk.checked;
+          renderNewsFeed();
+        });
+        hawzaLbl.appendChild(hawzaChk);
+        hawzaLbl.appendChild(document.createTextNode('اخبار حوزه'));
+        profileWrap.appendChild(hawzaLbl);
+      }
+      profileDetails.appendChild(profileWrap);
+      row.appendChild(profileDetails);
       const del=document.createElement('button'); del.className='del-btn'; del.textContent='✕'; del.title='حذف کانال'; del.setAttribute('aria-label','حذف کانال '+(ch.title||ch.username));
       del.addEventListener('click', ()=> openDeleteChannelModal(ch));
       row.appendChild(del);
@@ -4001,7 +4759,7 @@
     }
   });
 
-  // ---- پنل مدیریت موضوعات «پرونده ویژه» ----
+  // ---- پنل مدیریت موضوعات «پرونده‌های موضوعی» ----
   document.getElementById('add-dossier-topic-btn').addEventListener('click', async ()=>{
     const nameEl = document.getElementById('new-dossier-topic-name');
     const kwEl = document.getElementById('new-dossier-topic-keywords');
@@ -4067,7 +4825,7 @@
     return inserts.length;
   }
 
-  // ویرایش کلیدواژه‌های یه موضوع «پرونده ویژه» — جایگزینی درجا (inline) شبیه
+  // ویرایش کلیدواژه‌های یه موضوع «پرونده‌های موضوعی» — جایگزینی درجا (inline) شبیه
   // الگوی editPostKeywords/savePostKeywords، بدون مودال جدا
   function editDossierTopicKeywords(id){
     const t = DOSSIER_TOPICS.find(x=>x.id===id);
@@ -4214,7 +4972,7 @@
       nameEl.value=''; handleEl.value=''; regionEl.value='';
       showNewsEl.checked=false; showCyberspaceEl.checked=false; showPeopleEl.checked=false;
       await loadChannels();
-      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderPoliticalFigures();
+      renderChanList(); renderCatGrid(); renderChannelCards(); populatePostFilters(); populateExportFilters(); renderNewsFeed(); renderPosts(); renderCyberPeopleGrid(); renderPoliticalFigures();
     }else{
       alert('این کانال از قبل ثبت شده یا خطایی رخ داد.');
     }
@@ -4303,11 +5061,6 @@
     const el = document.querySelector('.package-card');
     if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
   }
-  function scrollToSupplementWidget(){
-    const el = document.querySelector('.basirat-widget-block');
-    if(el) el.scrollIntoView({ behavior:'smooth', block:'start' });
-  }
-
   // تب «روزنامه‌ها» — گرید صفحه‌ی اول روزنامه‌ها برای یه تاریخ انتخاب‌شده.
   // پیش‌فرض جدیدترین تاریخ موجوده (معمولاً امروز)، ولی چون cleanup_media.py
   // فقط عکس‌های قدیمی‌تر از ۳ روز رو پاک می‌کنه، تا وقتی پاک نشدن، تاریخ‌های
@@ -4333,9 +5086,13 @@
     renderNewspaperGrid();
   }
 
+  // «امروز» اینجا صریح از تاریخ تقویمی تهران گرفته می‌شه (نه تایم‌زون محلی
+  // مرورگر بازدیدکننده) — بعد از گرفتن رشته‌ی YYYY-MM-DD تهران، بقیه‌ی
+  // محاسبات روی همون رشته با UTC انجام می‌شه (چون edition_date خودش فقط
+  // تاریخه، بدون ساعت؛ این‌جوری هیچ ابهام تایم‌زونی توی خودِ محاسبه نمی‌مونه)
   function newspaperDateLabel(dateStr){
-    const today = new Date().toLocaleDateString('en-CA');
-    const diffDays = Math.round((new Date(today) - new Date(dateStr)) / 86400000);
+    const today = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Tehran' });
+    const diffDays = Math.round((new Date(today+'T00:00:00Z') - new Date(dateStr+'T00:00:00Z')) / 86400000);
     if(diffDays === 0) return 'امروز';
     if(diffDays === 1) return 'دیروز';
     if(diffDays > 1) return toFaDigits(diffDays) + ' روز قبل';
@@ -4348,10 +5105,11 @@
     // همیشه ۲ گزینه‌ی ثابت (امروز/دیروز) نشون داده می‌شه؛ چون RETENTION_DAYS
     // فعلاً ۱ روزه، «۲ روز قبل» همیشه خالیه و حذف شد. فقط اونی که واقعاً
     // توی NEWSPAPER_DATES داده داره کلیک‌پذیره، بقیه غیرفعالن
-    const today = new Date();
+    const todayStr = new Date().toLocaleDateString('en-CA', { timeZone:'Asia/Tehran' });
     const slots = [0, 1].map(offset => {
-      const d = new Date(today); d.setDate(d.getDate() - offset);
-      return d.toLocaleDateString('en-CA');
+      const d = new Date(todayStr + 'T00:00:00Z');
+      d.setUTCDate(d.getUTCDate() - offset);
+      return d.toISOString().slice(0, 10);
     });
     wrap.style.display = '';
     wrap.innerHTML = slots.map(d => {
@@ -4542,17 +5300,6 @@
   // «سایر بسته‌های تحلیلی»: برخلاف مجلات جریان، این‌ها تولیدات نهادهای دیگه‌ست
   // که فقط بایگانی می‌کنیم — همون الگوی داده/Storage مجلات (bucket خصوصی برای
   // فایل + bucket عمومی برای جلد)، فقط با یه ستون اضافه‌ی source_org.
-  const supplementPageTabsEl = document.getElementById('supplement-page-tabs');
-  if(supplementPageTabsEl) supplementPageTabsEl.addEventListener('click', e=>{
-    const b = e.target.closest('button'); if(!b || !b.dataset.supplementTab) return;
-    supplementPageTabsEl.querySelectorAll('button').forEach(x=>x.classList.remove('active'));
-    b.classList.add('active');
-    ['basirat','archive'].forEach(key=>{
-      const el = document.getElementById('supplement-tab-'+key);
-      if(el) el.style.display = key === b.dataset.supplementTab ? '' : 'none';
-    });
-  });
-
   function renderArchiveReports(){
     const grid = document.getElementById('archive-report-grid');
     const empty = document.getElementById('archive-reports-empty');
@@ -4596,54 +5343,6 @@
       }
       grid.appendChild(el);
     });
-    renderArchiveHomeGrid();
-  }
-
-  // کارسول واقعی (اسکرول افقی) «سایر بسته‌های تحلیلی» — زیرمجموعه‌ی ویجت
-  // «ضمیمه جریان»، تمام‌عرض و با کادر دور خودش (.supp-archive-block). عنوان
-  // و دکمه‌ی «مشاهده‌ی همه» دیگه سربرگ جدا نیستن، بلکه ته کارسول (آخرین
-  // فرزند DOM → چپ‌ترین آیتم، چون صفحه RTLه) به‌شکل یه کارت عملی میان.
-  // بدون کنترل‌های مدیریتی (جابجایی/حذف) — این فقط یه پیش‌نمایش کوچیکه،
-  // مدیریت واقعی جاش توی خودِ تب آرشیوه
-  function renderArchiveHomeGrid(){
-    const wrap = document.getElementById('archive-grid-home');
-    if(!wrap) return;
-    wrap.innerHTML = '';
-    if(!ARCHIVE_REPORTS.length){
-      wrap.innerHTML = '<p style="color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:20px 0;">هنوز موردی در آرشیو بارگذاری نشده.</p>';
-      return;
-    }
-    ARCHIVE_REPORTS.slice(0, 6).forEach(m=>{
-      const files = Array.isArray(m.files) ? m.files : [];
-      const meta = [
-        m.source_org || '',
-        m.publish_date ? new Date(m.publish_date).toLocaleDateString('fa-IR') : '',
-      ].filter(Boolean).join(' · ');
-      const el = document.createElement('div'); el.className = 'home-poster-card';
-      el.innerHTML = `<div class="home-poster-cover">${m.cover_url ? `<img src="${m.cover_url}" alt="${m.title}" draggable="false" oncontextmenu="return false" />` : (m.file_type==='images' ? ICONS.photo : ICONS.doc)}</div>
-        <div class="home-poster-title">${m.title}</div>
-        <div class="home-poster-meta">${meta}</div>`;
-      el.style.cursor = files.length ? 'pointer' : 'default';
-      el.addEventListener('click', () => { if(files.length) openArchiveReportFile(m, files[0]); });
-      wrap.appendChild(el);
-    });
-    // آخرین فرزند DOM، چون صفحه RTLه چپ‌ترین آیتم کارسول می‌شه — طبق
-    // خواسته‌ی کاربر، عنوان+«مشاهده‌ی همه» به‌شکل یه کارت هم‌ردیف پوسترها
-    const viewAll = document.createElement('div'); viewAll.className = 'supp-archive-viewall-card';
-    viewAll.innerHTML = `<div class="supp-archive-viewall-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 6l-6 6 6 6"/></svg></div>
-      <span class="supp-archive-viewall-label">سایر بسته‌های تحلیلی</span>
-      <span class="supp-archive-viewall-cta">مشاهده‌ی همه</span>`;
-    viewAll.addEventListener('click', () => openSupplementTab('archive'));
-    wrap.appendChild(viewAll);
-  }
-
-  // از میان‌برهای صفحه‌ی نخست (دکمه‌ی «مشاهده‌ی همه» ویجت آرشیو / آیکون‌های
-  // ویجت «ضمیمه جریان») صدا زده می‌شه — می‌بره به بخش «ضمیمه جریان» و
-  // مستقیم زیرتب موردنظر ('basirat' یا 'archive') رو فعال می‌کنه
-  function openSupplementTab(tab){
-    switchSection('supplement');
-    const tabBtn = document.querySelector('#supplement-page-tabs button[data-supplement-tab="'+tab+'"]');
-    if(tabBtn) tabBtn.click();
   }
 
   async function openArchiveReportFile(report, path){
@@ -4800,33 +5499,6 @@
       }
       grid.appendChild(el);
     });
-    renderBasiratHomeGrid();
-  }
-
-  // ویجت گرید صفحه‌ی نخست «ضمیمه جریان» — عمداً به BASIRAT_COURSES وابسته
-  // نیست و پوستر/عنوان واقعی هیچ بسته‌ای رو نشون نمی‌ده؛ فقط چند دسته‌ی
-  // کلی محتوا رو با آیکون دایره‌ای معرفی می‌کنه (طبق خواسته‌ی کاربر). داده‌ی
-  // واقعی BASIRAT_COURSES دست‌نخورده و همچنان توی تب «بسته‌های آموزش
-  // تحلیلی» با پوستر واقعی نمایش داده می‌شه. کلیک هرکدوم مثل دکمه‌ی
-  // «مشاهده‌ی همه» به همون تب می‌بره (نه لینک بیرونیِ یه بسته‌ی خاص) —
-  // به‌جز «نشریات» که عمداً به تب/کارسول آرشیو ('archive') وصله، نه بصیرت
-  // ('basirat')، چون قراره حس بده کلیک همین آیکون کارسول پایینش رو باز کرده.
-  const SUPP_CONTENT_TYPES = [
-    { label: 'کتاب', icon: 'book' },
-    { label: 'مقالات', icon: 'doc' },
-    { label: 'نشریات', icon: 'newspaper', tab: 'archive' },
-    { label: 'ویدئو', icon: 'video' },
-    { label: 'صوت', icon: 'audio' },
-    { label: 'سخنرانی', icon: 'mic' },
-  ];
-  function renderBasiratHomeGrid(){
-    const wrap = document.getElementById('basirat-grid-home');
-    if(!wrap) return;
-    wrap.innerHTML = SUPP_CONTENT_TYPES.map(t => `
-      <div class="supp-icon-card" onclick="openSupplementTab('${t.tab || 'basirat'}')">
-        <div class="supp-icon-circle">${ICONS[t.icon]}</div>
-        <div class="supp-icon-label">${t.label}</div>
-      </div>`).join('');
   }
 
   // کارت «ثبت نظر و پیشنهاد» ته صفحه‌ی نخست — هم مدیر هم بیننده اجازه‌ی
