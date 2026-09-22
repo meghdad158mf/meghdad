@@ -1,0 +1,35 @@
+name: Purge channel backfill media (one-off)
+
+on:
+  workflow_dispatch:
+    inputs:
+      channel_username:
+        description: "یوزرنیم کانال تلگرام بدون @ (مثلاً farsna)"
+        required: true
+        type: string
+      delete_count:
+        description: "چند تا از قدیمی‌ترین پست‌های دارای رسانه حذف بشن"
+        required: false
+        default: "100"
+        type: string
+
+jobs:
+  purge:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - run: pip install -r scripts/requirements.txt
+
+      - run: python scripts/purge_channel_backfill_media.py
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          ADMIN_PASSWORD: ${{ secrets.ADMIN_PASSWORD }}
+          CHANNEL_USERNAME: ${{ github.event.inputs.channel_username }}
+          DELETE_COUNT: ${{ github.event.inputs.delete_count }}
