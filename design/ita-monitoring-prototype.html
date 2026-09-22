@@ -3480,6 +3480,24 @@
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
+    await loadHawzaPosts();
+  }
+
+  // تب «اخبار حوزه» روی همون POSTS_CACHE سوار می‌شه (بخش «تب «اخبار حوزه»»ی
+  // CLAUDE.md رو ببین)، ولی چون فرکانس پست‌های کانال‌های حوزه‌ای خیلی کمتر از
+  // بقیه‌ی سایته، جدیدترین پست hawza_relevant=true معمولاً خیلی زودتر از سقف
+  // ۱۰۰۰تاییِ loadPosts() (که کل سایت رو با هم می‌بینه) از کش بیرون می‌افته —
+  // یه‌بار واقعاً رخ داد: با این‌که ۵۴ پست واقعی مرتبط توی دیتابیس بود، تب
+  // کاملاً خالی به‌نظر می‌رسید چون هیچ‌کدوم توی همون ۱۰۰۰تای اخیر نبودن. این
+  // کوئری جدا و مستقل، مستقیم روی hawza_relevant=true فیلتر می‌کنه (بدون
+  // وابستگی به تازگیِ scraped_at نسبت به بقیه‌ی سایت) و نتیجه رو توی همون
+  // POSTS_CACHE ادغام می‌کنه (با حذف تکراری بر اساس id).
+  async function loadHawzaPosts(){
+    const r = await api('/posts?select=*&hawza_relevant=eq.true&order=posted_at.desc&limit=300');
+    if(!r.ok) return;
+    const extra = await r.json();
+    const existingIds = new Set(POSTS_CACHE.map(p=>p.id));
+    for(const p of extra){ if(!existingIds.has(p.id)){ POSTS_CACHE.push(p); existingIds.add(p.id); } }
   }
   async function loadMagazines(){
     const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
