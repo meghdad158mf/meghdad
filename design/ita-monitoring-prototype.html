@@ -528,6 +528,8 @@
     border:1px solid rgba(181,101,29,0.2);
     box-shadow: 0 20px 40px -20px rgba(10,15,22,0.45), 0 1px 0 rgba(255,255,255,0.7) inset;
   }
+  .cpt-count-row{ padding:10px 18px; font-size:11.5px; color: var(--text-dim); border-bottom:1px solid rgba(181,101,29,.14); }
+  .cpt-count-row b{ color: var(--accent-strong); font-weight:800; }
   .cpt-head{
     display:flex; gap:16px; padding:13px 18px; font-size:10.5px; font-weight:700; color: var(--accent-strong);
     background: linear-gradient(155deg, #fffaf5, #fbe9d7); border-bottom:1px solid rgba(181,101,29,.18);
@@ -589,6 +591,8 @@
   .cpt-activity.inactive{ color: var(--danger); background: var(--danger-soft); }
   .cpt-tagcol{ flex:0 0 90px; display:flex; justify-content:center; }
   .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; }
+  .cpt-groupcol{ flex:0 0 110px; display:flex; justify-content:center; }
+  .cpt-tag-khorasan{ color: var(--accent-strong); background: var(--accent-soft); border-color: transparent; }
   .cpt-arrow{ color: var(--text-faint); flex:0 0 20px; transition: transform .15s ease, color .15s ease; }
   .cpt-arrow svg{ width:14px; height:14px; display:block; }
   @media (max-width:700px){ .cpt-arrow{ display:none; } }
@@ -653,11 +657,19 @@
 
   /* اخبار رسمی — بخش مطالعه (فاز ۱، بدون فیلتر/ترجمه‌ی هوشمند) */
   .news-page-tabs{ display:flex; gap:26px; margin-bottom:16px; }
-  .news-page-tabs button{ border:none; background:none; color:rgba(255,255,255,0.5); font-size:14px; font-weight:700; padding:11px 2px; cursor:pointer; position:relative; font-family:inherit; }
+  .news-page-tabs button{ border:none; background:none; color:rgba(255,255,255,0.5); font-size:14px; font-weight:700; padding:11px 2px; cursor:pointer; position:relative; font-family:inherit; white-space:nowrap; }
   .news-page-tabs button.active{ color:#fff; }
   .news-page-tabs button.active::after{ content:''; position:absolute; inset-inline:0; bottom:-1px; height:2px; background:var(--accent); border-radius:2px; }
   .news-page-tabs button:disabled{ cursor:default; opacity:.6; }
   .news-soon{ font-size:9.5px; font-weight:600; color: var(--accent); background: rgba(234,179,147,0.14); border-radius:100px; padding:2px 7px; margin-inline-start:6px; }
+  /* ردیف تب‌ها با تعداد زیاد (مثلاً ۷ تای «اخبار و رویدادها» یا ۵ تای
+     «یادداشت‌ها») از عرض موبایل رد می‌شه و باعث اسکرول افقی کل صفحه
+     می‌شد — روی موبایل به‌جای شکستن/جمع‌شدن، خودِ ردیف تب‌ها اسکرول
+     افقی می‌گیره (الگوی معمول تب‌بار موبایل)، بقیه‌ی صفحه دست‌نخورده می‌مونه */
+  @media (max-width:700px){
+    .news-page-tabs{ overflow-x:auto; flex-wrap:nowrap; -webkit-overflow-scrolling:touch; scrollbar-width:none; gap:20px; }
+    .news-page-tabs::-webkit-scrollbar{ display:none; }
+  }
 
   /* زیرنویس توضیحی تب فعال — یه خط کوتاه هدف همون تب رو توضیح می‌ده،
      با تعویض تب هم عوض می‌شه (نگاه کن به setNewsPageTab و دو هندلر کلیک
@@ -1114,14 +1126,6 @@
   .mag-reorder button:disabled{ opacity:.35; cursor:default; }
   .mag-reorder svg{ width:11px; height:11px; }
 
-  /* تب «بسته‌های آموزش تحلیلی» — کارتش عیناً .magazine-card ولی به‌جای
-     .mag-icon کوچیک، یه پوستر واقعی بالای عنوانه (چون خودِ کاربر خواسته
-     پوستری باشه) */
-  .basirat-card{ padding-top:14px; }
-  .basirat-poster{ width:100%; aspect-ratio: 16/9; border-radius: var(--radius-control); overflow:hidden; background: var(--surface-2); display:flex; align-items:center; justify-content:center; color: var(--text-faint); margin-bottom:2px; }
-  .basirat-poster img{ width:100%; height:100%; object-fit:cover; display:block; }
-  .basirat-poster svg{ width:26%; height:26%; opacity:.5; }
-
   /* تب «سایر بسته‌های تحلیلی» (زیرتب «یادداشت‌ها») — یه قاب تصویر جلد بلند
      (aspect-ratio 5/7) به‌جای .mag-icon کوچیک. کارت هم برخلاف .magazine-card
      معمولی، قاب/زمینه‌ی سفید نداره — بدون قاب، مستقیم روی بوم تیره چون خودِ
@@ -1241,9 +1245,8 @@
               <button class="nav-menu-group-title-btn" onclick="switchSection('schools'); closeNavMenu();">برنامه مدارس</button>
 
               <button class="nav-menu-group-title-btn" onclick="goToPeopleTab('figures'); closeNavMenu();">یادداشت‌ها</button>
-              <button class="nav-menu-sub" onclick="goToPeopleTab('figures'); closeNavMenu();">چهره‌های سیاسی</button>
-              <button class="nav-menu-sub" onclick="goToPeopleTab('archive'); closeNavMenu();">سایر بسته‌های تحلیلی</button>
-              <button class="nav-menu-sub" onclick="goToPeopleTab('basirat'); closeNavMenu();">بسته‌های آموزشی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('figures'); closeNavMenu();">چهره‌ها و فعالان سیاسی</button>
+              <button class="nav-menu-sub" onclick="goToPeopleTab('archive'); closeNavMenu();">بسته‌های تحلیلی</button>
             </div>
             <div class="nav-menu-col">
               <button class="nav-menu-toplevel-btn" onclick="switchSection('reports'); closeNavMenu();">بسته تحلیلی جریان</button>
@@ -1391,9 +1394,8 @@
         <a onclick="goToNewsTab('hawza')">اخبار حوزه</a>
         <a onclick="goToNewsTab('dossier')">پرونده‌های موضوعی</a>
         <a onclick="goToNewsTab('newsletter')">خبرنامه مدارس</a>
-        <a onclick="goToPeopleTab('figures')">چهره‌های سیاسی</a>
-        <a onclick="goToPeopleTab('archive')">سایر بسته‌های تحلیلی</a>
-        <a onclick="goToPeopleTab('basirat')">بسته‌های آموزشی</a>
+        <a onclick="goToPeopleTab('figures')">چهره‌ها و فعالان سیاسی</a>
+        <a onclick="goToPeopleTab('archive')">بسته‌های تحلیلی</a>
         <span class="domain-shortcut-disabled">شرکت‌کننده در برنامه‌ها<span class="news-soon">به‌زودی</span></span>
         <span class="domain-shortcut-disabled">جامعه مخاطب<span class="news-soon">به‌زودی</span></span>
         <a onclick="goToPostsTab('feed')">پست‌های منتشر شده</a>
@@ -1724,10 +1726,9 @@
          صریح کاربر به‌عنوان زیرتب همین بخش منتقل شدن ===== -->
     <section class="section" id="sec-people">
       <div class="news-page-tabs" id="people-page-tabs">
-        <button class="active" data-people-tab="figures">چهره‌های سیاسی</button>
-        <button data-people-tab="archive">سایر بسته‌های تحلیلی</button>
-        <button data-people-tab="basirat">بسته‌های آموزشی</button>
-        <button disabled>آنالیز<span class="news-soon">به‌زودی</span></button>
+        <button disabled>تحلیل سازمان‌ها<span class="news-soon">به‌زودی</span></button>
+        <button class="active" data-people-tab="figures">چهره‌ها و فعالان سیاسی</button>
+        <button data-people-tab="archive">بسته‌های تحلیلی</button>
       </div>
       <p class="news-tab-subtitle" id="people-tab-subtitle"><span>یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.</span></p>
 
@@ -1783,27 +1784,6 @@
         </div>
       </div>
 
-      <div id="people-tab-basirat" style="display:none;">
-        <p class="magazines-empty" id="basirat-empty" style="display:none;color:rgba(255,255,255,0.55);font-size:13px;text-align:center;padding:40px 0;">هنوز بسته‌ی آموزشی‌ای بارگذاری نشده.</p>
-        <div class="magazine-grid" id="basirat-grid"></div>
-
-        <div class="panel" id="basirat-upload-panel" style="display:none;">
-          <div class="panel-head"><span class="panel-pill">بارگذاری بسته‌ی آموزشی جدید</span></div>
-          <div class="form-grid">
-            <div class="field"><label>عنوان</label><input type="text" id="bas-title" /></div>
-            <div class="field"><label>لینک صفحه‌ی آموزش در مدرسه مجازی بصیرت</label><input type="text" id="bas-link" placeholder="https://..." /></div>
-          </div>
-          <div class="field">
-            <label>توضیح کوتاه (اختیاری)</label>
-            <input type="text" id="bas-desc" />
-          </div>
-          <div class="field">
-            <label>پوستر (اختیاری)</label>
-            <input type="file" id="bas-poster" accept="image/*" />
-          </div>
-          <button class="btn primary" id="bas-upload-btn" style="margin-top:8px">بارگذاری</button>
-        </div>
-      </div>
     </section>
 
     <!-- REPORTS → بخش تحلیلی: کتابخانه‌ی مجلات (متصل به Supabase Storage) -->
@@ -1897,6 +1877,7 @@
         </div>
         <p class="posts-empty" id="cyber-people-empty" style="display:none;">هنوز کانالی برای «کنشگری مجازی» تگ نشده.</p>
         <div class="cyber-people-table" id="cyber-people-table" style="display:none;">
+          <div class="cpt-count-row" id="cyber-people-count"></div>
           <div class="cpt-head" id="cyber-people-head">
             <span class="cpt-sort-btn cpt-head-center" data-sort="name" style="flex:1.5 1 140px">نام کانال<span class="cpt-sort-ind"></span></span>
             <span class="cpt-sort-btn" data-sort="platform" style="flex:0 0 128px">بستر فعالیت<span class="cpt-sort-ind"></span></span>
@@ -1904,6 +1885,7 @@
             <span class="cpt-sort-btn cpt-head-center" data-sort="subscribers" style="flex:0 0 90px">مخاطب<span class="cpt-sort-ind"></span></span>
             <span class="cpt-sort-btn cpt-head-center" data-sort="activity" style="flex:0 0 100px">فعالیت<span class="cpt-sort-ind"></span></span>
             <span class="cpt-sort-btn cpt-head-center" data-sort="category" style="flex:0 0 90px">موضوع<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="group" style="flex:0 0 110px">گروه<span class="cpt-sort-ind"></span></span>
             <span style="flex:0 0 20px"></span>
           </div>
           <div id="cyber-people-grid"></div>
@@ -2310,7 +2292,6 @@
     adminLinks.style.display = isAdmin ? '' : 'none';
     document.getElementById('magazine-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('archive-report-upload-panel').style.display = isAdmin ? '' : 'none';
-    document.getElementById('basirat-upload-panel').style.display = isAdmin ? '' : 'none';
     document.getElementById('school-report-upload-panel').style.display = isAdmin ? '' : 'none';
     const activeSec = document.querySelector('.section.active');
     const activeKey = activeSec && activeSec.id.replace('sec-','');
@@ -2445,8 +2426,7 @@
   };
   const PEOPLE_TAB_INFO = {
     figures: 'یادداشت‌ها و مطالب کانال‌های معرفی‌شده به‌عنوان چهره‌ی سیاسی.',
-    archive: 'تولیدات تحلیلی سایر نهادها، جدا از بسته‌های تحلیلی خودِ جریان.',
-    basirat: 'بسته‌های آموزشی مدرسه‌ی مجازی بصیرت، با لینک مستقیم به دوره.'
+    archive: 'تولیدات تحلیلی سایر نهادها، جدا از بسته‌های تحلیلی خودِ جریان.'
   };
 
   function setNewsPageTab(tab){
@@ -2503,7 +2483,6 @@
   let POSTS_CACHE = []; // {id, channel_id, platform, platform_post_id, text, media_type, posted_at, scraped_at, views, forwards, link}
   let MAGAZINES = [];   // {id, title, issue_no, publish_date, file_type, files, cover_url, uploaded_at}
   let ARCHIVE_REPORTS = [];   // {id, title, source_org, publish_date, file_type, files, cover_url, uploaded_at}
-  let BASIRAT_COURSES = [];   // {id, title, description, poster_url, external_url, sort_order, created_at}
   let FEEDBACK_LIST = [];     // {id, name, message, created_at} — فقط با ورود مدیر به تب «نظرات کاربران» لود می‌شه
   let NOTIFY_SUBSCRIBERS = []; // {id, phone, created_at, notified_at} — فقط با ورود مدیر به تب «خروجی‌گیری» لود می‌شه
   let NEWSPAPERS = [];  // {id, slug, title, edition_date, image_url, media_storage_path, reader_url}
@@ -3507,10 +3486,6 @@
     const r = await api('/archive_reports?select=*&order=sort_order.asc,uploaded_at.desc');
     ARCHIVE_REPORTS = r.ok ? await r.json() : [];
   }
-  async function loadBasiratCourses(){
-    const r = await api('/basirat_courses?select=*&order=sort_order.asc,created_at.desc');
-    BASIRAT_COURSES = r.ok ? await r.json() : [];
-  }
   async function loadNewspapers(){
     // limit=500: تعداد واقعی روزنامه‌های کیوسک جار الان حدود ۱۶۵ عنوان در روزه (نه
     // ۵۴ تایی که فرض اولیه بود) — با نگه‌داری فعلاً ۱ روزه (RETENTION_DAYS، نگاه کن
@@ -3626,7 +3601,7 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadBasiratCourses(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
     await loadPosts();
     renderDashHeroStats();
     renderChannelCards();
@@ -3647,7 +3622,6 @@
     renderChanList();
     renderMagazines();
     renderArchiveReports();
-    renderBasiratCourses();
     renderNewspapers();
     populateNewsSourceOptions();
     renderNewsFeed();
@@ -3809,7 +3783,7 @@
     b.classList.add('active');
     const peopleSubEl = document.getElementById('people-tab-subtitle');
     if(peopleSubEl) peopleSubEl.querySelector('span').textContent = PEOPLE_TAB_INFO[b.dataset.peopleTab] || '';
-    ['figures','archive','basirat'].forEach(key=>{
+    ['figures','archive'].forEach(key=>{
       const el = document.getElementById('people-tab-'+key);
       if(el) el.style.display = key === b.dataset.peopleTab ? '' : 'none';
     });
@@ -3838,6 +3812,7 @@
       case 'subscribers': return ch.subscriber_count == null ? -1 : ch.subscriber_count;
       case 'activity': return activityOf(ch.id).n;
       case 'category': { const c = CATEGORIES.find(x=>x.id===ch.category_id); return c ? c.name : ''; }
+      case 'group': return ch.is_khorasan_talabeh ? 'طلاب خراسان' : 'سایر کنشگران';
       default: return '';
     }
   }
@@ -3876,6 +3851,14 @@
     });
     empty.style.display = channels.length ? 'none' : 'block';
     table.style.display = channels.length ? '' : 'none';
+    const countEl = document.getElementById('cyber-people-count');
+    if(countEl){
+      const allCyber = CHANNELS.filter(c=>c.show_in_cyberspace);
+      const khCount = allCyber.filter(c=>c.is_khorasan_talabeh).length;
+      const otherCount = allCyber.length - khCount;
+      countEl.innerHTML = `مجموع: <b>${toFaDigits(channels.length)}</b> کانال` +
+        (cyberPeopleGroupFilter ? '' : ` (طلاب خراسان: <b>${toFaDigits(khCount)}</b> · سایر کنشگران: <b>${toFaDigits(otherCount)}</b>)`);
+    }
     wrap.innerHTML = '';
     channels.forEach(ch=>{
       const act = activityOf(ch.id);
@@ -3900,6 +3883,7 @@
         <div class="cpt-num">${ch.subscriber_count ? `<span class="cpt-num-val">${ICONS.users}${toFaDigits(ch.subscriber_count)}</span>` : ''}</div>
         <div class="cpt-activity-col"><span class="cpt-activity ${act.level}"><span class="dt"></span>${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}</span></div>
         <div class="cpt-tagcol">${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : ''}</div>
+        <div class="cpt-groupcol"><span class="cpt-tag${ch.is_khorasan_talabeh ? ' cpt-tag-khorasan' : ''}">${ch.is_khorasan_talabeh ? 'طلاب خراسان' : 'سایر کنشگران'}</span></div>
         <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
       el.querySelector('.cpt-platform-link').addEventListener('click', e => e.stopPropagation());
       el.addEventListener('click', ()=> openPersonFeed(ch.id));
@@ -5481,49 +5465,6 @@
     }
   });
 
-  // ---- تب «بسته‌های آموزش تحلیلی» (بخش تحلیلی) ----
-  // این بسته‌ها روی خودِ سایت مدرسه مجازی بصیرت میزبانی می‌شن — ما فقط
-  // عنوان + توضیح کوتاه + پوستر (bucket عمومی basirat-course-posters) + یه
-  // لینک بیرونی نگه می‌داریم؛ برخلاف مجلات/آرشیو هیچ فایلی توی Storage
-  // خودمون دانلود/سیو نمی‌شه، چون فایلی برای دانلود وجود نداره.
-  function renderBasiratCourses(){
-    const grid = document.getElementById('basirat-grid');
-    const empty = document.getElementById('basirat-empty');
-    if(!grid) return;
-    const isAdmin = currentRole === 'app_admin';
-    grid.innerHTML = '';
-    empty.style.display = BASIRAT_COURSES.length ? 'none' : 'block';
-    BASIRAT_COURSES.forEach((c, i)=>{
-      const el = document.createElement('div'); el.className = 'magazine-card basirat-card';
-      el.innerHTML = `<div class="basirat-poster">${c.poster_url ? `<img src="${c.poster_url}" alt="${c.title}" draggable="false" oncontextmenu="return false" />` : ICONS.doc}</div>
-        <div class="mag-title">${c.title}</div>
-        ${c.description ? `<div class="mag-meta">${c.description}</div>` : ''}
-        <div class="mag-actions"></div>`;
-      const actions = el.querySelector('.mag-actions');
-      const link = document.createElement('a');
-      link.className = 'btn'; link.textContent = 'مشاهده در بصیرت';
-      link.href = c.external_url; link.target = '_blank'; link.rel = 'noopener';
-      actions.appendChild(link);
-      if(isAdmin){
-        const reorder = document.createElement('div'); reorder.className = 'mag-reorder';
-        const up = document.createElement('button'); up.title = 'انتقال به بالا'; up.disabled = i===0;
-        up.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 15l6-6 6 6"/></svg>';
-        up.addEventListener('click', () => moveBasiratCourse(c, -1));
-        const down = document.createElement('button'); down.title = 'انتقال به پایین'; down.disabled = i===BASIRAT_COURSES.length-1;
-        down.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 9l6 6 6-6"/></svg>';
-        down.addEventListener('click', () => moveBasiratCourse(c, 1));
-        reorder.appendChild(up); reorder.appendChild(down);
-        actions.appendChild(reorder);
-
-        const del = document.createElement('button'); del.className = 'del-btn'; del.textContent = '✕';
-        del.title = 'حذف مورد'; del.setAttribute('aria-label', 'حذف ' + c.title);
-        del.addEventListener('click', () => deleteBasiratCourse(c));
-        actions.appendChild(del);
-      }
-      grid.appendChild(el);
-    });
-  }
-
   // کارت «ثبت نظر و پیشنهاد» ته صفحه‌ی نخست — هم مدیر هم بیننده اجازه‌ی
   // insert روی جدول feedback دارن (تنها استثنای این پروژه برای بیننده)
   async function submitFeedback(event){
@@ -5594,78 +5535,6 @@
       showToast('حذف نظر ناموفق بود');
     }
   }
-
-  async function moveBasiratCourse(c, direction){
-    const idx = BASIRAT_COURSES.findIndex(x=>x.id===c.id);
-    const swapIdx = idx + direction;
-    if(swapIdx < 0 || swapIdx >= BASIRAT_COURSES.length) return;
-    const other = BASIRAT_COURSES[swapIdx];
-    const aOrder = c.sort_order || 0, bOrder = other.sort_order || 0;
-    await Promise.all([
-      api('/basirat_courses?id=eq.'+c.id, {method:'PATCH', body: JSON.stringify({sort_order: bOrder})}),
-      api('/basirat_courses?id=eq.'+other.id, {method:'PATCH', body: JSON.stringify({sort_order: aOrder})}),
-    ]);
-    await loadBasiratCourses(); renderBasiratCourses();
-  }
-
-  async function deleteBasiratCourse(c){
-    if(!confirm('«' + c.title + '» حذف شود؟')) return;
-    try{
-      if(c.poster_url && c.poster_url.includes('/basirat-course-posters/')){
-        const posterPath = c.poster_url.split('/basirat-course-posters/')[1];
-        await fetch(SUPABASE_URL + '/storage/v1/object/remove/basirat-course-posters', {
-          method: 'POST',
-          headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': 'application/json' },
-          body: JSON.stringify({ prefixes: [posterPath] }),
-        });
-      }
-      await api('/basirat_courses?id=eq.'+c.id, {method:'DELETE'});
-      await loadBasiratCourses(); renderBasiratCourses();
-      showToast('حذف شد');
-    }catch(e){
-      showToast('حذف ناموفق بود');
-    }
-  }
-
-  async function uploadBasiratPosterFile(file){
-    const safeName = file.name.replace(/[^\w.\-]+/g, '_');
-    const path = Date.now() + '-' + Math.random().toString(36).slice(2,8) + '-' + safeName;
-    const r = await fetch(SUPABASE_URL + '/storage/v1/object/basirat-course-posters/' + path, {
-      method: 'POST',
-      headers: { apikey: SUPABASE_ANON_KEY, Authorization: 'Bearer ' + authToken, 'Content-Type': file.type || 'application/octet-stream' },
-      body: file,
-    });
-    if(!r.ok) throw new Error('poster upload failed');
-    return SUPABASE_URL + '/storage/v1/object/public/basirat-course-posters/' + path;
-  }
-
-  document.getElementById('bas-upload-btn').addEventListener('click', async () => {
-    const btn = document.getElementById('bas-upload-btn');
-    const titleEl = document.getElementById('bas-title');
-    const linkEl = document.getElementById('bas-link');
-    const descEl = document.getElementById('bas-desc');
-    const posterEl = document.getElementById('bas-poster');
-    const title = titleEl.value.trim();
-    const link = linkEl.value.trim();
-    if(!title || !link){ showToast('عنوان و لینک صفحه‌ی آموزش لازم است'); return; }
-    btn.disabled = true; btn.textContent = 'در حال بارگذاری…';
-    try{
-      let posterUrl = null;
-      const posterFile = posterEl.files[0];
-      if(posterFile) posterUrl = await uploadBasiratPosterFile(posterFile);
-      const nextOrder = BASIRAT_COURSES.length ? Math.max(...BASIRAT_COURSES.map(c=>c.sort_order||0)) + 1 : 0;
-      const body = { title, external_url: link, description: descEl.value.trim() || null, poster_url: posterUrl, sort_order: nextOrder };
-      const r = await api('/basirat_courses', {method:'POST', headers:{Prefer:'return=minimal'}, body: JSON.stringify(body)});
-      if(!r.ok) throw new Error('insert failed');
-      titleEl.value=''; linkEl.value=''; descEl.value=''; posterEl.value='';
-      await loadBasiratCourses(); renderBasiratCourses();
-      showToast('بسته‌ی آموزشی اضافه شد');
-    }catch(e){
-      showToast('بارگذاری ناموفق بود — Storage یا دیتابیس را بررسی کنید');
-    }finally{
-      btn.disabled = false; btn.textContent = 'بارگذاری';
-    }
-  });
 
   // ---- settings: password change ----
   async function changePassword(role){
