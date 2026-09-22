@@ -1,12 +1,21 @@
-// استخراج یک‌باره‌ی کلیدواژه‌ی هوش مصنوعی برای هر پست (پایه‌ی بخش «پرونده ویژه»)
+// استخراج یک‌باره‌ی کلیدواژه‌ی هوش مصنوعی برای هر پست (پایه‌ی بخش «پرونده‌های موضوعی»)
 //
-// چرا: تب «پرونده ویژه» اخبار مرتبط با موضوعات موقت/چرخشی (مدیر تعیین
-// می‌کنه، ممکنه هر چند روز عوض بشه) رو جدا نشون می‌ده. اگه بخوایم هر بار
-// موضوعی تعریف/تغییر می‌کنه هوش مصنوعی کل تاریخچه‌ی پست‌ها رو دوباره
-// بخونه، هزینه‌ی توکن زیاد می‌شه. به‌جاش هر پست فقط یک‌بار (وقتی
+// چرا: تب «پرونده‌های موضوعی» اخبار مرتبط با موضوعات موقت/چرخشی (مدیر
+// تعیین می‌کنه، ممکنه هر چند روز عوض بشه) رو جدا نشون می‌ده. اگه بخوایم
+// هر بار موضوعی تعریف/تغییر می‌کنه هوش مصنوعی کل تاریخچه‌ی پست‌ها رو
+// دوباره بخونه، هزینه‌ی توکن زیاد می‌شه. به‌جاش هر پست فقط یک‌بار (وقتی
 // posts.ai_keywords هنوز NULLه) با هوش مصنوعی به چندتا کلیدواژه‌ی
 // فارسی/دقیق/بدون‌ابهام برچسب می‌خوره؛ تطبیق موضوع بعدش فقط یه
 // مقایسه‌ی متنی سادهٔ رایگانه (نه هوش مصنوعی).
+//
+// از همین پاس، یه کار دوم و مستقل هم انجام می‌شه — تشخیص سیاسی/اجتماعی‌
+// بودن پست‌های تب «اخبار حوزه» (migration_027/029): فیدهای RSS دو تا از
+// سه کانال «اخبار حوزه» عمومی‌ان (همه‌ی موضوعات رو می‌گیرن)، پس از هوش
+// مصنوعی برای **همه‌ی** پست‌های دسته (بدون قید شرط، برای قابل‌اعتمادتر
+// بودن پاسخ) یه فیلد اضافه (hawza_relevant) هم خواسته می‌شه؛ فقط توی کد،
+// این مقدار صرفاً برای پست‌های کانال‌های show_in_hawza=true واقعاً نوشته
+// می‌شه (برای بقیه نادیده گرفته می‌شه) — posts.hawza_relevant=true تنها
+// پست‌هاییه که توی تب «اخبار حوزه» نشون داده می‌شن.
 //
 // هر ۲ ساعت، **مستقل** از news-insights (نه هم‌زمان با اون، نه هم‌زمان
 // با کالکتورها) از GitHub Actions (scripts/extract_keywords.py، با توکن
@@ -60,12 +69,24 @@ Deno.serve(async (req) => {
       // بدنه‌ی خالی هم مجازه — همون پیش‌فرض استفاده می‌شه
     }
 
-    const posts = await fetchPostsMissingKeywords(req, limit);
-    if (posts === null) return jsonResponse({ error: "unauthorized" }, 401);
+    const result = await fetchPostsMissingKeywords(req, limit);
+    if (result === null) return jsonResponse({ error: "unauthorized" }, 401);
+    const { posts, hawzaChannelIds } = result;
     if (!posts.length) {
       return jsonResponse({ processed: 0, matched: 0, note: "no posts pending" });
     }
 
+    // ⚠️ hawza_relevant عمداً بدون هیچ پرچم شرطی («فقط برای این پست‌ها»)
+    // از هوش مصنوعی خواسته می‌شه — یه نسخه‌ی قبلی این کد یه فیلد
+    // اختیاری (needsHawzaCheck) می‌فرستاد و فقط برای اون‌ها hawza_relevant
+    // می‌خواست؛ در عمل مدل این فیلد شرطی رو برای همه‌ی پست‌های لازم برنمی‌گردوند
+    // (احتمالاً چون وسط یه batch مختلط، رعایت یه قانون شرطی برای زیرمجموعه‌ای
+    // از آیتم‌ها قابل‌اعتماد نیست) و کد هم غیبت رو با false پر می‌کرد — نتیجه:
+    // حتی خبرهای قطعاً سیاسی (فید اختصاصی سیاسی رسا) هم همه false ثبت شدن.
+    // رفعش: مثل keywords، از مدل خواسته می‌شه این فیلد رو **برای همه‌ی پست‌ها
+    // بدون استثنا** برگردونه (همون الگوی «هیچ‌کدوم رو جا نندار» که برای
+    // keywords قبلاً ثابت‌شده قابل‌اعتماده) — فقط توی کد، مقدارش صرفاً برای
+    // پست‌های hawzaChannelIds.has(channel_id) واقعاً نوشته می‌شه.
     const compact = posts.map((p) => ({
       id: p.id,
       title: p.title || null,
@@ -87,7 +108,7 @@ Deno.serve(async (req) => {
               "For EVERY post in the batch, without exception, return exactly one entry — never skip a post, " +
               "even if it has no meaningful content (in that case return an empty keywords array for it).\n" +
               "Each entry: {\"id\": <one of the given post ids, exactly>, \"keywords\": [<Persian keyword " +
-              "strings>]}.\n" +
+              "strings>], \"hawza_relevant\": true or false}.\n" +
               "Rules for keywords:\n" +
               "- Always write keywords in Persian, regardless of the post's original language (translate " +
               "entity/topic names, do not leave them in the source language).\n" +
@@ -97,6 +118,19 @@ Deno.serve(async (req) => {
               "\"وزارت خارجه\" or \"رئیس‌جمهور\" is NOT acceptable if it could belong to more than one country " +
               "or organization — always specify which one, e.g. \"وزارت خارجه ایران\" vs \"وزارت خارجه آمریکا\", " +
               "\"رئیس‌جمهور ایران\" vs \"رئیس‌جمهور آمریکا\".\n" +
+              "\n" +
+              "Rules for hawza_relevant — for EVERY post, without exception (this field is mandatory on every " +
+              "entry, exactly like keywords), classify whether the post is genuinely POLITICAL or SOCIAL news:\n" +
+              "- true = POLITICAL news (government, elections, foreign policy, international relations, " +
+              "sanctions/diplomacy, statements by political or religious authorities specifically about " +
+              "political matters, protests, political institutions/parties) OR SOCIAL news (social issues, " +
+              "family, education, public welfare, the economy as it affects society, social pathologies, " +
+              "social critique or commentary).\n" +
+              "- false = purely religious/theological content (fiqh rulings, sermons, religious rituals or " +
+              "ceremonies, spiritual/moral lessons with no political or social angle), seminary/hawza internal " +
+              "or administrative announcements (class schedules, exam notices, seminary management news), " +
+              "cultural or literary content, sports, obituary or condolence notices, or anything else that is " +
+              "not clearly political or social.\n" +
               'Respond with ONLY a raw JSON object like {"results":[{"id":1,"keywords":["..."]}, ...]} and ' +
               "nothing else — no markdown fences, no extra commentary. The results array MUST have exactly one " +
               "entry per input post id, using only ids from the given list.",
@@ -115,7 +149,7 @@ Deno.serve(async (req) => {
     let content: string = aiData?.choices?.[0]?.message?.content || "{}";
     content = content.trim().replace(/^```json\s*/i, "").replace(/^```\s*/, "").replace(/```\s*$/, "");
 
-    let parsed: { results?: Array<{ id: number; keywords?: string[] }> };
+    let parsed: { results?: Array<{ id: number; keywords?: string[]; hawza_relevant?: boolean }> };
     try {
       parsed = JSON.parse(content);
     } catch {
@@ -124,7 +158,9 @@ Deno.serve(async (req) => {
 
     // اعتبارسنجی: idهای هذیان‌گفته‌شده حذف می‌شن؛ هر id فقط یک‌بار اعمال می‌شه
     const validIds = new Set(posts.map((p) => p.id));
+    const channelById = new Map(posts.map((p) => [p.id, p.channel_id]));
     const results = new Map<number, string[]>();
+    const hawzaResults = new Map<number, boolean>();
     for (const r of parsed.results || []) {
       const id = Number(r.id);
       if (!validIds.has(id) || results.has(id)) continue;
@@ -132,6 +168,12 @@ Deno.serve(async (req) => {
         ? r.keywords.map((k) => String(k).slice(0, 80)).filter(Boolean).slice(0, 20)
         : [];
       results.set(id, keywords);
+      // فقط برای کانال‌های واقعاً «اخبار حوزه» ذخیره می‌شه — هوش مصنوعی این
+      // فیلد رو برای همه‌ی پست‌ها برمی‌گردونه (طبق طراحی، بدون قید شرط)،
+      // ولی مقدارش برای بقیه‌ی کانال‌ها هیچ‌وقت خونده/نوشته نمی‌شه
+      if (hawzaChannelIds.has(channelById.get(id)!)) {
+        hawzaResults.set(id, r.hawza_relevant === true);
+      }
     }
 
     // پست‌هایی که هوش مصنوعی جا انداخته (پاسخ ناقص) رو هم صریح با آرایه‌ی
@@ -139,6 +181,11 @@ Deno.serve(async (req) => {
     // NULL می‌مونه و هر اجرا دوباره براش فرستاده می‌شه
     for (const p of posts) {
       if (!results.has(p.id)) results.set(p.id, []);
+      // همین‌طور hawza_relevant — اگه جا افتاده باشه، false (نه NULL) تا
+      // دوباره پردازش نشه؛ امن‌تره که پست نامشخص از تب مخفی بمونه تا اینکه اشتباهی نشون داده بشه
+      if (hawzaChannelIds.has(p.channel_id) && !hawzaResults.has(p.id)) {
+        hawzaResults.set(p.id, false);
+      }
     }
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
@@ -154,15 +201,19 @@ Deno.serve(async (req) => {
     const nowIso = new Date().toISOString();
     let updated = 0;
     for (const [id, keywords] of results) {
+      const patchBody: Record<string, unknown> = { ai_keywords: keywords, ai_keywords_extracted_at: nowIso };
+      // فقط پست‌های کانال‌های «اخبار حوزه» این ستون رو دارن؛ برای بقیه
+      // اصلاً توی patch نمی‌فرستیمش (NULL دائمی، بی‌ضرر، هیچ‌جا خونده نمی‌شه)
+      if (hawzaResults.has(id)) patchBody.hawza_relevant = hawzaResults.get(id);
       const patchRes = await fetch(`${supabaseUrl}/rest/v1/posts?id=eq.${id}`, {
         method: "PATCH",
         headers: writeHeaders,
-        body: JSON.stringify({ ai_keywords: keywords, ai_keywords_extracted_at: nowIso }),
+        body: JSON.stringify(patchBody),
       });
       if (patchRes.ok) updated++;
     }
 
-    // تطبیق خودکار موضوعات فعال «پرونده ویژه» با کلیدواژه‌های تازه —
+    // تطبیق خودکار موضوعات فعال «پرونده‌های موضوعی» با کلیدواژه‌های تازه —
     // مقایسه‌ی متنی ساده (نه هوش مصنوعی)، برای همین دسته‌ی تازه‌پردازش‌شده
     const topicsRes = await fetch(
       `${supabaseUrl}/rest/v1/dossier_topics?select=id,keywords&active=eq.true`,

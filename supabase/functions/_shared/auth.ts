@@ -74,7 +74,10 @@ export async function fetchRecentNewsPostsForUser(
 export async function fetchPostsMissingKeywords(
   req: Request,
   limit = 30,
-): Promise<Array<{ id: number; title: string | null; text: string | null }> | null> {
+): Promise<{
+  posts: Array<{ id: number; channel_id: number; title: string | null; text: string | null }>;
+  hawzaChannelIds: Set<number>;
+} | null> {
   const authHeader = req.headers.get("Authorization") || "";
   const token = authHeader.replace(/^Bearer\s+/i, "");
   if (!token) return null;
@@ -84,19 +87,33 @@ export async function fetchPostsMissingKeywords(
   const headers = { apikey: anonKey ?? "", Authorization: `Bearer ${token}` };
 
   // همون منبع خبری news-insights: کانال‌های «شبکه‌های اجتماعی» + «وب‌سایت‌ها» (show_in_news، غیر از بله)
+  // show_in_hawza هم همین‌جا می‌خونیم تا بدونیم کدوم پست‌ها (تب «اخبار
+  // حوزه») علاوه بر کلیدواژه، نیاز به تشخیص سیاسی/اجتماعی‌بودن هم دارن
   const chRes = await fetch(
-    `${supabaseUrl}/rest/v1/channels?select=id&show_in_news=eq.true&platform=neq.bale`,
+    `${supabaseUrl}/rest/v1/channels?select=id,show_in_hawza&show_in_news=eq.true&platform=neq.bale`,
     { headers },
   );
   if (!chRes.ok) return null;
-  const channels: Array<{ id: number }> = await chRes.json();
-  if (!channels.length) return [];
+  const channels: Array<{ id: number; show_in_hawza: boolean }> = await chRes.json();
+  if (!channels.length) return { posts: [], hawzaChannelIds: new Set() };
   const ids = channels.map((c) => c.id).join(",");
+  const hawzaChannelIds = new Set(channels.filter((c) => c.show_in_hawza).map((c) => c.id));
+  const hawzaIds = [...hawzaChannelIds].join(",");
+
+  // دو معیار resumable مستقل، با OR: «هنوز ai_keywords نداره» (همه‌ی
+  // کانال‌ها) یا «کانال حوزه‌ست ولی هنوز hawza_relevant نداره» — این دومی
+  // لازمه چون وگرنه پستی که ai_keywords‌ش قبلاً ست شده (مثلاً به‌خاطر یه
+  // نسخه‌ی قبلی‌تر این تابع، یا پرامپتی که hawza_relevant رو جا انداخته
+  // بود) دیگه هیچ‌وقت انتخاب نمی‌شد تا دوباره برای hawza_relevant بررسی بشه
+  const orFilter = hawzaIds
+    ? `or=(and(channel_id.in.(${ids}),ai_keywords.is.null),and(channel_id.in.(${hawzaIds}),hawza_relevant.is.null))`
+    : `channel_id=in.(${ids})&ai_keywords=is.null`;
 
   const postsRes = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=id,title,text&channel_id=in.(${ids})&ai_keywords=is.null&order=posted_at.desc&limit=${limit}`,
+    `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&${orFilter}&order=posted_at.desc&limit=${limit}`,
     { headers },
   );
   if (!postsRes.ok) return null;
-  return await postsRes.json();
+  const posts = await postsRes.json();
+  return { posts, hawzaChannelIds };
 }
