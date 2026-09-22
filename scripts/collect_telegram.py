@@ -30,7 +30,7 @@ TG_API_HASH = os.environ["TG_API_HASH"]
 TG_SESSION = os.environ["TG_SESSION"]
 
 REQUEST_TIMEOUT = 20
-MESSAGES_PER_CHANNEL_LIMIT = 200  # سقف ایمنی برای هر اجرا، در حالت عادی خیلی کمتره
+MESSAGES_PER_CHANNEL_LIMIT = 100  # سقف ایمنی برای هر اجرا (بک‌فیل کانال تازه هم همینه)، در حالت عادی خیلی کمتره
 MEDIA_BUCKET = "post-media"
 MAX_MEDIA_BYTES = 15 * 1024 * 1024  # ۱۵ مگابایت — فایل بزرگ‌تر دانلود نمی‌شه (فضای Storage + زمان اجرا)
 
