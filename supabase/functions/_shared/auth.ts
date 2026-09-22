@@ -71,6 +71,14 @@ export async function fetchRecentNewsPostsForUser(
 // برقراره چون معیار «پردازش‌شده» ai_keywords IS NULL هست، نه ترتیب —
 // backlog قدیمی هم بالأخره توی اجراهای بعدی (وقتی دیگه پست تازه‌ی
 // بی‌کلیدواژه‌ای نمونده) پردازش می‌شه، فقط اولویت با تازه‌هاست.
+//
+// ⚠️ به‌روزرسانی — سهمیه‌ی جدا برای کانال‌های «اخبار حوزه»: با backlog
+// چندهزارتایی کل سایت، صرفِ «جدیدترین‌ها اولویت دارن» کافی نبود — چون
+// کانال‌های پرحجم‌تر (تلگرام/ایتا) همیشه از این سه فید RSS کم‌تکرار
+// تازه‌تری دارن، پست‌های حوزه توی رقابت «جدیدترین در کل سایت» همیشه
+// می‌باختن و عملاً هیچ‌وقت پردازش نمی‌شدن (starvation؛ واقعاً دیده شد).
+// الان اول تا hawzaReserve پست حوزه‌ای پردازش‌نشده جدا و تضمینی گرفته
+// می‌شه، بعد باقی سهمیه با همون منطق قبلی (جدیدترین کل سایت) پر می‌شه.
 export async function fetchPostsMissingKeywords(
   req: Request,
   limit = 30,
@@ -100,20 +108,40 @@ export async function fetchPostsMissingKeywords(
   const hawzaChannelIds = new Set(channels.filter((c) => c.show_in_hawza).map((c) => c.id));
   const hawzaIds = [...hawzaChannelIds].join(",");
 
-  // دو معیار resumable مستقل، با OR: «هنوز ai_keywords نداره» (همه‌ی
-  // کانال‌ها) یا «کانال حوزه‌ست ولی هنوز hawza_relevant نداره» — این دومی
-  // لازمه چون وگرنه پستی که ai_keywords‌ش قبلاً ست شده (مثلاً به‌خاطر یه
-  // نسخه‌ی قبلی‌تر این تابع، یا پرامپتی که hawza_relevant رو جا انداخته
-  // بود) دیگه هیچ‌وقت انتخاب نمی‌شد تا دوباره برای hawza_relevant بررسی بشه
-  const orFilter = hawzaIds
-    ? `or=(and(channel_id.in.(${ids}),ai_keywords.is.null),and(channel_id.in.(${hawzaIds}),hawza_relevant.is.null))`
-    : `channel_id=in.(${ids})&ai_keywords=is.null`;
+  // ⚠️ سهمیه‌ی جدا و تضمین‌شده برای کانال‌های «اخبار حوزه» — بدون این، چون
+  // انتخاب کلی «جدیدترین پست‌های کل سایت» (posted_at DESC) هست و کانال‌های
+  // پرحجم‌تر (تلگرام/ایتا) همیشه تازه‌تر از این سه فید RSS کم‌تکرارن، پست‌های
+  // حوزه توی رقابت «جدیدترین بودن در کل سایت» تقریباً همیشه می‌بازن و عملاً
+  // هیچ‌وقت پردازش نمی‌شن (starvation واقعی — با backlog چندهزارتایی کل
+  // سایت، دیده شد که پست‌های امروز هر سه کانال حوزه بعد از چندین اجرای
+  // متوالی همچنان NULL مونده بودن). راه‌حل: اول تا hawzaReserve پست حوزه‌ای
+  // پردازش‌نشده رو جدا و تضمینی می‌گیریم، بعد باقی‌مونده‌ی سهمیه رو مثل قبل
+  // با جدیدترین‌های کل سایت پر می‌کنیم (با حذف idهای قبلاً انتخاب‌شده تا
+  // تکراری نشه).
+  const hawzaReserve = Math.min(10, limit);
+  let hawzaPosts: Array<{ id: number; channel_id: number; title: string | null; text: string | null }> = [];
+  if (hawzaIds) {
+    const hawzaRes = await fetch(
+      `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&channel_id=in.(${hawzaIds})` +
+        `&or=(ai_keywords.is.null,hawza_relevant.is.null)&order=posted_at.desc&limit=${hawzaReserve}`,
+      { headers },
+    );
+    if (hawzaRes.ok) hawzaPosts = await hawzaRes.json();
+  }
 
-  const postsRes = await fetch(
-    `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&${orFilter}&order=posted_at.desc&limit=${limit}`,
-    { headers },
-  );
-  if (!postsRes.ok) return null;
-  const posts = await postsRes.json();
+  const remaining = limit - hawzaPosts.length;
+  let generalPosts: Array<{ id: number; channel_id: number; title: string | null; text: string | null }> = [];
+  if (remaining > 0) {
+    const excludeIds = hawzaPosts.map((p) => p.id);
+    const notInFilter = excludeIds.length ? `&id=not.in.(${excludeIds.join(",")})` : "";
+    const generalRes = await fetch(
+      `${supabaseUrl}/rest/v1/posts?select=id,channel_id,title,text&channel_id=in.(${ids})&ai_keywords=is.null` +
+        `${notInFilter}&order=posted_at.desc&limit=${remaining}`,
+      { headers },
+    );
+    if (generalRes.ok) generalPosts = await generalRes.json();
+  }
+
+  const posts = [...hawzaPosts, ...generalPosts];
   return { posts, hawzaChannelIds };
 }
