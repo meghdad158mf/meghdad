@@ -589,6 +589,8 @@
   .cpt-activity.inactive{ color: var(--danger); background: var(--danger-soft); }
   .cpt-tagcol{ flex:0 0 90px; display:flex; justify-content:center; }
   .cpt-tag{ font-size:9.5px; font-weight:600; color: var(--text-dim); background: var(--surface-2); border:1px solid var(--border-strong); border-radius: var(--radius-pill); padding:3px 9px; }
+  .cpt-groupcol{ flex:0 0 110px; display:flex; justify-content:center; }
+  .cpt-tag-khorasan{ color: var(--accent-strong); background: var(--accent-soft); border-color: transparent; }
   .cpt-arrow{ color: var(--text-faint); flex:0 0 20px; transition: transform .15s ease, color .15s ease; }
   .cpt-arrow svg{ width:14px; height:14px; display:block; }
   @media (max-width:700px){ .cpt-arrow{ display:none; } }
@@ -1904,6 +1906,7 @@
             <span class="cpt-sort-btn cpt-head-center" data-sort="subscribers" style="flex:0 0 90px">مخاطب<span class="cpt-sort-ind"></span></span>
             <span class="cpt-sort-btn cpt-head-center" data-sort="activity" style="flex:0 0 100px">فعالیت<span class="cpt-sort-ind"></span></span>
             <span class="cpt-sort-btn cpt-head-center" data-sort="category" style="flex:0 0 90px">موضوع<span class="cpt-sort-ind"></span></span>
+            <span class="cpt-sort-btn cpt-head-center" data-sort="group" style="flex:0 0 110px">گروه<span class="cpt-sort-ind"></span></span>
             <span style="flex:0 0 20px"></span>
           </div>
           <div id="cyber-people-grid"></div>
@@ -3838,6 +3841,7 @@
       case 'subscribers': return ch.subscriber_count == null ? -1 : ch.subscriber_count;
       case 'activity': return activityOf(ch.id).n;
       case 'category': { const c = CATEGORIES.find(x=>x.id===ch.category_id); return c ? c.name : ''; }
+      case 'group': return ch.is_khorasan_talabeh ? 'طلاب خراسان' : 'سایر کنشگران';
       default: return '';
     }
   }
@@ -3900,6 +3904,7 @@
         <div class="cpt-num">${ch.subscriber_count ? `<span class="cpt-num-val">${ICONS.users}${toFaDigits(ch.subscriber_count)}</span>` : ''}</div>
         <div class="cpt-activity-col"><span class="cpt-activity ${act.level}"><span class="dt"></span>${act.level==='inactive' ? act.label : 'فعالیت ' + act.label}</span></div>
         <div class="cpt-tagcol">${cat ? `<span class="cpt-tag">${escHtml(cat.name)}</span>` : ''}</div>
+        <div class="cpt-groupcol"><span class="cpt-tag${ch.is_khorasan_talabeh ? ' cpt-tag-khorasan' : ''}">${ch.is_khorasan_talabeh ? 'طلاب خراسان' : 'سایر کنشگران'}</span></div>
         <span class="cpt-arrow"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 6l-6 6 6 6"/></svg></span>`;
       el.querySelector('.cpt-platform-link').addEventListener('click', e => e.stopPropagation());
       el.addEventListener('click', ()=> openPersonFeed(ch.id));
