@@ -40,7 +40,7 @@ import { fetchPostsMissingKeywords } from "../_shared/auth.ts";
 
 const LIARA_BASE_URL = "https://ai.liara.ir/api/6a9271a1d6564b043acdefe1/v1";
 const LIARA_MODEL = "openai/gpt-4o-mini";
-const DEFAULT_LIMIT = 30;
+const DEFAULT_LIMIT = 80; // هم‌راستا با BATCH_LIMIT در scripts/extract_keywords.py — کالر همیشه صریح limit می‌فرسته، این فقط fallbacke
 const TEXT_TRUNCATE = 400;
 
 const corsHeaders = {
