@@ -97,6 +97,7 @@
   /* ---------- LOGIN VIEW ---------- */
   /* unified dark canvas; the form sits in a floating card (left), brand content floats directly on the canvas (right, RTL-first) */
   #view-login.active{
+    position:relative;
     min-height:100vh; box-sizing:border-box; padding:40px 24px; display:flex; align-items:center; justify-content:center;
     background:
       radial-gradient(120% 90% at 25% 0%, rgba(234,179,147,0.08), transparent 55%),
@@ -107,12 +108,14 @@
   .login-inner{ width:100%; max-width:1120px; display:grid; grid-template-columns: 1.1fr 1fr; align-items:stretch; gap:36px; }
   @media (max-width:820px){ #view-login.active{ padding:24px 16px; } .login-inner{ grid-template-columns:1fr; } .login-visual{ display:none; } }
 
+  .login-org-badge{ position:absolute; left:24px; bottom:20px; z-index:2; display:flex; flex-direction:column; gap:4px; }
+  .login-org-badge span{ font-size:12px; font-weight:600; color: rgba(255,255,255,0.5); }
+  .login-org-badge span:first-child{ font-size:13px; font-weight:700; color: rgba(255,255,255,0.72); }
+  @media (max-width:820px){ .login-org-badge{ position:static; margin-top:24px; align-items:center; } }
+
   .login-visual{ position:relative; overflow:hidden; display:flex; align-items:center; padding:24px; color:#fff; }
   .login-visual .lv-wave{ position:absolute; inset-inline-start:-40px; bottom:-40px; opacity:.9; z-index:0; }
   .lv-content{ position:relative; z-index:2; max-width:600px; }
-  .lv-kicker{ display:flex; flex-direction:column; gap:5px; margin-bottom:20px; }
-  .lv-kicker span{ font-size:13px; font-weight:600; color: rgba(255,255,255,0.58); }
-  .lv-kicker span:first-child{ font-size:14.5px; font-weight:700; color: rgba(255,255,255,0.82); }
   .lv-content h1{ font-size:clamp(28px,3.8vw,46px); font-weight:600; line-height:1.1; letter-spacing:-0.01em; color:#fff; margin-top:0; }
   .lv-content p{ color: rgba(255,255,255,0.62); font-size:16px; line-height:1.7; margin-top:18px; max-width:360px; }
   .lv-features{ margin-top:30px; display:flex; flex-direction:column; gap:12px; }
@@ -1196,10 +1199,6 @@
   <div class="login-inner">
     <div class="login-visual">
       <div class="lv-content">
-        <div class="lv-kicker">
-          <span>مدیریت سیاسی اجتماعی حوزه علمیه خراسان</span>
-          <span>اداره رصد و راهبری سیاسی اجتماعی</span>
-        </div>
         <h1>سامانه هوشمند جریان</h1>
         <p>رصد و تحلیل فضای سیاسی اجتماعی<br>به روایت حوزه علمیه خراسان</p>
         <span class="badge" style="margin-top:16px;display:inline-block;font-family:'IRANSansX',Tahoma,sans-serif;color:var(--accent);border-color:rgba(234,179,147,0.32);background:rgba(234,179,147,0.08);">ویرایش ۵.۱.۱</span>
@@ -1220,6 +1219,10 @@
         <button class="btn primary" id="login-btn" onclick="handleLogin()">ورود</button>
       </div>
     </div>
+  </div>
+  <div class="login-org-badge">
+    <span>مدیریت سیاسی اجتماعی حوزه علمیه خراسان</span>
+    <span>اداره رصد و راهبری سیاسی اجتماعی</span>
   </div>
 </div>
 
