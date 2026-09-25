@@ -319,6 +319,16 @@
   .panel{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:24px; margin-bottom:16px; }
   .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
   .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
+
+  /* آکاردئون بخش‌های صفحه‌ی «تنظیمات» — details/summary بومی، هم‌الگو با
+     بقیه‌ی details سایت؛ فقط یه بخش هم‌زمان باز می‌مونه (کنترل JS، پایین‌تر) */
+  .settings-accordion > summary.panel-head{ cursor:pointer; list-style:none; user-select:none; }
+  .settings-accordion > summary.panel-head::-webkit-details-marker{ display:none; }
+  .settings-accordion > summary.panel-head::after{ content:'▾'; color: var(--text-faint); font-size:12px; }
+  .settings-accordion[open] > summary.panel-head::after{ content:'▴'; }
+  .settings-accordion:not([open]) > summary.panel-head{ margin-bottom:0; }
+  .settings-accordion:not([open]){ padding-bottom:16px; }
+  .settings-accordion > summary.panel-head:hover .panel-pill{ background: var(--primary-2); }
   /* .panel-pill پیش‌فرض مونواسپیس (JetBrains Mono) داره — برای برچسب‌های
      کوتاه مثل «بخش تحلیلی» خوب جواب می‌ده، ولی حرف فارسی نداره؛ توی تب
      «در یک نگاه» که متن کامل فارسی («اخبار منتخب (۶ الی ۱۲ ساعت اخیر)»)
@@ -1954,8 +1964,8 @@
     <!-- SETTINGS -->
     <section class="section" id="sec-settings">
       <div class="settings-grid">
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">مدیریت کانال‌ها</span></div>
+          <details class="panel settings-accordion" open>
+            <summary class="panel-head"><span class="panel-pill">مدیریت کانال‌ها</span></summary>
             <div class="add-row">
               <input type="text" id="new-chan-name" placeholder="نام کانال" />
               <input type="text" id="new-chan-handle" class="mono" placeholder="یوزرنیم (بدون @)" />
@@ -1995,30 +2005,30 @@
               <span class="chan-filter-count" id="chan-filter-count"></span>
             </div>
             <div id="chan-list"></div>
-          </div>
+          </details>
 
           <div class="settings-row-2col">
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">دسته‌بندی‌ها</span></div>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">دسته‌بندی‌ها</span></summary>
               <div class="add-row">
                 <input type="text" id="new-cat-name" placeholder="نام دسته‌بندی جدید" />
                 <button class="btn primary" id="add-cat-btn">افزودن دسته</button>
               </div>
               <div class="cat-grid" id="cat-grid"></div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">مناطق جغرافیایی</span></div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">مناطق جغرافیایی</span></summary>
               <div class="add-row">
                 <input type="text" id="new-region-name" placeholder="نام منطقه‌ی جدید" />
                 <button class="btn primary" id="add-region-btn">افزودن منطقه</button>
               </div>
               <div class="cat-grid" id="region-grid"></div>
-            </div>
+            </details>
           </div>
 
           <div class="settings-row-2col">
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">موضوعات جستجوی ذخیره‌شده</span></div>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">موضوعات جستجوی ذخیره‌شده</span></summary>
               <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">هر موضوع یه اسم و یه لیست کلیدواژه (جدا با ویرگول) داره؛ توی تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها»/«ادعاها و شایعات» با کلیک روی موضوع، پست‌هایی که حداقل یکی از کلیدواژه‌ها رو توی عنوان/متنشون دارن نشون داده می‌شن.</p>
               <div class="add-row">
                 <input type="text" id="new-topic-name" placeholder="نام موضوع (مثل سیاسی)" />
@@ -2026,9 +2036,9 @@
                 <button class="btn primary" id="add-topic-btn">افزودن موضوع</button>
               </div>
               <div class="cat-grid" id="topic-grid"></div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></summary>
               <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده‌های موضوعی» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
               <div class="add-row">
                 <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
@@ -2036,12 +2046,12 @@
                 <button class="btn primary" id="add-dossier-topic-btn">افزودن موضوع</button>
               </div>
               <div id="dossier-topic-admin-list"></div>
-            </div>
+            </details>
           </div>
 
           <div class="settings-row-2col">
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">رمزهای عبور</span></div>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">رمزهای عبور</span></summary>
               <div class="pw-item">
                 <div class="pw-item-head"><b>رمز مدیر</b><span class="role admin">مدیر</span></div>
                 <div class="pw-item-body">
@@ -2056,15 +2066,15 @@
                   <button class="btn" onclick="changePassword('viewer')">تغییر رمز</button>
                 </div>
               </div>
-            </div>
-            <div class="panel">
-              <div class="panel-head"><span class="panel-pill">اتصال داده</span></div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">اتصال داده</span></summary>
               <div class="kv">
                 <div><b>منبع فعلی</b><span>gist raw json</span></div>
                 <div><b>مقصد بعدی</b><span>postgrest / vps</span></div>
                 <div><b>احراز هویت</b><span>pgcrypto + pgjwt</span></div>
               </div>
-            </div>
+            </details>
           </div>
       </div>
     </section>
@@ -2310,6 +2320,17 @@
   });
   document.addEventListener('keydown', e=>{
     if(e.key === 'Escape'){ closeAdminMenu(); closeNavMenu(); }
+  });
+
+  // آکاردئون بخش‌های صفحه‌ی «تنظیمات» — هر بار یه details.settings-accordion
+  // باز می‌شه، بقیه‌شون بسته می‌شن (تک‌بخش باز، بقیه جمع)
+  document.querySelectorAll('details.settings-accordion').forEach(d=>{
+    d.addEventListener('toggle', ()=>{
+      if(!d.open) return;
+      document.querySelectorAll('details.settings-accordion').forEach(other=>{
+        if(other !== d) other.removeAttribute('open');
+      });
+    });
   });
 
   const ADMIN_ONLY_SECTIONS = ['export','settings','feedback'];
