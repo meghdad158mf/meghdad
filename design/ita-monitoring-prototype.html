@@ -130,16 +130,26 @@
   /* فاصله‌ی بین کلیک «ورود» و رسیدن به داشبورد (بخش «سرعت ورود» CLAUDE.md
      رو ببین) حتی بعد از بهینه‌سازی‌ها حدود ۲ ثانیه‌ست — بدون بازخورد بصری
      کاربر فکر می‌کرد دکمه کار نکرده. به‌جای اسپینر، خودِ دکمه با یه لایه‌ی
-     هلویی‌رنگ (.login-btn-fill) از یه طرف پر می‌شه — عرضش صفره تا کلاس
-     is-loading اضافه بشه، تا استاتیک/بی‌حرکت نمونه. نیمه‌شفافه (نه هلویی
+     هلویی‌رنگ (.login-btn-fill) از یه طرف پر می‌شه. نیمه‌شفافه (نه هلویی
      تخت) تا متن سفید دکمه روی هر دو حالت (پس‌زمینه‌ی سرمه‌ای خام یا زیر
      لایه‌ی پرشده) خوانا بمونه. ⚠️ عمداً فقط یه‌بار اجرا می‌شه (نه تکرارشونده)
-     و با `forwards` توی حالت پر (۱۰۰٪) می‌مونه — اگه لود بیشتر از ۲ ثانیه
-     طول بکشه، دکمه کامل پر باقی می‌مونه، نه اینکه دوباره از صفر شروع بشه. */
-  .login-btn-fill{ position:absolute; inset-inline-start:0; top:0; bottom:0; width:0%; background: var(--accent); opacity:.6; z-index:0; }
-  #login-btn.is-loading .login-btn-fill{ animation: login-btn-fill 2s ease-in-out 1 forwards; }
+     و با `forwards` توی حالت پر می‌مونه — اگه لود بیشتر از ۲ ثانیه طول
+     بکشه، دکمه کامل پر باقی می‌مونه، نه اینکه دوباره از صفر شروع بشه.
+     با transform:scaleX() (نه width) انیمیت می‌شه — فقط transform/opacity
+     روی GPU اجرا می‌شن، width هر فریم layout رو دوباره حساب می‌کنه؛
+     transform-origin عمداً «right» صریحه (نه inset-inline-start) چون
+     صفحه همیشه RTL ثابته (direction:rtl روی body)، پس لبه‌ی شروع همیشه
+     راسته. یه درخشش هلویی‌رنگ (login-btn-glow، روی خودِ دکمه نه لایه‌ی
+     مقیاس‌شده — تا با scaleX کج/کشیده نشه) هم‌زمان با همون یه‌بار پرشدن
+     محو می‌شه تو، برای کمی جذابیت بیشتر (طبق درخواست کاربر) — ورود یه
+     اقدام کم‌تکرار (یه‌بار در هر نشست) هست، پس طبق قاعده‌ی اسکیل
+     animate، بودجه‌ی «دلیت» اینجا مجازه. */
+  .login-btn-fill{ position:absolute; inset-inline-start:0; top:0; bottom:0; width:100%; background: var(--accent); opacity:.6; transform:scaleX(0); transform-origin: right center; z-index:0; }
+  #login-btn.is-loading{ animation: login-btn-glow 2s cubic-bezier(0.77,0,0.175,1) 1 forwards; }
+  #login-btn.is-loading .login-btn-fill{ animation: login-btn-fill 2s cubic-bezier(0.77,0,0.175,1) 1 forwards; }
   #login-btn .login-btn-label{ position:relative; z-index:1; }
-  @keyframes login-btn-fill{ from{ width:0%; } to{ width:100%; } }
+  @keyframes login-btn-fill{ from{ transform:scaleX(0); } to{ transform:scaleX(1); } }
+  @keyframes login-btn-glow{ from{ box-shadow:0 0 0 0 rgba(234,179,147,0); } to{ box-shadow:0 0 18px 2px rgba(234,179,147,0.45); } }
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
   /* .notify-card و .feedback-card کنار هم (دو ستون هم‌ارتفاع) می‌شینن —
