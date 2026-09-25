@@ -1054,6 +1054,9 @@
      (label{flex-direction:column}) روش هم اعمال می‌شه و چیدمانش می‌شکنه */
   .chan-row-profile-fields label.chan-row-news{ flex-direction:row; }
   #chan-list{ max-height:360px; overflow-y:auto; }
+  .chan-filter-row{ padding-top:12px; border-top:1px dashed var(--border); }
+  .chan-filter-row #chan-search{ flex:2; min-width:180px; }
+  .chan-filter-count{ font-size:11.5px; color: var(--text-faint); white-space:nowrap; margin-inline-start:auto; }
   #dossier-topic-admin-list{ max-height:420px; overflow-y:auto; padding-inline-end:4px; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
@@ -1974,6 +1977,22 @@
                 </div>
               </details>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
+            </div>
+            <div class="add-row chan-filter-row">
+              <input type="text" id="chan-search" placeholder="جست‌وجو در نام یا آدرس کانال…" />
+              <select id="chan-filter-platform">
+                <option value="">همه‌ی بسترها</option>
+                <option value="eitaa">ایتا</option>
+                <option value="telegram">تلگرام</option>
+                <option value="website">وب‌سایت (RSS)</option>
+              </select>
+              <select id="chan-filter-domain">
+                <option value="">همه‌ی بخش‌ها</option>
+                <option value="show_in_news">اخبار و رویدادها</option>
+                <option value="show_in_cyberspace">کنشگری مجازی</option>
+                <option value="show_in_people">یادداشت</option>
+              </select>
+              <span class="chan-filter-count" id="chan-filter-count"></span>
             </div>
             <div id="chan-list"></div>
           </div>
@@ -4527,6 +4546,25 @@
     { field: 'show_in_people', label: 'یادداشت', onChange: () => renderPoliticalFigures() },
   ];
 
+  const chanSearchEl = document.getElementById('chan-search');
+  const chanFilterPlatformEl = document.getElementById('chan-filter-platform');
+  const chanFilterDomainEl = document.getElementById('chan-filter-domain');
+  const chanFilterCountEl = document.getElementById('chan-filter-count');
+  function filteredChanList(){
+    const q = chanSearchEl.value.trim().toLowerCase();
+    const platform = chanFilterPlatformEl.value;
+    const domain = chanFilterDomainEl.value;
+    return CHANNELS.filter(ch=>{
+      if(platform && ch.platform !== platform) return false;
+      if(domain && !ch[domain]) return false;
+      if(q && !((ch.title||'').toLowerCase().includes(q) || (ch.username||'').toLowerCase().includes(q))) return false;
+      return true;
+    });
+  }
+  chanSearchEl.addEventListener('input', renderChanList);
+  chanFilterPlatformEl.addEventListener('change', renderChanList);
+  chanFilterDomainEl.addEventListener('change', renderChanList);
+
   const newChanPlatformEl = document.getElementById('new-chan-platform');
   const newChanHandleEl = document.getElementById('new-chan-handle');
   newChanPlatformEl.addEventListener('change', ()=>{
@@ -4580,7 +4618,15 @@
 
   function renderChanList(){
     chanListEl.innerHTML = '';
-    CHANNELS.forEach(ch=>{
+    const list = filteredChanList();
+    chanFilterCountEl.textContent = list.length===CHANNELS.length
+      ? `${toFaDigits(CHANNELS.length)} کانال`
+      : `${toFaDigits(list.length)} از ${toFaDigits(CHANNELS.length)} کانال`;
+    if(!list.length){
+      chanListEl.innerHTML = '<p style="font-size:12px;color:var(--text-faint);padding:14px 4px;">کانالی با این فیلتر پیدا نشد.</p>';
+      return;
+    }
+    list.forEach(ch=>{
       const row=document.createElement('div'); row.className='chan-row';
       const avatarBtn=document.createElement('label'); avatarBtn.className='chan-avatar-btn'; avatarBtn.title='عکس پیش‌فرض کانال (برای پست‌های بدون عکس)';
       avatarBtn.innerHTML = ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" />` : ICONS.photo;
