@@ -318,13 +318,21 @@
   /* ---- shared bits ---- */
   .panel{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:24px; margin-bottom:16px; }
   .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
-  /* .panel-pill پیش‌فرض مونواسپیس (JetBrains Mono) داره — برای برچسب‌های
-     کوتاه مثل «بخش تحلیلی» خوب جواب می‌ده، ولی حرف فارسی نداره؛ توی تب
-     «در یک نگاه» که متن کامل فارسی («اخبار منتخب (۶ الی ۱۲ ساعت اخیر)»)
-     داخلشه، مرورگر برای حروف فارسی به فونت پیش‌فرض سیستم می‌افته (نه
-     IRANSansX) و با بقیه‌ی صفحه ناهماهنگ می‌شه — این‌جا صریحاً برمی‌گردونیمش */
-  #news-analytics-panel .panel-pill{ font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; }
+  /* قبلاً پیش‌فرض مونواسپیس (JetBrains Mono) بود — چون همه‌ی متن‌های
+     panel-pill سایت جمله‌ی کامل فارسی‌ان (نه کد/عدد)، مونواسپیس حرف فارسی
+     نداشت و مرورگر به فونت پیش‌فرض سیستم می‌افتاد (نه IRANSansX)، باعث
+     ناهماهنگی بصری با بقیه‌ی صفحه می‌شد — الان یکدست ایرانس */
+  .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
+
+  /* آکاردئون بخش‌های صفحه‌ی «تنظیمات» — details/summary بومی، هم‌الگو با
+     بقیه‌ی details سایت؛ فقط یه بخش هم‌زمان باز می‌مونه (کنترل JS، پایین‌تر) */
+  .settings-accordion > summary.panel-head{ cursor:pointer; list-style:none; user-select:none; }
+  .settings-accordion > summary.panel-head::-webkit-details-marker{ display:none; }
+  .settings-accordion > summary.panel-head::after{ content:'▾'; color: var(--text-faint); font-size:12px; }
+  .settings-accordion[open] > summary.panel-head::after{ content:'▴'; }
+  .settings-accordion:not([open]) > summary.panel-head{ margin-bottom:0; }
+  .settings-accordion:not([open]){ padding-bottom:16px; }
+  .settings-accordion > summary.panel-head:hover .panel-pill{ background: var(--primary-2); }
   .ai-updated-note{ font-size:11px; color: var(--text-faint); }
   .dot-list{ display:flex; flex-direction:column; gap:9px; }
   .dot-item{ display:flex; align-items:baseline; gap:9px; font-size:13px; color: var(--text); }
@@ -935,7 +943,7 @@
   .field .news-source-list label{ color: var(--text-dim); }
 
   /* categories (managed inside settings now) */
-  .cat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; }
+  .cat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:12px; max-height:260px; overflow-y:auto; padding-inline-end:4px; }
   @media (max-width:860px){ .cat-grid{ grid-template-columns: repeat(2,1fr); } }
   @media (max-width:560px){ .cat-grid{ grid-template-columns: 1fr; } }
   .cat-card{ background: var(--surface-2); border:1px solid var(--border); border-radius: var(--radius-control); padding:10px 12px; display:flex; align-items:center; justify-content:space-between; gap:8px; border-inline-start:3px solid var(--accent); }
@@ -950,7 +958,7 @@
   .dossier-topic-card-head .name{ font-size:12.5px; font-weight:700; }
   .dossier-topic-card-head .kw{ font-size:11px; color: var(--text-faint); margin-top:2px; }
   .dossier-topic-card-actions{ display:flex; align-items:center; gap:10px; flex-shrink:0; }
-  .dossier-topic-posts{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); display:flex; flex-direction:column; gap:6px; }
+  .dossier-topic-posts{ margin-top:10px; padding-top:10px; border-top:1px dashed var(--border); display:flex; flex-direction:column; gap:6px; max-height:140px; overflow-y:auto; }
   .dossier-topic-post-row{ display:flex; align-items:center; justify-content:space-between; gap:8px; font-size:11.5px; }
   .dossier-topic-post-row .txt{ flex:1; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
   .dossier-topic-post-row.excluded .txt{ opacity:.5; text-decoration:line-through; }
@@ -1054,6 +1062,10 @@
      (label{flex-direction:column}) روش هم اعمال می‌شه و چیدمانش می‌شکنه */
   .chan-row-profile-fields label.chan-row-news{ flex-direction:row; }
   #chan-list{ max-height:360px; overflow-y:auto; }
+  .chan-filter-row{ padding-top:12px; border-top:1px dashed var(--border); }
+  .chan-filter-row #chan-search{ flex:2; min-width:180px; }
+  .chan-filter-count{ font-size:11.5px; color: var(--text-faint); white-space:nowrap; margin-inline-start:auto; }
+  #dossier-topic-admin-list{ max-height:420px; overflow-y:auto; padding-inline-end:4px; }
   .chan-row{ display:flex; align-items:center; gap:8px; padding:9px 0; border-bottom:1px solid var(--border); }
   .chan-avatar-btn{ position:relative; flex-shrink:0; width:32px; height:32px; border-radius:50%; overflow:hidden; background: var(--surface-2); border:1px solid var(--border-strong); display:flex; align-items:center; justify-content:center; color: var(--text-faint); cursor:pointer; }
   .chan-avatar-btn img{ width:100%; height:100%; object-fit:cover; display:block; }
@@ -1079,8 +1091,10 @@
   .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
 
   /* settings */
-  .settings-grid{ display:grid; grid-template-columns: 1.2fr 1fr; gap:16px; }
-  @media (max-width:900px){ .settings-grid{ grid-template-columns:1fr; } }
+  .settings-grid{ display:flex; flex-direction:column; gap:16px; }
+  .settings-row-2col{ display:grid; grid-template-columns:1fr 1fr; gap:16px; align-items:start; }
+  .settings-row-2col > .panel{ margin-bottom:0; }
+  @media (max-width:900px){ .settings-row-2col{ grid-template-columns:1fr; } }
   .row-item{ display:flex; align-items:center; justify-content:space-between; padding:9px 0; border-bottom:1px solid var(--border); font-size:13px; }
   .row-item:last-child{ border-bottom:none; }
   .row-item .chan{ font-family: ui-monospace,monospace; direction:ltr; color: var(--text-dim); }
@@ -1948,9 +1962,8 @@
     <!-- SETTINGS -->
     <section class="section" id="sec-settings">
       <div class="settings-grid">
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">مدیریت کانال‌ها</span></div>
+          <details class="panel settings-accordion" open>
+            <summary class="panel-head"><span class="panel-pill">مدیریت کانال‌ها</span></summary>
             <div class="add-row">
               <input type="text" id="new-chan-name" placeholder="نام کانال" />
               <input type="text" id="new-chan-handle" class="mono" placeholder="یوزرنیم (بدون @)" />
@@ -1973,72 +1986,94 @@
               </details>
               <button class="btn primary" id="add-chan-btn">افزودن کانال</button>
             </div>
+            <div class="add-row chan-filter-row">
+              <input type="text" id="chan-search" placeholder="جست‌وجو در نام یا آدرس کانال…" />
+              <select id="chan-filter-platform">
+                <option value="">همه‌ی بسترها</option>
+                <option value="eitaa">ایتا</option>
+                <option value="telegram">تلگرام</option>
+                <option value="website">وب‌سایت (RSS)</option>
+              </select>
+              <select id="chan-filter-domain">
+                <option value="">همه‌ی بخش‌ها</option>
+                <option value="show_in_news">اخبار و رویدادها</option>
+                <option value="show_in_cyberspace">کنشگری مجازی</option>
+                <option value="show_in_people">یادداشت</option>
+              </select>
+              <span class="chan-filter-count" id="chan-filter-count"></span>
+            </div>
             <div id="chan-list"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">دسته‌بندی‌ها</span></div>
-            <div class="add-row">
-              <input type="text" id="new-cat-name" placeholder="نام دسته‌بندی جدید" />
-              <button class="btn primary" id="add-cat-btn">افزودن دسته</button>
-            </div>
-            <div class="cat-grid" id="cat-grid"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">مناطق جغرافیایی</span></div>
-            <div class="add-row">
-              <input type="text" id="new-region-name" placeholder="نام منطقه‌ی جدید" />
-              <button class="btn primary" id="add-region-btn">افزودن منطقه</button>
-            </div>
-            <div class="cat-grid" id="region-grid"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">موضوعات جستجوی ذخیره‌شده</span></div>
-            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">هر موضوع یه اسم و یه لیست کلیدواژه (جدا با ویرگول) داره؛ توی تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها»/«ادعاها و شایعات» با کلیک روی موضوع، پست‌هایی که حداقل یکی از کلیدواژه‌ها رو توی عنوان/متنشون دارن نشون داده می‌شن.</p>
-            <div class="add-row">
-              <input type="text" id="new-topic-name" placeholder="نام موضوع (مثل سیاسی)" />
-              <input type="text" id="new-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
-              <button class="btn primary" id="add-topic-btn">افزودن موضوع</button>
-            </div>
-            <div class="cat-grid" id="topic-grid"></div>
-          </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></div>
-            <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده‌های موضوعی» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
-            <div class="add-row">
-              <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
-              <input type="text" id="new-dossier-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
-              <button class="btn primary" id="add-dossier-topic-btn">افزودن موضوع</button>
-            </div>
-            <div id="dossier-topic-admin-list"></div>
-          </div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:14px;">
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">رمزهای عبور</span></div>
-            <div class="pw-item">
-              <div class="pw-item-head"><b>رمز مدیر</b><span class="role admin">مدیر</span></div>
-              <div class="pw-item-body">
-                <input type="password" value="••••••••" disabled />
-                <button class="btn" onclick="changePassword('admin')">تغییر رمز</button>
+          </details>
+
+          <div class="settings-row-2col">
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">دسته‌بندی‌ها</span></summary>
+              <div class="add-row">
+                <input type="text" id="new-cat-name" placeholder="نام دسته‌بندی جدید" />
+                <button class="btn primary" id="add-cat-btn">افزودن دسته</button>
               </div>
-            </div>
-            <div class="pw-item">
-              <div class="pw-item-head"><b>رمز بیننده</b><span class="role">بیننده</span></div>
-              <div class="pw-item-body">
-                <input type="password" value="••••••••" disabled />
-                <button class="btn" onclick="changePassword('viewer')">تغییر رمز</button>
+              <div class="cat-grid" id="cat-grid"></div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">مناطق جغرافیایی</span></summary>
+              <div class="add-row">
+                <input type="text" id="new-region-name" placeholder="نام منطقه‌ی جدید" />
+                <button class="btn primary" id="add-region-btn">افزودن منطقه</button>
               </div>
-            </div>
+              <div class="cat-grid" id="region-grid"></div>
+            </details>
           </div>
-          <div class="panel">
-            <div class="panel-head"><span class="panel-pill">اتصال داده</span></div>
-            <div class="kv">
-              <div><b>منبع فعلی</b><span>gist raw json</span></div>
-              <div><b>مقصد بعدی</b><span>postgrest / vps</span></div>
-              <div><b>احراز هویت</b><span>pgcrypto + pgjwt</span></div>
-            </div>
+
+          <div class="settings-row-2col">
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">موضوعات جستجوی ذخیره‌شده</span></summary>
+              <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">هر موضوع یه اسم و یه لیست کلیدواژه (جدا با ویرگول) داره؛ توی تب‌های «شبکه‌های اجتماعی»/«وب‌سایت‌ها»/«ادعاها و شایعات» با کلیک روی موضوع، پست‌هایی که حداقل یکی از کلیدواژه‌ها رو توی عنوان/متنشون دارن نشون داده می‌شن.</p>
+              <div class="add-row">
+                <input type="text" id="new-topic-name" placeholder="نام موضوع (مثل سیاسی)" />
+                <input type="text" id="new-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
+                <button class="btn primary" id="add-topic-btn">افزودن موضوع</button>
+              </div>
+              <div class="cat-grid" id="topic-grid"></div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">موضوعات «پرونده‌های موضوعی»</span></summary>
+              <p style="font-size:12px;color:var(--text-faint);margin:0 0 12px;line-height:1.7;">موضوعات موقت/چرخشی که تب «پرونده‌های موضوعی» (بخش «اخبار و رویدادها») نشون می‌ده. هر موضوع یه لیست کلیدواژه (جدا با ویرگول) داره که با کلیدواژه‌ی هوش مصنوعی هر پست تطبیق داده می‌شه (هر ۲ ساعت خودکار). فقط موضوعات فعال به بیننده نشون داده می‌شن؛ غیرفعال‌کردن یه موضوع، پست‌هاش رو حذف نمی‌کنه (برای استفاده‌ی دوباره‌ی بعدی).</p>
+              <div class="add-row">
+                <input type="text" id="new-dossier-topic-name" placeholder="نام موضوع (مثل مذاکرات هسته‌ای)" />
+                <input type="text" id="new-dossier-topic-keywords" placeholder="کلیدواژه‌ها، جدا با ویرگول" />
+                <button class="btn primary" id="add-dossier-topic-btn">افزودن موضوع</button>
+              </div>
+              <div id="dossier-topic-admin-list"></div>
+            </details>
           </div>
-        </div>
+
+          <div class="settings-row-2col">
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">رمزهای عبور</span></summary>
+              <div class="pw-item">
+                <div class="pw-item-head"><b>رمز مدیر</b><span class="role admin">مدیر</span></div>
+                <div class="pw-item-body">
+                  <input type="password" value="••••••••" disabled />
+                  <button class="btn" onclick="changePassword('admin')">تغییر رمز</button>
+                </div>
+              </div>
+              <div class="pw-item">
+                <div class="pw-item-head"><b>رمز بیننده</b><span class="role">بیننده</span></div>
+                <div class="pw-item-body">
+                  <input type="password" value="••••••••" disabled />
+                  <button class="btn" onclick="changePassword('viewer')">تغییر رمز</button>
+                </div>
+              </div>
+            </details>
+            <details class="panel settings-accordion">
+              <summary class="panel-head"><span class="panel-pill">اتصال داده</span></summary>
+              <div class="kv">
+                <div><b>منبع فعلی</b><span>gist raw json</span></div>
+                <div><b>مقصد بعدی</b><span>postgrest / vps</span></div>
+                <div><b>احراز هویت</b><span>pgcrypto + pgjwt</span></div>
+              </div>
+            </details>
+          </div>
       </div>
     </section>
 
@@ -2283,6 +2318,17 @@
   });
   document.addEventListener('keydown', e=>{
     if(e.key === 'Escape'){ closeAdminMenu(); closeNavMenu(); }
+  });
+
+  // آکاردئون بخش‌های صفحه‌ی «تنظیمات» — هر بار یه details.settings-accordion
+  // باز می‌شه، بقیه‌شون بسته می‌شن (تک‌بخش باز، بقیه جمع)
+  document.querySelectorAll('details.settings-accordion').forEach(d=>{
+    d.addEventListener('toggle', ()=>{
+      if(!d.open) return;
+      document.querySelectorAll('details.settings-accordion').forEach(other=>{
+        if(other !== d) other.removeAttribute('open');
+      });
+    });
   });
 
   const ADMIN_ONLY_SECTIONS = ['export','settings','feedback'];
@@ -4519,6 +4565,25 @@
     { field: 'show_in_people', label: 'یادداشت', onChange: () => renderPoliticalFigures() },
   ];
 
+  const chanSearchEl = document.getElementById('chan-search');
+  const chanFilterPlatformEl = document.getElementById('chan-filter-platform');
+  const chanFilterDomainEl = document.getElementById('chan-filter-domain');
+  const chanFilterCountEl = document.getElementById('chan-filter-count');
+  function filteredChanList(){
+    const q = chanSearchEl.value.trim().toLowerCase();
+    const platform = chanFilterPlatformEl.value;
+    const domain = chanFilterDomainEl.value;
+    return CHANNELS.filter(ch=>{
+      if(platform && ch.platform !== platform) return false;
+      if(domain && !ch[domain]) return false;
+      if(q && !((ch.title||'').toLowerCase().includes(q) || (ch.username||'').toLowerCase().includes(q))) return false;
+      return true;
+    });
+  }
+  chanSearchEl.addEventListener('input', renderChanList);
+  chanFilterPlatformEl.addEventListener('change', renderChanList);
+  chanFilterDomainEl.addEventListener('change', renderChanList);
+
   const newChanPlatformEl = document.getElementById('new-chan-platform');
   const newChanHandleEl = document.getElementById('new-chan-handle');
   newChanPlatformEl.addEventListener('change', ()=>{
@@ -4572,7 +4637,15 @@
 
   function renderChanList(){
     chanListEl.innerHTML = '';
-    CHANNELS.forEach(ch=>{
+    const list = filteredChanList();
+    chanFilterCountEl.textContent = list.length===CHANNELS.length
+      ? `${toFaDigits(CHANNELS.length)} کانال`
+      : `${toFaDigits(list.length)} از ${toFaDigits(CHANNELS.length)} کانال`;
+    if(!list.length){
+      chanListEl.innerHTML = '<p style="font-size:12px;color:var(--text-faint);padding:14px 4px;">کانالی با این فیلتر پیدا نشد.</p>';
+      return;
+    }
+    list.forEach(ch=>{
       const row=document.createElement('div'); row.className='chan-row';
       const avatarBtn=document.createElement('label'); avatarBtn.className='chan-avatar-btn'; avatarBtn.title='عکس پیش‌فرض کانال (برای پست‌های بدون عکس)';
       avatarBtn.innerHTML = ch.avatar_url ? `<img src="${escAttr(ch.avatar_url)}" alt="" />` : ICONS.photo;
