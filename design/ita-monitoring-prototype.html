@@ -3505,8 +3505,11 @@
   async function loadPosts(){
     const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
     POSTS_CACHE = r.ok ? await r.json() : [];
-    await loadHawzaPosts();
-    await loadClaimsPosts();
+    // موازی، نه پشت‌سرهم — هردو فقط از همون POSTS_CACHE اولیه (بالا) کم‌کننده
+    // نیستن، فقط بهش اضافه می‌کنن، پس وابستگی به ترتیب اجرای هم ندارن؛
+    // پشت‌سرهم‌بودنشون یه رفت‌وبرگشت شبکه‌ی کامل اضافه به زمان ورود اضافه
+    // می‌کرد (بخش «سرعت ورود» CLAUDE.md رو ببین)
+    await Promise.all([loadHawzaPosts(), loadClaimsPosts()]);
   }
 
   // تب «اخبار حوزه» روی همون POSTS_CACHE سوار می‌شه (بخش «تب «اخبار حوزه»»ی
@@ -3661,8 +3664,13 @@
   }
 
   async function loadAll(){
-    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights()]);
-    await loadPosts();
+    // loadPosts() قبلاً بعد از این Promise.all و پشت‌سرش می‌اومد (کاملاً
+    // پشت‌سرهم با ۱۲ کوئری دیگه) — چون به هیچ‌کدوم از این ۱۲ تا وابسته
+    // نیست، همینجا داخل همون دسته‌ی موازی اجرا می‌شه؛ با اضافه‌شدن دو
+    // کوئری اضافه‌ی پشت‌سرهم داخل خودِ loadPosts (loadHawzaPosts/
+    // loadClaimsPosts) این تأخیر برای زمان ورود به سایت محسوس شده بود
+    // (بخش «سرعت ورود» CLAUDE.md رو ببین).
+    await Promise.all([loadChannels(), loadCategories(), loadRegions(), loadNewsTopics(), loadDossierTopics(), loadDossierTopicPosts(), loadNewsletterPosts(), loadMagazines(), loadArchiveReports(), loadNewspapers(), loadSchoolReports(), loadNewsAiInsights(), loadPosts()]);
     renderDashHeroStats();
     renderChannelCards();
     populatePostFilters();
