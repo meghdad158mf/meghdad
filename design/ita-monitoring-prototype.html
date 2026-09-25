@@ -3502,14 +3502,27 @@
     const r = await api('/newsletter_posts?select=*,posts(*)&order=section.asc,sort_order.asc');
     NEWSLETTER_POSTS = r.ok ? await r.json() : [];
   }
+  // هر سه کوئری (اصلی/حوزه/بله) دقیقاً هم‌زمان، از همون خط اول، ارسال
+  // می‌شن — نه اینکه hawza/claims منتظر تموم‌شدن کامل کوئری اصلی (که با
+  // ۱۰۰۰ ردیف کندترینه) بمونن. قبلاً hawza/claims داخل loadPosts() بعد از
+  // `await r.json()` کوئری اصلی صدا زده می‌شدن، یعنی اصلاً درخواستشون تا
+  // اون لحظه ارسال نمی‌شد — نتیجه‌ش یه زنجیره‌ی پشت‌سرهم واقعی بود (کوئری
+  // اصلی + کوئری حوزه، جمعاً حدود ۳ ثانیه) با اینکه ظاهراً «موازی» به‌نظر
+  // می‌رسید چون Promise.all دورشون بود. اینجا fetch هر سه با فراخوانی
+  // مستقیم api() (نه صبرکردن پشت await) بلافاصله شروع می‌شن؛ فقط ادغام
+  // نتیجه‌ها توی POSTS_CACHE منتظر هر سه جواب می‌مونه (بخش «سرعت ورود»
+  // CLAUDE.md رو ببین).
   async function loadPosts(){
-    const r = await api('/posts?select=*&order=scraped_at.desc&limit=1000');
+    const mainReq = api('/posts?select=*&order=scraped_at.desc&limit=1000');
+    const hawzaReq = loadHawzaPosts();
+    const claimsReq = loadClaimsPosts();
+    const r = await mainReq;
     POSTS_CACHE = r.ok ? await r.json() : [];
-    // موازی، نه پشت‌سرهم — هردو فقط از همون POSTS_CACHE اولیه (بالا) کم‌کننده
-    // نیستن، فقط بهش اضافه می‌کنن، پس وابستگی به ترتیب اجرای هم ندارن؛
-    // پشت‌سرهم‌بودنشون یه رفت‌وبرگشت شبکه‌ی کامل اضافه به زمان ورود اضافه
-    // می‌کرد (بخش «سرعت ورود» CLAUDE.md رو ببین)
-    await Promise.all([loadHawzaPosts(), loadClaimsPosts()]);
+    const [hawzaExtra, claimsExtra] = await Promise.all([hawzaReq, claimsReq]);
+    const existingIds = new Set(POSTS_CACHE.map(p=>p.id));
+    for(const p of [...hawzaExtra, ...claimsExtra]){
+      if(!existingIds.has(p.id)){ POSTS_CACHE.push(p); existingIds.add(p.id); }
+    }
   }
 
   // تب «اخبار حوزه» روی همون POSTS_CACHE سوار می‌شه (بخش «تب «اخبار حوزه»»ی
@@ -3519,14 +3532,13 @@
   // یه‌بار واقعاً رخ داد: با این‌که ۵۴ پست واقعی مرتبط توی دیتابیس بود، تب
   // کاملاً خالی به‌نظر می‌رسید چون هیچ‌کدوم توی همون ۱۰۰۰تای اخیر نبودن. این
   // کوئری جدا و مستقل، مستقیم روی hawza_relevant=true فیلتر می‌کنه (بدون
-  // وابستگی به تازگیِ scraped_at نسبت به بقیه‌ی سایت) و نتیجه رو توی همون
-  // POSTS_CACHE ادغام می‌کنه (با حذف تکراری بر اساس id).
+  // وابستگی به تازگیِ scraped_at نسبت به بقیه‌ی سایت). ⚠️ برخلاف قبل، دیگه
+  // مستقیم POSTS_CACHE رو تغییر نمی‌ده — فقط آرایه‌ی نتیجه رو برمی‌گردونه؛
+  // ادغام/حذف تکراری توی خودِ loadPosts() بعد از رسیدن هر سه جواب انجام
+  // می‌شه (برای اینکه بشه fetch رو زودتر و مستقل از کوئری اصلی فرستاد).
   async function loadHawzaPosts(){
     const r = await api('/posts?select=*&hawza_relevant=eq.true&order=posted_at.desc&limit=300');
-    if(!r.ok) return;
-    const extra = await r.json();
-    const existingIds = new Set(POSTS_CACHE.map(p=>p.id));
-    for(const p of extra){ if(!existingIds.has(p.id)){ POSTS_CACHE.push(p); existingIds.add(p.id); } }
+    return r.ok ? await r.json() : [];
   }
   // همون الگوی loadHawzaPosts بالا — تب «ادعاها و شایعات» فقط از کانال بله
   // «رصد شایعات» تغذیه می‌شه که فرکانسش (چندبار در روز) به‌مراتب کمتر از
@@ -3536,10 +3548,7 @@
   // موفق داده‌ی تازه پیدا می‌کرد.
   async function loadClaimsPosts(){
     const r = await api('/posts?select=*&platform=eq.bale&order=posted_at.desc&limit=300');
-    if(!r.ok) return;
-    const extra = await r.json();
-    const existingIds = new Set(POSTS_CACHE.map(p=>p.id));
-    for(const p of extra){ if(!existingIds.has(p.id)){ POSTS_CACHE.push(p); existingIds.add(p.id); } }
+    return r.ok ? await r.json() : [];
   }
   async function loadMagazines(){
     const r = await api('/magazines?select=*&order=sort_order.asc,uploaded_at.desc');
