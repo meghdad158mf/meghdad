@@ -126,14 +126,18 @@
   .field label{ font-size:12.5px; color: var(--text-dim); font-weight:600; }
   .field input{ background: var(--surface-2); border:1px solid var(--border-strong); color: var(--text); padding:10px 12px; border-radius: var(--radius-control); font-size:14px; font-family:inherit; direction:rtl; width:100%; box-sizing:border-box; }
   .field input:focus{ border-color: var(--primary-strong); outline:none; }
-  .login-form-wrap .btn.primary{ width:100%; margin-top:6px; padding:11px; display:flex; align-items:center; justify-content:center; gap:8px; }
+  .login-form-wrap .btn.primary{ width:100%; margin-top:6px; padding:11px; position:relative; overflow:hidden; }
   /* فاصله‌ی بین کلیک «ورود» و رسیدن به داشبورد (بخش «سرعت ورود» CLAUDE.md
-     رو ببین) حتی بعد از بهینه‌سازی‌ها حدود ۲ ثانیه‌ست — بدون این اسپینر
-     کاربر فکر می‌کرد دکمه کار نکرده. اسپینر با display:none/inline-block
-     toggle می‌شه (نه visibility) تا فضای دکمه موقع مخفی‌بودن اشغال نشه */
-  .login-btn-spinner{ display:none; width:15px; height:15px; border:2px solid rgba(255,255,255,0.32); border-top-color:#fff; border-radius:50%; animation: login-btn-spin .7s linear infinite; flex-shrink:0; }
-  #login-btn.is-loading .login-btn-spinner{ display:inline-block; }
-  @keyframes login-btn-spin{ to{ transform:rotate(360deg); } }
+     رو ببین) حتی بعد از بهینه‌سازی‌ها حدود ۲ ثانیه‌ست — بدون بازخورد بصری
+     کاربر فکر می‌کرد دکمه کار نکرده. به‌جای اسپینر، خودِ دکمه با یه لایه‌ی
+     هلویی‌رنگ (.login-btn-fill) از یه طرف پر می‌شه و تا پایان لود تکرار
+     می‌شه — عرضش صفره تا کلاس is-loading اضافه بشه، تا استاتیک/بی‌حرکت
+     نمونه. نیمه‌شفافه (نه هلویی تخت) تا متن سفید دکمه روی هر دو حالت
+     (پس‌زمینه‌ی سرمه‌ای خام یا زیر لایه‌ی پرشده) خوانا بمونه. */
+  .login-btn-fill{ position:absolute; inset-inline-start:0; top:0; bottom:0; width:0%; background: var(--accent); opacity:.6; z-index:0; }
+  #login-btn.is-loading .login-btn-fill{ animation: login-btn-fill 1.3s ease-in-out infinite; }
+  #login-btn .login-btn-label{ position:relative; z-index:1; }
+  @keyframes login-btn-fill{ from{ width:0%; } to{ width:100%; } }
   .login-note{ margin-top:16px; font-size:11.5px; color: var(--text-faint); }
 
   /* .notify-card و .feedback-card کنار هم (دو ستون هم‌ارتفاع) می‌شینن —
@@ -1232,7 +1236,7 @@
         </div>
         <p id="login-error" role="alert" style="display:none;color:var(--danger);font-size:12px;margin:-8px 0 14px;"></p>
         <button class="btn primary" id="login-btn" onclick="handleLogin()">
-          <span class="login-btn-spinner" aria-hidden="true"></span>
+          <span class="login-btn-fill" aria-hidden="true"></span>
           <span class="login-btn-label">ورود</span>
         </button>
       </div>
