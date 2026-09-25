@@ -318,7 +318,11 @@
   /* ---- shared bits ---- */
   .panel{ background: var(--surface); border:1px solid var(--border); border-radius: var(--radius); padding:24px; margin-bottom:16px; }
   .panel-head{ display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; }
-  .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'JetBrains Mono',ui-monospace,monospace; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
+  /* قبلاً پیش‌فرض مونواسپیس (JetBrains Mono) بود — چون همه‌ی متن‌های
+     panel-pill سایت جمله‌ی کامل فارسی‌ان (نه کد/عدد)، مونواسپیس حرف فارسی
+     نداشت و مرورگر به فونت پیش‌فرض سیستم می‌افتاد (نه IRANSansX)، باعث
+     ناهماهنگی بصری با بقیه‌ی صفحه می‌شد — الان یکدست ایرانس */
+  .panel-pill{ display:inline-flex; align-items:center; gap:7px; background: var(--navy); color:#fff; font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; font-size:11.5px; font-weight:600; letter-spacing:0.02em; padding:6px 12px; border-radius: var(--radius-control); }
 
   /* آکاردئون بخش‌های صفحه‌ی «تنظیمات» — details/summary بومی، هم‌الگو با
      بقیه‌ی details سایت؛ فقط یه بخش هم‌زمان باز می‌مونه (کنترل JS، پایین‌تر) */
@@ -329,14 +333,6 @@
   .settings-accordion:not([open]) > summary.panel-head{ margin-bottom:0; }
   .settings-accordion:not([open]){ padding-bottom:16px; }
   .settings-accordion > summary.panel-head:hover .panel-pill{ background: var(--primary-2); }
-  /* .panel-pill پیش‌فرض مونواسپیس (JetBrains Mono) داره — برای برچسب‌های
-     کوتاه مثل «بخش تحلیلی» خوب جواب می‌ده، ولی حرف فارسی نداره؛ توی تب
-     «در یک نگاه» که متن کامل فارسی («اخبار منتخب (۶ الی ۱۲ ساعت اخیر)»)
-     داخلشه، مرورگر برای حروف فارسی به فونت پیش‌فرض سیستم می‌افته (نه
-     IRANSansX) و با بقیه‌ی صفحه ناهماهنگ می‌شه — این‌جا صریحاً برمی‌گردونیمش */
-  #news-analytics-panel .panel-pill{ font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; }
-  /* همون دلیل بالا — عنوان‌های صفحه‌ی «تنظیمات» هم متن کامل فارسی‌ان */
-  #sec-settings .panel-pill{ font-family:'IRANSansX','Inter',Tahoma,'Segoe UI',system-ui,sans-serif; }
   .ai-updated-note{ font-size:11px; color: var(--text-faint); }
   .dot-list{ display:flex; flex-direction:column; gap:9px; }
   .dot-item{ display:flex; align-items:baseline; gap:9px; font-size:13px; color: var(--text); }
